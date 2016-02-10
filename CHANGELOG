@@ -1,3 +1,7 @@
+FOF 2.5.3
+================================================================================
+# [HIGH] gh-581 The integrated update method didn't work
+
 FOF 2.5.2
 ================================================================================
 # [HIGH] The caching ID was always wrong since JCache::makeId() is never called any more in Joomla!.
