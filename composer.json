@@ -17,9 +17,8 @@
         }
     ],
     "autoload": {
-        "X-files": ["fof/include.php"]
+        "files": ["fof/include.php"]
     },
-    "version": "2.4.2",
     "require-dev": {
 		"mikey179/vfsStream": "v1.2.0",
 		"phpunit/phpunit": "4.1.*",

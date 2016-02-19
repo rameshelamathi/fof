@@ -35,7 +35,7 @@
 			</fileset>
 			<filterchain>
 				<replacetokens begintoken="##" endtoken="##">
-					<token key="DATE" value="${git.date}" />
+					<token key="DATE" value="${build.date}" />
 					<token key="VERSION" value="${version}" />
 				</replacetokens>
 			</filterchain>
@@ -45,7 +45,7 @@
 		<copy file="./templates/lib_f0f.xml" tofile="${dirs.root}/lib_f0f.xml" overwrite="true">
 			<filterchain>
 				<replacetokens begintoken="##" endtoken="##">
-					<token key="DATE" value="${git.date}" />
+					<token key="DATE" value="${build.date}" />
 					<token key="VERSION" value="${version}" />
 				</replacetokens>
 			</filterchain>
@@ -56,7 +56,7 @@
 		<copy file="./templates/version.txt" tofile="${dirs.library}/version.txt" overwrite="true">
 			<filterchain>
 				<replacetokens begintoken="##" endtoken="##">
-					<token key="DATE" value="${git.date}" />
+					<token key="DATE" value="${build.date}" />
 					<token key="VERSION" value="${version}" />
 				</replacetokens>
 			</filterchain>
@@ -65,7 +65,7 @@
 		<copy file="./templates/version.txt" tofile="${dirs.strapper}/version.txt" overwrite="true">
 			<filterchain>
 				<replacetokens begintoken="##" endtoken="##">
-					<token key="DATE" value="${git.date}" />
+					<token key="DATE" value="${build.date}" />
 					<token key="VERSION" value="${version}" />
 				</replacetokens>
 			</filterchain>
@@ -75,7 +75,7 @@
 		<copy file="./templates/include.php" tofile="${dirs.library}/include.php" overwrite="true">
 			<filterchain>
 				<replacetokens begintoken="##" endtoken="##">
-					<token key="DATE" value="${git.date}" />
+					<token key="DATE" value="${build.date}" />
 					<token key="VERSION" value="${version}" />
 				</replacetokens>
 			</filterchain>

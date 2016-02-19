@@ -1,5 +1,6 @@
 FOF 2.5.3
 ================================================================================
+# [HIGH] Wrong date in package's version.txt
 # [HIGH] gh-581 The integrated update method didn't work
 
 FOF 2.5.2
