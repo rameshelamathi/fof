@@ -1,3 +1,7 @@
+FOF 2.5.4
+================================================================================
++ gh-584 removeHeader method added in Form, allowing you to remove a header from an XML form.
+
 FOF 2.5.3
 ================================================================================
 # [HIGH] Wrong date in package's version.txt
