@@ -98,8 +98,6 @@ class ControllerTest extends ApplicationTestCase
         unset($tasks['__call']);
 
         $check = array(
-            'onBeforeDummy' => 'onBeforeDummy',
-            'onAfterDummy'  => 'onAfterDummy',
             'display'       => 'display',
             'main'          => 'main',
             '__default'     => 'main'
