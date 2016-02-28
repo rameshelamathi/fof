@@ -350,13 +350,13 @@ class DataModel extends Model implements \JTableInterface
 		$asset_id_field	= $this->getFieldAlias('asset_id');
 		$access_field	= $this->getFieldAlias('access');
 
-		if (in_array($asset_id_field, $this->knownFields))
+		if (array_key_exists($asset_id_field, $this->knownFields))
 		{
 			\JLoader::import('joomla.access.rules');
 			$this->_trackAssets = true;
 		}
 
-		if (in_array($access_field, $this->knownFields))
+		if (array_key_exists($access_field, $this->knownFields))
 		{
 			$this->$access_field = (int) $this->container->platform->getConfig()->get('access');
 		}
