@@ -30,13 +30,13 @@ class Filters extends Observer
 		$db = $model->getDbo();
 
 		$fields     = $model->getTableFields();
-		$backlist   = $model->blacklistFilters();
+		$blacklist  = $model->blacklistFilters();
 		$filterZero = $model->getBehaviorParam('filterZero', null);
 		$tableAlias = $model->getBehaviorParam('tableAlias', null);
 
 		foreach ($fields as $fieldname => $fieldmeta)
 		{
-			if (in_array($fieldname, $backlist))
+			if (in_array($fieldname, $blacklist))
 			{
 				continue;
 			}
