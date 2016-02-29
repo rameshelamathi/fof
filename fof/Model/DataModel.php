@@ -356,7 +356,7 @@ class DataModel extends Model implements \JTableInterface
 			$this->_trackAssets = true;
 		}
 
-		if (array_key_exists($access_field, $this->knownFields))
+		if ($this->_trackAssets && array_key_exists($access_field, $this->knownFields) && empty($this->getState($access_field, null)))
 		{
 			$this->$access_field = (int) $this->container->platform->getConfig()->get('access');
 		}
