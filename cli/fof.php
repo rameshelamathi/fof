@@ -25,7 +25,7 @@
  *  Command-line generator for FOF3 Save Scaffolding feature
  */
 
-$phar = Phar::running(false);
+$phar = class_exists('Phar') && Phar::running(false);
 
 if ($phar)
 {
