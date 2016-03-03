@@ -169,8 +169,9 @@ class FofApp extends JApplicationCli
 		if (!file_exists(getcwd() . '/composer.json'))
         {
 			// Ask to create it
-			$this->out("Can't find a composer.json file in this directory. Run \"composer init\" to create it");
-			exit();
+			$this->out("Can't find a composer.json file in this directory. Run \"composer init\" to create it.");
+
+	        return new \stdClass();
 		}
 
 		// Read composer's informations

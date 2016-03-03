@@ -55,7 +55,7 @@ abstract class Command
 	 */
 	protected function getComponentName($composer)
 	{
-		$extra        = ($composer->extra && $composer->extra->fof) ? $composer->extra->fof : false;
+		$extra        = (isset($composer->extra) && isset($composer->extra->fof)) ? $composer->extra->fof : false;
 		$default_name = $extra ? $extra->name : array_pop(explode("/", $composer->name));
 		$default_name = $default_name ? $default_name : 'com_foobar';
 

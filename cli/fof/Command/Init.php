@@ -13,13 +13,25 @@ class Init extends Command
 {
 	public function execute()
     {
-        $composer = $this->composer;
+	    // If we do have a composer file use the information contained in it
+	    $composer = $this->composer;
 
-		// We do have a composer file, so we can start working
-		$composer->extra = $composer->extra ? $composer->extra : array('fof' => new \stdClass());
-		$composer->extra->fof = $composer->extra->fof ? $composer->extra->fof : new \stdClass();
+	    $composer->extra = isset($composer->extra) ? $composer->extra : array('fof' => new \stdClass());
+	    $composer->extra->fof = isset($composer->extra->fof) ? $composer->extra->fof : new \stdClass();
 
-		$info = $composer->extra->fof;
+	    $info = $composer->extra->fof;
+
+	    if (!is_object($info))
+	    {
+		    if (empty($info))
+		    {
+			    $info = new \stdClass();
+		    }
+		    else
+		    {
+			    $info = (object) $info;
+		    }
+	    }
 
 		// Component Name (default: what's already stored in composer / composer package name)
 		$info->name = $this->getComponentName($composer);
@@ -32,20 +44,21 @@ class Init extends Command
 			'translationsfrontend'  => 'translations/component/frontend'
 		);
 
-		$info->paths = array();
+	    if (!isset($info->paths) || empty($info->paths) || is_null($info->paths))
+	    {
+		    $info->paths = array();
+	    }
+
+	    if (is_object($info->paths))
+	    {
+		    $info->paths = (array) $info->paths;
+	    }
+
+	    $files = array_merge($files, $info->paths);
 
 		foreach ($files as $key => $default)
         {
 			$info->paths[$key] = $this->getPath($composer, $key, $default);
-		}
-
-		// Create the directories if necessary
-		foreach ($info->paths as $folder)
-        {
-			if (!is_dir($folder))
-            {
-				\JFolder::create(getcwd() . '/' . $folder);
-			}
 		}
 
 		// Now check for fof.xml file
@@ -53,14 +66,16 @@ class Init extends Command
 
 		if (file_exists($fof_xml))
         {
-            // ????
+            // @todo Read the XML?
 		}
 
-		// Store back the info into the composer.json
-		$composer->extra->fof = $info;
-		\JFile::write(getcwd() . '/composer.json', json_encode($composer, JSON_PRETTY_PRINT));
+	    // @todo Maybe ask for namespaces?
 
-		$this->setDevServer(true);
+		// Store back the info into the composer.json file
+	    $composer->extra->fof = $info;
+	    \JFile::write(getcwd() . '/composer.json', json_encode($composer, JSON_PRETTY_PRINT));
+
+		$this->setDevServer(false);
 	}
 
 
@@ -76,18 +91,22 @@ class Init extends Command
 		$extra = $composer->extra ? $composer->extra->fof : false;
 		$default_path = ($extra && $extra->paths && $extra->paths->$key) ? $extra->paths->$key : $default;
 
-		$this->out("Location of " . $key . " files: (" . $default_path . ")");
+		// Keep asking while the path is not valid
+		$path = false;
+
+		$this->out("Location of " . $key . " files: [" . $default_path . "]");
 		$path = $this->in();
 
-		if (!$path)
-        {
+		// Use the default path if needbe
+		if (empty($path))
+		{
 			$path = $default_path;
 		}
 
-		// Keep asking while the path is not valid
-		while(!$path)
-        {
-			$path = $this->getPath($composer, $key, $default);
+		// Create the directory if necessary
+		if (!is_dir($path))
+		{
+			\JFolder::create(getcwd() . '/' . $path);
 		}
 
 		return $path;
