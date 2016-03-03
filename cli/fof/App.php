@@ -127,8 +127,7 @@ class FofApp extends JApplicationCli
 		$composer = $this->getComposerInfo();
 
 		$phar = Phar::running(false);
-		$path = $phar ? ("phar://" . $phar . '/fof/') : (realpath(dirname(__FILE__)) . '/');
-
+		$path = $phar ? (Phar::running(true) . '/fof/') : (realpath(dirname(__FILE__)) . '/');
 
 		// Register the current namespace with the autoloader
 		FOF30\Autoloader\Autoloader::getInstance()->addMap('FOF30\\Generator\\', array($path));

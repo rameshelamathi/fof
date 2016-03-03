@@ -30,7 +30,7 @@ $phar = class_exists('Phar') && Phar::running(false);
 if ($phar)
 {
 	Phar::interceptFileFuncs();
-	$phar_path = "phar://" . $phar . '/';
+	$phar_path = Phar::running(true) . '/';
 }
 else
 {
@@ -108,9 +108,16 @@ else
 
 		while (!$path)
         {
+	        $default_path = getcwd();
+
 			// Get Path to the dev site
-			fwrite(STDOUT, "What's the dev site location? ( /var/www/ )\n");
+			fwrite(STDOUT, "What's the dev site location? [$default_path]\n");
 			$path = rtrim(fread(STDIN, 8192), "\n");
+
+	        if (empty($path))
+	        {
+		        $path = $default_path;
+	        }
 
 			if (!$path || !is_dir($path))
             {
@@ -119,10 +126,10 @@ else
 			}
 
 			// Check if it's joomla
-			if (!is_file($path . '/configuration.php'))
+			if (!is_dir($path . '/libraries'))
             {
 				$path = false;
-				fwrite(STDOUT, "he path does not contain a Joomla Website\n");
+				fwrite(STDOUT, "The path does not seem to contain a Joomla! Website\n");
 			}
 		}
 
