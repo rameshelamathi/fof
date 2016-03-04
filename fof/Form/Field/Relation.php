@@ -180,6 +180,9 @@ class Relation extends GenericList
         // Replace the [TOKEN] in the URL with the Joomla! form token
         $ret = str_replace('[TOKEN]', \JFactory::getSession()->getFormToken(), $ret);
 
+        // Replace the [RELATION:ID] in the URL with the relation's key value
+        $ret = str_replace('[RELATION:ID]', $this->_relationId, $ret);
+
         // Replace other field variables in the URL
         $data = $this->item->getData();
 
