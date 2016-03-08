@@ -28,7 +28,7 @@ class AssetsTest extends DatabaseTest
      */
     public function testOnAfterSave($test, $check)
     {
-        $msg = 'Own::onAfterBuildQuery %s - Case: '.$check['case'];
+        $msg = 'Assets::onAfterBuildQuery %s - Case: '.$check['case'];
         $db  = \JFactory::getDbo();
 
         $config = array(
@@ -102,7 +102,7 @@ class AssetsTest extends DatabaseTest
      */
     public function testOnAfterBind($test, $check)
     {
-        $msg = 'Own::onAfterBuildQuery %s - Case: '.$check['case'];
+        $msg = 'Assets::onAfterBuildQuery %s - Case: '.$check['case'];
 
         $config = array(
             'idFieldName' => $test['tableid'],
@@ -136,7 +136,7 @@ class AssetsTest extends DatabaseTest
      */
     public function testOnBeforeDelete($test, $check)
     {
-        $msg = 'Own::onBeforeDelete %s - Case: '.$check['case'];
+        $msg = 'Assets::onBeforeDelete %s - Case: '.$check['case'];
         $db  = \JFactory::getDbo();
 
         $config = array(
