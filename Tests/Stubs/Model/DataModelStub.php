@@ -9,6 +9,7 @@ namespace FOF30\Tests\Stubs\Model;
 
 use FOF30\Container\Container;
 use FOF30\Model\DataModel;
+use FOF30\Tests\Helpers\ReflectionHelper;
 
 class DataModelStub extends DataModel
 {
@@ -59,6 +60,18 @@ class DataModelStub extends DataModel
         if($platform instanceof \FOF30\Tests\Helpers\TestJoomlaPlatform && !$platform::$getUserStateFromRequest)
         {
             $platform::$getUserStateFromRequest = function($key, $request, $input, $default, $type, $setUserState) { return $default;};
+        }
+        // Do the same if we have a Closure object
+        elseif($platform instanceof \FOF30\Tests\Helpers\ClosureHelper)
+        {
+            $methods = ReflectionHelper::getValue($platform, 'mockedMethods');
+            
+            if(!isset($methods['getUserStateFromRequest']))
+            {
+                $methods['getUserStateFromRequest'] = function($key, $request, $input, $default, $type, $setUserState) { return $default;};
+                
+                ReflectionHelper::setValue($platform, 'mockedMethods', $methods);
+            }
         }
 
         parent::__construct($container, $config);
