@@ -49,9 +49,11 @@ class PageParametersToStateTest extends DatabaseTest
     {
         $msg = 'PageParametersToState::onAfterConstruct %s - Case: '.$check['case'];
 
+        // Use a table without assets support, otherwise we have to mock the application
+        // while we need it to set the state
         $config = array(
-            'idFieldName' => 'foftest_foobar_id',
-            'tableName'   => '#__foftest_foobars'
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
         );
 
         $container = new TestContainer(array(
@@ -59,9 +61,11 @@ class PageParametersToStateTest extends DatabaseTest
             'input'         => new Input($test['input'])
         ));
 
+        /** @var \FOF30\Tests\Helpers\TestJoomlaPlatform $platform */
         $platform = $container->platform;
         $platform::$isAdmin = $test['mock']['admin'];
         $platform::$user = (object)array('id' => 99);
+        $platform::$getUserStateFromRequest = 'do_not_mock';
 
         $model = new DataModelStub($container, $config);
 
