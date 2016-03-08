@@ -50,7 +50,7 @@ class AssetsDataprovider
             array(
                 'case'  => 'Asset support but no rules passed',
                 'count' => 1,
-                'rules' => '{}'
+                'rules' => ''
             )
         );
 

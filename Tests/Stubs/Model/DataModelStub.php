@@ -9,6 +9,7 @@ namespace FOF30\Tests\Stubs\Model;
 
 use FOF30\Container\Container;
 use FOF30\Model\DataModel;
+use FOF30\Tests\Helpers\ReflectionHelper;
 
 class DataModelStub extends DataModel
 {
@@ -49,6 +50,32 @@ class DataModelStub extends DataModel
         foreach($methods as $method => $function)
         {
             $this->methods[$method] = $function;
+        }
+
+        /** @var \FOF30\Tests\Helpers\TestJoomlaPlatform $platform */
+        $platform = $container->platform;
+
+        // Provide a default mock function for getUserStateFromRequest, since we are going to query the model state
+        // in the model and if it's not set, we will get an application error
+        // PRO TIP: If you don't want to automatically mock such function, you can easily set the $getUserStateFromRequest
+        // variable to a string, ie 'do not mock'
+        // This check will fail, but in the parent we are checking if the variable is a callable. Since it's not (it's a string)
+        // we will fallback to the parent, original method
+        if($platform instanceof \FOF30\Tests\Helpers\TestJoomlaPlatform && !$platform::$getUserStateFromRequest)
+        {
+            $platform::$getUserStateFromRequest = function($key, $request, $input, $default, $type, $setUserState) { return $default;};
+        }
+        // Do the same if we have a Closure object
+        elseif($platform instanceof \FOF30\Tests\Helpers\ClosureHelper)
+        {
+            $methods = ReflectionHelper::getValue($platform, 'mockedMethods');
+
+            if(!isset($methods['getUserStateFromRequest']))
+            {
+                $methods['getUserStateFromRequest'] = function($key, $request, $input, $default, $type, $setUserState) { return $default;};
+
+                ReflectionHelper::setValue($platform, 'mockedMethods', $methods);
+            }
         }
 
         parent::__construct($container, $config);

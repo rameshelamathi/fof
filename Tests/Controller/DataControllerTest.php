@@ -114,6 +114,7 @@ class DataControllertest extends DatabaseTest
                 }
             ))
         ));
+
         $controller = new DataControllerStub($container, $test['constructConfig']);
 
         ReflectionHelper::setValue($controller, 'viewName', $test['mock']['viewName']);
