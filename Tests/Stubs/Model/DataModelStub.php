@@ -51,6 +51,16 @@ class DataModelStub extends DataModel
             $this->methods[$method] = $function;
         }
 
+        /** @var \FOF30\Tests\Helpers\TestJoomlaPlatform $platform */
+        $platform = $container->platform;
+
+        // Provide a default mock function for getUserStateFromRequest, since we are going to query the model state
+        // in the model and if it's not set, we will get an application error
+        if($platform instanceof \FOF30\Tests\Helpers\TestJoomlaPlatform && !$platform::$getUserStateFromRequest)
+        {
+            $platform::$getUserStateFromRequest = function($key, $request, $input, $default, $type, $setUserState) { return $default;};
+        }
+
         parent::__construct($container, $config);
     }
 

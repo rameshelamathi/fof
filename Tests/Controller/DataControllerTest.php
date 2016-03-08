@@ -114,6 +114,7 @@ class DataControllertest extends DatabaseTest
                 }
             ))
         ));
+
         $controller = new DataControllerStub($container, $test['constructConfig']);
 
         ReflectionHelper::setValue($controller, 'viewName', $test['mock']['viewName']);
@@ -509,10 +510,6 @@ class DataControllertest extends DatabaseTest
             ))
         ));
 
-        /** @var \FOF30\Tests\Helpers\TestJoomlaPlatform $platform */
-        $platform = $container->platform;
-        $platform::$getUserStateFromRequest = function($key, $request, $input, $default, $type, $setUserState) { return $default;};
-
         $config = array(
             'idFieldName' => 'foftest_foobar_id',
             'tableName'   => '#__foftest_foobars'
@@ -555,10 +552,6 @@ class DataControllertest extends DatabaseTest
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
             ))
         ));
-
-        /** @var \FOF30\Tests\Helpers\TestJoomlaPlatform $platform */
-        $platform = $container->platform;
-        $platform::$getUserStateFromRequest = function($key, $request, $input, $default, $type, $setUserState) { return $default;};
 
         $config = array(
             'idFieldName' => 'foftest_foobar_id',
@@ -603,10 +596,6 @@ class DataControllertest extends DatabaseTest
             ))
         ));
 
-        /** @var \FOF30\Tests\Helpers\TestJoomlaPlatform $platform */
-        $platform = $container->platform;
-        $platform::$getUserStateFromRequest = function($key, $request, $input, $default, $type, $setUserState) { return $default;};
-
         $config = array(
             'idFieldName' => 'foftest_foobar_id',
             'tableName'   => '#__foftest_foobars'
@@ -650,10 +639,6 @@ class DataControllertest extends DatabaseTest
             ))
         ));
 
-        /** @var \FOF30\Tests\Helpers\TestJoomlaPlatform $platform */
-        $platform = $container->platform;
-        $platform::$getUserStateFromRequest = function($key, $request, $input, $default, $type, $setUserState) { return $default;};
-
         $config = array(
             'idFieldName' => 'foftest_foobar_id',
             'tableName'   => '#__foftest_foobars'
@@ -696,10 +681,6 @@ class DataControllertest extends DatabaseTest
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
             ))
         ));
-
-        /** @var \FOF30\Tests\Helpers\TestJoomlaPlatform $platform */
-        $platform = $container->platform;
-        $platform::$getUserStateFromRequest = function($key, $request, $input, $default, $type, $setUserState) { return $default;};
 
         $config = array(
             'idFieldName' => 'foftest_foobar_id',
@@ -750,10 +731,6 @@ class DataControllertest extends DatabaseTest
             ))
         ));
 
-        /** @var \FOF30\Tests\Helpers\TestJoomlaPlatform $platform */
-        $platform = $container->platform;
-        $platform::$getUserStateFromRequest = function($key, $request, $input, $default, $type, $setUserState) { return $default;};
-
         $config = array(
             'autoChecks'  => false,
             'idFieldName' => $test['id'],
@@ -792,10 +769,6 @@ class DataControllertest extends DatabaseTest
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
             ))
         ));
-
-        /** @var \FOF30\Tests\Helpers\TestJoomlaPlatform $platform */
-        $platform = $container->platform;
-        $platform::$getUserStateFromRequest = function($key, $request, $input, $default, $type, $setUserState) { return $default;};
 
         $config = array(
             'idFieldName' => 'foftest_foobar_id',
@@ -840,10 +813,6 @@ class DataControllertest extends DatabaseTest
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
             ))
         ));
-
-        /** @var \FOF30\Tests\Helpers\TestJoomlaPlatform $platform */
-        $platform = $container->platform;
-        $platform::$getUserStateFromRequest = function($key, $request, $input, $default, $type, $setUserState) { return $default;};
 
         $config = array(
             'idFieldName' => 'foftest_foobar_id',
@@ -890,10 +859,6 @@ class DataControllertest extends DatabaseTest
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
             ))
         ));
-
-        /** @var \FOF30\Tests\Helpers\TestJoomlaPlatform $platform */
-        $platform = $container->platform;
-        $platform::$getUserStateFromRequest = function($key, $request, $input, $default, $type, $setUserState) { return $default;};
 
         $config = array(
             'idFieldName' => 'foftest_foobar_id',
@@ -950,10 +915,6 @@ class DataControllertest extends DatabaseTest
             'componentName' => 'com_fakeapp'
         ));
 
-        /** @var \FOF30\Tests\Helpers\TestJoomlaPlatform $platform */
-        $platform = $container->platform;
-        $platform::$getUserStateFromRequest = function($key, $request, $input, $default, $type, $setUserState) { return $default;};
-
         $config = array(
             'idFieldName' => 'foftest_foobar_id',
             'tableName'   => '#__foftest_foobars'
@@ -989,10 +950,6 @@ class DataControllertest extends DatabaseTest
                 'foftest_foobar_id' => $test['mock']['kid']
             ))
         ));
-
-        /** @var \FOF30\Tests\Helpers\TestJoomlaPlatform $platform */
-        $platform = $container->platform;
-        $platform::$getUserStateFromRequest = function($key, $request, $input, $default, $type, $setUserState) { return $default;};
 
         $config = array(
             'idFieldName' => 'foftest_foobar_id',
