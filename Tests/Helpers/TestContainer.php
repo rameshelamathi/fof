@@ -8,7 +8,6 @@
 namespace FOF30\Tests\Helpers;
 
 use FOF30\Container\Container;
-use FOF30\Tests\Helpers\TestJoomlaPlatform;
 
 /**
  * A specialised container for use in Unit Testing
