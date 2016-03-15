@@ -24,7 +24,7 @@ FOF 2.5.0
 + F0FUtilsIniFile to parse INI files even on stupid hosts
 + F0FUtilsConfigHelper to get component configuration parameters without going through JComponentHelper
 + F0FUtilsUpdate improvements
-~ Clear the OPcache when installing / updaing an extension as long as it uses F0FUtilsInstallscript
+~ Clear the OPcache when installing / updating an extension as long as it uses F0FUtilsInstallscript
 ~ F0FUtilsIp: let the workarounds be disabled
 # [HIGH] If you declared onBefore/onAfter Controller methods public FOF would erroneously treat them as tasks
 
