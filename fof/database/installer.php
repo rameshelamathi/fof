@@ -172,7 +172,15 @@ class F0FDatabaseInstaller
 			$autoCollationConversion = in_array($value, array('true', '1', 'on', 'yes'));
 		}
 
-		$hasUtf8mb4Support = method_exists($this->db, 'hasUTF8mb4Support') && $this->db->hasUTF8mb4Support();
+		try
+		{
+			$hasUtf8mb4Support = $this->db->hasUTF8mb4Support();
+		}
+		catch (\Exception $e)
+		{
+			$hasUtf8mb4Support = false;
+		}
+
 		$tablesToConvert = array();
 
 		/** @var SimpleXMLElement $action */
@@ -554,7 +562,16 @@ class F0FDatabaseInstaller
 				$condition = false;
 
 				// Check if the driver and the database connection have UTF8MB4 support
-				if (method_exists($this->db, 'hasUTF8mb4Support') && $this->db->hasUTF8mb4Support())
+				try
+				{
+					$hasUtf8mb4Support = $this->db->hasUTF8mb4Support();
+				}
+				catch (\Exception $e)
+				{
+					$hasUtf8mb4Support = false;
+				}
+
+				if ($hasUtf8mb4Support)
 				{
 					$fieldName = (string)$value;
 
@@ -635,8 +652,23 @@ class F0FDatabaseInstaller
 	 */
 	private function realGetTableCollation($tableName)
 	{
-		$utf8Support = method_exists($this->db, 'hasUTFSupport') && $this->db->hasUTFSupport();
-		$utf8mb4Support = $utf8Support && method_exists($this->db, 'hasUTF8mb4Support') && $this->db->hasUTF8mb4Support();
+		try
+		{
+			$utf8Support = $this->db->hasUTFSupport();
+		}
+		catch (\Exception $e)
+		{
+			$utf8Support = false;
+		}
+
+		try
+		{
+			$utf8mb4Support = $utf8Support && $this->db->hasUTF8mb4Support();
+		}
+		catch (\Exception $e)
+		{
+			$utf8mb4Support = false;
+		}
 
 		$collation = $utf8mb4Support ? 'utf8mb4_unicode_ci' : ($utf8Support ? 'utf_general_ci' : 'latin1_swedish_ci');
 
@@ -871,8 +903,17 @@ class F0FDatabaseInstaller
 	 */
 	private function convertTablesToUtf8mb4($tablesToConvert)
 	{
+		try
+		{
+			$utf8mb4Support = $this->db->hasUTF8mb4Support();
+		}
+		catch (\Exception $e)
+		{
+			$utf8mb4Support = false;
+		}
+
 		// Make sure the database driver REALLY has support for converting character sets
-		if (!method_exists($this->db, 'getAlterTableCharacterSet'))
+		if (!$utf8mb4Support)
 		{
 			return;
 		}
