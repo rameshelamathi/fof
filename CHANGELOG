@@ -1,6 +1,6 @@
 FOF 3.0.8
 ================================================================================
-+ utf8mb4 support in schema installer unde Joomla! 3.5+
++ utf8mb4 support in schema installer under Joomla! 3.5+
 + gh-584 removeHeader method added in Form, allowing you to remove a header from an XML form.
 # [HIGH] FOF30\Update\Joomla could not detect Joomla! updates due to changes in Joomla! XML update sources
 # [HIGH] Assets tracking was broken due to wrong use of in_array instead of array_key_exists
