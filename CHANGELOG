@@ -33,7 +33,7 @@ FOF 3.0.3
 
 FOF 3.0.2
 ================================================================================
-~ Clear the OPcache when installing / updaing an extension as long as it uses Installscript
+~ Clear the OPcache when installing / updating an extension as long as it uses Installscript
 ~ You can now use a folder called ViewTemplate in your extension to hold your view templates
 # [LOW] empty() returns false even when there are no items in a collection
 
