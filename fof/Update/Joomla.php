@@ -36,14 +36,15 @@ class Joomla extends Extension
 	 * Reads a "collection" XML update source and picks the correct source URL
 	 * for the extension update source.
 	 *
-	 * @param   string  $url       The collection XML update source URL to read from
-	 * @param   string  $jVersion  Joomla! version to fetch updates for, or null to use JVERSION
+	 * @param   string $url      The collection XML update source URL to read from
+	 * @param   string $jVersion Joomla! version to fetch updates for, or null to use JVERSION
 	 *
 	 * @return  string  The URL of the extension update source, or empty if no updates are provided / fetching failed
 	 */
 	public function getUpdateSourceFromCollection($url, $jVersion = null)
 	{
 		$provider = new Collection();
+
 		return $provider->getExtensionUpdateSource($url, 'file', 'joomla', $jVersion);
 	}
 
@@ -59,10 +60,14 @@ class Joomla extends Extension
 	{
 		// Initialise
 		$ret = array(
-			'lts'     => true, // Is this an LTS release? False means STS.
-			'current' => false, // Is this a release in the $currentVersion branch?
-			'upgrade' => 'none', // Upgrade relation of $jVersion to $currentVersion: 'none' (can't upgrade), 'lts' (next or current LTS), 'sts' (next or current STS) or 'current' (same release, no upgrade available)
-			'testing' => false, // Is this a testing (alpha, beta, RC) release?
+			'lts'     => true,
+			// Is this an LTS release? False means STS.
+			'current' => false,
+			// Is this a release in the $currentVersion branch?
+			'upgrade' => 'none',
+			// Upgrade relation of $jVersion to $currentVersion: 'none' (can't upgrade), 'lts' (next or current LTS), 'sts' (next or current STS) or 'current' (same release, no upgrade available)
+			'testing' => false,
+			// Is this a testing (alpha, beta, RC) release?
 		);
 
 		// Get the current version if none is defined
@@ -72,8 +77,10 @@ class Joomla extends Extension
 		}
 
 		// Sanitise version numbers
-		$jVersion = $this->sanitiseVersion($jVersion);
+		$sameVersion    = $jVersion == $currentVersion;
+		$jVersion       = $this->sanitiseVersion($jVersion);
 		$currentVersion = $this->sanitiseVersion($currentVersion);
+		$sameVersion    = $sameVersion || ($jVersion == $currentVersion);
 
 		// Get the base version
 		$baseVersion = substr($jVersion, 0, 3);
@@ -95,29 +102,29 @@ class Joomla extends Extension
 				break;
 
 			case '1.6':
-				$ret['lts'] = false;
+				$ret['lts']  = false;
 				$sts_minimum = '1.7';
 				$sts_maximum = '1.7.999';
 				$lts_minimum = '2.5';
 				break;
 
 			case '1.7':
-				$ret['lts'] = false;
+				$ret['lts']  = false;
 				$sts_minimum = false;
 				$lts_minimum = '2.5';
 				break;
 
 			case '2.5':
-				$ret['lts'] = true;
+				$ret['lts']  = true;
 				$sts_minimum = false;
 				$lts_minimum = '2.5';
 				break;
 
 			default:
-				$majorVersion = (int)substr($jVersion, 0, 1);
-				$minorVersion = (int)substr($jVersion, 2, 1);
+				$majorVersion = (int) substr($jVersion, 0, 1);
+				//$minorVersion = (int) substr($jVersion, 2, 1);
 
-				$ret['lts'] = true;
+				$ret['lts']  = true;
 				$sts_minimum = false;
 				$lts_minimum = $majorVersion . '.0';
 				break;
@@ -130,7 +137,7 @@ class Joomla extends Extension
 		}
 
 		// Is this a testing release?
-		$versionParts = explode('.', $jVersion);
+		$versionParts    = explode('.', $jVersion);
 		$lastVersionPart = array_pop($versionParts);
 
 		if (in_array(substr($lastVersionPart, 0, 1), array('a', 'b')))
@@ -151,19 +158,24 @@ class Joomla extends Extension
 		{
 			$ret['upgrade'] = 'current';
 		}
-		elseif(($sts_minimum !== false) && version_compare($jVersion, $sts_minimum, 'ge') && version_compare($jVersion, $sts_maximum, 'le'))
+		elseif (($sts_minimum !== false) && version_compare($jVersion, $sts_minimum, 'ge') && version_compare($jVersion, $sts_maximum, 'le'))
 		{
 			$ret['upgrade'] = 'sts';
 		}
-		elseif(($lts_minimum !== false) && version_compare($jVersion, $lts_minimum, 'ge'))
+		elseif (($lts_minimum !== false) && version_compare($jVersion, $lts_minimum, 'ge'))
 		{
 			$ret['upgrade'] = 'lts';
 		}
-		elseif($baseVersion == $current_minimum)
+		elseif ($baseVersion == $current_minimum)
 		{
 			$ret['upgrade'] = $ret['lts'] ? 'lts' : 'sts';
 		}
 		else
+		{
+			$ret['upgrade'] = 'none';
+		}
+
+		if ($sameVersion)
 		{
 			$ret['upgrade'] = 'none';
 		}
@@ -176,8 +188,8 @@ class Joomla extends Extension
 	 * Filters a list of updates, making sure they apply to the specifed CMS
 	 * release.
 	 *
-	 * @param   array   $updates   A list of update records returned by the getUpdatesFromExtension method
-	 * @param   string  $jVersion  The current Joomla! version number
+	 * @param   array  $updates  A list of update records returned by the getUpdatesFromExtension method
+	 * @param   string $jVersion The current Joomla! version number
 	 *
 	 * @return  array  A filtered list of updates. Each update record also includes version relevance information.
 	 */
@@ -188,11 +200,11 @@ class Joomla extends Extension
 			$jVersion = JVERSION;
 		}
 
-		$versionParts = explode('.', $jVersion, 4);
-		$platformVersionMajor = $versionParts[0];
-		$platformVersionMinor = $platformVersionMajor . '.' . $versionParts[1];
-		$platformVersionNormal = $platformVersionMinor . '.' . $versionParts[2];
-		$platformVersionFull = (count($versionParts) > 3) ? $platformVersionNormal . '.' . $versionParts[3] : $platformVersionNormal;
+		$versionParts          = explode('.', $jVersion, 4);
+		$platformVersionMajor  = $versionParts[0];
+		$platformVersionMinor  = $platformVersionMajor . '.' . $versionParts[1];
+		//$platformVersionNormal = $platformVersionMinor . '.' . $versionParts[2];
+		//$platformVersionFull   = (count($versionParts) > 3) ? $platformVersionNormal . '.' . $versionParts[3] : $platformVersionNormal;
 
 		$ret = array();
 
@@ -206,13 +218,13 @@ class Joomla extends Extension
 
 			$targetPlatformVersion = $update['targetplatform']['version'];
 
-			if (($targetPlatformVersion !== $platformVersionMajor) && ($targetPlatformVersion !== $platformVersionMinor) && ($targetPlatformVersion !== $platformVersionNormal) && ($targetPlatformVersion !== $platformVersionFull))
+			if (!preg_match('/' . $targetPlatformVersion . '/', $platformVersionMinor))
 			{
 				continue;
 			}
 
 			// Get some information from the version number
-			$updateVersion = $update['version'];
+			$updateVersion     = $update['version'];
 			$versionProperties = $this->getVersionProperties($updateVersion, $jVersion);
 
 			if ($versionProperties['upgrade'] == 'none')
@@ -223,7 +235,7 @@ class Joomla extends Extension
 			// The XML files are ill-maintained. Maybe we already have this update?
 			if (!array_key_exists($updateVersion, $ret))
 			{
-				$ret[$updateVersion] = array_merge($update, $versionProperties);
+				$ret[ $updateVersion ] = array_merge($update, $versionProperties);
 			}
 		}
 
@@ -237,19 +249,19 @@ class Joomla extends Extension
 	 * figure out what was in the mind of the maintainer and translate the
 	 * funky version number to an actual PHP-format version string.
 	 *
-	 * @param   string  $version  The whatever-format version number
+	 * @param   string $version The whatever-format version number
 	 *
 	 * @return  string  A standard formatted version number
 	 */
 	public function sanitiseVersion($version)
 	{
-		$test = strtolower($version);
+		$test                   = strtolower($version);
 		$alphaQualifierPosition = strpos($test, 'alpha-');
-		$betaQualifierPosition = strpos($test, 'beta-');
+		$betaQualifierPosition  = strpos($test, 'beta-');
 		$betaQualifierPosition2 = strpos($test, '-beta');
-		$rcQualifierPosition = strpos($test, 'rc-');
-		$rcQualifierPosition2 = strpos($test, 'rc');
-		$devQualifiedPosition = strpos($test, 'dev');
+		$rcQualifierPosition    = strpos($test, 'rc-');
+		$rcQualifierPosition2   = strpos($test, 'rc');
+		$devQualifiedPosition   = strpos($test, 'dev');
 
 		if ($alphaQualifierPosition !== false)
 		{
@@ -315,8 +327,8 @@ class Joomla extends Extension
 	 * Reloads the list of all updates available for the specified Joomla! version
 	 * from the network.
 	 *
-	 * @param    array   $sources   The enabled sources to look into
-	 * @param    string  $jVersion  The Joomla! version we are checking updates for
+	 * @param    array  $sources  The enabled sources to look into
+	 * @param    string $jVersion The Joomla! version we are checking updates for
 	 *
 	 * @return   array  A list of updates for the installed, current, lts and sts versions
 	 */
@@ -339,13 +351,14 @@ class Joomla extends Extension
 		}
 
 		// Get the current branch' min/max versions
-		$versionParts = explode('.', $jVersion, 4);
+		$versionParts      = explode('.', $jVersion, 4);
 		$currentMinVersion = $versionParts[0] . '.' . $versionParts[1];
 		$currentMaxVersion = $versionParts[0] . '.' . $versionParts[1] . '.9999';
 
 
 		// Retrieve all updates
 		$allUpdates = array();
+
 		foreach ($sources as $source => $value)
 		{
 			if (($value === false) || empty($value))
@@ -417,7 +430,7 @@ class Joomla extends Extension
 				'infourl' => '',
 			),
 			// Upgrade to LTS release
-			'test'       => array(
+			'test'      => array(
 				'version' => '',
 				'package' => '',
 				'infourl' => '',
@@ -432,7 +445,7 @@ class Joomla extends Extension
 			{
 				$sections[0] = 'installed';
 			}
-			elseif(version_compare($update['version'], $currentMinVersion, 'ge') && version_compare($update['version'], $currentMaxVersion, 'le'))
+			elseif (version_compare($update['version'], $currentMinVersion, 'ge') && version_compare($update['version'], $currentMaxVersion, 'le'))
 			{
 				$sections[0] = 'current';
 			}
@@ -455,7 +468,7 @@ class Joomla extends Extension
 					continue;
 				}
 
-				$existingVersionForSection = $ret[$section]['version'];
+				$existingVersionForSection = $ret[ $section ]['version'];
 
 				if (empty($existingVersionForSection))
 				{
@@ -464,9 +477,9 @@ class Joomla extends Extension
 
 				if (version_compare($update['version'], $existingVersionForSection, 'ge'))
 				{
-					$ret[$section]['version'] = $update['version'];
-					$ret[$section]['package'] = $update['downloads'][0]['url'];
-					$ret[$section]['infourl'] = $update['infourl']['url'];
+					$ret[ $section ]['version'] = $update['version'];
+					$ret[ $section ]['package'] = $update['downloads'][0]['url'];
+					$ret[ $section ]['infourl'] = $update['infourl']['url'];
 				}
 			}
 		}
