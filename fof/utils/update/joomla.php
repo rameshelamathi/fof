@@ -376,7 +376,8 @@ class F0FUtilsUpdateJoomla extends F0FUtilsUpdateExtension
 		$betaQualifierPosition  = strpos($test, 'beta-');
 		$betaQualifierPosition2 = strpos($test, '-beta');
 		$rcQualifierPosition    = strpos($test, 'rc-');
-		$rcQualifierPosition2   = strpos($test, 'rc');
+		$rcQualifierPosition2 = strpos($test, '-rc');
+		$rcQualifierPosition3 = strpos($test, 'rc');
 		$devQualifiedPosition   = strpos($test, 'dev');
 
 		if ($alphaQualifierPosition !== false)
@@ -419,12 +420,25 @@ class F0FUtilsUpdateJoomla extends F0FUtilsUpdateExtension
 		}
 		elseif ($rcQualifierPosition2 !== false)
 		{
-			$betaRevision = substr($test, $rcQualifierPosition2 + 5);
+			$betaRevision = substr($test, $rcQualifierPosition2 + 3);
+
 			if (!$betaRevision)
 			{
 				$betaRevision = 1;
 			}
+
 			$test = substr($test, 0, $rcQualifierPosition2) . '.rc' . $betaRevision;
+		}
+		elseif ($rcQualifierPosition3 !== false)
+		{
+			$betaRevision = substr($test, $rcQualifierPosition3 + 5);
+
+			if (!$betaRevision)
+			{
+				$betaRevision = 1;
+			}
+
+			$test = substr($test, 0, $rcQualifierPosition3) . '.rc' . $betaRevision;
 		}
 		elseif ($devQualifiedPosition !== false)
 		{
