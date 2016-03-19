@@ -30,5 +30,3 @@ release/*.zip
 /tests/coverage
 /tests/unit/config.php
 
-/DESCRIPTION.html
-/RELEASENOTES.html
