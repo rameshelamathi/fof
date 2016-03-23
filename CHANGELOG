@@ -1,3 +1,7 @@
+FOF 3.0.9
+================================================================================
++ Reset the APC cache, if enabled, before installing/updating an extension using an InstallScript script class.
+
 FOF 3.0.8
 ================================================================================
 + utf8mb4 support in schema installer under Joomla! 3.5+

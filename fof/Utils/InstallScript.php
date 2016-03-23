@@ -230,6 +230,11 @@ class InstallScript
 		{
 			opcache_reset();
 		}
+		// Also do that for APC cache
+		elseif (function_exists('apc_clear_cache'))
+		{
+			@apc_clear_cache();
+		}
 
 		// Workarounds for JInstaller issues.
 		if (in_array($type, array('install', 'discover_install')))
