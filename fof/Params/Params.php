@@ -84,7 +84,7 @@ class Params
 	 */
 	public function set($key, $value)
 	{
-		$this->setParams([$key => $value]);
+		$this->setParams(array($key => $value));
 	}
 
 	/**
