@@ -1,3 +1,7 @@
+FOF 2.5.x (Not scheduled for release)
+================================================================================
+# [HIGH] gh-593 Cannot use multiple behaviours under PHP 7
+
 FOF 2.5.4
 ================================================================================
 + utf8mb4 support in schema installer under Joomla! 3.5+
