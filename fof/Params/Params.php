@@ -46,9 +46,15 @@ class Params
 	 */
 	public function reload()
 	{
-		// Load the params once
-		JLoader::import('joomla.application.component.helper');
-		$this->params = JComponentHelper::getParams($this->container->componentName);
+		$db = $this->container->db;
+
+		$sql = $db->getQuery(true)
+				  ->select($db->qn('params'))
+				  ->from($db->qn('#__extensions'))
+				  ->where($db->qn('element') . " = " . $db->q($this->container->componentName));
+		$json = $db->setQuery($sql)->loadResult();
+
+		$this->params = new \Joomla\Registry\Registry($json);
 	}
 
 	/**
