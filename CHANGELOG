@@ -3,6 +3,7 @@ FOF 3.0.9
 + Improved detection and removal of duplicate update sites
 + Reset the APC cache, if enabled, before installing/updating an extension using an InstallScript script class.
 # [HIGH] Params won't work properly with Conservative caching
+# [MEDIUM] Config helper and installscript would fail in rare cases
 
 FOF 3.0.8
 ================================================================================

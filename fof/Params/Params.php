@@ -51,6 +51,7 @@ class Params
 		$sql = $db->getQuery(true)
 				  ->select($db->qn('params'))
 				  ->from($db->qn('#__extensions'))
+				  ->where($db->qn('type') . " = " . $db->q('component'))
 				  ->where($db->qn('element') . " = " . $db->q($this->container->componentName));
 		$json = $db->setQuery($sql)->loadResult();
 

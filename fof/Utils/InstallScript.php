@@ -460,6 +460,7 @@ class InstallScript
 		$query = $db->getQuery(true);
 		$query->select('extension_id')
 			->from('#__extensions')
+			->where($db->qn('type') . ' = ' . $db->q('component'))
 			->where($db->qn('element') . ' = ' . $db->q($this->componentName));
 		$db->setQuery($query);
 		$ids = $db->loadColumn();
@@ -526,6 +527,7 @@ class InstallScript
 		$query = $db->getQuery(true);
 		$query->select('extension_id')
 			->from('#__extensions')
+			->where($db->qn('type') . ' = ' . $db->q('component'))
 			->where($db->qn('element') . ' = ' . $db->q($this->componentName));
 		$db->setQuery($query);
 
@@ -811,6 +813,7 @@ class InstallScript
 			->join('LEFT', '#__extensions AS e ON m.component_id = e.extension_id')
 			->where('m.parent_id = 1')
 			->where('m.client_id = 1')
+			->where('e.type = ' . $db->quote('component'))
 			->where('e.element = ' . $db->quote($option));
 
 		$db->setQuery($query);
@@ -1118,6 +1121,7 @@ class InstallScript
 			->set($db->qn('published') . ' = ' . $db->q(1))
 			->where('m.parent_id = 1')
 			->where('m.client_id = 1')
+			->where('e.type = ' . $db->quote('component'))
 			->where('e.element = ' . $db->quote($option));
 
 		$db->setQuery($query);
@@ -1485,6 +1489,7 @@ class InstallScript
 		$query = $db->getQuery(true);
 		$query->select('extension_id')
 			->from('#__extensions')
+			->where($db->qn('type') . ' = ' . $db->q('component'))
 			->where($db->qn('element') . ' = ' . $db->q($this->componentName));
 		$db->setQuery($query);
 
@@ -1530,6 +1535,7 @@ class InstallScript
 		$query = $db->getQuery(true);
 		$query->select('extension_id')
 			->from('#__extensions')
+			->where($db->qn('type') . ' = ' . $db->q('component'))
 			->where($db->qn('element') . ' = ' . $db->q($this->componentName));
 		$db->setQuery($query);
 
