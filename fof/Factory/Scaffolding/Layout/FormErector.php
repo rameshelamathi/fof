@@ -327,6 +327,10 @@ class FormErector extends BaseErector implements ErectorInterface
 					$this->applyIntegerField($model, $fieldSet, $fieldName);
 					break;
 
+				case 'Numeric':
+					$this->applyNumericField($model, $fieldSet, $fieldName);
+					break;
+
 				case 'GenericList':
 					$this->applyGenericListField($model, $fieldSet, $fieldName, $typeDef['params']);
 					break;
@@ -403,6 +407,11 @@ class FormErector extends BaseErector implements ErectorInterface
 	private function applyIntegerField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
 	{
 		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'Text');
+	}
+
+	private function applyNumericField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
+	{
+		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'Numeric');
 	}
 
 	private function applyMediaField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)

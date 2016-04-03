@@ -99,6 +99,11 @@ class Text extends \JFormFieldText implements FieldInterface
 	 */
 	public function getStatic()
 	{
+		if (is_array($this->value))
+		{
+			$this->value = empty($this->value) ? '' : print_r($this->value, true);
+		}
+
 		if (isset($this->element['legacy']))
 		{
 			return $this->getInput();
@@ -128,6 +133,11 @@ class Text extends \JFormFieldText implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
+		if (is_array($this->value))
+		{
+			$this->value = print_r($this->value, true);
+		}
+
 		if (isset($this->element['legacy']))
 		{
 			return $this->getInput();

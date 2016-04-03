@@ -282,6 +282,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 
 			// Other fields, use getFieldType
 			$typeDef = $this->getFieldType($fieldDefinition->Type);
+
 			switch ($typeDef['type'])
 			{
 				case 'Text':
@@ -302,6 +303,10 @@ class BrowseErector extends BaseErector implements ErectorInterface
 
 				case 'Integer':
 					$this->applyIntegerField($model, $headerSet, $fieldSet, $fieldName);
+					break;
+
+				case 'Numeric':
+					$this->applyNumericField($model, $headerSet, $fieldSet, $fieldName);
 					break;
 
 				case 'GenericList':
@@ -468,6 +473,13 @@ class BrowseErector extends BaseErector implements ErectorInterface
 	private function applyIntegerField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName)
 	{
 		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Searchable', 'Integer', array(
+			'sortable' => 'true'
+		));
+	}
+
+	private function applyNumericField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName)
+	{
+		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Searchable', 'Numeric', array(
 			'sortable' => 'true'
 		));
 	}

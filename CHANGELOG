@@ -1,3 +1,7 @@
+FOF 3.0.10
+================================================================================
+~ gh-594 Use the correct numeric field types in scaffolding
+
 FOF 3.0.9
 ================================================================================
 + Improved detection and removal of duplicate update sites
