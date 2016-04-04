@@ -344,7 +344,6 @@ class BrowseErector extends BaseErector implements ErectorInterface
 		$field = $fieldSet->addChild('field');
 		$field->addAttribute('name', $fieldName);
 		$field->addAttribute('type', 'Ordering');
-		$field->addAttribute('label', $langDefs['label']['key']);
 		$field->addAttribute('class', 'input-mini input-sm');
 
 		unset($allFields[$fieldName]);
@@ -376,7 +375,6 @@ class BrowseErector extends BaseErector implements ErectorInterface
 		$field = $fieldSet->addChild('field');
 		$field->addAttribute('name', $keyField);
 		$field->addAttribute('type', 'SelectRow');
-		$field->addAttribute('label', $langDefs['label']['key']);
 
 		unset($allFields[$keyField]);
 	}
@@ -403,7 +401,6 @@ class BrowseErector extends BaseErector implements ErectorInterface
 		$field = $fieldSet->addChild('field');
 		$field->addAttribute('name', $fieldName);
 		$field->addAttribute('type', $fieldTypeField);
-		$field->addAttribute('label', $langDefs['label']['key']);
 	}
 
 	/**
@@ -595,7 +592,6 @@ class BrowseErector extends BaseErector implements ErectorInterface
 		$field = $fieldSet->addChild('field');
 		$field->addAttribute('name', $fieldName);
 		$field->addAttribute('type', 'Sortable');
-		$field->addAttribute('label', $langDefs['label']['key']);
 		$field->addAttribute('url', 'index.php?option=' .
 			$this->builder->getContainer()->componentName . '&view=' . $this->model->getContainer()->inflector->singularize($this->viewName) . '&id=[ITEM:ID]&[TOKEN]=1'
 		);
@@ -635,7 +631,6 @@ class BrowseErector extends BaseErector implements ErectorInterface
 		$field->addAttribute('model', $modelName);
 		$field->addAttribute('key_field', $foreignModel->getKeyName());
 		$field->addAttribute('value_field', $value_field);
-		$field->addAttribute('label', $langDefs['label']['key']);
 	}
 
 	private function applyGenericListField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName, $options)
@@ -668,7 +663,6 @@ class BrowseErector extends BaseErector implements ErectorInterface
 		$field = $fieldSet->addChild('field');
 		$field->addAttribute('name', $fieldName);
 		$field->addAttribute('type', 'GenericList');
-		$field->addAttribute('label', $langDefs['label']['key']);
 
 		foreach ($displayOptions as $k => $v)
 		{
