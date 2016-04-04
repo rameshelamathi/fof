@@ -114,7 +114,7 @@ class BaseErector implements ErectorInterface
 
 		$definition = array(
 			'label' => array(
-				'key' => $this->getLangKeyPrefix() . $fieldNameForKey . '_LBL',
+				'key' => $this->getLangKeyPrefix() . $fieldNameForKey . '_LABEL',
 				'value' => ucfirst($fieldName),
 			),
 			'desc' => array(
