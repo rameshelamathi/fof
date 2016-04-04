@@ -182,10 +182,10 @@ abstract class Command
     protected function getComponent($composer)
     {
         // We do have a composer file, so we can start working
-        $composer->extra = $composer->extra ? $composer->extra : array('fof' => array());
-        $composer->extra->fof = $composer->extra->fof ? $composer->extra->fof : array();
+        $composer->extra = isset($composer->extra) ? $composer->extra : (object) array('fof' => array());
+        $composer->extra->fof = isset($composer->extra->fof) ? $composer->extra->fof : array();
 
-        $component = $composer->extra->fof->name;
+        $component = isset($composer->extra->fof->name) ? $composer->extra->fof->name : null;
 
         return $component;
     }

@@ -24,6 +24,7 @@ class Help extends Command
         $this->out("fof generate --name <viewName> --view [--frontend]: Generate the view for the <viewName> view");
         $this->out("fof generate --name <viewName> --layout [--frontend]: Generate the all the 3 layout files (default, item, form) for the <viewName> view");
         $this->out("fof generate --name <viewName> --layout item [--frontend]: Generate the all the item layout file for the <viewName> view");
+		$this->out("fof generate --name <viewName> --mvc [--frontend]: Generate the MVC for the <viewName> view");
 		$this->out(str_repeat('-', 79));
 		$this->out("");
 	}
