@@ -489,6 +489,17 @@ class Blade implements CompilerInterface
 	}
 
 	/**
+	 * Compile the token statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileToken($expression)
+	{
+		return "<?php echo \\JFactory::getSession()->getFormToken(); ?>";
+	}
+
+	/**
 	 * Compile the else statements into valid PHP.
 	 *
 	 * @param  string  $expression
