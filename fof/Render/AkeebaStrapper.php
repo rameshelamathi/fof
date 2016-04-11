@@ -580,10 +580,10 @@ HTML;
 		}
         else
         {
-            // If I don't want to display the sidebar, I have to manually tell Joomla that I don't want it
+            // If I don't want to display the sidebar, I have to manually tell Joomla that I I already loaded it
             // otherwise it will create the "empty" space on the left, but no elements will be there. Yuk!
             $js = <<<JS
-localStorage('jsidebar', false);
+localStorage.setItem('jsidebar', "true");
 JS;
             $document = $this->container->platform->getDocument();
 
