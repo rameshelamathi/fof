@@ -700,13 +700,9 @@ class View
 
 		$extraPaths = array();
 
-		if (isset($this->_path) || property_exists($this, '_path'))
+		if (isset($this->templatePaths) || property_exists($this, 'templatePaths'))
 		{
-			$extraPaths = $this->_path['template'];
-		}
-		elseif (isset($this->path) || property_exists($this, 'path'))
-		{
-			$extraPaths = $this->path['template'];
+			$extraPaths = templatePaths;
 		}
 
 		// First get the raw view template path
