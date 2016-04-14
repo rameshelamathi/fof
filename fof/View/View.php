@@ -702,7 +702,7 @@ class View
 
 		if (isset($this->templatePaths) || property_exists($this, 'templatePaths'))
 		{
-			$extraPaths = templatePaths;
+			$extraPaths = $this->templatePaths;
 		}
 
 		// First get the raw view template path
