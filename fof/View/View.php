@@ -700,7 +700,7 @@ class View
 
 		$extraPaths = array();
 
-		if (isset($this->templatePaths) || property_exists($this, 'templatePaths'))
+		if (!empty($this->templatePaths))
 		{
 			$extraPaths = $this->templatePaths;
 		}
