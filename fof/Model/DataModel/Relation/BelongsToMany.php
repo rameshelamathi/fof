@@ -323,6 +323,14 @@ class BelongsToMany extends Relation
 		// Save all related items
 		parent::saveAll();
 
+		$this->saveRelations();
+	}
+
+	/**
+	 * Overwrite the pivot table data with the new associations
+	 */
+	public function saveRelations()
+	{
 		// Get all the new keys
 		$newKeys = array();
 

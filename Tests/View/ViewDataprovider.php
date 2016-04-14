@@ -687,6 +687,8 @@ class ViewDataprovider
 
     public static function getTestLoadAnyTemplate()
     {
+        global $fofTestConfig;
+
         $data[] = array(
             array(
                 'uri'         => 'admin:com_fakeapp/foobar/default',
@@ -698,15 +700,17 @@ class ViewDataprovider
                         'type'    => 'raw',
                         'content' => 'test'
                     ),
-                    'path'      => '',
-                    '_path'     => ''
+                    'templatePaths'      => '',
                 )
             ),
             array(
                 'case' => 'No callback, no alias, raw engine',
                 'result' => 'test',
                 'uri' => 'admin:com_fakeapp/foobar/default',
-                'extra' => array()
+                'extra' => array(
+                    $fofTestConfig['site_root'] . '/templates/fake_test_template/html/com_fakeapp/nestedset/',
+                    $fofTestConfig['site_root'] . '/components/com_fakeapp/View/Nestedset/tmpl/',
+                )
             )
         );
 
@@ -721,15 +725,17 @@ class ViewDataprovider
                         'type'    => 'raw',
                         'content' => 'test'
                     ),
-                    'path'      => array('template' => 'extra/path'),
-                    '_path'     => ''
+                    'templatePaths'      => 'extra/path',
                 )
             ),
             array(
                 'case' => 'Using extra paths - 1',
                 'result' => 'test',
                 'uri' => 'admin:com_fakeapp/foobar/default',
-                'extra' => 'extra/path'
+                'extra' => array(
+                    $fofTestConfig['site_root'] . '/templates/fake_test_template/html/com_fakeapp/nestedset/',
+                    'extra/path/'
+                )
             )
         );
 
@@ -744,15 +750,17 @@ class ViewDataprovider
                         'type'    => 'raw',
                         'content' => 'test'
                     ),
-                    'path'      => '',
-                    '_path'     => array('template' => 'extra/path2')
+                    'templatePaths'     => 'extra/path2'
                 )
             ),
             array(
                 'case' => 'Using extra paths - 2',
                 'result' => 'test',
                 'uri' => 'admin:com_fakeapp/foobar/default',
-                'extra' => 'extra/path2'
+                'extra' => array(
+                    $fofTestConfig['site_root'] . '/templates/fake_test_template/html/com_fakeapp/nestedset/',
+                    'extra/path2/'
+                )
             )
         );
 
@@ -771,15 +779,17 @@ class ViewDataprovider
                         'type'    => 'raw',
                         'content' => 'test'
                     ),
-                    'path'      => '',
-                    '_path'     => ''
+                    'templatePaths'      => '',
                 )
             ),
             array(
                 'case' => 'Using URI alias and callback',
                 'result' => 'callback',
                 'uri' => 'admin:com_fakeapp/alias/default',
-                'extra' => array()
+                'extra' => array(
+                    $fofTestConfig['site_root'] . '/templates/fake_test_template/html/com_fakeapp/nestedset/',
+                    $fofTestConfig['site_root'] . '/components/com_fakeapp/View/Nestedset/tmpl/',
+                )
             )
         );
 
@@ -794,15 +804,17 @@ class ViewDataprovider
                         'type'    => '.php',
                         'content' => 'raw|test'
                     ),
-                    'path'      => '',
-                    '_path'     => ''
+                    'templatePaths'      => '',
                 )
             ),
             array(
                 'case' => 'Using layout file with raw data',
                 'result' => 'test',
                 'uri' => 'admin:com_fakeapp/foobar/default',
-                'extra' => array()
+                'extra' => array(
+                    $fofTestConfig['site_root'] . '/templates/fake_test_template/html/com_fakeapp/nestedset/',
+                    $fofTestConfig['site_root'] . '/components/com_fakeapp/View/Nestedset/tmpl/',
+                )
             )
         );
 
@@ -817,15 +829,17 @@ class ViewDataprovider
                         'type'    => '.php',
                         'content' => JPATH_TESTS.'/Stubs/Fakeapp/Admin/View/Foobar/tmpl/default.php'
                     ),
-                    'path'      => '',
-                    '_path'     => ''
+                    'templatePaths'      => '',
                 )
             ),
             array(
                 'case' => 'Actually including a layout file',
                 'result' => 'Layout text',
                 'uri' => 'admin:com_fakeapp/foobar/default',
-                'extra' => array()
+                'extra' => array(
+                    $fofTestConfig['site_root'] . '/templates/fake_test_template/html/com_fakeapp/nestedset/',
+                    $fofTestConfig['site_root'] . '/components/com_fakeapp/View/Nestedset/tmpl/',
+                )
             )
         );
 

@@ -578,6 +578,20 @@ HTML;
 				$this->container->inflector->pluralize($form->getView()->getName())
 			);
 		}
+        else
+        {
+            // If I don't want to display the sidebar, I have to manually tell Joomla that I I already loaded it
+            // otherwise it will create the "empty" space on the left, but no elements will be there. Yuk!
+            $js = <<<JS
+localStorage.setItem('jsidebar', "true");
+JS;
+            $document = $this->container->platform->getDocument();
+
+            if ($document instanceof \JDocument)
+            {
+                $document->addScriptDeclaration($js);
+            }
+        }
 
 		// Reorder the fields with ordering first
 		$tmpFields = array();
