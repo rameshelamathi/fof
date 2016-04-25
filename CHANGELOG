@@ -2,6 +2,7 @@ FOF 3.0.10
 ================================================================================
 ~ gh-594 Use the correct numeric field types in scaffolding
 + Blade: @token to get Joomla!'s form token
+# [HIGH] Passing $section in Container::getInstance had practically no effect
 
 FOF 3.0.9
 ================================================================================
