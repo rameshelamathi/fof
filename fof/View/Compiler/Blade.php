@@ -826,6 +826,18 @@ class Blade implements CompilerInterface
 	}
 
 	/**
+	 * Compile the editor statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileEditor($expression)
+	{
+		return '<?php JEditor::getInstance($this->container->platform->getConfig()->get(\'editor\', \'tinymce\'))'.
+		       '->display(' . $expression . ') ?>';
+	}
+
+	/**
 	 * Register a custom Blade compiler.
 	 *
 	 * @param  callable  $compiler
