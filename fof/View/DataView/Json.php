@@ -156,7 +156,14 @@ class Json extends Raw implements DataViewInterface
                     }
                 }
 
-				$json = json_encode($result);
+				if (version_compare(PHP_VERSION, '5.4', 'ge'))
+				{
+					$json = json_encode($result, JSON_PRETTY_PRINT);
+				}
+				else
+				{
+					$json = json_encode($result);
+				}
 			}
 
 			// JSONP support
@@ -268,12 +275,21 @@ class Json extends Raw implements DataViewInterface
 			{
                 if (is_object($this->item) && method_exists($this->item, 'toArray'))
                 {
-                    $json = json_encode($this->item->toArray());
+                    $data = $this->item->toArray();
                 }
                 else
                 {
-                    $json = json_encode($this->item);
+                    $data = $this->item;
                 }
+
+				if (version_compare(PHP_VERSION, '5.4', 'ge'))
+				{
+					$json = json_encode($data, JSON_PRETTY_PRINT);
+				}
+				else
+				{
+					$json = json_encode($data);
+				}
 
 			}
 
@@ -298,7 +314,7 @@ class Json extends Raw implements DataViewInterface
 			echo $result;
 		}
 	}
-	
+
 	/**
 	 * Creates a \FOF30\Hal\Document using the provided data
 	 *
