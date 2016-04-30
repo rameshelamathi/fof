@@ -74,7 +74,7 @@ trait ViewAliases
 			&& (strtoupper($_SERVER['REQUEST_METHOD']) == 'GET')
 		)
 		{
-			$url = new JUri();
+			$url = JUri::getInstance();
 			$url->setVar('view', $this->view);
 			JFactory::getApplication()->redirect($url, 301);
 		}
