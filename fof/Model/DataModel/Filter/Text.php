@@ -64,6 +64,16 @@ class Text extends AbstractFilter
 		{
 			return '';
 		}
+		
+		if (is_array($value) || is_object($value))
+		{
+			settype($value, 'array');
+			
+			$db    = $this->db;
+			$value = array_map(array($db, 'quote'), $value);
+
+			return '(' . $this->getFieldName() . ' IN (' . implode(',', $value) . '))';
+		}
 
 		return '(' . $this->getFieldName() . ' LIKE ' . $this->db->quote($value) . ')';
 	}
