@@ -219,6 +219,33 @@ abstract class AbstractFilter
 	abstract public function interval($from, $interval);
 
 	/**
+	 * Perform a between limits match (usually: search for a value between
+	 * two numbers or a date between two preset dates). When $include is true
+	 * the condition tested is:
+	 * $from <= VALUE <= $to
+	 * When $include is false the condition tested is:
+	 * $from < VALUE < $to
+	 *
+	 * @param   mixed    $from     The lowest value to compare to
+	 * @param   mixed    $to       The higherst value to compare to
+	 * @param   boolean  $include  Should we include the boundaries in the search?
+	 *
+	 * @return  string  The SQL where clause for this search
+	 */
+	abstract public function range($from, $to, $include = true);
+
+	/**
+	 * Perform an modulo search
+	 *
+	 * @param   integer|float  $from      The starting value of the search space
+	 * @param   integer|float  $interval  The interval period of the search space
+	 * @param   boolean        $include   Should I include the boundaries in the search?
+	 *
+	 * @return  string  The SQL where clause
+	 */
+	abstract public function modulo($from, $interval, $include = true);
+
+	/**
 	 * Return the SQL where clause for a search
 	 *
 	 * @param   mixed   $value     The value to search for
