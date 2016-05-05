@@ -134,6 +134,49 @@ class Date extends Text
 	}
 
 	/**
+	 * Perform a between limits match. When $include is true
+	 * the condition tested is:
+	 * $from <= VALUE <= $to
+	 * When $include is false the condition tested is:
+	 * $from < VALUE < $to
+	 *
+	 * @param   mixed    $from     The lowest value to compare to
+	 * @param   mixed    $to       The higherst value to compare to
+	 * @param   boolean  $include  Should we include the boundaries in the search?
+	 *
+	 * @return  string  The SQL where clause for this search
+	 */
+	public function range($from, $to, $include = true)
+	{
+		if ($this->isEmpty($from) && $this->isEmpty($to))
+		{
+			return '';
+		}
+
+		$extra = '';
+
+		if ($include)
+		{
+			$extra = '=';
+		}
+
+		$sql = array();
+
+		if ($from)
+		{
+			$sql[] = '(' . $this->getFieldName() . ' >' . $extra . ' ' . $this->db->q($from) . ')';
+		}
+		if ($to)
+		{
+			$sql[] = '(' . $this->getFieldName() . ' <' . $extra . ' ' . $this->db->q($to) . ')';
+		}
+
+		$sql = '(' . implode(' AND ', $sql) . ')';
+
+		return $sql;
+	}
+
+	/**
 	 * Parses an interval –which may be given as a string, array or object– into
 	 * a standardised hash array that can then be used bu the interval() method.
 	 *

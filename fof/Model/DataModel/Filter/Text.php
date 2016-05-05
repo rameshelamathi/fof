@@ -119,4 +119,32 @@ class Text extends AbstractFilter
 	{
 		return '';
 	}
+
+	/**
+	 * Dummy method; this search makes no sense for text fields
+	 *
+	 * @param   mixed    $from     Ignored
+	 * @param   mixed    $to       Ignored
+	 * @param   boolean  $include  Ignored
+	 *
+	 * @return  string  Empty string
+	 */
+	public function range($from, $to, $include = false)
+	{
+		return '';
+	}
+
+	/**
+	 * Dummy method; this search makes no sense for text fields
+	 *
+	 * @param   mixed    $from     Ignored
+	 * @param   mixed    $interval Ignored
+	 * @param   boolean  $include  Ignored
+	 *
+	 * @return  string  Empty string
+	 */
+	public function modulo($from, $interval, $include = false)
+	{
+		return '';
+	}
 } 
