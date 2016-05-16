@@ -26,6 +26,7 @@ release/*.zip
 /strapper/akeeba_strapper/version.php
 /strapper/files_strapper.xml
 /strapper/version.txt
+/strapper/akeeba_strapper/version.txt
 
 /tests/coverage
 /tests/unit/config.php
