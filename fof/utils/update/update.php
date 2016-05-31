@@ -1163,7 +1163,14 @@ ENDBLOCK;
 	 */
 	public function doSendNotificationEmail($version, $email)
 	{
-		return $this->sendNotificationEmail($version, $email);
+		try
+		{
+			return $this->sendNotificationEmail($version, $email);
+		}
+		catch (\Exception $e)
+		{
+			// Joomla! 3.5 is buggy
+		}
 	}
 
 	/**
