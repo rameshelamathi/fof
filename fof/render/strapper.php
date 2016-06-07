@@ -453,7 +453,7 @@ JS;
 			return;
 		}
 
-		$bar	 = JToolBar::getInstance('toolbar');
+		$bar	 = JToolbar::getInstance('toolbar');
 		$items	 = $bar->getItems();
 
 		$substitutions = array(

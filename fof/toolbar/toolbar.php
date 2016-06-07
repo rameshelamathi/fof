@@ -345,8 +345,8 @@ class F0FToolbar
 
 		$option = $this->input->getCmd('option', 'com_foobar');
 
-		JToolBarHelper::title(JText::_(strtoupper($option)), str_replace('com_', '', $option));
-		JToolBarHelper::preferences($option, 550, 875);
+		JToolbarHelper::title(JText::_(strtoupper($option)), str_replace('com_', '', $option));
+		JToolbarHelper::preferences($option, 550, 875);
 	}
 
 	/**
@@ -370,18 +370,18 @@ class F0FToolbar
 		// Set toolbar title
 		$option = $this->input->getCmd('option', 'com_foobar');
 		$subtitle_key = strtoupper($option . '_TITLE_' . $this->input->getCmd('view', 'cpanel'));
-		JToolBarHelper::title(JText::_(strtoupper($option)) . ': ' . JText::_($subtitle_key), str_replace('com_', '', $option));
+		JToolbarHelper::title(JText::_(strtoupper($option)) . ': ' . JText::_($subtitle_key), str_replace('com_', '', $option));
 
 		// Add toolbar buttons
 		if ($this->perms->create)
 		{
 			if (version_compare(JVERSION, '3.0', 'ge'))
 			{
-				JToolBarHelper::addNew();
+				JToolbarHelper::addNew();
 			}
 			else
 			{
-				JToolBarHelper::addNewX();
+				JToolbarHelper::addNewX();
 			}
 		}
 
@@ -389,30 +389,30 @@ class F0FToolbar
 		{
 			if (version_compare(JVERSION, '3.0', 'ge'))
 			{
-				JToolBarHelper::editList();
+				JToolbarHelper::editList();
 			}
 			else
 			{
-				JToolBarHelper::editListX();
+				JToolbarHelper::editListX();
 			}
 		}
 
 		if ($this->perms->create || $this->perms->edit)
 		{
-			JToolBarHelper::divider();
+			JToolbarHelper::divider();
 		}
 
 		if ($this->perms->editstate)
 		{
-			JToolBarHelper::publishList();
-			JToolBarHelper::unpublishList();
-			JToolBarHelper::divider();
+			JToolbarHelper::publishList();
+			JToolbarHelper::unpublishList();
+			JToolbarHelper::divider();
 		}
 
 		if ($this->perms->delete)
 		{
 			$msg = JText::_($this->input->getCmd('option', 'com_foobar') . '_CONFIRM_DELETE');
-			JToolBarHelper::deleteList(strtoupper($msg));
+			JToolbarHelper::deleteList(strtoupper($msg));
 		}
 	}
 
@@ -439,10 +439,10 @@ class F0FToolbar
 
 		// Set toolbar title
 		$subtitle_key = strtoupper($option . '_TITLE_' . $this->input->getCmd('view', 'cpanel') . '_READ');
-		JToolBarHelper::title(JText::_(strtoupper($option)) . ': ' . JText::_($subtitle_key), $componentName);
+		JToolbarHelper::title(JText::_(strtoupper($option)) . ': ' . JText::_($subtitle_key), $componentName);
 
 		// Set toolbar icons
-		JToolBarHelper::back();
+		JToolbarHelper::back();
 	}
 
 	/**
@@ -463,24 +463,24 @@ class F0FToolbar
 
 		// Set toolbar title
 		$subtitle_key = strtoupper($option . '_TITLE_' . F0FInflector::pluralize($this->input->getCmd('view', 'cpanel'))) . '_EDIT';
-		JToolBarHelper::title(JText::_(strtoupper($option)) . ': ' . JText::_($subtitle_key), $componentName);
+		JToolbarHelper::title(JText::_(strtoupper($option)) . ': ' . JText::_($subtitle_key), $componentName);
 
 		// Set toolbar icons
         if ($this->perms->edit || $this->perms->editown)
         {
             // Show the apply button only if I can edit the record, otherwise I'll return to the edit form and get a
             // 403 error since I can't do that
-            JToolBarHelper::apply();
+            JToolbarHelper::apply();
         }
 
-		JToolBarHelper::save();
+		JToolbarHelper::save();
 
 		if ($this->perms->create)
 		{
-			JToolBarHelper::custom('savenew', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
+			JToolbarHelper::custom('savenew', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
 		}
 
-		JToolBarHelper::cancel();
+		JToolbarHelper::cancel();
 	}
 
 	/**
