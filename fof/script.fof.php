@@ -14,7 +14,7 @@ class lib_fof30InstallerScript
 	 *
 	 * @var   string
 	 */
-	protected $minimumPHPVersion = '5.3.4';
+	protected $minimumPHPVersion = '5.3.3';
 
 	/**
 	 * The minimum Joomla! version required to install this extension
