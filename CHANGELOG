@@ -1,6 +1,7 @@
 FOF 3.0.11
 ================================================================================
 ~ Changing the #__akeeba_common table schema
+~ Workaround for sites with upper- or mixed-case prefixes / table names on MySQL servers running on case-insensitive filesystems and lower_case_table_names = 1 (default on Windows)
 
 FOF 3.0.10
 ================================================================================
