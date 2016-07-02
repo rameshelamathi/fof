@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -23,6 +23,8 @@ defined('_JEXEC') or die;
  */
 class Language extends \JFormFieldLanguage implements FieldInterface
 {
+    protected static $cachedOptions = array();
+
 	/**
 	 * @var  string  Static field output
 	 */
@@ -99,7 +101,19 @@ class Language extends \JFormFieldLanguage implements FieldInterface
 	 */
 	protected function getOptions()
 	{
-		$options = parent::getOptions();
+		$client = (string) $this->element['client'];
+
+		if ($client != 'site' && $client != 'administrator')
+		{
+			$client = 'site';
+		}
+
+		if (!isset(static::$cachedOptions[$client]))
+		{
+			static::$cachedOptions[$client] = parent::getOptions();
+		}
+
+		$options = array_merge(static::$cachedOptions[$client]);
 
 		$noneoption = $this->element['none'] ? $this->element['none'] : null;
 

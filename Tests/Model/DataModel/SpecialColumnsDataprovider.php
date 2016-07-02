@@ -1,4 +1,9 @@
 <?php
+/**
+ * @package     FOF
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
+ */
 
 class SpecialColumnsDataprovider
 {
@@ -7,12 +12,12 @@ class SpecialColumnsDataprovider
         $data[] = array(
             array(
                 'mock' => array(
-                    'ordering' => array(1 => 1, 2 => 2, 3 => 3, 4 => 4)
+                    'ordering' => array(1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5)
                 ),
                 'where' => ''
             ),
             array(
-                'case' => 'Records are have the same ordering as the id',
+                'case' => 'Records have the same ordering as their ID',
                 'order' => array(1, 2, 3, 4, 5)
             )
         );
@@ -20,12 +25,12 @@ class SpecialColumnsDataprovider
         $data[] = array(
             array(
                 'mock' => array(
-                    'ordering' => array(1 => 4, 2 => 3, 3 => 2, 4 => 1)
+                    'ordering' => array(1 => 4, 2 => 3, 3 => 2, 4 => 1, 5 => 5)
                 ),
                 'where' => ''
             ),
             array(
-                'case' => 'Records in "reversed" order',
+                'case' => 'Records are in reverse order to their IDs',
                 'order' => array(4, 3, 2, 1, 5)
             )
         );
@@ -33,12 +38,12 @@ class SpecialColumnsDataprovider
         $data[] = array(
             array(
                 'mock' => array(
-                    'ordering' => array(1 => 1, 2 => 3, 3 => 2, 4 => 1)
+                    'ordering' => array(1 => 1, 2 => 3, 3 => 2, 4 => 1, 5 => 5)
                 ),
                 'where' => ''
             ),
             array(
-                'case' => 'Records with same order value',
+                'case' => 'Two records have the same order value',
                 'order' => array(1, 4, 3, 2, 5)
             )
         );
@@ -46,13 +51,13 @@ class SpecialColumnsDataprovider
         $data[] = array(
             array(
                 'mock' => array(
-                    'ordering' => array(1 => 0, 2 => 0, 3 => 0, 4 => 0)
+                    'ordering' => array(1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0)
                 ),
                 'where' => ''
             ),
             array(
-                'case' => 'Records with no ordering',
-                'order' => array(1, 3, 2, 4, 5)
+                'case' => 'All records have no ordering (0)',
+                'order' => array(1, 2, 3, 4, 5)
             )
         );
 
@@ -64,7 +69,7 @@ class SpecialColumnsDataprovider
                 'where' => ''
             ),
             array(
-                'case' => 'Records with non sequential order',
+                'case' => 'Records in mixed (non-sequential) order respective to their IDs',
                 'order' => array(1, 2, 5, 4, 3)
             )
         );
@@ -77,7 +82,7 @@ class SpecialColumnsDataprovider
                 'where' => 'foftest_foobar_id IN(2, 3)'
             ),
             array(
-                'case' => 'Applying a reorder where',
+                'case' => 'Applying a reorder WHERE clause',
                 'order' => array(1, 1, 2, 4, 5)
             )
         );

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -489,6 +489,17 @@ class Blade implements CompilerInterface
 	}
 
 	/**
+	 * Compile the token statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileToken($expression)
+	{
+		return "<?php echo \\JFactory::getSession()->getFormToken(); ?>";
+	}
+
+	/**
 	 * Compile the else statements into valid PHP.
 	 *
 	 * @param  string  $expression
@@ -812,6 +823,18 @@ class Blade implements CompilerInterface
 	protected function compileModule($expression)
 	{
 		return "<?php echo \$this->container->template->loadModule{$expression}; ?>";
+	}
+
+	/**
+	 * Compile the editor statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileEditor($expression)
+	{
+		return '<?php echo JEditor::getInstance($this->container->platform->getConfig()->get(\'editor\', \'tinymce\'))'.
+		       '->display' . $expression . '; ?>';
 	}
 
 	/**

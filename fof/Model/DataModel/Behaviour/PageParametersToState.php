@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -20,7 +20,7 @@ defined('_JEXEC') or die;
  */
 class PageParametersToState extends Observer
 {
-	function onAfterConstruct(DataModel &$model)
+	public function onAfterConstruct(DataModel &$model)
 	{
 		// This only applies to the front-end
 		if (!$model->getContainer()->platform->isFrontend())
@@ -53,7 +53,7 @@ class PageParametersToState extends Observer
 			$explicitInput = $model->input->get($key, null, 'raw');
 
 			// If the current state is empty and there's no explicit input we'll use the page parameters instead
-			if (empty($currentState) && is_null($explicitInput))
+			if (is_null($currentState) && is_null($explicitInput))
 			{
 				$model->setState($key, $params->get($key));
 			}

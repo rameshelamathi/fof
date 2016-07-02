@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -10,6 +10,7 @@ namespace FOF30\Form\Field;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
+use FOF30\Utils\StringHelper;
 use \JText;
 
 defined('_JEXEC') or die;
@@ -38,42 +39,6 @@ class Button extends Text implements FieldInterface
 	 * @var    Form
 	 */
 	protected $form;
-
-	/**
-	 * Method to get certain otherwise inaccessible properties from the form field object.
-	 *
-	 * @param   string  $name  The property name for which to the the value.
-	 *
-	 * @return  mixed  The property value or null.
-	 *
-	 * @since   2.0
-	 */
-	public function __get($name)
-	{
-		switch ($name)
-		{
-			case 'static':
-				if (empty($this->static))
-				{
-					$this->static = $this->getStatic();
-				}
-
-				return $this->static;
-				break;
-
-			case 'repeatable':
-				if (empty($this->repeatable))
-				{
-					$this->repeatable = $this->getRepeatable();
-				}
-
-				return $this->repeatable;
-				break;
-
-			default:
-				return parent::__get($name);
-		}
-	}
 
 	/**
 	 * Get the rendering of this field type for static display, e.g. in a single
@@ -116,28 +81,38 @@ class Button extends Text implements FieldInterface
 		$allowedElement = array('button', 'a');
 
 		if (in_array($this->element['htmlelement'], $allowedElement))
-			$type = $this->element['htmlelement'];
+        {
+            $type = $this->element['htmlelement'];
+        }
 		else
-			$type = 'button';
+        {
+            $type = 'button';
+        }
 
 		$text     = $this->element['text'] ? (string) $this->element['text'] : '';
 		$class    = $this->class ? $this->class : '';
 		$icon     = $this->element['icon'] ? '<span class="icon ' . (string) $this->element['icon'] . '"></span> ' : '';
-		$onclick  = $this->onclick ? 'onclick="' . $this->onclick . '"' : '';
-		$url      = $this->element['url'] ? 'href="' . $this->parseFieldTags((string) $this->element['url']) . '"' : '';
-		$title    = $this->element['title'] ? 'title="' . JText::_((string) $this->element['title']) . '"' : '';
-		$useValue = in_array((string) $this->element['use_value'], array('true', '1', 'on', 'yes'));
 
-		if (!$useValue)
+		if ($this->element['listItemTask'])
+        {
+            $this->onclick = "listItemTask('cb" . $this->item->getId() . "', '" . (string)$this->element['listItemTask'] . "')";
+        }
+
+		$onclick  = $this->onclick ? 'onclick="' . $this->onclick . '" ' : '';
+		$url      = $this->element['url'] ? 'href="' . $this->parseFieldTags((string) $this->element['url']) . '" ' : '';
+		$title    = $this->element['title'] ? 'title="' . JText::_((string) $this->element['title']) . '" ' : '';
+        $useValue = StringHelper::toBool((string) $this->element['use_value']);
+
+        if (!$useValue)
 		{
 			$this->value = JText::_($text);
 		}
 
-		return '<' . $type . ' id="' . $this->id . '" class="btn ' . $class . '" ' .
-			$onclick . $url . $title . '>' .
-			$icon .
-			htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') .
-			'</' . $type . '>';
+        $html  = '<' . $type . ' id="' . $this->id . '" class="btn ' . $class . '" ' . $onclick . $url . $title . '>';
+        $html .= $icon . htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
+        $html .= '</' . $type . '>';
+
+		return $html;
 	}
 
 	/**

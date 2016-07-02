@@ -1,14 +1,13 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
 namespace FOF30\Tests\Helpers;
 
 use FOF30\Container\Container;
-use FOF30\Tests\Helpers\TestJoomlaPlatform;
 
 /**
  * A specialised container for use in Unit Testing

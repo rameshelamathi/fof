@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -145,13 +145,13 @@ class Checkbox extends \JFormFieldCheckbox implements FieldInterface
 		$class = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
 
 		$value     = $this->element['value'] ? (string) $this->element['value'] : '1';
-		$disabled  = $this->disabled ? ' disabled="disabled"' : '';
-		$required  = $this->required ? ' required="required" aria-required="true"' : '';
+		$disabled  = $this->disabled  ? ' disabled="disabled"' : '';
+		$required  = $this->required  ? ' required="required" aria-required="true"' : '';
 		$autofocus = $this->autofocus ? ' autofocus' : '';
-		$checked   = $this->checked || !empty($this->value) ? ' checked' : '';
+		$checked   = $this->checked   || !empty($this->value) ? ' checked' : '';
 
 		$onchange  = $this->onchange ? ' onchange="' . $this->onchange . '"' : '';
-		$onclick   = $this->onclick ? ' onclick="' . $this->onclick . '"' : '';
+		$onclick   = $this->onclick  ? ' onclick="'  . $this->onclick . '"' : '';
 
 		return '<span ' . ($id ? $id : '') . 'class="' . $class . '">' .
 			'<input type="checkbox" name="' . $this->name . '" ' . ($id ? $id : '') . 'class="' . $this->id . ' ' . $class . '"' . ' value="'

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -10,6 +10,7 @@ namespace FOF30\Form\Field;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
+use FOF30\Utils\StringHelper;
 use \JHtml;
 use \JText;
 
@@ -162,14 +163,15 @@ class GenericList extends \JFormFieldList implements FieldInterface
 	/**
 	 * Gets the active option's label given an array of JHtml options
 	 *
-	 * @param   array   $data      The JHtml options to parse
-	 * @param   mixed   $selected  The currently selected value
-	 * @param   string  $optKey    Key name
-	 * @param   string  $optText   Value name
+	 * @param   array   $data           The JHtml options to parse
+	 * @param   mixed   $selected       The currently selected value
+	 * @param   string  $optKey         Key name
+	 * @param   string  $optText        Value name
+	 * @param   bool    $selectFirst    Should I automatically select the first option?
 	 *
 	 * @return  mixed   The label of the currently selected option
 	 */
-	public static function getOptionName($data, $selected = null, $optKey = 'value', $optText = 'text')
+	public static function getOptionName($data, $selected = null, $optKey = 'value', $optText = 'text', $selectFirst = true)
 	{
 		$ret = null;
 
@@ -192,7 +194,7 @@ class GenericList extends \JFormFieldList implements FieldInterface
 				$text = $element;
 			}
 
-			if (is_null($ret))
+			if (is_null($ret) && $selectFirst)
 			{
 				$ret = $text;
 			}
@@ -305,8 +307,8 @@ class GenericList extends \JFormFieldList implements FieldInterface
 		$source_method    = empty($this->element['source_method']) ? '' : (string) $this->element['source_method'];
 		$source_key       = empty($this->element['source_key']) ? '*' : (string) $this->element['source_key'];
 		$source_value     = empty($this->element['source_value']) ? '*' : (string) $this->element['source_value'];
-		$source_translate = empty($this->element['source_translate']) ? 'true' : (string) $this->element['source_translate'];
-		$source_translate = in_array(strtolower($source_translate), array('true','yes','1','on')) ? true : false;
+		$source_translate = is_null($this->element['source_translate']) ? 'true' : (string) $this->element['source_translate'];
+		$source_translate = StringHelper::toBool($source_translate) ? true : false;
 		$source_format    = empty($this->element['source_format']) ? '' : (string) $this->element['source_format'];
 
 		if ($source_class && $source_method)
@@ -341,8 +343,8 @@ class GenericList extends \JFormFieldList implements FieldInterface
 						// Loop through the data and prime the $options array
 						foreach ($source_data as $k => $v)
 						{
-							$key = (empty($source_key) || ($source_key == '*')) ? $k : $v[$source_key];
-							$value = (empty($source_value) || ($source_value == '*')) ? $v : $v[$source_value];
+							$key = (empty($source_key) || ($source_key == '*')) ? $k : @$v[$source_key];
+							$value = (empty($source_value) || ($source_value == '*')) ? $v : @$v[$source_value];
 
 							if ($source_translate)
 							{
@@ -368,42 +370,41 @@ class GenericList extends \JFormFieldList implements FieldInterface
 	 *
 	 * @return  string         Text with tags replace
 	 */
-	protected function parseFieldTags($text)
-	{
-		$ret = $text;
+    protected function parseFieldTags($text)
+    {
+        $ret = $text;
 
-		// Replace [ITEM:ID] in the URL with the item's key value (usually:
-		// the auto-incrementing numeric ID)
-		$keyfield = $this->item->getKeyName();
-		$replace  = $this->item->$keyfield;
-		$ret = str_replace('[ITEM:ID]', $replace, $ret);
+        // Replace [ITEM:ID] in the URL with the item's key value (usually:
+        // the auto-incrementing numeric ID)
+        if (is_null($this->item))
+        {
+            $this->item = $this->form->getModel();
+        }
 
-		// Replace the [ITEMID] in the URL with the current Itemid parameter
-		$ret = str_replace('[ITEMID]', $this->form->getContainer()->input->getInt('Itemid', 0), $ret);
+        $replace  = $this->item->getId();
+        $ret = str_replace('[ITEM:ID]', $replace, $ret);
 
-		// Replace other field variables in the URL
-		$fields = $this->item->getTableFields();
+        // Replace the [ITEMID] in the URL with the current Itemid parameter
+        $ret = str_replace('[ITEMID]', $this->form->getContainer()->input->getInt('Itemid', 0), $ret);
 
-		foreach ($fields as $fielddata)
-		{
-			$fieldname = $fielddata->Field;
+        // Replace the [TOKEN] in the URL with the Joomla! form token
+        $ret = str_replace('[TOKEN]', \JFactory::getSession()->getFormToken(), $ret);
 
-			if (empty($fieldname))
-			{
-				$fieldname = $fielddata->column_name;
-			}
+        // Replace other field variables in the URL
+        $data = $this->item->getData();
 
-			$search    = '[ITEM:' . strtoupper($fieldname) . ']';
-			$replace   = $this->item->$fieldname;
+        foreach ($data as $field => $value)
+        {
+            // Skip non-processable values
+            if(is_array($value) || is_object($value))
+            {
+                continue;
+            }
 
-			if (!is_string($replace))
-			{
-				continue;
-			}
+            $search = '[ITEM:' . strtoupper($field) . ']';
+            $ret    = str_replace($search, $value, $ret);
+        }
 
-			$ret  = str_replace($search, $replace, $ret);
-		}
-
-		return $ret;
-	}
+        return $ret;
+    }
 }

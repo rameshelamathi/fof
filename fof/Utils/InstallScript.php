@@ -1,23 +1,20 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
 namespace FOF30\Utils;
 
 use FOF30\Database\Installer;
-use FOF30\Template\Template;
 use Exception;
-use JDate;
 use JFactory;
 use JFile;
 use JFolder;
 use JInstaller;
 use JLoader;
 use JLog;
-use JText;
 
 defined('_JEXEC') or die;
 
@@ -227,8 +224,19 @@ class InstallScript
 			return false;
 		}
 
-		// Workarounds for notorious JInstaller bugs we submitted patches for but were rejected – yet the bugs were
-		// never fixed. Way to go, Joomla!...
+		// Always reset the OPcache if it's enabled. Otherwise there's a good chance the server will not know we are
+		// replacing .php scripts. This is a major concern since PHP 5.5 included and enabled OPcache by default.
+		if (function_exists('opcache_reset'))
+		{
+			opcache_reset();
+		}
+		// Also do that for APC cache
+		elseif (function_exists('apc_clear_cache'))
+		{
+			@apc_clear_cache();
+		}
+
+		// Workarounds for JInstaller issues.
 		if (in_array($type, array('install', 'discover_install')))
 		{
 			// Bugfix for "Database function returned no error"
@@ -375,12 +383,12 @@ class InstallScript
 
 		foreach ($this->cliScriptFiles as $script)
 		{
-			if (JFile::exists(JPATH_ROOT . '/cli/' . $script))
+			if (is_file(JPATH_ROOT . '/cli/' . $script))
 			{
 				JFile::delete(JPATH_ROOT . '/cli/' . $script);
 			}
 
-			if (JFile::exists($src . '/' . $this->cliSourcePath . '/' . $script))
+			if (is_file($src . '/' . $this->cliSourcePath . '/' . $script))
 			{
 				JFile::copy($src . '/' . $this->cliSourcePath . '/' . $script, JPATH_ROOT . '/cli/' . $script);
 			}
@@ -452,6 +460,7 @@ class InstallScript
 		$query = $db->getQuery(true);
 		$query->select('extension_id')
 			->from('#__extensions')
+			->where($db->qn('type') . ' = ' . $db->q('component'))
 			->where($db->qn('element') . ' = ' . $db->q($this->componentName));
 		$db->setQuery($query);
 		$ids = $db->loadColumn();
@@ -518,6 +527,7 @@ class InstallScript
 		$query = $db->getQuery(true);
 		$query->select('extension_id')
 			->from('#__extensions')
+			->where($db->qn('type') . ' = ' . $db->q('component'))
 			->where($db->qn('element') . ' = ' . $db->q($this->componentName));
 		$db->setQuery($query);
 
@@ -670,7 +680,7 @@ class InstallScript
 			{
 				$f = JPATH_ROOT . '/' . $file;
 
-				if (!JFile::exists($f))
+				if (!is_file($f))
 				{
 					continue;
 				}
@@ -686,7 +696,7 @@ class InstallScript
 			{
 				$f = JPATH_ROOT . '/' . $folder;
 
-				if (!JFolder::exists($f))
+				if (!is_dir($f))
 				{
 					continue;
 				}
@@ -803,6 +813,7 @@ class InstallScript
 			->join('LEFT', '#__extensions AS e ON m.component_id = e.extension_id')
 			->where('m.parent_id = 1')
 			->where('m.client_id = 1')
+			->where('e.type = ' . $db->quote('component'))
 			->where('e.element = ' . $db->quote($option));
 
 		$db->setQuery($query);
@@ -894,6 +905,8 @@ class InstallScript
 			$data['component_id'] = $component_id;
 			$data['img'] = ((string)$menuElement->attributes()->img) ? (string)$menuElement->attributes()->img : 'class:component';
 			$data['home'] = 0;
+			$data['path'] = '';
+			$data['params'] = '';
 		}
 		// No menu element was specified, Let's make a generic menu item
 		else
@@ -910,6 +923,8 @@ class InstallScript
 			$data['component_id'] = $component_id;
 			$data['img'] = 'class:component';
 			$data['home'] = 0;
+			$data['path'] = '';
+			$data['params'] = '';
 		}
 
 		try
@@ -1106,6 +1121,7 @@ class InstallScript
 			->set($db->qn('published') . ' = ' . $db->q(1))
 			->where('m.parent_id = 1')
 			->where('m.client_id = 1')
+			->where('e.type = ' . $db->quote('component'))
 			->where('e.element = ' . $db->quote($option));
 
 		$db->setQuery($query);
@@ -1473,6 +1489,7 @@ class InstallScript
 		$query = $db->getQuery(true);
 		$query->select('extension_id')
 			->from('#__extensions')
+			->where($db->qn('type') . ' = ' . $db->q('component'))
 			->where($db->qn('element') . ' = ' . $db->q($this->componentName));
 		$db->setQuery($query);
 
@@ -1518,6 +1535,7 @@ class InstallScript
 		$query = $db->getQuery(true);
 		$query->select('extension_id')
 			->from('#__extensions')
+			->where($db->qn('type') . ' = ' . $db->q('component'))
 			->where($db->qn('element') . ' = ' . $db->q($this->componentName));
 		$db->setQuery($query);
 
@@ -1538,7 +1556,7 @@ class InstallScript
 		$extension_id = array_shift($ids);
 
 		$query = $db->getQuery(true)
-			->delete($this->postInstallationMessages)
+			->delete($db->qn('#__postinstall_messages'))
 			->where($db->qn('extension_id') . ' = ' . $db->q($extension_id));
 
 		try
@@ -1570,7 +1588,7 @@ class InstallScript
 		try
 		{
 			$dependencies = $db->setQuery($query)->loadResult();
-			$dependencies = json_decode($dependencies);
+			$dependencies = json_decode($dependencies, true);
 
 			if (empty($dependencies))
 			{

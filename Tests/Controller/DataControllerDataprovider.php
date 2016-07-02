@@ -1,4 +1,9 @@
 <?php
+/**
+ * @package     FOF
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
+ */
 
 class DataControllerDataprovider
 {
@@ -34,6 +39,7 @@ class DataControllerDataprovider
                     'saveorder' => 'core.edit.state',
                     'trash' => 'core.edit.state',
                     'unpublish' => 'core.edit.state',
+                    'forceRemove' => 'core.delete'
                 )
             )
         );
@@ -68,7 +74,8 @@ class DataControllerDataprovider
                     'saveorder' => 'core.edit.state',
                     'trash' => 'core.edit.state',
                     'unpublish' => 'core.edit.state',
-                    'foo' => 'core.foo.bar'
+                    'foo' => 'core.foo.bar',
+                    'forceRemove' => 'core.delete'
                 )
             )
         );

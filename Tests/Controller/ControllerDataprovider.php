@@ -1,4 +1,9 @@
 <?php
+/**
+ * @package     FOF
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
+ */
 
 class ControllerDataprovider
 {
@@ -733,7 +738,7 @@ class ControllerDataprovider
                 'case'     => 'Url is set, message and type are null; controller messageType is null',
                 'redirect' => 'index.php',
                 'message'  => null,
-                'type'     => 'info'
+                'type'     => 'message'
             )
         );
 

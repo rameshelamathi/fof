@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -11,6 +11,7 @@ use FOF30\Container\Container;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
+use FOF30\Utils\StringHelper;
 use \JHtml;
 use \JText;
 
@@ -60,7 +61,7 @@ class Model extends GenericList implements FieldInterface
 	 *
 	 * @var null|array
 	 */
-	protected $loadedOptions = null;
+	protected static $loadedOptions = null;
 
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
@@ -108,7 +109,7 @@ class Model extends GenericList implements FieldInterface
 	 */
 	public function getStatic()
 	{
-		$class = $this->class ? ' class="' . $this->class . '"' : '';
+		$class = $this->class ? 'class="' . $this->class . '"' : '';
 
 		return '<span id="' . $this->id . '" ' . $class . '>' .
 			htmlspecialchars(GenericList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
@@ -145,7 +146,8 @@ class Model extends GenericList implements FieldInterface
 			$empty_replacement = (string) $this->element['empty_replacement'];
 		}
 
-		$value = GenericList::getOptionName($this->getOptions(), $this->value);
+        // Ask GenericList::getOptionName to not automatically select the first value
+		$value = GenericList::getOptionName($this->getOptions(), $this->value, 'value', 'text', false);
 
 		// Get the (optionally formatted) value
 		if (!empty($empty_replacement) && empty($value))
@@ -182,42 +184,48 @@ class Model extends GenericList implements FieldInterface
 		return $html;
 	}
 
-	/**
-	 * Method to get the field options.
-	 *
-	 * @return  array  The field option objects.
-	 */
+    /**
+     * Method to get the field options.
+     *
+     * @param   bool $forceReset
+     *
+     * @return  array The field option objects.
+     */
 	protected function getOptions($forceReset = false)
 	{
-		static $loadedOptions = array();
+		$myFormKey = $this->form->getName() . '#$#' . (string) $this->element['model'];
 
-		$myFormKey = $this->form->getName();
-
-		if ($forceReset && isset($loadedOptions[$myFormKey]))
+		if ($forceReset && isset(static::$loadedOptions[$myFormKey]))
 		{
-			unset($loadedOptions[$myFormKey]);
+			unset(static::$loadedOptions[$myFormKey]);
 		}
 
-		if (!isset($loadedOptions[$myFormKey]))
+		if (!isset(static::$loadedOptions[$myFormKey]))
 		{
 			$options = array();
 
 			// Initialize some field attributes.
-			$key = $this->element['key_field'] ? (string) $this->element['key_field'] : 'value';
-			$value = $this->element['value_field'] ? (string) $this->element['value_field'] : (string) $this->element['name'];
-			$translate = $this->element['translate'] ? (string) $this->element['translate'] : false;
-			$applyAccess = $this->element['apply_access'] ? (string) $this->element['apply_access'] : 'false';
-			$modelName = (string) $this->element['model'];
+			$key             = $this->element['key_field'] ? (string) $this->element['key_field'] : 'value';
+			$value           = $this->element['value_field'] ? (string) $this->element['value_field'] : (string) $this->element['name'];
+			$valueReplace    = StringHelper::toBool($this->element['parse_value']);
+			$translate       = StringHelper::toBool($this->element['translate']);
+			$applyAccess     = StringHelper::toBool($this->element['apply_access']);
+			$modelName       = (string) $this->element['model'];
 			$nonePlaceholder = (string) $this->element['none'];
+
+			$with = $this->element['with'] ? (string) $this->element['with'] : null;
+
+			if (!is_null($with))
+			{
+				$with = trim($with);
+				$with = explode(',', $with);
+				$with = array_map('trim', $with);
+			}
 
 			if (!empty($nonePlaceholder))
 			{
 				$options[] = JHtml::_('select.option', null, JText::_($nonePlaceholder));
 			}
-
-			// Process field atrtibutes
-			$applyAccess = strtolower($applyAccess);
-			$applyAccess = in_array($applyAccess, array('yes', 'on', 'true', '1'));
 
 			// Explode model name into component name and prefix
 			$componentName = $this->form->getContainer()->componentName;
@@ -245,17 +253,22 @@ class Model extends GenericList implements FieldInterface
 				$model->applyAccessFiltering();
 			}
 
+			if (!is_null($with))
+			{
+				$model->with($with);
+			}
+
 			// Process state variables
 			/** @var \SimpleXMLElement $stateoption */
 			foreach ($this->element->children() as $stateoption)
 			{
-				// Only add <option /> elements.
+				// Only add <state /> elements.
 				if ($stateoption->getName() != 'state')
 				{
 					continue;
 				}
 
-				$stateKey = (string) $stateoption['key'];
+				$stateKey   = (string) $stateoption['key'];
 				$stateValue = (string) $stateoption;
 
 				$model->setState($stateKey, $stateValue);
@@ -275,7 +288,16 @@ class Model extends GenericList implements FieldInterface
 					}
 					else
 					{
-						$options[] = JHtml::_('select.option', $item->$key, $item->$value);
+						if ($valueReplace)
+						{
+							$text = $this->parseFieldTags($value, $item);
+						}
+						else
+						{
+							$text = $item->$value;
+						}
+
+						$options[] = JHtml::_('select.option', $item->$key, $text);
 					}
 				}
 			}
@@ -283,10 +305,10 @@ class Model extends GenericList implements FieldInterface
 			// Merge any additional options in the XML definition.
 			$options = array_merge(parent::getOptions(), $options);
 
-			$loadedOptions[$myFormKey] = $options;
+            static::$loadedOptions[$myFormKey] = $options;
 		}
 
-		return $loadedOptions[$myFormKey];
+		return static::$loadedOptions[$myFormKey];
 	}
 
 	/**
@@ -296,41 +318,43 @@ class Model extends GenericList implements FieldInterface
 	 *
 	 * @return  string         Text with tags replace
 	 */
-	protected function parseFieldTags($text)
+	protected function parseFieldTags($text, $item = null)
 	{
 		$ret = $text;
 
-		// Replace [ITEM:ID] in the URL with the item's key value (usually:
-		// the auto-incrementing numeric ID)
-		$keyfield = $this->item->getKeyName();
-		$replace  = $this->item->$keyfield;
-		$ret = str_replace('[ITEM:ID]', $replace, $ret);
-
-		// Replace the [ITEMID] in the URL with the current Itemid parameter
-		$ret = str_replace('[ITEMID]', $this->form->getContainer()->input->getInt('Itemid', 0), $ret);
-
-		// Replace other field variables in the URL
-		$fields = $this->item->getTableFields();
-
-		foreach ($fields as $fielddata)
+		if ($item)
 		{
-			$fieldname = $fielddata->Field;
-
-			if (empty($fieldname))
-			{
-				$fieldname = $fielddata->column_name;
-			}
-
-			$search    = '[ITEM:' . strtoupper($fieldname) . ']';
-			$replace   = $this->item->$fieldname;
-
-			if (!is_string($replace))
-			{
-				continue;
-			}
-
-			$ret  = str_replace($search, $replace, $ret);
+			$this->item = $item;
 		}
+
+        if (is_null($this->item))
+        {
+            $this->item = $this->form->getModel();
+        }
+
+        $replace  = $this->item->getId();
+        $ret = str_replace('[ITEM:ID]', $replace, $ret);
+
+        // Replace the [ITEMID] in the URL with the current Itemid parameter
+        $ret = str_replace('[ITEMID]', $this->form->getContainer()->input->getInt('Itemid', 0), $ret);
+
+        // Replace the [TOKEN] in the URL with the Joomla! form token
+        $ret = str_replace('[TOKEN]', \JFactory::getSession()->getFormToken(), $ret);
+
+        // Replace other field variables in the URL
+        $data = $this->item->getData();
+
+        foreach ($data as $field => $value)
+        {
+            // Skip non-processable values
+            if(is_array($value) || is_object($value))
+            {
+                continue;
+            }
+
+            $search = '[ITEM:' . strtoupper($field) . ']';
+            $ret    = str_replace($search, $value, $ret);
+        }
 
 		return $ret;
 	}

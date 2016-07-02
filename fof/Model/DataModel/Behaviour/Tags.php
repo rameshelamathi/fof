@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -9,7 +9,7 @@ namespace FOF30\Model\DataModel\Behaviour;
 
 use FOF30\Event\Observer;
 use FOF30\Model\DataModel;
-use JDatabaseQuery;
+use FOF30\Event\Observable;
 
 defined('_JEXEC') or die;
 
@@ -20,60 +20,82 @@ defined('_JEXEC') or die;
  */
 class Tags extends Observer
 {
+    /** @var \JHelperTags  */
+    protected $tagsHelper;
+
+	public function __construct(Observable &$subject)
+	{
+		parent::__construct($subject);
+
+		$this->tagsHelper = new \JHelperTags();
+	}
+
+	/**
+	 * This event runs after unpublishing a record in a model
+	 *
+	 * @param   DataModel  &$model        The model which calls this event
+	 * @param   \stdClass  &$dataObject   The data to bind to the form
+	 *
+	 * @return  void
+	 */
+	public function onBeforeCreate(&$model, &$dataObject)
+	{
+		$tagField = $model->getBehaviorParam('tagFieldName', 'tags');
+
+		unset($dataObject->$tagField);
+	}
+
+	/**
+	 * This event runs after unpublishing a record in a model
+	 *
+	 * @param   DataModel  &$model        The model which calls this event
+	 * @param   \stdClass  &$dataObject   The data to bind to the form
+	 *
+	 * @return  void
+	 */
+	public function onBeforeUpdate(&$model, &$dataObject)
+	{
+		$tagField = $model->getBehaviorParam('tagFieldName', 'tags');
+
+		unset($dataObject->$tagField);
+	}
+
 	/**
 	 * The event which runs after binding data to the table
 	 *
 	 * @param   DataModel    &$model  The model which calls this event
-	 * @param   object|array &$src    The data to bind
 	 *
-	 * @return  boolean  True on success
+	 * @return  void
+	 *
+	 * @throws  \Exception  Error message if failed to store tags
 	 */
-	public function onAfterBind(&$model, &$src)
+	public function onAfterSave(&$model)
 	{
-		// Bind tags
-		if ($model->hasTags())
+		$tagField = $model->getBehaviorParam('tagFieldName', 'tags');
+
+		// Avoid to update on other method (e.g. publish, ...)
+		if (!in_array($model->getContainer()->input->getCmd('task'), array('apply', 'save', 'savenew')))
 		{
-			if ((!empty($src['tags']) && $src['tags'][0] != ''))
-			{
-				$model->newTags = $src['tags'];
-			}
-
-			// Check if the content type exists, and create it if it does not
-			$model->checkContentType();
-
-			$tagsTable = clone($model);
-
-			$tagsHelper            = new \JHelperTags();
-			$tagsHelper->typeAlias = $model->getContentType();
-
-			if (!$tagsHelper->postStoreProcess($tagsTable))
-			{
-				throw new \Exception('Error storing tags');
-			}
+			return;
 		}
 
-		return true;
-	}
+		$oldTags = $this->tagsHelper->getTagIds($model->getId(), $model->getContentType());
+		$newTags = $model->$tagField ? implode(',', $model->$tagField) : null;
 
-	/**
-	 * The event which runs before storing (saving) data to the database
-	 *
-	 * @param   DataModel  &$model  The model which calls this event
-	 * @param   null|array $data    [Optional] Data to bind
-	 *
-	 * @return  boolean  True to allow saving
-	 */
-	public function onBeforeSave(&$model, &$data)
-	{
-		if ($model->hasTags())
+		// If no changes, we stop here
+		if ($oldTags == $newTags)
 		{
-			$tagsHelper            = new \JHelperTags();
-			$tagsHelper->typeAlias = $model->getContentType();
+			return;
+		}
 
-			// JHelperTags in Joomla! 3.1, it required tags in the metadata property.
-			// TODO If this issue is fixed in Joomla! we need to remove this code
-			$tagsTable = clone($model);
-			$tagsHelper->preStoreProcess($tagsTable);
+		// Check if the content type exists, and create it if it does not
+		$model->checkContentType();
+
+		$this->tagsHelper->typeAlias = $model->getContentType();
+
+		if (!$this->tagsHelper->postStoreProcess($model, $model->$tagField))
+		{
+			throw new \Exception('Error storing tags');
 		}
 	}
 
@@ -83,21 +105,41 @@ class Tags extends Observer
 	 * @param   DataModel &$model The model which calls this event
 	 * @param   integer   $oid    The PK value of the record which was deleted
 	 *
-	 * @return  boolean  True to allow the deletion without errors
+	 * @return  void
+	 *
+	 * @throws  \Exception  Error message if failed to detele tags
 	 */
 	public function onAfterDelete(&$model, $oid)
 	{
-		// If this resource has tags, delete the tags first
-		if ($model->hasTags())
-		{
-			$tagsHelper            = new \JHelperTags();
-			$tagsHelper->typeAlias = $model->getContentType();
+		$this->tagsHelper->typeAlias = $model->getContentType();
 
-			if (!$tagsHelper->deleteTagData($model, $oid))
-			{
-				throw new \Exception('Error deleting Tags');
-			}
+		if (!$this->tagsHelper->deleteTagData($model, $oid))
+		{
+			throw new \Exception('Error deleting Tags');
 		}
+	}
+
+	/**
+	 * This event runs after unpublishing a record in a model
+	 *
+	 * @param   DataModel  &$model  The model which calls this event
+	 * @param   mixed      $data    An associative array or object to bind to the DataModel instance.
+	 *
+	 * @return  void
+	 */
+	public function onAfterBind(&$model, &$data)
+	{
+		$tagField = $model->getBehaviorParam('tagFieldName', 'tags');
+
+		if ($model->$tagField)
+		{
+			return;
+		}
+
+		$type = $model->getContentType();
+
+		$model->addKnownField($tagField);
+		$model->$tagField = $this->tagsHelper->getTagIds($model->getId(), $type);
 	}
 
 	/**

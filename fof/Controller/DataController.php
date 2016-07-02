@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -30,6 +30,14 @@ class DataController extends Controller
 	 * @var  array
 	 */
 	protected $cacheableTasks = array('browse', 'read');
+
+    /**
+     * Variables that should be taken in account while working with the cache. You can set them in Controller constructor
+     * or inside onBefore* methods
+     *
+     * @var false|array
+     */
+    protected $cacheParams = false;
 
 	/**
 	 * Do we have a valid XML form?
@@ -67,12 +75,22 @@ class DataController extends Controller
 		'orderdown' => 'core.edit.state',
 		'publish' => 'core.edit.state',
 		'remove' => 'core.delete',
+		'forceRemove' => 'core.delete',
 		'save' => '&getACLForApplySave', // Save task: call the getACLForApplySave method
 		'savenew' => 'core.create',
 		'saveorder' => 'core.edit.state',
 		'trash' => 'core.edit.state',
 		'unpublish' => 'core.edit.state',
 	);
+
+	/**
+	 * An indexed array of default values for the add task. Since the add task resets the model you can't set these
+	 * values directly to the model. Instead, the defaultsForAdd values will be fed to model's bind() after it's reset
+	 * and before the session-stored item data is bound to the model object.
+	 *
+	 * @var  array
+	 */
+	protected $defaultsForAdd = array();
 
 	/**
 	 * Public constructor of the Controller class. You can pass the following variables in the $config array,
@@ -141,6 +159,34 @@ class DataController extends Controller
 	}
 
 	/**
+	 * Deal with JSON format: no redirects needed
+	 * @param  string $task The task being executed
+	 * @return boolean      True if everything went well
+	 */
+	protected function onAfterExecute($task)
+	{
+		// JSON shouldn't have redirects
+		if ($this->hasRedirect() && $this->input->getCmd('format', 'html') == 'json') {
+			// Error: deal with it in REST api way
+			if ($this->messageType == 'error') {
+				$response = new \JResponseJson($this->message, $this->message, true);
+
+				echo $response;
+
+				$this->redirect = false;
+				$this->container->platform->setHeader('Status', 500);
+				return;
+			} else {
+				// Not an error, avoid redirect and display the record(s)
+				$this->redirect = false;
+				return $this->display();
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Determines the CRUD task to use based on the view name and HTTP verb used in the request.
 	 *
 	 * @return  string  The CRUD task (browse, read, edit, delete)
@@ -181,13 +227,10 @@ class DataController extends Controller
 		// Alter the task based on the verb
 		switch ($requestMethod)
 		{
-			// POST and PUT result in a record being saved, as long as there is an ID
+			// POST and PUT result in a record being saved; no ID means creating a new record
 			case 'POST':
 			case 'PUT':
-				if ($id)
-				{
-					$task = 'save';
-				}
+				$task = 'save';
 				break;
 
 			// DELETE results in a record being deleted, as long as there is an ID
@@ -386,7 +429,7 @@ class DataController extends Controller
 		}
 
 		// Display the view
-		$this->display(in_array('browse', $this->cacheableTasks));
+		$this->display(in_array('browse', $this->cacheableTasks), $this->cacheParams);
 	}
 
 	/**
@@ -438,7 +481,7 @@ class DataController extends Controller
 		}
 
 		// Display the view
-		$this->display(in_array('read', $this->cacheableTasks));
+		$this->display(in_array('read', $this->cacheableTasks), $this->cacheParams);
 	}
 
 	/**
@@ -460,6 +503,11 @@ class DataController extends Controller
 		elseif ($this->layout == 'default')
 		{
 			$this->layout = 'form';
+		}
+
+		if (!empty($this->defaultsForAdd))
+		{
+			$model->bind($this->defaultsForAdd);
 		}
 
 		// Get temporary data from the session, set if the save failed and we're redirected back here
@@ -491,7 +539,7 @@ class DataController extends Controller
 		}
 
 		// Display the view
-		$this->display(in_array('add', $this->cacheableTasks));
+		$this->display(in_array('add', $this->cacheableTasks), $this->cacheParams);
 	}
 
 	/**
@@ -569,7 +617,7 @@ class DataController extends Controller
 		}
 
 		// Display the view
-		$this->display(in_array('edit', $this->cacheableTasks));
+		$this->display(in_array('edit', $this->cacheableTasks), $this->cacheParams);
 	}
 
 	/**
@@ -1217,11 +1265,28 @@ class DataController extends Controller
 	}
 
 	/**
-	 * Delete selected item(s)
+	 * Delete or trash selected item(s). The model's softDelete flag determines if the items should be trashed (enabled
+	 * state changed to -2) or deleted (completely removed from database)
 	 *
 	 * @return  void
 	 */
 	public function remove()
+	{
+		$this->deleteOrTrash(false);
+	}
+
+	/**
+	 * Deletes the selected item(s). Unlike remove() this method will force delete the record (completely removed from
+	 * database)
+	 *
+	 * @return  void
+	 */
+	public function forceRemove()
+	{
+		$this->deleteOrTrash(true);
+	}
+
+	protected function deleteOrTrash($forceDelete = false)
 	{
 		// CSRF prevention
 		$this->csrfProtection();
@@ -1245,7 +1310,14 @@ class DataController extends Controller
 					$model->checkIn($userId);
 				}
 
-				$model->delete();
+				if ($forceDelete)
+				{
+					$model->forceDelete();
+				}
+				else
+				{
+					$model->delete();
+				}
 			}
 		}
 		catch (\Exception $e)
@@ -1289,6 +1361,8 @@ class DataController extends Controller
 		}
 
 		$userId = $this->container->platform->getUser()->id;
+		$id     = $model->getId();
+		$data   = $this->input->getData();
 
 		if ($model->isLocked($userId))
 		{
@@ -1304,14 +1378,15 @@ class DataController extends Controller
 					$customURL = base64_decode($customURL);
 				}
 
+				$eventName = 'onAfterApplySaveError';
+				$result = $this->triggerEvent($eventName, array(&$data, $id, $e));
+
 				$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . $this->container->inflector->pluralize($this->view) . $this->getItemidURLSuffix();
 				$this->setRedirect($url, $e->getMessage(), 'error');
+
+				return false;
 			}
 		}
-
-		$id = $model->getId();
-
-		$data = $this->input->getData();
 
 		// Set the layout to form, if it's not set in the URL
 		if (is_null($this->layout))
@@ -1350,6 +1425,9 @@ class DataController extends Controller
 		{
 			$status = false;
 			$error = $e->getMessage();
+
+			$eventName = 'onAfterApplySaveError';
+			$result = $this->triggerEvent($eventName, array(&$data, $model->getId(), $e));
 		}
 
 		if (!$status)

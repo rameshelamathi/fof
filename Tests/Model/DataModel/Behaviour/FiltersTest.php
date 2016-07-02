@@ -1,4 +1,10 @@
 <?php
+/**
+ * @package     FOF
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
+ */
+
 namespace FOF30\Tests\DataModel;
 
 use FOF30\Model\DataModel\Behaviour\Filters;
@@ -31,7 +37,7 @@ class FiltersTest extends DatabaseTest
         );
 
         $model = $this->getMock('\FOF30\Tests\Stubs\Model\DataModelStub', array('getState'), array(static::$container, $config));
-        $model->expects($this->any())->method('getState')->willReturnCallback(function($key, $default = null) use ($test){
+        $model->method('getState')->willReturnCallback(function($key, $default = null) use ($test){
             if(isset($test['mock']['state'][$key])){
                 return $test['mock']['state'][$key];
             }

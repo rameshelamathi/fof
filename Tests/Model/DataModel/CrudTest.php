@@ -1,8 +1,8 @@
 <?php
 /**
- * @package        FOF
- * @copyright      2014 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license        GNU GPL version 3 or later
+ * @package     FOF
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
 
 namespace FOF30\Tests\DataModel;
@@ -191,7 +191,7 @@ class DataModelCrudTest extends DatabaseTest
         );
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('setFieldValue'), array(static::$container, $config));
-        $model->expects($this->any())->method('setFieldValue')->willReturnCallback(
+        $model->method('setFieldValue')->willReturnCallback(
             function($key, $value) use (&$checkBind){
                 $checkBind[$key] = $value;
             }
@@ -254,7 +254,7 @@ class DataModelCrudTest extends DatabaseTest
         );
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getForm'), array(static::$container, $config));
-        $model->expects($this->any())->method('getForm')->willReturn(false);
+        $model->method('getForm')->willReturn(false);
 
         ReflectionHelper::setValue($model, 'autoChecks', $test['mock']['auto']);
 
@@ -337,8 +337,8 @@ class DataModelCrudTest extends DatabaseTest
         );
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('find', 'getId'), array(static::$container, $config));
-        $model->expects($this->any())->method('find')->willReturn(null);
-        $model->expects($this->any())->method('getId')->willReturn($test['mock']['getId']);
+        $model->method('find')->willReturn(null);
+        $model->method('getId')->willReturn($test['mock']['getId']);
 
         if($check['exception'])
         {
@@ -382,7 +382,7 @@ class DataModelCrudTest extends DatabaseTest
         );
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('reset', 'getId', 'bind'), array(static::$container, $config, $methods));
-        $model->expects($this->any())->method('getId')->willReturn($test['mock']['id']);
+        $model->method('getId')->willReturn($test['mock']['id']);
         $model->expects($check['bind'] ? $this->once() : $this->never())->method('bind')->willReturn(null);
 
         $dispatcher = $model->getBehavioursDispatcher();
@@ -445,7 +445,7 @@ class DataModelCrudTest extends DatabaseTest
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getId', 'findOrFail', 'reset'), array(static::$container, $config, $methods));
         $model->expects($this->once())->method('reset')->willReturn(null);
-        $model->expects($this->any())->method('getId')->willReturn($test['mock']['id']);
+        $model->method('getId')->willReturn($test['mock']['id']);
         $model->expects($check['find'] ? $this->once() : $this->never())->method('findOrFail')->willReturn(null);
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered

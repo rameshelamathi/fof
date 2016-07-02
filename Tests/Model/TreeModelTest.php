@@ -1,4 +1,9 @@
 <?php
+/**
+ * @package     FOF
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
+ */
 
 namespace FOF30\Tests\TreeModel;
 
@@ -74,6 +79,7 @@ class TreeModelTest extends DatabaseTest
         $table = new TreeModelStub(static::$container, $config, array(
             'onBeforeDelete' => $test['mock']['before']
         ));
+	    $table->setIgnoreRequest(1);
 
         if($test['loadid'])
         {
@@ -598,12 +604,13 @@ class TreeModelTest extends DatabaseTest
         );
 
         $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('moveToLeftOf'), array(static::$container, $config));
-        $table->expects($this->any())->method('moveToLeftOf')->willReturnCallback(
+        $table->method('moveToLeftOf')->willReturnCallback(
             function($leftSibling) use (&$counter, &$sibling){
                 $counter++;
                 $sibling = $leftSibling->foftest_nestedset_id;
             }
         );
+	    $table->setIgnoreRequest(1);
 
         $table->findOrFail($test['loadid']);
 
@@ -652,12 +659,13 @@ class TreeModelTest extends DatabaseTest
         );
 
         $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('moveToRightOf'), array(static::$container, $config));
-        $table->expects($this->any())->method('moveToRightOf')->willReturnCallback(
+        $table->method('moveToRightOf')->willReturnCallback(
             function($rightSibling) use (&$counter, &$sibling){
                 $counter++;
                 $sibling = $rightSibling->foftest_nestedset_id;
             }
         );
+	    $table->setIgnoreRequest(1);
 
         $table->findOrFail($test['loadid']);
 
@@ -1079,10 +1087,10 @@ class TreeModelTest extends DatabaseTest
         );
 
         $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('moveToRightOf', 'isRoot', 'getRoot', 'equals'), array(static::$container, $config));
-        $table->expects($this->any())->method('isRoot')->willReturn($test['mock']['isRoot']);
-        $table->expects($this->any())->method('getRoot')->willReturnSelf();
-        $table->expects($this->any())->method('equals')->willReturn($test['mock']['equals']);
-        $table->expects($this->any())->method('moveToRightOf')->willReturnCallback(
+        $table->method('isRoot')->willReturn($test['mock']['isRoot']);
+        $table->method('getRoot')->willReturnSelf();
+        $table->method('equals')->willReturn($test['mock']['equals']);
+        $table->method('moveToRightOf')->willReturnCallback(
             function() use (&$counter) {
                 $counter++;
                 return true;
@@ -1160,6 +1168,7 @@ class TreeModelTest extends DatabaseTest
         );
 
         $table   = new TreeModelStub(static::$container, $config);
+	    $table->setIgnoreRequest(1);
         $table->findOrFail($test['loadid']);
 
         if(!is_null($test['cache']))
@@ -1197,7 +1206,7 @@ class TreeModelTest extends DatabaseTest
         );
 
         $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('getLevel'), array(static::$container, $config));
-        $table->expects($this->any())->method('getLevel')->willReturnCallback(
+        $table->method('getLevel')->willReturnCallback(
             function()use (&$counter, $test){
                 $counter++;
                 return $test['mock']['getLevel'];
@@ -1453,14 +1462,14 @@ class TreeModelTest extends DatabaseTest
         );
 
         $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('isLeaf', 'isRoot', 'isChild'), array(static::$container, $config));
-        $table->expects($this->any())->method('isLeaf')->willReturn($test['mock']['table']['isLeaf']);
-        $table->expects($this->any())->method('isRoot')->willReturn($test['mock']['table']['isRoot']);
-        $table->expects($this->any())->method('isChild')->willReturn($test['mock']['table']['isChild']);
+        $table->method('isLeaf')->willReturn($test['mock']['table']['isLeaf']);
+        $table->method('isRoot')->willReturn($test['mock']['table']['isRoot']);
+        $table->method('isChild')->willReturn($test['mock']['table']['isChild']);
 
         $other = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('isLeaf', 'isRoot', 'isChild'), array(static::$container, $config));
-        $other->expects($this->any())->method('isLeaf')->willReturn($test['mock']['other']['isLeaf']);
-        $other->expects($this->any())->method('isRoot')->willReturn($test['mock']['other']['isRoot']);
-        $other->expects($this->any())->method('isChild')->willReturn($test['mock']['other']['isChild']);
+        $other->method('isLeaf')->willReturn($test['mock']['other']['isLeaf']);
+        $other->method('isRoot')->willReturn($test['mock']['other']['isRoot']);
+        $other->method('isChild')->willReturn($test['mock']['other']['isChild']);
 
         $result = $table->inSameScope($other);
 
@@ -1532,6 +1541,7 @@ class TreeModelTest extends DatabaseTest
         );
 
         $table = new TreeModelStub(static::$container, $config);
+	    $table->setIgnoreRequest(1);
 
         // Am I request to create a different root?
         if($test['newRoot'])
@@ -1594,17 +1604,17 @@ class TreeModelTest extends DatabaseTest
         );
 
         $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('firstOrFail', 'isRoot'), array(static::$container, $config));
-        $table->expects($this->any())->method('isRoot')->willReturn(false);
+        $table->method('isRoot')->willReturn(false);
 
         // I want to throw an exception at the first run
         if($test['mock']['firstOrFail'][0])
         {
-            $table->expects($this->any())->method('firstOrFail')->willThrowException(new \RuntimeException());
+            $table->method('firstOrFail')->willThrowException(new \RuntimeException());
         }
         // The first run is ok, the exception will be thrown at the second call
         else
         {
-            $table->expects($this->any())->method('firstOrFail')->willReturnCallback(
+            $table->method('firstOrFail')->willReturnCallback(
                 function() use($table, &$counter){
                     if(!$counter)
                     {

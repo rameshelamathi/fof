@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -86,7 +86,7 @@ class Joomla3 extends AkeebaStrapper
 				// We have a floating sidebar, they said. It looks great, they said. They must've been blind, I say!
 				'j-toggle-main',
 				'j-toggle-transition',
-				'span12',
+				'row-fluid',
 			);
 
 			$classes = array_unique($classes);

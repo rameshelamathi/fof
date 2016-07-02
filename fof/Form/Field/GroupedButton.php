@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -13,7 +13,7 @@ use FOF30\Model\DataModel;
 
 defined('_JEXEC') or die;
 
-\JFormHelper::loadFieldClass('list');
+\JFormHelper::loadFieldClass('text');
 
 /**
  * Form Field class for FOF

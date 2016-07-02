@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -141,7 +141,7 @@ class Raw extends View implements DataViewInterface
 		}
 
 		$listOrder = $this->escape($model->getState('filter_order', null, 'cmd'));
-		$listDirn = $this->escape($model->getState('filter_order_Dir', 'ASC', 'cmd'));
+		$listDirn = $this->escape($model->getState('filter_order_Dir', null, 'cmd'));
 		$saveOrder = $listOrder == $model->getFieldAlias('ordering');
 
 		if ($saveOrder)
@@ -241,10 +241,6 @@ class Raw extends View implements DataViewInterface
 		// We want to persist the state in the session
 		$model->savestate(1);
 
-		// Ordering information
-		$this->lists->order = $model->getState('filter_order', $model->getIdFieldName(), 'cmd');
-		$this->lists->order_Dir = $model->getState('filter_order_Dir', 'DESC', 'cmd');
-
 		// Display limits
 		$defaultLimit = 20;
 
@@ -271,6 +267,15 @@ class Raw extends View implements DataViewInterface
 		// Assign items to the view
 		$this->items = $model->get(false);
 		$this->itemCount = $model->count();
+
+		// Ordering information
+		$this->lists->order = $model->getState('filter_order', $model->getIdFieldName(), 'cmd');
+		$this->lists->order_Dir = $model->getState('filter_order_Dir', null, 'cmd');
+
+		if ($this->lists->order_Dir)
+		{
+			$this->lists->order_Dir = strtolower($this->lists->order_Dir);
+		}
 
 		// Pagination
 		$this->pagination = new \JPagination($this->itemCount, $this->lists->limitStart, $this->lists->limit);

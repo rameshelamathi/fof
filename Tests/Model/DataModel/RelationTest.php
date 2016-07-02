@@ -1,4 +1,10 @@
 <?php
+/**
+ * @package     FOF
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
+ */
+
 namespace FOF30\Tests\DataModel;
 
 use FOF30\Model\DataModel\Collection;
@@ -85,8 +91,8 @@ class DataModelRealtionTest extends DatabaseTest
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('save'), array(static::$container, $config));
 
         $relation = $this->getMock('\\FOF30\\Model\\DataModel\\RelationManager', array('getRelationNames', 'save'), array($model));
-        $relation->expects($this->any())->method('getRelationNames')->willReturn($test['mock']['names']);
-        $relation->expects($this->any())->method('save')->with($this->callback(function($name) use (&$check){
+        $relation->method('getRelationNames')->willReturn($test['mock']['names']);
+        $relation->method('save')->with($this->callback(function($name) use (&$check){
             $current = array_shift($check['save']);
             return ($name == $current) && $current;
         }));
@@ -126,7 +132,7 @@ class DataModelRealtionTest extends DatabaseTest
             ));
 
             $mockedItem = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getRelations'), array(static::$container, $config));
-            $mockedItem->expects($this->any())->method('getRelations')->willReturn($fakeRelationManager);
+            $mockedItem->method('getRelations')->willReturn($fakeRelationManager);
 
             $item = clone $mockedItem;
             $items[] = $item;
@@ -153,7 +159,7 @@ class DataModelRealtionTest extends DatabaseTest
             })
         );
 
-        $model->expects($this->any())->method('getRelations')->willReturn($relation);
+        $model->method('getRelations')->willReturn($relation);
 
         ReflectionHelper::setValue($model, 'eagerRelations', $test['mock']['eager']);
 
@@ -181,7 +187,7 @@ class DataModelRealtionTest extends DatabaseTest
         $model->expects($check['add'] ? $this->once() : $this->never())->method('addBehaviour');
 
         $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('hasObserverClass'), array(static::$container));
-        $dispatcher->expects($this->any())->method('hasObserverClass')->willReturn($test['mock']['hasClass']);
+        $dispatcher->method('hasObserverClass')->willReturn($test['mock']['hasClass']);
 
         ReflectionHelper::setValue($model, 'behavioursDispatcher', $dispatcher);
         ReflectionHelper::setValue($model, 'relationFilters', $test['mock']['filters']);
@@ -245,7 +251,7 @@ class DataModelRealtionTest extends DatabaseTest
         );
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('has'), array(static::$container, $config));
-        $model->expects($this->any())->method('has')->with(
+        $model->method('has')->with(
             $this->equalTo('dummy'),
             $this->equalTo('callback'),
             $this->callback(function($callback){

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -155,10 +155,10 @@ class GroupedList extends \JFormFieldGroupedList implements FieldInterface
 			);
 		}
 
-		return '<span ' . ($id ? 'id="' . $id . '-group" ' : '') . 'class="fof-groupedlist-group ' . $class . '>' .
+		return '<span ' . ($id ? 'id="' . $id . '-group" ' : '') . 'class="fof-groupedlist-group' . $class . '">' .
 			htmlspecialchars($selected['group'], ENT_COMPAT, 'UTF-8') .
 			'</span>' .
-			'<span ' . ($id ? 'id="' . $id . '-item" ' : '') . 'class="fof-groupedlist-item ' . $class . '>' .
+			'<span ' . ($id ? 'id="' . $id . '-item" ' : '') . 'class="fof-groupedlist-item' . $class . '">' .
 			htmlspecialchars($selected['item'], ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}
@@ -178,20 +178,21 @@ class GroupedList extends \JFormFieldGroupedList implements FieldInterface
 	{
 		if ($groupKey) {}; // Keeps phpStorm from freaking out
 
-		$ret = null;
+		$ret     = null;
 
 		foreach ($data as $dataKey => $group)
 		{
-			if (is_array($group))
+            $noGroup = true;
+
+            if (is_array($group) || is_object($group))
 			{
-				$label = $group[$optText];
-				$noGroup = false;
-			}
-			elseif (is_object($group))
-			{
-				// Sub-list is in a property of an object
-				$label = $group->$optText;
-				$noGroup = false;
+				$label = $dataKey;
+
+                // If the key is a string, most likely is the title of group
+                if(is_string($dataKey))
+                {
+                    $noGroup = false;
+                }
 			}
 			else
 			{
@@ -203,7 +204,7 @@ class GroupedList extends \JFormFieldGroupedList implements FieldInterface
 				$label = '';
 			}
 
-			$match = GenericList::getOptionName($data, $selected, $optKey, $optText);
+			$match = GenericList::getOptionName($group, $selected, $optKey, $optText, false);
 
 			if (!is_null($match))
 			{

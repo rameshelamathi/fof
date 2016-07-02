@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -78,7 +78,7 @@ class Json extends Raw implements DataViewInterface
 		{
 			$this->limitStart = $model->getState('limitstart', 0);
 			$this->limit = $model->getState('limit', 0);
-			$this->items = $model->getItemsArray($this->limitStart, $this->limit);
+			$this->items = $model->get(true, $this->limitStart, $this->limit);
 			$this->total = $model->count();
 		}
 
@@ -156,7 +156,14 @@ class Json extends Raw implements DataViewInterface
                     }
                 }
 
-				$json = json_encode($result);
+				if (version_compare(PHP_VERSION, '5.4', 'ge'))
+				{
+					$json = json_encode($result, JSON_PRETTY_PRINT);
+				}
+				else
+				{
+					$json = json_encode($result);
+				}
 			}
 
 			// JSONP support
@@ -188,6 +195,25 @@ class Json extends Raw implements DataViewInterface
 	 */
 	protected function onBeforeRead($tpl = null)
 	{
+		self::renderSingleItem($tpl);
+	}
+
+	/**
+	 * The event which runs when we are displaying a single item JSON view
+	 *
+	 * @param   string  $tpl  The view sub-template to use
+	 */
+	protected function onAfterSave($tpl = null)
+	{
+		self::renderSingleItem($tpl);
+	}
+
+	/**
+	 * Renders a single item JSON view
+	 *
+	 * @param   string  $tpl  The view sub-template to use
+	 */
+	protected function renderSingleItem($tpl) {
 		// Load the model
 		/** @var DataModel $model */
 		$model = $this->getModel();
@@ -249,12 +275,21 @@ class Json extends Raw implements DataViewInterface
 			{
                 if (is_object($this->item) && method_exists($this->item, 'toArray'))
                 {
-                    $json = json_encode($this->item->toArray());
+                    $data = $this->item->toArray();
                 }
                 else
                 {
-                    $json = json_encode($this->item);
+                    $data = $this->item;
                 }
+
+				if (version_compare(PHP_VERSION, '5.4', 'ge'))
+				{
+					$json = json_encode($data, JSON_PRETTY_PRINT);
+				}
+				else
+				{
+					$json = json_encode($data);
+				}
 
 			}
 

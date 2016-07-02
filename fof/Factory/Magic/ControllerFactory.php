@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -52,7 +52,7 @@ class ControllerFactory extends BaseFactory
 
 		$config = array_merge($defaultConfig, $config);
 
-		$className = $this->container->getNamespacePrefix() . 'Controller\\DefaultDataController';
+		$className = $this->container->getNamespacePrefix($this->getSection()) . 'Controller\\DefaultDataController';
 
 		if (!class_exists($className, true))
 		{

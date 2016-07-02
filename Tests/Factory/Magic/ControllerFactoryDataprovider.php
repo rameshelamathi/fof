@@ -1,4 +1,9 @@
 <?php
+/**
+ * @package     FOF
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
+ */
 
 class ControllerFactoryDataprovider
 {
@@ -58,6 +63,7 @@ class ControllerFactoryDataprovider
                     'saveorder' => 'core.edit.state',
                     'trash' => 'core.edit.state',
                     'unpublish' => 'core.edit.state',
+                    'forceRemove' => 'core.delete'
                 ),
                 'cache' => array('browse', 'read'),
                 'taskMap' => array(
@@ -84,7 +90,8 @@ class ControllerFactoryDataprovider
                     'getItemidURLSuffix' => 'getItemidURLSuffix',
                     'display' => 'display',
                     'main' => 'main',
-                    '__default' => 'main'
+                    '__default' => 'main',
+                    'forceRemove' => 'forceRemove'
                 ),
             )
         );
@@ -126,6 +133,7 @@ class ControllerFactoryDataprovider
                     'saveorder' => 'core.edit.state',
                     'trash' => 'core.edit.state',
                     'unpublish' => 'core.edit.state',
+                    'forceRemove' => 'core.delete'
                 ),
                 'cache' => array('browse', 'read'),
                 'taskMap' => array(
@@ -152,7 +160,8 @@ class ControllerFactoryDataprovider
                     'getItemidURLSuffix' => 'getItemidURLSuffix',
                     'display' => 'display',
                     'main' => 'main',
-                    '__default' => 'main'
+                    '__default' => 'main',
+                    'forceRemove' => 'forceRemove'
                 ),
             )
         );
@@ -190,6 +199,7 @@ class ControllerFactoryDataprovider
                     'saveorder' => 'core.edit.state',
                     'trash' => 'core.edit.state',
                     'unpublish' => 'core.edit.state',
+                    'forceRemove' => 'core.delete'
                 ),
                 'cache' => array('browse', 'read'),
                 'taskMap' => array(
@@ -216,7 +226,8 @@ class ControllerFactoryDataprovider
                     'getItemidURLSuffix' => 'getItemidURLSuffix',
                     'display' => 'display',
                     'main' => 'main',
-                    '__default' => 'main'
+                    '__default' => 'main',
+                    'forceRemove' => 'forceRemove'
                 ),
             )
         );

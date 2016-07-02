@@ -1,15 +1,21 @@
 # Running tests
 In order to run the tests, you have configure your environment:
- 1. Create a Joomla! installation
+ 1. Create a database for the tests
  2. Install required libraries with Composer
 
-### Create a Joomla! installation
-We need a running installation of Joomla! in order to load all the required libraries.
-Once you installed the latest version of Joomla!, you have to copy the file `Tests/config.dist.php`, rename it to `Tests/config.php` and update the contents its contents, providing the full path to your local installation:
+**PLEASE NOTE** There is no need to setup a local installation of Joomla!, we are going to directly fetch it from Github using [git submodules](http://git-scm.com/docs/git-submodule).
+
+### Create a database for the tests
+We need a database where we will create all the tables required by the tests. 
+The best thing is to provide an empty database, the test suite will create all the needed tables.
+Once created, you have to copy the file `Tests/config.dist.php`, rename it to `Tests/config.php` and update its contents, providing the following connection details:
 ```php
 $fofTestConfig = array(
-	// Point to a path where a Joomla! 2.5 / 3.x site is stored. It's our guinea pig!
-	'site_root' => '/Applications/MAMP/htdocs/unittesting3'
+	// Connection details for our local database
+    'host'     => 'localhost',
+    'user'     => 'root',
+    'password' => 'root',
+    'db'       => 'unittesting3',
 );
 ```
 ### Install required libraries with Composer

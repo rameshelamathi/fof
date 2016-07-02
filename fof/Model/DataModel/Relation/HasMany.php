@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -131,7 +131,7 @@ class HasMany extends Relation
 
 		$query = $db->getQuery(true)
 			->select('COUNT(*)')
-			->from($db->qn($foreignModel->getTableName()) . ' AS ' . $db->qn('reltbl'))
+			->from($db->qn($foreignModel->getTableName(), 'reltbl'))
 			->where($db->qn('reltbl') . '.' . $db->qn($foreignModel->getFieldAlias($this->foreignKey)) . ' = '
 				. $db->qn($tableAlias) . '.'
 				. $db->qn($this->parentModel->getFieldAlias($this->localKey)));

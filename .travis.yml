@@ -1,29 +1,55 @@
+sudo: false
+
+git:
+  submodules: false
+
 language: php
 php:
+  - 7.0
+  - 5.6
   - 5.5
   - 5.4
   - 5.3
+  - hhvm
+
+matrix:
+  allow_failures:
+     - php: hhvm
+     - php: 7.0
+     - php: 5.6
+       env: JVERSION_TEST=3.5-dev
+     - php: 5.5
+       env: JVERSION_TEST=3.5-dev
+     - php: 5.4
+       env: JVERSION_TEST=3.5-dev
+     - php: 5.3
+       env: JVERSION_TEST=3.5-dev
 
 env:
-  - JVERSION_TEST=3.3
+    - JVERSION_TEST=3.4
+    - JVERSION_TEST=3.5-dev
 
 branches:
   only:
     - development
+    - debug-travis
+
+before_install:
+  - git submodule update --init --recursive Tests/environments/"$JVERSION_TEST"
 
 install:
-  - composer update
+  - composer selfupdate
+  - composer install
 
 before_script:
-  - mysql -e 'create database fof_test;'
-  - if [[ "$JVERSION_TEST" == "3.3" ]]; then cp tests/environments/3.3/joomla.sql joomla.sql; fi
-  - mysql fof_test < joomla.sql
-  - cp build/templates/include.php fof/include.php
+  - mysql -u root -e 'create database fof_test;'
+  - mysql -u root -e "CREATE USER 'fof_db'@'localhost' IDENTIFIED BY 'fof';"
+  - mysql -u root -e "GRANT ALL PRIVILEGES ON fof_test.* TO 'fof_db'@'%' IDENTIFIED BY 'fof';"
+  - mysql -u root -e "GRANT ALL PRIVILEGES ON fof_test.* TO 'fof_db'@'localhost' IDENTIFIED BY 'fof';"
+  - mysql -u root -e 'FLUSH PRIVILEGES;'
 
 after_script:
   - cat Tests/debug.txt
 
 notifications:
   email: false
-
-script: php vendor/phpunit/phpunit/phpunit --bootstrap=Tests/bootstrap.php Tests

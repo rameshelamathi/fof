@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -89,8 +89,8 @@ class Selectable extends Field
 						// Loop through the data and prime the $options array
 						foreach ($source_data as $k => $v)
 						{
-							$key = (empty($source_key) || ($source_key == '*')) ? $k : $v[$source_key];
-							$value = (empty($source_value) || ($source_value == '*')) ? $v : $v[$source_value];
+							$key = (empty($source_key) || ($source_key == '*')) ? $k : @$v[$source_key];
+							$value = (empty($source_value) || ($source_value == '*')) ? $v : @$v[$source_value];
 
 							if ($source_translate)
 							{

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -700,13 +700,9 @@ class View
 
 		$extraPaths = array();
 
-		if (isset($this->_path) || property_exists($this, '_path'))
+		if (!empty($this->templatePaths))
 		{
-			$extraPaths = $this->_path['template'];
-		}
-		elseif (isset($this->path) || property_exists($this, 'path'))
-		{
-			$extraPaths = $this->path['template'];
+			$extraPaths = $this->templatePaths;
 		}
 
 		// First get the raw view template path

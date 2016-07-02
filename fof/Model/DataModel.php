@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -61,6 +61,9 @@ class DataModel extends Model implements \JTableInterface
 
 	/** @var   array  A list of table fields, keyed per table */
 	protected static $tableFieldCache = array();
+
+	/** @var   array  A list of permutations of the prefix with upper/lowercase letters */
+	protected static $prefixCasePermutations = array();
 
 	/** @var   array  Table field name aliases, defined as aliasFieldName => actualFieldName */
 	protected $aliasFields = array();
@@ -350,13 +353,13 @@ class DataModel extends Model implements \JTableInterface
 		$asset_id_field	= $this->getFieldAlias('asset_id');
 		$access_field	= $this->getFieldAlias('access');
 
-		if (in_array($asset_id_field, $this->knownFields))
+		if (array_key_exists($asset_id_field, $this->knownFields))
 		{
 			\JLoader::import('joomla.access.rules');
 			$this->_trackAssets = true;
 		}
 
-		if (in_array($access_field, $this->knownFields))
+		if ($this->_trackAssets && array_key_exists($access_field, $this->knownFields) && !($this->getState($access_field, null)))
 		{
 			$this->$access_field = (int) $this->container->platform->getConfig()->get('access');
 		}
@@ -688,6 +691,16 @@ class DataModel extends Model implements \JTableInterface
 	}
 
 	/**
+	 * Get the columns from database table. For JTableInterface compatibility.
+	 *
+	 * @return  mixed  An array of the field names, or false if an error occurs.
+	 */
+	public function getFields()
+	{
+		return $this->getTableFields();
+	}
+
+	/**
 	 * Get the columns from a database table.
 	 *
 	 * @param   string $tableName Table name. If null current table is used
@@ -725,6 +738,23 @@ class DataModel extends Model implements \JTableInterface
 			else
 			{
 				$checkName = $name;
+			}
+
+			// Iterate through all lower/uppercase permutations of the prefix if we have a prefix with at least one uppercase letter
+			if (!in_array($checkName, static::$tableCache) && preg_match('/[A-Z]/', $prefix) && (substr($name, 0, 3) == '#__'))
+			{
+				$prefixPermutations = $this->getPrefixCasePermutations();
+				$partialCheckName = substr($name, 3);
+
+				foreach ($prefixPermutations as $permutatedPrefix)
+				{
+					$checkName = $permutatedPrefix . $partialCheckName;
+					
+					if (in_array($checkName, static::$tableCache))
+					{
+						break;
+					}
+				}
 			}
 
 			if (!in_array($checkName, static::$tableCache))
@@ -1007,13 +1037,14 @@ class DataModel extends Model implements \JTableInterface
 	 * update the data on the table and will throw an Exception denoting a database error. It is generally a BAD idea
 	 * using JOINs instead of relations. If unsure, use relations.
 	 *
-	 * @param   null|array $data           [Optional] Data to bind
-	 * @param   string     $orderingFilter A WHERE clause used to apply table item reordering
-	 * @param   array      $ignore         A list of fields to ignore when binding $data
+	 * @param   null|array  $data            [Optional] Data to bind
+	 * @param   string      $orderingFilter  A WHERE clause used to apply table item reordering
+	 * @param   array       $ignore          A list of fields to ignore when binding $data
+	 * @para    boolean     $resetRelations  Should I automatically reset relations if relation-important fields are changed?
 	 *
 	 * @return   DataModel  Self, for chaining
 	 */
-	public function save($data = null, $orderingFilter = '', $ignore = null)
+	public function save($data = null, $orderingFilter = '', $ignore = null, $resetRelations = true)
 	{
 		// Stash the primary key
 		$oldPKValue = $this->getId();
@@ -1068,6 +1099,12 @@ class DataModel extends Model implements \JTableInterface
 			// Update ourselves with the new ID field's value
 			$this->{$this->idFieldName} = $db->insertid();
 
+			// Rebase the relations with the newly created model
+			if ($resetRelations)
+			{
+				$this->relationManager->rebase($this);
+			}
+
 			$this->triggerEvent('onAfterCreate');
 		}
 		else
@@ -1110,7 +1147,7 @@ class DataModel extends Model implements \JTableInterface
 		}
 
 		// If we have relations we compare the data to the copy of the data before bind.
-		if (count($relationImportantFields))
+		if (count($relationImportantFields) && $resetRelations)
 		{
 			// Since array_diff_assoc doesn't work recursively we have to do it the EXCRUCIATINGLY SLOW WAY. Sad panda :(
 			$keysRecord = (is_array($this->recordData) && !empty($this->recordData)) ? array_keys($this->recordData) : array();
@@ -1210,7 +1247,7 @@ class DataModel extends Model implements \JTableInterface
 		}
 
 		// Save this record
-		$this->save($data, $orderingFilter, $ignore);
+		$this->save($data, $orderingFilter, $ignore, false);
 
 		// Push all relations specified (or all relations if $relations is null)
 		$relManager   = $this->getRelations();
@@ -1320,6 +1357,12 @@ class DataModel extends Model implements \JTableInterface
 			$this->$slugField = \JApplicationHelper::stringURLSafe($this->$titleField);
 		}
 
+		// Special handling of the ordering field
+		if ($this->hasField('ordering') && is_null($this->getFieldValue('ordering')))
+		{
+			$this->setFieldValue('ordering', 0);
+		}
+
 		foreach ($this->knownFields as $fieldName => $field)
 		{
 			// Never check the key if it's empty; an empty key is normal for new records
@@ -1332,6 +1375,13 @@ class DataModel extends Model implements \JTableInterface
 
 			if (($field->Null == 'NO') && empty($value) && !is_numeric($value) && !in_array($fieldName, $this->fieldsSkipChecks))
 			{
+				if (!is_null($field->Default))
+				{
+					$this->$fieldName = $field->Default;
+
+					continue;
+				}
+
 				$text = $this->container->componentName . '_' . $this->container->inflector->singularize($this->getName()) . '_ERR_'
 					. $fieldName . '_EMPTY';
 
@@ -1413,7 +1463,7 @@ class DataModel extends Model implements \JTableInterface
 					->select($db->qn($k) . ', ' . $db->qn($order_field))
 					->from($db->qn($this->getTableName()))
 					->where($db->qn($order_field) . ' >= ' . $db->q(0))
-					->order($db->qn($order_field));
+					->order($db->qn($order_field) . 'ASC, ' . $db->qn($k) . 'ASC');
 
 		// Setup the extra where and ordering clause data.
 		if ($where)
@@ -1552,7 +1602,7 @@ class DataModel extends Model implements \JTableInterface
 	 *
 	 * @return  $this  Self, for chaining
 	 */
-	public function chunk($chunkSize, callable $callback)
+	public function chunk($chunkSize, $callback)
 	{
 		$totalItems = $this->count();
 
@@ -1625,15 +1675,17 @@ class DataModel extends Model implements \JTableInterface
 		if (!array_key_exists($order, $this->knownFields))
 		{
 			$order = $this->getIdFieldName();
+			$this->setState('filter_order', $order);
 		}
 
 		$order = $db->qn($order);
 
-		$dir = strtoupper($this->getState('filter_order_Dir', 'ASC', 'cmd'));
+		$dir = strtoupper($this->getState('filter_order_Dir', null, 'cmd'));
 
-		if(!in_array($dir, array('ASC', 'DESC')))
+		if (!in_array($dir, array('ASC', 'DESC')))
 		{
 			$dir = 'ASC';
+			$this->setState('filter_order_Dir', $dir);
 		}
 
 		$query->order($order . ' ' . $dir);
@@ -1679,15 +1731,7 @@ class DataModel extends Model implements \JTableInterface
 	 */
 	public function &getItemsArray($limitstart = 0, $limit = 0, $overrideLimits = false)
 	{
-		$limitstart = max($limitstart, 0);
-		$limit = max($limit, 0);
-
-		$query = $this->buildQuery($overrideLimits);
-
-		$db = $this->getDbo();
-		$db->setQuery($query, $limitstart, $limit);
-
-		$itemsTemp = $db->loadAssocList();
+		$itemsTemp = $this->getRawDataArray($limitstart, $limit, $overrideLimits);
 		$items = array();
 
 		while (!empty($itemsTemp))
@@ -1705,6 +1749,29 @@ class DataModel extends Model implements \JTableInterface
 		$this->triggerEvent('onAfterGetItemsArray', array(&$items));
 
 		return $items;
+	}
+
+	/**
+	 * Returns the raw data array, as fetched from the database, based on your currently set Model state
+	 *
+	 * @param   integer  $limitstart      How many items from the start to skip (0 = do not skip)
+	 * @param   integer  $limit           How many items to return (0 = all)
+	 * @param   bool     $overrideLimits  Set to true to override limitstart, limit and ordering
+	 *
+	 * @return  array  Array of hashed arrays
+	 */
+	public function &getRawDataArray($limitstart = 0, $limit = 0, $overrideLimits = false)
+	{
+		$limitstart = max($limitstart, 0);
+		$limit = max($limit, 0);
+
+		$query = $this->buildQuery($overrideLimits);
+
+		$db = $this->getDbo();
+		$db->setQuery($query, $limitstart, $limit);
+		$rawData = $db->loadAssocList();
+
+		return $rawData;
 	}
 
 	/**
@@ -1923,9 +1990,11 @@ class DataModel extends Model implements \JTableInterface
 	 * Creates a copy of the current record. After the copy is performed, the data model contains the data of the new
 	 * record.
 	 *
+	 * @param   array|DataModel  An associative array or object to bind to the DataModel instance. Allows you to override values on the copied object.
+	 *
 	 * @return   DataModel
 	 */
-	public function copy()
+	public function copy($data = null)
 	{
 		$this->triggerEvent('onBeforeCopy');
 
@@ -1961,7 +2030,7 @@ class DataModel extends Model implements \JTableInterface
 			$this->setFieldValue('locked_on', null);
 		}
 
-		$result = $this->save();
+		$result = $this->save($data);
 
 		$this->triggerEvent('onAfterCopy', array(&$result));
 
@@ -2305,7 +2374,7 @@ class DataModel extends Model implements \JTableInterface
 	{
 		if ($reset)
 		{
-			$this->reset(true);
+			$this->reset();
 		}
 
 		try
@@ -3417,7 +3486,7 @@ class DataModel extends Model implements \JTableInterface
 	 *
 	 * @return $this
 	 */
-	public function whereHas($relation, callable $callBack, $replace = true)
+	public function whereHas($relation, $callBack, $replace = true)
 	{
 		$this->has($relation, 'callback', $callBack, $replace);
 
@@ -4258,5 +4327,60 @@ class DataModel extends Model implements \JTableInterface
 		$fieldName = $this->getFieldAlias($fieldName);
 
 		return in_array($fieldName, $this->fieldsSkipChecks);
+	}
+
+	/**
+	 * Returns all lower and upper case permutations of the database prefix
+	 *
+	 * @return  array
+	 */
+	protected function getPrefixCasePermutations()
+	{
+		if (empty(self::$prefixCasePermutations))
+		{
+			$prefix = $this->getDbo()->getPrefix();
+			$suffix = '';
+
+			if (substr($prefix, -1) == '_')
+			{
+				$suffix = '_';
+				$prefix = substr($prefix, 0, -1);
+			}
+
+			$letters      = str_split($prefix, 1);
+			$permutations = array('');
+
+			foreach ($letters as $nextLetter)
+			{
+				$lower = strtolower($nextLetter);
+				$upper = strtoupper($nextLetter);
+				$ret = array();
+
+				foreach ($permutations as $perm)
+				{
+					$ret[] = $perm . $lower;
+
+					if ($lower != $upper)
+					{
+						$ret[] = $perm . $upper;
+					}
+
+					$permutations = $ret;
+				}
+			}
+
+			$permutations = array_merge(array(
+				strtolower($prefix),
+				strtoupper($prefix),
+			), $permutations);
+			$permutations = array_map(function ($x) use ($suffix)
+			{
+				return $x . $suffix;
+			}, $permutations);
+
+			self::$prefixCasePermutations = array_unique($permutations);
+		}
+
+		return self::$prefixCasePermutations;
 	}
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -16,8 +16,19 @@ defined('_JEXEC') or die;
  */
 class Ip
 {
-	/** @var   string  The IP address of the current visitor */
+	/**
+	 * The IP address of the current visitor
+	 *
+	 * @var   string
+	 */
 	protected static $ip = null;
+
+	/**
+	 * Should I allow IP overrides through X-Forwarded-For or Client-Ip HTTP headers?
+	 *
+	 * @var    bool
+	 */
+	protected static $allowIpOverrides = true;
 
 	/**
 	 * Get the current visitor's IP address
@@ -369,6 +380,18 @@ class Ip
 	}
 
 	/**
+	 * Should I allow the remote client's IP to be overridden by an X-Forwarded-For or Client-Ip HTTP header?
+	 *
+	 * @param   bool  $newState  True to allow the override
+	 *
+	 * @return  void
+	 */
+	public static function setAllowIpOverrides($newState)
+	{
+		self::$allowIpOverrides = $newState ? true : false;
+	}
+
+	/**
 	 * Gets the visitor's IP address. Automatically handles reverse proxies
 	 * reporting the IPs of intermediate devices, like load balancers. Examples:
 	 * https://www.akeebabackup.com/support/admin-tools/13743-double-ip-adresses-in-security-exception-log-warnings.html
@@ -412,13 +435,13 @@ class Ip
 		if (isset($_SERVER))
 		{
 			// Do we have an x-forwarded-for HTTP header (e.g. NginX)?
-			if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER))
+			if (self::$allowIpOverrides && array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER))
 			{
 				return $_SERVER['HTTP_X_FORWARDED_FOR'];
 			}
 
 			// Do we have a client-ip header (e.g. non-transparent proxy)?
-			if (array_key_exists('HTTP_CLIENT_IP', $_SERVER))
+			if (self::$allowIpOverrides && array_key_exists('HTTP_CLIENT_IP', $_SERVER))
 			{
 				return $_SERVER['HTTP_CLIENT_IP'];
 			}
@@ -436,13 +459,13 @@ class Ip
 		}
 
 		// Do we have an x-forwarded-for HTTP header?
-		if (getenv('HTTP_X_FORWARDED_FOR'))
+		if (self::$allowIpOverrides && getenv('HTTP_X_FORWARDED_FOR'))
 		{
 			return getenv('HTTP_X_FORWARDED_FOR');
 		}
 
 		// Do we have a client-ip header?
-		if (getenv('HTTP_CLIENT_IP'))
+		if (self::$allowIpOverrides && getenv('HTTP_CLIENT_IP'))
 		{
 			return getenv('HTTP_CLIENT_IP');
 		}

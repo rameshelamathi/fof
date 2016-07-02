@@ -1,4 +1,9 @@
 <?php
+/**
+ * @package     FOF
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
+ */
 
 namespace FOF30\Tests\DataController;
 
@@ -109,6 +114,7 @@ class DataControllertest extends DatabaseTest
                 }
             ))
         ));
+
         $controller = new DataControllerStub($container, $test['constructConfig']);
 
         ReflectionHelper::setValue($controller, 'viewName', $test['mock']['viewName']);
@@ -143,9 +149,9 @@ class DataControllertest extends DatabaseTest
         ));
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('display', 'getModel'), array($container));
-        $controller->expects($this->any())->method('display')->with($this->equalTo($check['display']));
+        $controller->method('display')->with($this->equalTo($check['display']));
 
-        $controller->expects($this->any())->method('getModel')->willReturn(new ClosureHelper(array(
+        $controller->method('getModel')->willReturn(new ClosureHelper(array(
             'savestate' => function($self, $state) use(&$checker){
                 $checker['savestate'] = $state;
             },
@@ -180,20 +186,20 @@ class DataControllertest extends DatabaseTest
         $modelMethods = array('getId', 'getForm', 'setFormName');
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', $modelMethods, array(), '', false);
 
-        $model->expects($this->any())->method('getId')->willReturnCallback(function() use (&$test){
+        $model->method('getId')->willReturnCallback(function() use (&$test){
             return array_shift($test['mock']['getId']);
         });
 
-        $model->expects($this->any())->method('getForm')->willReturn($test['mock']['getForm']);
-        $model->expects($this->any())->method('setFormName')->with($check['setForm']);
+        $model->method('getForm')->willReturn($test['mock']['getForm']);
+        $model->method('setFormName')->with($check['setForm']);
 
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('getModel', 'getIDsFromRequest', 'display'), array(static::$container));
-        $controller->expects($this->any())->method('getModel')->willReturn($model);
-        $controller->expects($this->any())->method('getIDsFromRequest')
+        $controller->method('getModel')->willReturn($model);
+        $controller->method('getIDsFromRequest')
             ->willReturn($test['mock']['ids']);
 
-        $controller->expects($this->any())->method('display')->with($this->equalTo($check['display']));
+        $controller->method('display')->with($this->equalTo($check['display']));
 
         if($check['exception'])
         {
@@ -243,12 +249,12 @@ class DataControllertest extends DatabaseTest
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('reset', 'bind', 'getForm', 'setFormName'), array(), '', false);
         $model->expects($check['bind'] ? $this->once() : $this->never())->method('bind')->with($check['bind']);
-        $model->expects($this->any())->method('setFormName')->with($this->equalTo($check['formName']));
-        $model->expects($this->any())->method('getForm')->willReturn($test['mock']['getForm']);
+        $model->method('setFormName')->with($this->equalTo($check['formName']));
+        $model->method('getForm')->willReturn($test['mock']['getForm']);
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('getModel', 'display'), array($container));
-        $controller->expects($this->any())->method('getModel')->willReturn($model);
-        $controller->expects($this->any())->method('display')->with($this->equalTo($check['display']));
+        $controller->method('getModel')->willReturn($model);
+        $controller->method('display')->with($this->equalTo($check['display']));
 
         ReflectionHelper::setValue($controller, 'layout', $test['mock']['layout']);
         ReflectionHelper::setValue($controller, 'cacheableTasks', $test['mock']['cache']);
@@ -299,9 +305,9 @@ class DataControllertest extends DatabaseTest
 
         $modelMethods = array('getId', 'lock', 'bind', 'setFormName', 'getForm', 'isLocked');
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', $modelMethods, array(), '', false);
-        $model->expects($this->any())->method('getId')->willReturn($test['mock']['getId']);
+        $model->method('getId')->willReturn($test['mock']['getId']);
 
-        $method = $model->expects($this->any())->method('lock');
+        $method = $model->method('lock');
 
         if($test['mock']['lock'] === 'throw')
         {
@@ -313,17 +319,17 @@ class DataControllertest extends DatabaseTest
         }
 
         $model->expects($check['bind'] ? $this->once() : $this->never())->method('bind')->with($this->equalTo($check['bind']));
-        $model->expects($this->any())->method('setFormName')->with($this->equalTo($check['formName']));
-        $model->expects($this->any())->method('getForm')->willReturn($test['mock']['getForm']);
+        $model->method('setFormName')->with($this->equalTo($check['formName']));
+        $model->method('getForm')->willReturn($test['mock']['getForm']);
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub',
             array('getModel', 'getIDsFromRequest', 'setRedirect', 'display'), array($container));
 
-        $controller->expects($this->any())->method('getModel')->willReturn($model);
+        $controller->method('getModel')->willReturn($model);
         $controller->expects($check['getFromReq'] ? $this->once() : $this->never())->method('getIDsFromRequest');
         $controller->expects($check['redirect'] ? $this->once() : $this->never())->method('setRedirect')
             ->with($this->equalTo($check['url']), $this->equalTo($check['msg']), $this->equalTo('error'));
-        $controller->expects($this->any())->method('display')->with($this->equalTo($check['display']));
+        $controller->method('display')->with($this->equalTo($check['display']));
 
         ReflectionHelper::setValue($controller, 'layout', $test['mock']['layout']);
         ReflectionHelper::setValue($controller, 'cacheableTasks', $test['mock']['cache']);
@@ -354,7 +360,7 @@ class DataControllertest extends DatabaseTest
         ));
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('csrfProtection', 'applySave', 'setRedirect'), array($container));
-        $controller->expects($this->any())->method('applySave')->willReturn($test['mock']['apply']);
+        $controller->method('applySave')->willReturn($test['mock']['apply']);
         $controller->expects($check['redirect'] ? $this->once() : $this->never())->method('setRedirect')
             ->with($this->equalTo($check['url']), $this->equalTo($check['msg']));
 
@@ -375,7 +381,7 @@ class DataControllertest extends DatabaseTest
         ));
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('find', 'copy'), array($container), '', false);
-        $model->expects($this->any())->method('find')->willReturnCallback(
+        $model->method('find')->willReturnCallback(
             function() use (&$test)
             {
                 // Should I return a value or throw an exception?
@@ -390,7 +396,7 @@ class DataControllertest extends DatabaseTest
             }
         );
 
-        $model->expects($this->any())->method('copy')->willReturnCallback(
+        $model->method('copy')->willReturnCallback(
             function() use (&$test)
             {
                 // Should I return a value or throw an exception?
@@ -406,8 +412,8 @@ class DataControllertest extends DatabaseTest
         );
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('csrfProtection', 'getModel', 'getIDsFromRequest', 'setRedirect'), array($container));
-        $controller->expects($this->any())->method('getModel')->willReturn($model);
-        $controller->expects($this->any())->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
+        $controller->method('getModel')->willReturn($model);
+        $controller->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
 
         $controller->expects($this->once())->method('setRedirect')->with($this->equalTo($check['url']), $this->equalTo($check['msg']), $this->equalTo($check['type']));
 
@@ -479,10 +485,10 @@ class DataControllertest extends DatabaseTest
         ));
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('unlock', 'getId'), array($container), '', false);
-        $model->expects($this->any())->method('getId')->willReturn($test['mock']['getId']);
+        $model->method('getId')->willReturn($test['mock']['getId']);
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('getModel', 'getIDsFromRequest', 'setRedirect'), array($container));
-        $controller->expects($this->any())->method('getModel')->willReturn($model);
+        $controller->method('getModel')->willReturn($model);
         $controller->expects($check['getFromReq'] ? $this->once() : $this->never())->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
         $controller->expects($this->once())->method('setRedirect')->with($this->equalTo($check['url']));
 
@@ -510,7 +516,7 @@ class DataControllertest extends DatabaseTest
         );
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('publish'), array($container, $config));
-        $model->expects($this->any())->method('publish')->willReturnCallback(
+        $model->method('publish')->willReturnCallback(
             function() use (&$test)
             {
                 // Should I return a value or throw an exception?
@@ -526,8 +532,8 @@ class DataControllertest extends DatabaseTest
         );
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('csrfProtection', 'getModel', 'getIDsFromRequest', 'setRedirect'), array($container));
-        $controller->expects($this->any())->method('getModel')->willReturn($model);
-        $controller->expects($this->any())->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
+        $controller->method('getModel')->willReturn($model);
+        $controller->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
 
         $controller->expects($this->once())->method('setRedirect')->with($this->equalTo($check['url']), $this->equalTo($check['msg']), $this->equalTo($check['type']));
 
@@ -553,7 +559,7 @@ class DataControllertest extends DatabaseTest
         );
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('unpublish'), array($container, $config));
-        $model->expects($this->any())->method('unpublish')->willReturnCallback(
+        $model->method('unpublish')->willReturnCallback(
             function() use (&$test)
             {
                 // Should I return a value or throw an exception?
@@ -569,8 +575,8 @@ class DataControllertest extends DatabaseTest
         );
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('csrfProtection', 'getModel', 'getIDsFromRequest', 'setRedirect'), array($container));
-        $controller->expects($this->any())->method('getModel')->willReturn($model);
-        $controller->expects($this->any())->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
+        $controller->method('getModel')->willReturn($model);
+        $controller->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
 
         $controller->expects($this->once())->method('setRedirect')->with($this->equalTo($check['url']), $this->equalTo($check['msg']), $this->equalTo($check['type']));
 
@@ -596,7 +602,7 @@ class DataControllertest extends DatabaseTest
         );
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('archive'), array($container, $config));
-        $model->expects($this->any())->method('archive')->willReturnCallback(
+        $model->method('archive')->willReturnCallback(
             function() use (&$test)
             {
                 // Should I return a value or throw an exception?
@@ -612,8 +618,8 @@ class DataControllertest extends DatabaseTest
         );
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('csrfProtection', 'getModel', 'getIDsFromRequest', 'setRedirect'), array($container));
-        $controller->expects($this->any())->method('getModel')->willReturn($model);
-        $controller->expects($this->any())->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
+        $controller->method('getModel')->willReturn($model);
+        $controller->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
 
         $controller->expects($this->once())->method('setRedirect')->with($this->equalTo($check['url']), $this->equalTo($check['msg']), $this->equalTo($check['type']));
 
@@ -639,7 +645,7 @@ class DataControllertest extends DatabaseTest
         );
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('trash'), array($container, $config));
-        $model->expects($this->any())->method('trash')->willReturnCallback(
+        $model->method('trash')->willReturnCallback(
             function() use (&$test)
             {
                 // Should I return a value or throw an exception?
@@ -655,8 +661,8 @@ class DataControllertest extends DatabaseTest
         );
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('csrfProtection', 'getModel', 'getIDsFromRequest', 'setRedirect'), array($container));
-        $controller->expects($this->any())->method('getModel')->willReturn($model);
-        $controller->expects($this->any())->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
+        $controller->method('getModel')->willReturn($model);
+        $controller->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
 
         $controller->expects($this->once())->method('setRedirect')->with($this->equalTo($check['url']), $this->equalTo($check['msg']), $this->equalTo($check['type']));
 
@@ -682,7 +688,7 @@ class DataControllertest extends DatabaseTest
         );
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('checkin'), array($container, $config));
-        $model->expects($this->any())->method('checkin')->willReturnCallback(
+        $model->method('checkin')->willReturnCallback(
             function() use (&$test)
             {
                 // Should I return a value or throw an exception?
@@ -698,8 +704,8 @@ class DataControllertest extends DatabaseTest
         );
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('csrfProtection', 'getModel', 'getIDsFromRequest', 'setRedirect'), array($container));
-        $controller->expects($this->any())->method('getModel')->willReturn($model);
-        $controller->expects($this->any())->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
+        $controller->method('getModel')->willReturn($model);
+        $controller->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
 
         $controller->expects($this->once())->method('setRedirect')->with($this->equalTo($check['url']), $this->equalTo($check['msg']), $this->equalTo($check['type']));
 
@@ -733,8 +739,8 @@ class DataControllertest extends DatabaseTest
 
         $model      = new DataModelStub($container, $config);
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('csrfProtection', 'getModel', 'getIDsFromRequest', 'setRedirect'), array($container));
-        $controller->expects($this->any())->method('getModel')->willReturn($model);
-        $controller->expects($this->any())->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
+        $controller->method('getModel')->willReturn($model);
+        $controller->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
         $controller->expects($this->once())->method('setRedirect')
             ->with($this->equalTo($check['url']), $this->equalTo($check['msg']), $this->equalTo($check['type']));
 
@@ -771,7 +777,7 @@ class DataControllertest extends DatabaseTest
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('move', 'getId'), array($container, $config));
         $model->expects($this->once())->method('getId')->willReturn($test['mock']['getId']);
-        $model->expects($this->any())->method('move')->willReturnCallback(
+        $model->method('move')->willReturnCallback(
             function() use (&$test)
             {
                 // Should I return a value or throw an exception?
@@ -787,7 +793,7 @@ class DataControllertest extends DatabaseTest
         );
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('csrfProtection', 'getModel', 'getIDsFromRequest', 'setRedirect'), array($container));
-        $controller->expects($this->any())->method('getModel')->willReturn($model);
+        $controller->method('getModel')->willReturn($model);
         $controller->expects($check['getFromReq'] ? $this->once() : $this->never())->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
 
         $controller->expects($this->once())->method('setRedirect')->with($this->equalTo($check['url']), $this->equalTo($check['msg']), $this->equalTo($check['type']));
@@ -815,7 +821,7 @@ class DataControllertest extends DatabaseTest
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('move', 'getId'), array($container, $config));
         $model->expects($this->once())->method('getId')->willReturn($test['mock']['getId']);
-        $model->expects($this->any())->method('move')->willReturnCallback(
+        $model->method('move')->willReturnCallback(
             function() use (&$test)
             {
                 // Should I return a value or throw an exception?
@@ -831,7 +837,7 @@ class DataControllertest extends DatabaseTest
         );
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('csrfProtection', 'getModel', 'getIDsFromRequest', 'setRedirect'), array($container));
-        $controller->expects($this->any())->method('getModel')->willReturn($model);
+        $controller->method('getModel')->willReturn($model);
         $controller->expects($check['getFromReq'] ? $this->once() : $this->never())->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
 
         $controller->expects($this->once())->method('setRedirect')->with($this->equalTo($check['url']), $this->equalTo($check['msg']), $this->equalTo($check['type']));
@@ -860,7 +866,7 @@ class DataControllertest extends DatabaseTest
         );
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('find', 'delete'), array($container, $config));
-        $model->expects($this->any())->method('find')->willReturnCallback(
+        $model->method('find')->willReturnCallback(
             function() use (&$test)
             {
                 // Should I return a value or throw an exception?
@@ -875,7 +881,7 @@ class DataControllertest extends DatabaseTest
             }
         );
 
-        $model->expects($this->any())->method('delete')->willReturnCallback(
+        $model->method('delete')->willReturnCallback(
             function() use (&$test)
             {
                 // Should I return a value or throw an exception?
@@ -891,8 +897,8 @@ class DataControllertest extends DatabaseTest
         );
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('csrfProtection', 'getModel', 'getIDsFromRequest', 'setRedirect'), array($container));
-        $controller->expects($this->any())->method('getModel')->willReturn($model);
-        $controller->expects($this->any())->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
+        $controller->method('getModel')->willReturn($model);
+        $controller->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
 
         $controller->expects($this->once())->method('setRedirect')->with($this->equalTo($check['url']), $this->equalTo($check['msg']), $this->equalTo($check['type']));
 
@@ -982,7 +988,7 @@ class DataControllertest extends DatabaseTest
         );
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('loadhistory', 'store', 'lock', 'unlock', 'getState'), array($container, $config));
-        $model->expects($this->any())->method('loadhistory')->willReturnCallback(function() use ($test){
+        $model->method('loadhistory')->willReturnCallback(function() use ($test){
             if($test['mock']['history'] == 'exception'){
                 throw new \Exception('Load history error');
             }
@@ -990,14 +996,14 @@ class DataControllertest extends DatabaseTest
             ->with($this->equalTo($check['version_id']), $this->equalTo($check['alias']));
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('getModel', 'checkACL', 'setRedirect'), array($container));
-        $controller->expects($this->any())->method('getModel')->willReturn($model);
-        $controller->expects($this->any())->method('setRedirect')->with(
+        $controller->method('getModel')->willReturn($model);
+        $controller->method('setRedirect')->with(
             $this->equalTo($check['url']),
             $this->equalTo($check['msg']),
             $this->equalTo($check['type'])
         );
 
-        $controller->expects($this->any())->method('checkACL')->willReturn($test['mock']['checkACL']);
+        $controller->method('checkACL')->willReturn($test['mock']['checkACL']);
 
         $result = $controller->loadhistory();
 

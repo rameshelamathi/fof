@@ -17,8 +17,7 @@
 /strapper/akeeba_strapper/js
 /strapper/akeeba_strapper/less
 
-/Tests/environments/3.3/cache/
-/Tests/environments/3.3/templates/fake_test_template
+/Tests/environments/
 /Tests/config.php
 
 /vendor

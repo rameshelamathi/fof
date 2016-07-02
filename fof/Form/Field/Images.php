@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -45,6 +45,7 @@ class Images extends ImageList
 		foreach ($this->value as $image)
 		{
 			$imgattr = array();
+            $alt     = null;
 
 			if ($class)
 			{
@@ -80,10 +81,6 @@ class Images extends ImageList
 			{
 				$alt = JText::_((string) $this->element['alt']);
 			}
-			else
-			{
-				$alt = null;
-			}
 
 			if ($this->element['title'])
 			{
@@ -93,19 +90,22 @@ class Images extends ImageList
 			$path = (string) $this->element['directory'];
 			$path = trim($path, '/' . DIRECTORY_SEPARATOR);
 
-			if ($image && file_exists(JPATH_ROOT . '/' . $path . '/' . $image))
+            $platform = $this->form->getContainer()->platform;
+            $baseDirs = $platform->getPlatformBaseDirs();
+
+			if ($image && file_exists($baseDirs['root'] . '/' . $path . '/' . $image))
 			{
-				$src = $this->form->getContainer()->platform->URIroot() . '/' . $path . '/' . $image;
+				$src   = $platform->URIroot() . '/' . $path . '/' . $image;
+                $html .= JHtml::image($src, $alt, $imgattr);
 			}
 			else
 			{
-				$src = '';
+                // JHtml::image returns weird stuff when an empty path is provided, so let's be safe than sorry and return empty
+				$html .= '';
 			}
-
-			$html .= JHtml::image($src, $alt, $imgattr);
 		}
 
-		$html = '</span>';
+		$html .= '</span>';
 
 		return $html;
 	}

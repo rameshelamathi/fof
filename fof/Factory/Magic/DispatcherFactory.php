@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -31,7 +31,7 @@ class DispatcherFactory extends BaseFactory
 		$defaultConfig = $appConfig->get('dispatcher.*');
 		$config = array_merge($defaultConfig, $config);
 
-		$className = $this->container->getNamespacePrefix() . 'Dispatcher\\DefaultDispatcher';
+		$className = $this->container->getNamespacePrefix($this->getSection()) . 'Dispatcher\\DefaultDispatcher';
 
 		if (!class_exists($className, true))
 		{

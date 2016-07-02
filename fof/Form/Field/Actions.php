@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -12,7 +12,7 @@ use FOF30\Form\Exception\GetStaticNotAllowed;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
-use FOF30\Utils\String;
+use FOF30\Utils\StringHelper;
 use \JHtml;
 
 defined('_JEXEC') or die;
@@ -111,27 +111,27 @@ class Actions extends \JFormFieldList implements FieldInterface
 
 		if (isset($this->element['show_published']))
 		{
-			$config['published'] = String::toBool($this->element['show_published']);
+			$config['published'] = StringHelper::toBool($this->element['show_published']);
 		}
 
 		if (isset($this->element['show_unpublished']))
 		{
-			$config['unpublished'] = String::toBool($this->element['show_unpublished']);
+			$config['unpublished'] = StringHelper::toBool($this->element['show_unpublished']);
 		}
 
 		if (isset($this->element['show_archived']))
 		{
-			$config['archived'] = String::toBool($this->element['show_archived']);
+			$config['archived'] = StringHelper::toBool($this->element['show_archived']);
 		}
 
 		if (isset($this->element['show_trash']))
 		{
-			$config['trash'] = String::toBool($this->element['show_trash']);
+			$config['trash'] = StringHelper::toBool($this->element['show_trash']);
 		}
 
 		if (isset($this->element['show_all']))
 		{
-			$config['all'] = String::toBool($this->element['show_all']);
+			$config['all'] = StringHelper::toBool($this->element['show_all']);
 		}
 
 		return $config;
@@ -229,16 +229,13 @@ class Actions extends \JFormFieldList implements FieldInterface
 
 		$config = $this->getConfig();
 
-		// Initialise
-		$prefix       = '';
-		$publish_up   = null;
-		$publish_down = null;
-
 		$html = '<div class="btn-group">';
 
 		// Render a published field
-		if ($publishedFieldName = $this->item->getFieldAlias('enabled'))
+		if ($this->item->hasField('enabled'))
 		{
+            $publishedFieldName = $this->item->getFieldAlias('enabled');
+
 			if ($config['published'] || $config['unpublished'])
 			{
 				// Generate a FieldInterfacePublished field
@@ -250,19 +247,19 @@ class Actions extends \JFormFieldList implements FieldInterface
 
 			if ($config['archived'])
 			{
-				$archived	= $this->item->{$publishedFieldName} == 2 ? true : false;
+				$archived	= $this->item->getFieldValue($publishedFieldName) == 2 ? true : false;
 
 				// Create dropdown items
 				$action = $archived ? 'unarchive' : 'archive';
-				JHtml::_('actionsdropdown.' . $action, 'cb' . $this->rowid, $prefix);
+				JHtml::_('actionsdropdown.' . $action, 'cb' . $this->rowid);
 			}
 
 			if ($config['trash'])
 			{
-				$trashed	= $this->item->{$publishedFieldName} == -2 ? true : false;
+				$trashed	= $this->item->getFieldValue($publishedFieldName) == -2 ? true : false;
 
 				$action = $trashed ? 'untrash' : 'trash';
-				JHtml::_('actionsdropdown.' . $action, 'cb' . $this->rowid, $prefix);
+				JHtml::_('actionsdropdown.' . $action, 'cb' . $this->rowid);
 			}
 
 			// Render dropdown list

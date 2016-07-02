@@ -11,12 +11,15 @@
 /build/templates/release*
 /build/tools
 
+/cli/fof.phar
+
 /documentation/*.xml~
 
 /fof/include.php
 /fof/lib_fof30.xml
 /fof/lib_f0f.xml
 /fof/version.txt
+/fof.phar
 
 /release/*.zip
 
@@ -24,10 +27,10 @@
 /strapper/files_strapper.xml
 /strapper/akeeba_strapper/version.php
 
-/Tests/environments/3.3/cache/
-/Tests/environments/3.3/templates/fake_test_template
+/Tests/environments/
 /Tests/coverage
 /Tests/config.php
+/Tests/debug.txt
 
 /vendor/*
 

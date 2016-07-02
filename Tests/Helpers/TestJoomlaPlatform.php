@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -34,6 +34,8 @@ class TestJoomlaPlatform extends PlatformJoomla
 
     public static $uriBase = null;
 
+    public static $uriRoot = null;
+
     /** @var \Closure Supply a closure to perform additional checks */
     public static $authorise = null;
 
@@ -42,6 +44,12 @@ class TestJoomlaPlatform extends PlatformJoomla
 
     /** @var \Closure Supply a closure to perform additional checks */
     public static $runPlugins = null;
+
+    /** @var  \Closure Supply a closure to mock the language object */
+    public static $language;
+
+    /** @var  \Closure Supply a closure to mock the config object */
+    public static $config;
 
     /**
      * Resets all the mock variables to their default value
@@ -55,8 +63,10 @@ class TestJoomlaPlatform extends PlatformJoomla
         static::$baseDirs         = null;
         static::$user             = null;
         static::$uriBase          = null;
+        static::$uriRoot          = null;
         static::$authorise        = null;
         static::$runPlugins       = null;
+        static::$config           = null;
 
         static::$getUserStateFromRequest = null;
     }
@@ -79,6 +89,16 @@ class TestJoomlaPlatform extends PlatformJoomla
         }
 
         return parent::URIbase($pathonly);
+    }
+
+    public function URIroot($pathonly = false, $path = null)
+    {
+        if(isset(static::$uriRoot))
+        {
+            return static::$uriRoot;
+        }
+
+        return parent::URIroot($pathonly, $path);
     }
 
     public function authorise($action, $assetname)
@@ -164,5 +184,25 @@ class TestJoomlaPlatform extends PlatformJoomla
         }
 
         return parent::runPlugins($event, $data);
+    }
+
+    public function getLanguage()
+    {
+        if(is_callable(static::$language))
+        {
+            return call_user_func(static::$language);
+        }
+
+        return parent::getLanguage();
+    }
+
+    public function getConfig()
+    {
+        if(is_callable(static::$config))
+        {
+            return call_user_func(static::$config);
+        }
+
+        return parent::getConfig();
     }
 }

@@ -1,4 +1,10 @@
 <?php
+/**
+ * @package     FOF
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
+ */
+
 namespace FOF30\Tests\DataModel;
 
 use FOF30\Model\DataModel\Behaviour\Own;
@@ -70,7 +76,7 @@ class OwnTest extends DatabaseTest
 
         $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('reset', 'getFieldValue'), array(static::$container, $config));
         $model->expects($check['reset'] ? $this->once() : $this->never())->method('reset');
-        $model->expects($this->any())->method('getFieldValue')->willReturn($test['mock']['created_by']);
+        $model->method('getFieldValue')->willReturn($test['mock']['created_by']);
 
         $dispatcher = $model->getBehavioursDispatcher();
         $filter     = new Own($dispatcher);

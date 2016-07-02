@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -135,10 +135,62 @@ interface FactoryInterface
 	 */
 	public function isSaveScaffolding();
 
+    /**
+     * Should we save controller to disk?
+     *
+     * @param   boolean $state
+     */
+    public function setSaveControllerScaffolding($state);
+
+    /**
+     * Should we save controller scaffolding to disk?
+     *
+     * @return  boolean $state
+     */
+    public function isSaveControllerScaffolding();
+
+    /**
+     * Should we save model to disk?
+     *
+     * @param   boolean $state
+     */
+    public function setSaveModelScaffolding($state);
+
+    /**
+     * Should we save model scaffolding to disk?
+     *
+     * @return  boolean $state
+     */
+    public function isSaveModelScaffolding();
+
+    /**
+     * Should we save view to disk?
+     *
+     * @param   boolean $state
+     */
+    public function setSaveViewScaffolding($state);
+
+    /**
+     * Should we save view scaffolding to disk?
+     *
+     * @return  boolean $state
+     */
+    public function isSaveViewScaffolding();
+
 	/**
 	 * Set the status of saving the scaffolding result to disk.
 	 *
 	 * @param boolean $saveScaffolding
 	 */
 	public function setSaveScaffolding($saveScaffolding);
+
+    /**
+     * @return string
+     */
+    public function getSection();
+
+    /**
+     * @param string $section
+     */
+    public function setSection($section);
 }

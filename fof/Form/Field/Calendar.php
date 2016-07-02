@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -10,6 +10,7 @@ namespace FOF30\Form\Field;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
+use FOF30\Tests\Helpers\TravisLogger;
 use \JHtml;
 
 defined('_JEXEC') or die;
@@ -231,8 +232,16 @@ class Calendar extends \JFormFieldCalendar implements FieldInterface
 		}
 		else
 		{
-			$jDate = new \JDate($this->value);
-			$value = strftime($this->format, $jDate->getTimestamp());
+			if (!$this->value
+				&& (string) $this->element['empty_replacement'])
+			{
+				$value = $this->element['empty_replacement'];
+			}
+			else
+			{
+				$jDate = new \JDate($this->value);
+				$value = strftime($format, $jDate->getTimestamp());
+			}
 
 			return '<span class="' . $this->id . ' ' . $class . '">' .
 			htmlspecialchars($value, ENT_COMPAT, 'UTF-8') .

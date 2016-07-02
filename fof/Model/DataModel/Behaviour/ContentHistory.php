@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -20,6 +20,9 @@ defined('_JEXEC') or die;
  */
 class ContentHistory extends Observer
 {
+    /** @var  \JHelperContenthistory */
+    protected $historyHelper;
+
 	/**
 	 * The event which runs after storing (saving) data to the database
 	 *
@@ -34,8 +37,12 @@ class ContentHistory extends Observer
 
 		if (\JComponentHelper::getParams($aliasParts[0])->get('save_history', 0))
 		{
-			$historyHelper = new \JHelperContenthistory($model->getContentType());
-			$historyHelper->store($model);
+            if(!$this->historyHelper)
+            {
+                $this->historyHelper = new \JHelperContenthistory($model->getContentType());
+            }
+
+			$this->historyHelper->store($model);
 		}
 
 		return true;
@@ -55,8 +62,12 @@ class ContentHistory extends Observer
 
 		if (\JComponentHelper::getParams($aliasParts[0])->get('save_history', 0))
 		{
-			$historyHelper = new \JHelperContenthistory($model->getContentType());
-			$historyHelper->deleteHistory($model);
+            if(!$this->historyHelper)
+            {
+                $this->historyHelper = new \JHelperContenthistory($model->getContentType());
+            }
+
+			$this->historyHelper->deleteHistory($model);
 		}
 
 		return true;

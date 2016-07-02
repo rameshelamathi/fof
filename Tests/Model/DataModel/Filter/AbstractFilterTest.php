@@ -1,4 +1,9 @@
 <?php
+/**
+ * @package     FOF
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
+ */
 
 namespace FOF30\Tests\DataModel\AbstracFilter;
 
@@ -100,7 +105,7 @@ class AbstractFilterTest extends DatabaseTest
         $field  = (object)array('name' => 'test', 'type' => 'varchar');
         $filter = $this->getMock('\FOF30\Tests\Stubs\Model\DataModel\Filter\FilterStub', array('isEmpty', 'getFieldName', 'search'), array(\JFactory::getDbo(), $field));
 
-        $filter->expects($this->any())->method('isEmpty')->willReturn($test['mock']['isEmpty']);
+        $filter->method('isEmpty')->willReturn($test['mock']['isEmpty']);
         $filter->expects($check['name'] ? $this->once() : $this->never())->method('getFieldName')->willReturn('`test`');
         $filter->expects($check['search'] ? $this->once() : $this->never())->method('search')->willReturn('search');
 
@@ -122,8 +127,8 @@ class AbstractFilterTest extends DatabaseTest
         $field  = (object)array('name' => 'test', 'type' => 'varchar');
         $filter = $this->getMock('\FOF30\Tests\Stubs\Model\DataModel\Filter\FilterStub', array('isEmpty', 'getFieldName'), array(\JFactory::getDbo(), $field));
 
-        $filter->expects($this->any())->method('isEmpty')->willReturn($test['mock']['isEmpty']);
-        $filter->expects($this->any())->method('getFieldName')->willReturn('`test`');
+        $filter->method('isEmpty')->willReturn($test['mock']['isEmpty']);
+        $filter->method('getFieldName')->willReturn('`test`');
 
         $result = $filter->search($test['value'], $test['operator']);
 

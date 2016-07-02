@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -21,6 +21,9 @@ defined('_JEXEC') or die;
  */
 class Language extends Observer
 {
+    /** @var  \PlgSystemLanguageFilter */
+    protected $lang_filter_plugin;
+
 	/**
 	 * This event runs before we have built the query used to fetch a record
 	 * list in a model. It is used to blacklist the language filter
@@ -37,10 +40,8 @@ class Language extends Observer
 			$model->blacklistFilters('language');
 		}
 
-		$platform = $model->getContainer()->platform;
-
-		// Make sure the field actually exists
-		if (!$model->hasField('language'))
+		// Make sure the field actually exists AND we're not in CLI
+		if (!$model->hasField('language') || $model->getContainer()->platform->isCli())
 		{
 			return;
 		}
@@ -59,19 +60,27 @@ class Language extends Observer
 			return;
 		}
 
-		$lang_filter_plugin = \JPluginHelper::getPlugin('system', 'languagefilter');
-		$lang_filter_params = new \JRegistry($lang_filter_plugin->params);
+        // Ask Joomla for the plugin only if we don't already have it. Useful for tests
+        if(!$this->lang_filter_plugin)
+        {
+            $this->lang_filter_plugin = \JPluginHelper::getPlugin('system', 'languagefilter');
+        }
+
+		$lang_filter_params = new \JRegistry($this->lang_filter_plugin->params);
 
 		$languages = array('*');
 
 		if ($lang_filter_params->get('remove_default_prefix'))
 		{
 			// Get default site language
-			$lg = $platform->getLanguage();
+            $platform    = $model->getContainer()->platform;
+			$lg          = $platform->getLanguage();
 			$languages[] = $lg->getTag();
 		}
 		else
 		{
+            // We have to use JInput since the language fragment is not set in the $_REQUEST, thus we won't have it in our model
+            // TODO Double check the previous assumption
 			$languages[] = \JFactory::getApplication()->input->getCmd('language', '*');
 		}
 
@@ -103,8 +112,8 @@ class Language extends Observer
 			return;
 		}
 
-		// Make sure the field actually exists
-		if (!$model->hasField('language'))
+		// Make sure the field actually exists AND we're not in CLI
+		if (!$model->hasField('language') || $model->getContainer()->platform->isCli())
 		{
 			return;
 		}
@@ -124,8 +133,13 @@ class Language extends Observer
 			return;
 		}
 
-		$lang_filter_plugin = \JPluginHelper::getPlugin('system', 'languagefilter');
-		$lang_filter_params = new \JRegistry($lang_filter_plugin->params);
+        // Ask Joomla for the plugin only if we don't already have it. Useful for tests
+        if(!$this->lang_filter_plugin)
+        {
+            $this->lang_filter_plugin = \JPluginHelper::getPlugin('system', 'languagefilter');
+        }
+
+		$lang_filter_params = new \JRegistry($this->lang_filter_plugin->params);
 
 		$languages = array('*');
 

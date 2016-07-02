@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -73,7 +73,7 @@ class FilesCheck
 		$this->date = $date;
 
 		// Retrieve the date and version from the #__extensions table
-		$db = JFactory::getDbo();
+		$db = \JFactory::getDbo();
 		$query = $db->getQuery(true)->select('*')->from($db->qn('#__extensions'))
 			->where($db->qn('element') . ' = ' . $db->q($this->option))
 			->where($db->qn('type') . ' = ' . $db->q('component'));

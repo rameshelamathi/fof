@@ -1,4 +1,10 @@
 <?php
+/**
+ * @package     FOF
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
+ */
+
 namespace FOF30\Tests\DataModel\Relation\Relation\BelongsToMany;
 
 use FOF30\Model\DataModel\Collection;
@@ -156,6 +162,176 @@ WHERE `pivotTable`.`fakeapp_group_id` =`#__fakeapp_groups`.`fakeapp_group_id`';
         $count = $db->setQuery($query)->loadResult();
 
         $this->assertEquals(55, $count, 'BelongsToMany::saveAll Failed to save data inside the glue table');
+    }
+
+    /**
+     * Test adding new related items
+     *
+     * @group           BelongsToMany
+     * @group           BelongsToManySaveAll
+     * @covers          FOF30\Model\DataModel\Relation\BelongsToMany::saveAll
+     */
+    public function testCaseAddNewRelatedItem()
+    {
+        $platform = static::$container->platform;
+        $platform::$user = (object) array('id' => 42);
+
+        $model = new Groups(static::$container);
+        $model->belongsToMany('parts', 'Parts');
+        $model->find(1);
+        $relation = $model->getRelations()->getRelation('parts');
+
+        $existingParts = $model->parts->toArray();
+
+        $this->assertCount(3, $existingParts, 'Existing relations\' count must reflect items in the database');
+
+        $newPart = new Parts(static::$container);
+        $newPart->bind(array(
+            'description' => 'Shiny new part'
+        ));
+        $model->parts->add($newPart);
+
+        $relation->saveAll();
+
+        $db    = \JFactory::getDbo();
+        $query = $db->getQuery(true)
+                    ->select('*')
+                    ->from($db->qn('#__fakeapp_parts_groups'))
+                    ->where($db->qn('fakeapp_group_id') . ' = ' . $db->q(1));
+        $savedRelations = $db->setQuery($query)->loadAssocList('fakeapp_part_id');
+
+        $newPartId = $newPart->getId();
+
+        $this->assertArrayHasKey(1, $savedRelations);
+        $this->assertArrayHasKey(2, $savedRelations);
+        $this->assertArrayHasKey(3, $savedRelations);
+        $this->assertArrayHasKey($newPartId, $savedRelations);
+    }
+
+    /**
+     * Test adding new related items
+     *
+     * @group           BelongsToMany
+     * @group           BelongsToManySaveAll
+     * @covers          FOF30\Model\DataModel\Relation\BelongsToMany::saveAll
+     */
+    public function testCaseAddExistingRelatedItem()
+    {
+        $platform = static::$container->platform;
+        $platform::$user = (object) array('id' => 42);
+
+        $model = new Groups(static::$container);
+        $model->belongsToMany('parts', 'Parts');
+        $model->find(2);
+        $relation = $model->getRelations()->getRelation('parts');
+
+        $existingParts = $model->parts->toArray();
+
+        $this->assertCount(2, $existingParts, 'Existing relations\' count must reflect items in the database');
+
+        $newPart = new Parts(static::$container);
+        $newPart->find(3);
+        $model->parts->add($newPart);
+
+        $relation->saveAll();
+
+        $db    = \JFactory::getDbo();
+        $query = $db->getQuery(true)
+                    ->select('*')
+                    ->from($db->qn('#__fakeapp_parts_groups'))
+                    ->where($db->qn('fakeapp_group_id') . ' = ' . $db->q(1));
+        $savedRelations = $db->setQuery($query)->loadAssocList('fakeapp_part_id');
+
+        $this->assertArrayHasKey(1, $savedRelations);
+        $this->assertArrayHasKey(2, $savedRelations);
+        $this->assertArrayHasKey(3, $savedRelations);
+    }
+
+	public function testCaseAddExistingRelatedItemToNewRecord()
+	{
+		$platform = static::$container->platform;
+		$platform::$user = (object) array('id' => 42);
+
+		$model = new Groups(static::$container);
+		$model->belongsToMany('parts', 'Parts');
+		$model->description = 'Something new';
+
+		$existingParts = $model->parts->toArray();
+
+		$this->assertCount(0, $existingParts, 'Existing relations\' count must be zero for a new record');
+
+		$newPart = new Parts(static::$container);
+		$newPart->find(1);
+        $model->parts->add($newPart);
+
+		$model->push();
+
+		$db    = \JFactory::getDbo();
+		$query = $db->getQuery(true)
+					->select('*')
+					->from($db->qn('#__fakeapp_parts_groups'))
+					->where($db->qn('fakeapp_group_id') . ' = ' . $db->q($model->getId()));
+		$savedRelations = $db->setQuery($query)->loadAssocList('fakeapp_part_id');
+
+		$this->assertArrayHasKey(1, $savedRelations);
+	}
+
+	public function testCaseAddNewRelatedItemToNewRecord()
+	{
+		$platform = static::$container->platform;
+		$platform::$user = (object) array('id' => 42);
+
+		$model = new Groups(static::$container);
+		$model->belongsToMany('parts', 'Parts');
+		$model->description = 'Something new';
+
+		$existingParts = $model->parts->toArray();
+
+		$this->assertCount(0, $existingParts, 'Existing relations\' count must be zero for a new record');
+
+		$newPart = new Parts(static::$container);
+		$newPart->description = 'Yet another new part';
+		$model->parts->add($newPart);
+
+		$model->push();
+
+		$db    = \JFactory::getDbo();
+		$query = $db->getQuery(true)
+					->select('*')
+					->from($db->qn('#__fakeapp_parts_groups'))
+					->where($db->qn('fakeapp_group_id') . ' = ' . $db->q($model->getId()));
+		$savedRelations = $db->setQuery($query)->loadAssocList('fakeapp_part_id');
+
+		$this->assertNotNull($newPart->getId());
+		$this->assertArrayHasKey($newPart->getId(), $savedRelations);
+	}
+
+	public function testCaseDeleteRelatedItemFromExistingRecord()
+	{
+        $platform = static::$container->platform;
+        $platform::$user = (object) array('id' => 42);
+
+        $model = new Groups(static::$container);
+        $model->belongsToMany('parts', 'Parts');
+        $model->find(2);
+
+        $existingParts = $model->parts->toArray();
+
+        $model->parts->removeById(2);
+
+        $model->push();
+
+        $db    = \JFactory::getDbo();
+        $query = $db->getQuery(true)
+                    ->select('*')
+                    ->from($db->qn('#__fakeapp_parts_groups'))
+                    ->where($db->qn('fakeapp_group_id') . ' = ' . $db->q($model->getId()));
+        $savedRelations = $db->setQuery($query)->loadAssocList('fakeapp_part_id');
+
+		// This must still exist
+        $this->assertArrayHasKey(1, $savedRelations);
+		// This is the one we deleted
+        $this->assertArrayNotHasKey(2, $savedRelations);
     }
 
     /**

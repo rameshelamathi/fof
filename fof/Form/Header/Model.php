@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -42,6 +42,14 @@ class Model extends Selectable
 		$nonePlaceholder = (string) $this->element['none'];
 		$translate = empty($this->element['translate']) ? 'true' : (string) $this->element['translate'];
 		$translate = in_array(strtolower($translate), array('true','yes','1','on')) ? true : false;
+		$with = $this->element['with'] ? (string) $this->element['with'] : null;
+
+		if (!is_null($with))
+		{
+			$with = trim($with);
+			$with = explode(',', $with);
+			$with = array_map('trim', $with);
+		}
 
 		if (!empty($nonePlaceholder))
 		{
@@ -75,6 +83,11 @@ class Model extends Selectable
 		if ($applyAccess)
 		{
 			$model->applyAccessFiltering();
+		}
+
+		if (!is_null($with))
+		{
+			$model->with($with);
 		}
 
 		// Process state variables

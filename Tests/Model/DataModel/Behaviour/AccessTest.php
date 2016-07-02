@@ -1,4 +1,10 @@
 <?php
+/**
+ * @package     FOF
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
+ */
+
 namespace FOF30\Tests\DataModel;
 
 use FOF30\Model\DataModel\Behaviour\Access;
@@ -61,7 +67,7 @@ class AccessTest extends DatabaseTest
 
         $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('reset', 'getFieldValue'), array($container, $config));
         $model->expects($check['reset'] ? $this->once() : $this->never())->method('reset');
-        $model->expects($this->any())->method('getFieldValue')->willReturn($test['mock']['access']);
+        $model->method('getFieldValue')->willReturn($test['mock']['access']);
 
         $query      = \JFactory::getDbo()->getQuery(true)->select('*')->from('test');
         $dispatcher = $model->getBehavioursDispatcher();

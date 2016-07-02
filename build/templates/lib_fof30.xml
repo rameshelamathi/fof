@@ -40,6 +40,7 @@
 		<folder>Layout</folder>
 		<folder>Less</folder>
 		<folder>Model</folder>
+		<folder>Params</folder>
 		<folder>Pimple</folder>
 		<folder>Platform</folder>
 		<folder>Render</folder>

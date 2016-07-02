@@ -10,6 +10,7 @@
 	<testsuites>
 		<testsuite name="FOF Unit Tests">
 			<directory>Tests</directory>
+      <exclude>Tests/environments</exclude>
 		</testsuite>
 	</testsuites>
 
@@ -38,7 +39,6 @@
                 <directory suffix=".php">tests-old</directory>
 
                 <!-- Exclude packages that are impossible to test -->
-                <directory suffix=".php">fof/Form</directory>
                 <directory suffix=".php">fof/Render</directory>
                 <directory suffix=".php">fof/Update</directory>
 

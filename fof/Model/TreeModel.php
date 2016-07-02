@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -284,9 +284,18 @@ class TreeModel extends DataModel
      *
      * @codeCoverageIgnore
 	 */
-	public function copy()
+	public function copy($data = null)
 	{
-		return $this->create($this->toArray());
+		$selfData = $this->toArray();
+
+		if (!is_array($data))
+		{
+			$data = array();
+		}
+
+		$data = array_merge($data, $selfData);
+
+		return $this->create($data);
 	}
 
 	/**

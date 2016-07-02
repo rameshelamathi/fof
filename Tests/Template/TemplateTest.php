@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -242,6 +242,8 @@ class TemplateTest extends FOFTestCase
 	 */
 	public function testRoute($url, $expect, $message)
 	{
+		$config = JFactory::getConfig();
+		$config->set('sef', 1); // Required by these tests
 		$fullurl = static::$container->template->route($url);
 		$this->assertEquals(
 			$expect,

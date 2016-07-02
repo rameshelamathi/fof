@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -102,7 +102,7 @@ class AkeebaStrapper extends RenderBase implements RenderInterface
 				// We have a floating sidebar, they said. It looks great, they said. They must've been blind, I say!
 				'j-toggle-main',
 				'j-toggle-transition',
-				'span12',
+				'row-fluid',
 			);
 
 			$classes = array_unique($classes);
@@ -578,6 +578,20 @@ HTML;
 				$this->container->inflector->pluralize($form->getView()->getName())
 			);
 		}
+        else
+        {
+            // If I don't want to display the sidebar, I have to manually tell Joomla that I I already loaded it
+            // otherwise it will create the "empty" space on the left, but no elements will be there. Yuk!
+            $js = <<<JS
+localStorage.setItem('jsidebar', "true");
+JS;
+            $document = $this->container->platform->getDocument();
+
+            if ($document instanceof \JDocument)
+            {
+                $document->addScriptDeclaration($js);
+            }
+        }
 
 		// Reorder the fields with ordering first
 		$tmpFields = array();
@@ -703,7 +717,9 @@ HTML;
 		// Get and output the sidebar, if present
 		$sidebar = \JHtmlSidebar::render();
 
-		if ($show_filters && !empty($sidebar))
+		if ($show_filters && !empty($sidebar)
+			&& (!$this->container->platform->isFrontend() || $this->container->toolbar->getRenderFrontendSubmenu())
+		)
 		{
 			$html .= '<div id="j-sidebar-container" class="span2">' . "\n";
 			$html .= "\t$sidebar\n";
@@ -763,40 +779,27 @@ HTML;
 		// Start the table output
 		$html .= "\t\t" . '<table class="table table-striped" id="itemsList">' . "\n";
 
-		// Open the table header region if required
-
+		// Render the header row, if enabled
 		if ($show_header)
 		{
 			$html .= "\t\t\t<thead>" . "\n";
-		}
-
-		// Render the header row, if enabled
-
-		if ($show_header)
-		{
 			$html .= "\t\t\t\t<tr>" . "\n";
 			$html .= $header_html;
 			$html .= "\t\t\t\t</tr>" . "\n";
-		}
-
-		// Close the table header region if required
-
-		if ($show_header)
-		{
 			$html .= "\t\t\t</thead>" . "\n";
 		}
 
 		// Loop through rows and fields, or show placeholder for no rows
 		$html .= "\t\t\t<tbody>" . "\n";
-		$fields		 = $form->getFieldset('items');
-		$num_columns = count($fields);
-		$items		 = $model->get();
+
+		$items = $model->get();
 
 		if ($count = count($items))
 		{
 			$m = 1;
+			$i = 0;
 
-			foreach ($items as $i => $item)
+			foreach ($items as $item)
 			{
 				$rowHtml = '';
 
@@ -852,10 +855,15 @@ HTML;
 				}
 
 				$html .= "\t\t\t\t<tr class=\"$rowClass\">\n" . $rowHtml . "\t\t\t\t</tr>\n";
+
+				$i++;
 			}
 		}
 		elseif ($norows_placeholder)
 		{
+			$fields		 = $form->getFieldset('items');
+			$num_columns = count($fields);
+
 			$html .= "\t\t\t\t<tr><td colspan=\"$num_columns\">";
 			$html .= \JText::_($norows_placeholder);
 			$html .= "</td></tr>\n";
@@ -877,6 +885,12 @@ HTML;
 		$html .= "\t" . '<input type="hidden" name="view" value="' . $this->container->inflector->pluralize($form->getView()->getName()) . '" />' . "\n";
 		$html .= "\t" . '<input type="hidden" name="task" value="' . $form->getView()->getTask() . '" />' . "\n";
 		$html .= "\t" . '<input type="hidden" name="layout" value="' . $form->getView()->getLayout() . '" />' . "\n";
+		$html .= "\t" . '<input type="hidden" name="format" value="' . $this->container->input->getCmd('format', 'html') . '" />' . "\n";
+
+		if ($tmpl = $this->container->input->getCmd('tmpl', ''))
+		{
+			$html .= "\t" . '<input type="hidden" name="tmpl" value="' . $tmpl . '" />' . "\n";
+		}
 
 
 		// The id field is required in Joomla! 3 front-end to prevent the pagination limit box from screwing it up.
@@ -890,7 +904,7 @@ HTML;
 		$html .= "\t" . '<input type="hidden" name="filter_order" value="' . $filter_order . '" />' . "\n";
 		$html .= "\t" . '<input type="hidden" name="filter_order_Dir" value="' . $filter_order_Dir . '" />' . "\n";
 
-		$html .= "\t" . '<input type="hidden" name="' . \JFactory::getSession()->getFormToken() . '" value="1" />' . "\n";
+		$html .= "\t" . '<input type="hidden" name="' . $this->container->session->getFormToken() . '" value="1" />' . "\n";
 
 		// End the form
 		$html .= '</form>' . "\n";
@@ -1002,8 +1016,14 @@ HTML;
 		$html .= "\t" . '<input type="hidden" name="view" value="' . $form->getView()->getName() . '" />' . "\n";
 		$html .= "\t" . '<input type="hidden" name="task" value="' . $customTask . '" />' . "\n";
 		$html .= "\t" . '<input type="hidden" name="' . $key . '" value="' . $keyValue . '" />' . "\n";
+		$html .= "\t" . '<input type="hidden" name="format" value="' . $this->container->input->getCmd('format', 'html') . '" />' . "\n";
 
-		$html .= "\t" . '<input type="hidden" name="' . \JFactory::getSession()->getFormToken() . '" value="1" />' . "\n";
+		if ($tmpl = $this->container->input->getCmd('tmpl', ''))
+		{
+			$html .= "\t" . '<input type="hidden" name="tmpl" value="' . $tmpl . '" />' . "\n";
+		}
+
+		$html .= "\t" . '<input type="hidden" name="' . $this->container->session->getFormToken() . '" value="1" />' . "\n";
 
 		$html .= $this->renderFormRaw($form, $model, 'edit');
 		$html .= '</form>';
@@ -1178,6 +1198,8 @@ HTML;
 		// Add the fieldset fields
 		if (!empty($fields)) foreach ($fields as $field)
 		{
+			// TODO see \JFormField::renderField
+
 			$groupClass	 = $form->getFieldAttribute($field->fieldname, 'groupclass', '', $field->group);
 
 			// Auto-generate label and description if needed
@@ -1200,19 +1222,6 @@ HTML;
 			// Field description
 			$description = $form->getFieldAttribute($field->fieldname, 'description', '', $field->group);
 
-			/**
-			 * The following code is backwards incompatible. Most forms don't require a description in their form
-			 * fields. Having to use emptydescription="1" on each one of them is an overkill. Removed.
-			 */
-			/*
-			$emptydescription   = $form->getFieldAttribute($field->fieldname, 'emptydescription', false, $field->group);
-			if (empty($description) && !$emptydescription)
-			{
-				$description = strtoupper($input->get('option') . '_' . $model->getName() . '_' . $field->id . '_DESC');
-			}
-			*/
-
-			// Do we have field "prepend" and "append" text?
 			$prependText = $form->getFieldAttribute($field->fieldname, 'prepend_text', '', $field->group);
 			$appendText = $form->getFieldAttribute($field->fieldname, 'append_text', '', $field->group);
 

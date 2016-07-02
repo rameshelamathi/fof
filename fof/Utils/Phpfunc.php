@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  *
  * Based on the Seesion package of Aura for PHP – https://github.com/auraphp/Aura.Session
@@ -14,7 +14,7 @@ defined('_JEXEC') or die;
 /**
  * Intercept calls to PHP functions.
  *
- * @method  function_exists(string $function)
+ * @method  function_exists(StringHelper $function)
  * @method  mcrypt_list_algorithms()
  * @method  hash_algos()
  */

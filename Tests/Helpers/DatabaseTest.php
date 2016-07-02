@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -11,6 +11,11 @@ use FOF30\Container\Container;
 
 abstract class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
 {
+    /**
+     * @var			array	The JFactory pointers saved before the execution of the test
+     */
+    protected $savedFactoryState = array();
+
 	/**
 	 * Assigns mock callbacks to methods.
 	 *
@@ -37,7 +42,7 @@ abstract class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
 				$callback = array(get_called_class(), 'mock' . $method);
 			}
 
-			$mockObject->expects($this->any())
+			$mockObject
 				->method($methodName)
 				->will($this->returnCallback($callback));
 		}
@@ -58,7 +63,7 @@ abstract class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
 	{
 		foreach ($array as $method => $return)
 		{
-			$mockObject->expects($this->any())
+			$mockObject
 				->method($method)
 				->will($this->returnValue($return));
 		}
@@ -77,22 +82,19 @@ abstract class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
 
         if(!$connection)
         {
-            // Let's use the config file of our guinea pig
-            require_once JPATH_BASE.'/configuration.php';
-
-            $config = new \JConfig();
+            $config = \JFactory::getConfig();
 
             // P.A. Test database prefix is fixed with jos_ so we can setup common tables
             $options = array (
-                'driver'	=> ((isset ($config)) && ($config->dbtype != 'mysqli')) ? $config->dbtype : 'mysql',
-                'host' 		=> isset ($config) ? $config->host : '127.0.0.1',
-                'user' 		=> isset ($config) ? $config->user : 'utuser',
-                'password' 	=> isset ($config) ? $config->password : 'ut1234',
-                'database' 	=> isset ($config) ? $config->db : 'joomla_ut',
+                'driver'	=> ((isset ($config)) && ($config->get('dbtype') != 'mysqli')) ? $config->get('dbtype') : 'mysql',
+                'host' 		=> $config->get('host', '127.0.0.1'),
+                'user' 		=> $config->get('user', 'utuser'),
+                'password' 	=> $config->get('password', 'ut1234'),
+                'database' 	=> $config->get('db', 'joomla_ut'),
                 'prefix' 	=> 'jos_'
             );
 
-            $pdo = new \PDO($options['driver'].':host='.$options['host'].';dbname='.$options['database'], $options['user'], $options['password']);
+            $pdo = new \PDO('mysql:host='.$options['host'].';dbname='.$options['database'], $options['user'], $options['password']);
             $connection = $this->createDefaultDBConnection($pdo, $options['database']);
         }
 
@@ -164,5 +166,42 @@ abstract class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
         {
             $platform->reset();
         }
+    }
+
+    /**
+     * Saves the Factory pointers
+     *
+     * @return void
+     */
+    protected function saveFactoryState()
+    {
+        // We have to clone the objects, otherwise it's useless to save them
+        $this->savedFactoryState['application']	 = is_object(\JFactory::$application) ? clone \JFactory::$application : \JFactory::$application;
+        $this->savedFactoryState['config']		 = is_object(\JFactory::$config) ? clone \JFactory::$config : \JFactory::$config;
+        $this->savedFactoryState['dates']		 = \JFactory::$dates;
+        $this->savedFactoryState['session']		 = is_object(\JFactory::$session) ? clone \JFactory::$session : \JFactory::$session;
+        $this->savedFactoryState['language']	 = is_object(\JFactory::$language) ? clone \JFactory::$language : \JFactory::$language;
+        $this->savedFactoryState['document']	 = is_object(\JFactory::$document) ? clone \JFactory::$document : \JFactory::$document;
+        $this->savedFactoryState['acl']			 = is_object(\JFactory::$acl) ? clone \JFactory::$acl : \JFactory::$acl;
+        $this->savedFactoryState['database']	 = is_object(\JFactory::$database) ? clone \JFactory::$database : \JFactory::$database;
+        $this->savedFactoryState['mailer']		 = is_object(\JFactory::$mailer) ? clone \JFactory::$mailer : \JFactory::$mailer;
+    }
+
+    /**
+     * Sets the Factory pointers
+     *
+     * @return  void
+     */
+    protected function restoreFactoryState()
+    {
+        \JFactory::$application	= $this->savedFactoryState['application'];
+        \JFactory::$config		= $this->savedFactoryState['config'];
+        \JFactory::$dates		= $this->savedFactoryState['dates'];
+        \JFactory::$session		= $this->savedFactoryState['session'];
+        \JFactory::$language	= $this->savedFactoryState['language'];
+        \JFactory::$document	= $this->savedFactoryState['document'];
+        \JFactory::$acl			= $this->savedFactoryState['acl'];
+        \JFactory::$database	= $this->savedFactoryState['database'];
+        \JFactory::$mailer		= $this->savedFactoryState['mailer'];
     }
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -37,6 +37,7 @@ class InstallerTest extends FOFTestCase
 	}
 
 	/**
+     * @group   Installer
 	 * @covers  FOF30\Database\Installer::__construct
 	 * @covers  FOF30\Database\Installer::updateSchema
 	 * @covers  FOF30\Database\Installer::findSchemaXml
@@ -63,6 +64,7 @@ class InstallerTest extends FOFTestCase
 	}
 
 	/**
+     * @group   Installer
 	 * @covers  FOF30\Database\Installer::__construct
 	 * @covers  FOF30\Database\Installer::updateSchema
 	 * @covers  FOF30\Database\Installer::findSchemaXml
@@ -132,6 +134,7 @@ class InstallerTest extends FOFTestCase
 	}
 
 	/**
+     * @group   Installer
 	 * @covers  FOF30\Database\Installer::__construct
 	 * @covers  FOF30\Database\Installer::updateSchema
 	 * @covers  FOF30\Database\Installer::findSchemaXml
@@ -156,6 +159,7 @@ class InstallerTest extends FOFTestCase
 	}
 
 	/**
+     * @group   Installer
 	 * @covers  FOF30\Database\Installer::__construct
 	 * @covers  FOF30\Database\Installer::updateSchema
 	 * @covers  FOF30\Database\Installer::findSchemaXml
@@ -175,6 +179,7 @@ class InstallerTest extends FOFTestCase
 	}
 
 	/**
+     * @group   Installer
 	 * @covers  FOF30\Database\Installer::__construct
 	 * @covers  FOF30\Database\Installer::updateSchema
 	 * @covers  FOF30\Database\Installer::findSchemaXml
@@ -196,6 +201,7 @@ class InstallerTest extends FOFTestCase
 	}
 
 	/**
+     * @group   Installer
 	 * @covers  FOF30\Database\Installer::removeSchema
 	 */
 	public function testRemoveSchema()

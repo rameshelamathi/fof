@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -51,6 +51,8 @@ class MagicSwitchFactory extends SwitchFactory implements FactoryInterface
 		catch (ControllerNotFound $e)
 		{
 			$magic = new Magic\ControllerFactory($this->container);
+            // Let's pass the section override (if any)
+            $magic->setSection($this->getSection());
 
 			return $magic->make($viewName, $config);
 		}
@@ -73,6 +75,8 @@ class MagicSwitchFactory extends SwitchFactory implements FactoryInterface
 		catch (ModelNotFound $e)
 		{
 			$magic = new Magic\ModelFactory($this->container);
+            // Let's pass the section override (if any)
+            $magic->setSection($this->getSection());
 
 			return $magic->make($viewName, $config);
 		}
@@ -96,6 +100,8 @@ class MagicSwitchFactory extends SwitchFactory implements FactoryInterface
 		catch (ViewNotFound $e)
 		{
 			$magic = new Magic\ViewFactory($this->container);
+            // Let's pass the section override (if any)
+            $magic->setSection($this->getSection());
 
 			return $magic->make($viewName, $viewType, $config);
 		}
@@ -132,7 +138,7 @@ class MagicSwitchFactory extends SwitchFactory implements FactoryInterface
 	 */
 	public function dispatcher(array $config = array())
 	{
-		$dispatcherClass = $this->container->getNamespacePrefix() . 'Dispatcher\\Dispatcher';
+		$dispatcherClass = $this->container->getNamespacePrefix($this->getSection()) . 'Dispatcher\\Dispatcher';
 
 		try
 		{
@@ -153,6 +159,8 @@ class MagicSwitchFactory extends SwitchFactory implements FactoryInterface
 		{
 			// Not found. Return the magically created Dispatcher
 			$magic = new DispatcherFactory($this->container);
+            // Let's pass the section override (if any)
+            $magic->setSection($this->getSection());
 
 			return $magic->make($config);
 		}
@@ -167,7 +175,7 @@ class MagicSwitchFactory extends SwitchFactory implements FactoryInterface
 	 */
 	public function transparentAuthentication(array $config = array())
 	{
-		$toolbarClass = $this->container->getNamespacePrefix() . 'TransparentAuthentication\\TransparentAuthentication';
+		$toolbarClass = $this->container->getNamespacePrefix($this->getSection()) . 'TransparentAuthentication\\TransparentAuthentication';
 
 		try
 		{
@@ -188,6 +196,8 @@ class MagicSwitchFactory extends SwitchFactory implements FactoryInterface
 		{
 			// Not found. Return the magically created TransparentAuthentication
 			$magic = new TransparentAuthenticationFactory($this->container);
+            // Let's pass the section override (if any)
+            $magic->setSection($this->getSection());
 
 			return $magic->make($config);
 		}

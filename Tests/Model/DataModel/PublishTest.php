@@ -1,4 +1,9 @@
 <?php
+/**
+ * @package     FOF
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
+ */
 
 namespace FOF30\Tests\DataModel;
 
@@ -42,7 +47,7 @@ class DataModelPublishTest extends DatabaseTest
         }
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('save', 'getId'), array(static::$container, $config, $methods));
-        $model->expects($this->any())->method('getId')->willReturn(1);
+        $model->method('getId')->willReturn(1);
         $model->expects($check['save'] ? $this->once() : $this->never())->method('save');
 
         $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array(static::$container));
@@ -118,7 +123,7 @@ class DataModelPublishTest extends DatabaseTest
         );
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('save', 'getId', 'findOrFail'), array(static::$container, $config, $methods));
-        $model->expects($this->any())->method('getId')->willReturn(1);
+        $model->method('getId')->willReturn(1);
         $model->expects($check['find'] ? $this->once() : $this->never())->method('findOrFail')->willReturn(null);
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered
@@ -187,7 +192,7 @@ class DataModelPublishTest extends DatabaseTest
         );
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('save', 'getId'), array(static::$container, $config, $methods));
-        $model->expects($this->any())->method('getId')->willReturn(1);
+        $model->method('getId')->willReturn(1);
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered
         $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array(static::$container));
@@ -254,7 +259,7 @@ class DataModelPublishTest extends DatabaseTest
         );
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('save', 'getId', 'findOrFail'), array(static::$container, $config, $methods));
-        $model->expects($this->any())->method('getId')->willReturn(1);
+        $model->method('getId')->willReturn(1);
         $model->expects($check['find'] ? $this->once() : $this->never())->method('findOrFail');
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered
@@ -322,7 +327,7 @@ class DataModelPublishTest extends DatabaseTest
         );
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('save', 'getId'), array(static::$container, $config, $methods));
-        $model->expects($this->any())->method('getId')->willReturn(1);
+        $model->method('getId')->willReturn(1);
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered
         $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array(static::$container));

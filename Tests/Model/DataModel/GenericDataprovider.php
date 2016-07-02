@@ -1,4 +1,9 @@
 <?php
+/**
+ * @package     FOF
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
+ */
 
 class DataModelGenericDataprovider
 {
@@ -807,9 +812,9 @@ class DataModelGenericDataprovider
             ),
             array(
                 'case' => 'Limits override, additional query, with (known) order field and uppercase direction',
-                'filter' => false,
+                'filter' => true,
                 'where'  => array('foobar = 1'),
-                'order'  => array()
+                'order'  => array('`title` DESC')
             )
         );
 

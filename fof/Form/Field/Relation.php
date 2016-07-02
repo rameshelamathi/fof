@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -141,8 +141,8 @@ class Relation extends GenericList
 
 		if ($id = $this->form->getModel()->getId())
 		{
-			$model     = $this->form->getContainer()->factory->model($view)->setIgnoreRequest(true)->savestate(false);
-			$relations = $model->getRelations()->getRelation($relation)->getData();
+			$model     = $this->form->getModel();
+			$relations = $model->$relation;
 
 			foreach ($relations as $item)
 			{
@@ -160,45 +160,44 @@ class Relation extends GenericList
 	 *
 	 * @return  string         Text with tags replace
 	 */
-	protected function parseFieldTags($text)
-	{
-		$ret = $text;
+    protected function parseFieldTags($text)
+    {
+        $ret = $text;
 
-		// Replace [ITEM:ID] in the URL with the item's key value (usually:
-		// the auto-incrementing numeric ID)
-		$keyfield = $this->item->getKeyName();
-		$replace  = $this->item->$keyfield;
-		$ret = str_replace('[ITEM:ID]', $replace, $ret);
+        // Replace [ITEM:ID] in the URL with the item's key value (usually:
+        // the auto-incrementing numeric ID)
+        if (is_null($this->item))
+        {
+            $this->item = $this->form->getModel();
+        }
 
-		// Replace the [ITEMID] in the URL with the current Itemid parameter
-		$ret = str_replace('[ITEMID]', $this->form->getContainer()->input->getInt('Itemid', 0), $ret);
+        $replace  = $this->item->getId();
+        $ret = str_replace('[ITEM:ID]', $replace, $ret);
 
-		// Replace the [RELATION:ID] in the URL with the relation's key value
-		$ret = str_replace('[RELATION:ID]', $this->_relationId, $ret);
+        // Replace the [ITEMID] in the URL with the current Itemid parameter
+        $ret = str_replace('[ITEMID]', $this->form->getContainer()->input->getInt('Itemid', 0), $ret);
 
-		// Replace other field variables in the URL
-		$fields = $this->item->getTableFields();
+        // Replace the [TOKEN] in the URL with the Joomla! form token
+        $ret = str_replace('[TOKEN]', \JFactory::getSession()->getFormToken(), $ret);
 
-		foreach ($fields as $fielddata)
-		{
-			$fieldname = $fielddata->Field;
+        // Replace the [RELATION:ID] in the URL with the relation's key value
+        $ret = str_replace('[RELATION:ID]', $this->_relationId, $ret);
 
-			if (empty($fieldname))
-			{
-				$fieldname = $fielddata->column_name;
-			}
+        // Replace other field variables in the URL
+        $data = $this->item->getData();
 
-			$search    = '[ITEM:' . strtoupper($fieldname) . ']';
-			$replace   = $this->item->$fieldname;
+        foreach ($data as $field => $value)
+        {
+            // Skip non-processable values
+            if(is_array($value) || is_object($value))
+            {
+                continue;
+            }
 
-			if (!is_string($replace))
-			{
-				continue;
-			}
+            $search = '[ITEM:' . strtoupper($field) . ']';
+            $ret    = str_replace($search, $value, $ret);
+        }
 
-			$ret  = str_replace($search, $replace, $ret);
-		}
-
-		return $ret;
-	}
+        return $ret;
+    }
 }

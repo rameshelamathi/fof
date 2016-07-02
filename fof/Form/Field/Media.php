@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -194,15 +194,26 @@ class Media extends \JFormFieldMedia implements FieldInterface
 			$imgattr['title'] = JText::_((string) $this->element['title']);
 		}
 
-		if ($this->value && file_exists(JPATH_ROOT . '/' . $this->value))
+		$directory = '';
+
+		if ($this->element['directory'])
 		{
-			$src = $this->form->getContainer()->platform->URIroot() . $this->value;
-		}
-		else
-		{
-			$src = '';
+			$directory = (string) $this->element['directory'];
+			$directory = trim($directory, '/\\') . '/';
 		}
 
-		return JHtml::image($src, $alt, $imgattr);
+		$imagePath = $directory . $this->value;
+
+        $platform = $this->form->getContainer()->platform;
+        $baseDirs = $platform->getPlatformBaseDirs();
+
+		if ($this->value && file_exists($baseDirs['root'] . '/' . $imagePath))
+		{
+			$src = $platform->URIroot() . '/' . $imagePath;
+            return JHtml::image($src, $alt, $imgattr);
+		}
+
+        // JHtml::image returns weird stuff when an empty path is provided, so let's be safe than sorry and return empty
+        return '';
 	}
 }

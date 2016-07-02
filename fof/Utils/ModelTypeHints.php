@@ -1,8 +1,8 @@
 <?php
 /**
- * @package        FOF3 (Work In Progress)
- * @copyright      2015 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license        GNU GPL version 3 or later
+ * @package     FOF
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
 
 namespace FOF30\Utils;
@@ -24,6 +24,21 @@ class ModelTypeHints
 	 */
 	protected $model = null;
 
+    /**
+     * Name of the class. If empty will be inferred from the current object
+     *
+     * @var string
+     */
+    protected $className = null;
+
+    /**
+     * @param string $className
+     */
+    public function setClassName($className)
+    {
+        $this->className = $className;
+    }
+
 	/**
 	 * Public constructor
 	 *
@@ -31,7 +46,8 @@ class ModelTypeHints
 	 */
 	public function __construct(DataModel $model)
 	{
-		$this->model = $model;
+		$this->model     = $model;
+        $this->className = get_class($model);
 	}
 
 	/**
@@ -108,7 +124,8 @@ class ModelTypeHints
 	 */
 	public function getHints()
 	{
-		$modelName = get_class($this->model);
+		$modelName = $this->className;
+
 		$text = "/**\n * Model $modelName\n *\n";
 
 		$hints = $this->getRawHints();

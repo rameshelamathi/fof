@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -144,13 +144,14 @@ class ImageList extends \JFormFieldImageList implements FieldInterface
 	public function getFieldContents(array $fieldOptions = array())
 	{
 		$imgattr = array();
+        $alt     = null;
 
-		if ($fieldOptions['id'])
+		if (isset($fieldOptions['id']) && $fieldOptions['id'])
 		{
 			$imgattr['id'] = $fieldOptions['id'];
 		}
 
-		if ($this->class || $fieldOptions['class'])
+		if ($this->class || (isset($fieldOptions['class']) && $fieldOptions['class']))
 		{
 			$imgattr['class'] = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
 		}
@@ -184,10 +185,6 @@ class ImageList extends \JFormFieldImageList implements FieldInterface
 		{
 			$alt = JText::_((string) $this->element['alt']);
 		}
-		else
-		{
-			$alt = null;
-		}
 
 		if ($this->element['title'])
 		{
@@ -197,15 +194,16 @@ class ImageList extends \JFormFieldImageList implements FieldInterface
 		$path = (string) $this->element['directory'];
 		$path = trim($path, '/' . DIRECTORY_SEPARATOR);
 
-		if ($this->value && file_exists(JPATH_ROOT . '/' . $path . '/' . $this->value))
+        $platform = $this->form->getContainer()->platform;
+        $baseDirs = $platform->getPlatformBaseDirs();
+
+		if ($this->value && file_exists($baseDirs['root'] . '/' . $path . '/' . $this->value))
 		{
-			$src = $this->form->getContainer()->platform->URIroot() . '/' . $path . '/' . $this->value;
-		}
-		else
-		{
-			$src = '';
+			$src = $platform->URIroot() . '/' . $path . '/' . $this->value;
+            return JHtml::image($src, $alt, $imgattr);
 		}
 
-		return JHtml::image($src, $alt, $imgattr);
+        // JHtml::image returns weird stuff when an empty path is provided, so let's be safe than sorry and return empty
+        return '';
 	}
 }

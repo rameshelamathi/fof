@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -30,13 +30,13 @@ class Filters extends Observer
 		$db = $model->getDbo();
 
 		$fields     = $model->getTableFields();
-		$backlist   = $model->blacklistFilters();
+		$blacklist  = $model->blacklistFilters();
 		$filterZero = $model->getBehaviorParam('filterZero', null);
 		$tableAlias = $model->getBehaviorParam('tableAlias', null);
 
 		foreach ($fields as $fieldname => $fieldmeta)
 		{
-			if (in_array($fieldname, $backlist))
+			if (in_array($fieldname, $blacklist))
 			{
 				continue;
 			}
@@ -103,10 +103,12 @@ class Filters extends Observer
 			{
 				case 'between':
 				case 'outside':
+				case 'range' :
 					$sql = $field->$method($options->get('from', null), $options->get('to', null), $options->get('include', false));
 					break;
 
 				case 'interval':
+				case 'modulo':
 					$sql = $field->$method($options->get('value', null), $options->get('interval'));
 					break;
 

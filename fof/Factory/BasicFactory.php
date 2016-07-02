@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -18,7 +18,10 @@ use FOF30\Factory\Exception\ModelNotFound;
 use FOF30\Factory\Exception\ToolbarNotFound;
 use FOF30\Factory\Exception\TransparentAuthenticationNotFound;
 use FOF30\Factory\Exception\ViewNotFound;
-use FOF30\Factory\Scaffolding\Builder as ScaffoldingBuilder;
+use FOF30\Factory\Scaffolding\Layout\Builder as LayoutBuilder;
+use FOF30\Factory\Scaffolding\Controller\Builder as ControllerBuilder;
+use FOF30\Factory\Scaffolding\Model\Builder as ModelBuilder;
+use FOF30\Factory\Scaffolding\View\Builder as ViewBuilder;
 use FOF30\Form\Form;
 use FOF30\Model\Model;
 use FOF30\Toolbar\Toolbar;
@@ -47,6 +50,23 @@ class BasicFactory implements FactoryInterface
 	/** @var  bool  When enabled, FOF will commit the scaffolding results to disk. */
 	protected $saveScaffolding = false;
 
+    /** @var  bool  When enabled, FOF will commit controller scaffolding results to disk. */
+    protected $saveControllerScaffolding = false;
+
+    /** @var  bool  When enabled, FOF will commit model scaffolding results to disk. */
+    protected $saveModelScaffolding = false;
+
+    /** @var  bool  When enabled, FOF will commit view scaffolding results to disk. */
+    protected $saveViewScaffolding = false;
+
+    /**
+     * Section used to build the namespace prefix. We have to pass it since in CLI scaffolding we need
+     * to force the section we're in (ie Site or Admin). {@see \FOF30\Container\Container::getNamespacePrefix() } for valid values
+     *
+     * @var   string
+     */
+    protected $section = 'auto';
+
 	/**
 	 * Public constructor for the factory object
 	 *
@@ -67,7 +87,7 @@ class BasicFactory implements FactoryInterface
 	 */
 	public function controller($viewName, array $config = array())
 	{
-		$controllerClass = $this->container->getNamespacePrefix() . 'Controller\\' . ucfirst($viewName);
+		$controllerClass = $this->container->getNamespacePrefix($this->getSection()) . 'Controller\\' . ucfirst($viewName);
 
 		try
 		{
@@ -77,9 +97,34 @@ class BasicFactory implements FactoryInterface
 		{
 		}
 
-		$controllerClass = $this->container->getNamespacePrefix() . 'Controller\\' . ucfirst($this->container->inflector->singularize($viewName));
+        $controllerClass = $this->container->getNamespacePrefix($this->getSection()) . 'Controller\\' . ucfirst($this->container->inflector->singularize($viewName));
 
-		return $this->createController($controllerClass, $config);
+        try
+        {
+            $controller = $this->createController($controllerClass, $config);
+        }
+        catch(ControllerNotFound $e)
+        {
+            // Do I have to create and save the class file? If not, let's rethrow the exception
+            if(!$this->saveControllerScaffolding)
+            {
+                throw $e;
+            }
+
+            $scaffolding = new ControllerBuilder($this->container);
+
+            // Was the scaffolding successful? If so let's call ourself again, otherwise throw a not found exception
+            if($scaffolding->make($controllerClass, $viewName))
+            {
+                $controller = $this->controller($viewName, $config);
+            }
+            else
+            {
+                throw $e;
+            }
+        }
+
+		return $controller;
 	}
 
 	/**
@@ -92,7 +137,7 @@ class BasicFactory implements FactoryInterface
 	 */
 	public function model($viewName, array $config = array())
 	{
-		$modelClass = $this->container->getNamespacePrefix() . 'Model\\' . ucfirst($viewName);
+		$modelClass = $this->container->getNamespacePrefix($this->getSection()) . 'Model\\' . ucfirst($viewName);
 
 		try
 		{
@@ -102,9 +147,36 @@ class BasicFactory implements FactoryInterface
 		{
 		}
 
-		$modelClass = $this->container->getNamespacePrefix() . 'Model\\' . ucfirst($this->container->inflector->singularize($viewName));
+		$modelClass = $this->container->getNamespacePrefix($this->getSection()) . 'Model\\' . ucfirst($this->container->inflector->singularize($viewName));
 
-		return $this->createModel($modelClass, $config);
+        try
+        {
+            $model = $this->createModel($modelClass, $config);
+        }
+        catch(ModelNotFound $e)
+        {
+            // Do I have to create and save the class file? If not, let's rethrow the exception
+            if(!$this->saveModelScaffolding)
+            {
+                throw $e;
+            }
+
+            // By default model classes are plural
+            $modelClass  = $this->container->getNamespacePrefix($this->getSection()) . 'Model\\' . ucfirst($viewName);
+            $scaffolding = new ModelBuilder($this->container);
+
+            // Was the scaffolding successful? If so let's call ourself again, otherwise throw a not found exception
+            if($scaffolding->make($modelClass, $viewName))
+            {
+                $model = $this->model($viewName, $config);
+            }
+            else
+            {
+                throw $e;
+            }
+        }
+
+        return $model;
 	}
 
 	/**
@@ -118,7 +190,10 @@ class BasicFactory implements FactoryInterface
 	 */
 	public function view($viewName, $viewType = 'html', array $config = array())
 	{
-		$viewClass = $this->container->getNamespacePrefix() . 'View\\' . ucfirst($viewName) . '\\' . ucfirst($viewType);
+        $container = $this->container;
+        $prefix    = $this->container->getNamespacePrefix($this->getSection());
+
+		$viewClass = $prefix . 'View\\' . ucfirst($viewName) . '\\' . ucfirst($viewType);
 
 		try
 		{
@@ -128,9 +203,36 @@ class BasicFactory implements FactoryInterface
 		{
 		}
 
-		$viewClass = $this->container->getNamespacePrefix() . 'View\\' . ucfirst($this->container->inflector->singularize($viewName)) . '\\' . ucfirst($viewType);
+		$viewClass = $prefix . 'View\\' . ucfirst($container->inflector->singularize($viewName)) . '\\' . ucfirst($viewType);
 
-		return $this->createView($viewClass, $config);
+        try
+        {
+            $view = $this->createView($viewClass, $config);
+        }
+        catch(ViewNotFound $e)
+        {
+            // Do I have to create and save the class file? If not, let's rethrow the exception. Note: I can only create HTML views
+            if(!$this->saveViewScaffolding)
+            {
+                throw $e;
+            }
+
+            // By default view classes are plural
+            $viewClass = $prefix . 'View\\' . ucfirst($container->inflector->pluralize($viewName)) . '\\' . ucfirst($viewType);
+            $scaffolding = new ViewBuilder($this->container);
+
+            // Was the scaffolding successful? If so let's call ourself again, otherwise throw a not found exception
+            if($scaffolding->make($viewClass, $viewName, $viewType))
+            {
+                $view = $this->view($viewName, $viewType, $config);
+            }
+            else
+            {
+                throw $e;
+            }
+        }
+
+        return $view;
 	}
 
 	/**
@@ -142,7 +244,7 @@ class BasicFactory implements FactoryInterface
 	 */
 	public function dispatcher(array $config = array())
 	{
-		$dispatcherClass = $this->container->getNamespacePrefix() . 'Dispatcher\\Dispatcher';
+		$dispatcherClass = $this->container->getNamespacePrefix($this->getSection()) . 'Dispatcher\\Dispatcher';
 
 		try
 		{
@@ -164,7 +266,7 @@ class BasicFactory implements FactoryInterface
 	 */
     public function toolbar(array $config = array())
 	{
-		$toolbarClass = $this->container->getNamespacePrefix() . 'Toolbar\\Toolbar';
+		$toolbarClass = $this->container->getNamespacePrefix($this->getSection()) . 'Toolbar\\Toolbar';
 
 		try
 		{
@@ -186,7 +288,7 @@ class BasicFactory implements FactoryInterface
 	 */
     public function transparentAuthentication(array $config = array())
 	{
-		$authClass = $this->container->getNamespacePrefix() . 'TransparentAuthentication\\TransparentAuthentication';
+		$authClass = $this->container->getNamespacePrefix($this->getSection()) . 'TransparentAuthentication\\TransparentAuthentication';
 
 		try
 		{
@@ -235,7 +337,7 @@ class BasicFactory implements FactoryInterface
 		{
 			if ($this->scaffolding)
 			{
-				$scaffolding = new ScaffoldingBuilder($this->container);
+				$scaffolding = new LayoutBuilder($this->container);
 				$xml = $scaffolding->make($source, $viewName);
 
 				if (!is_null($xml))
@@ -340,6 +442,66 @@ class BasicFactory implements FactoryInterface
 	{
 		$this->saveScaffolding = (bool) $saveScaffolding;
 	}
+
+    /**
+     * Should we save controller to disk?
+     *
+     * @param   boolean $state
+     */
+    public function setSaveControllerScaffolding($state)
+    {
+        $this->saveControllerScaffolding = (bool) $state;
+    }
+
+    /**
+     * Should we save controller scaffolding to disk?
+     *
+     * @return  boolean $state
+     */
+    public function isSaveControllerScaffolding()
+    {
+        return $this->saveControllerScaffolding;
+    }
+
+    /**
+     * Should we save model to disk?
+     *
+     * @param   boolean $state
+     */
+    public function setSaveModelScaffolding($state)
+    {
+        $this->saveModelScaffolding = (bool) $state;
+    }
+
+    /**
+     * Should we save model scaffolding to disk?
+     *
+     * @return  boolean $state
+     */
+    public function isSaveModelScaffolding()
+    {
+        return $this->saveModelScaffolding;
+    }
+
+    /**
+     * Should we save view to disk?
+     *
+     * @param   boolean $state
+     */
+    public function setSaveViewScaffolding($state)
+    {
+        $this->saveViewScaffolding = (bool) $state;
+    }
+
+    /**
+     * Should we save view scaffolding to disk?
+     *
+     * @return  boolean $state
+     */
+    public function isSaveViewScaffolding()
+    {
+        return $this->saveViewScaffolding;
+    }
 
 	/**
 	 * Creates a Controller object
@@ -502,6 +664,9 @@ class BasicFactory implements FactoryInterface
 			// Template override
 			$template_root . '/' . $viewName,
 			$template_root . '/' . $viewNameAlt,
+            // Forms inside the specialized folder for easier template overrides
+            $file_root . '/ViewTemplates/' . $viewName,
+            $file_root . '/ViewTemplates/' . $viewNameAlt,
 			// This side of the component
 			$file_root . '/View/' . $viewName . '/tmpl',
 			$file_root . '/View/' . $viewNameAlt . '/tmpl',
@@ -510,6 +675,10 @@ class BasicFactory implements FactoryInterface
 		// The other side of the component
 		if ($this->formLookupInOtherSide)
 		{
+            // Forms inside the specialized folder for easier template overrides
+            $paths[] = $alt_file_root . '/ViewTemplates/' . $viewName;
+            $paths[] = $alt_file_root . '/ViewTemplates/' . $viewNameAlt;
+
 			$paths[] = $alt_file_root . '/View/' . $viewName . '/tmpl';
 			$paths[] = $alt_file_root . '/View/' . $viewNameAlt . '/tmpl';
 		}
@@ -570,4 +739,20 @@ class BasicFactory implements FactoryInterface
 
 		return $result;
 	}
+
+    /**
+     * @return string
+     */
+    public function getSection()
+    {
+        return $this->section;
+    }
+
+    /**
+     * @param string $section
+     */
+    public function setSection($section)
+    {
+        $this->section = $section;
+    }
 }

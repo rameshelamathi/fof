@@ -1,8 +1,8 @@
 <?php
 /**
- * @package        FOF
- * @copyright      2014 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license        GNU GPL version 3 or later
+ * @package     FOF
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
 
 namespace FOF30\Tests\DataModel;
@@ -230,7 +230,7 @@ class DataModelGenericTest extends DatabaseTest
         );
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getFieldAlias'), array(self::$container, $config));
-        $model->expects($this->any())->method('getFieldAlias')->willReturn($test['mock']['getAlias']);
+        $model->method('getFieldAlias')->willReturn($test['mock']['getAlias']);
 
         ReflectionHelper::setValue($model, 'knownFields', $test['mock']['fields']);
 
@@ -337,7 +337,7 @@ class DataModelGenericTest extends DatabaseTest
 
         $mockedQuery = $db->getQuery(true)->select('*')->from('#__foftest_bares');
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('buildQuery'), array(static::$container, $config, $methods));
-        $model->expects($this->any())->method('buildQuery')->willReturn($mockedQuery);
+        $model->method('buildQuery')->willReturn($mockedQuery);
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered
         $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array(static::$container));
@@ -451,7 +451,7 @@ class DataModelGenericTest extends DatabaseTest
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getState', 'getItemsArray', 'eagerLoad'), array(self::$container, $config));
 
-        $model->expects($this->any())->method('getState')->willReturnCallback(
+        $model->method('getState')->willReturnCallback(
             function($state, $default) use ($test)
             {
                 if($state == 'limitstart')
@@ -729,11 +729,11 @@ class DataModelGenericTest extends DatabaseTest
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getIdFieldName', 'setState', 'addBehaviour'), array(static::$container, $config));
         $model->expects($check['add'] ? $this->once() : $this->never())->method('addBehaviour')->willReturn(null);
-        $model->expects($this->any())->method('getIdFieldName')->willReturn($test['mock']['id_field']);
+        $model->method('getIdFieldName')->willReturn($test['mock']['id_field']);
         $model->expects($this->once())->method('setState')->with($this->equalTo($check['field']), $this->equalTo($check['options']));
 
         $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('hasObserverClass'), array(static::$container, $config));
-        $dispatcher->expects($this->any())->method('hasObserverClass')->willReturn($test['mock']['hasClass']);
+        $dispatcher->method('hasObserverClass')->willReturn($test['mock']['hasClass']);
 
         ReflectionHelper::setValue($model, 'behavioursDispatcher', $dispatcher);
 
@@ -898,7 +898,7 @@ class DataModelGenericTest extends DatabaseTest
         );
 
         $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('buildQuery'), array(static::$container, $config, $methods));
-        $model->expects($this->any())->method('buildQuery')->willReturn($query);
+        $model->method('buildQuery')->willReturn($query);
 
         $result = $model->getItemsArray(0, 0, false);
 
@@ -1180,7 +1180,7 @@ class DataModelGenericTest extends DatabaseTest
         $container = clone static::$container;
 
         $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('loadForm'), array(static::$container, $config, $methods));
-        $model->expects($this->any())->method('loadForm')
+        $model->method('loadForm')
             ->with($this->equalTo($check['name']), $this->equalTo($check['source']), $this->equalTo($check['options']))
             ->willReturnCallback(function($name) use ($test, $container){
                 if($test['mock']['loadForm'] === true){
@@ -1228,9 +1228,9 @@ class DataModelGenericTest extends DatabaseTest
         $model = new DataModelStub(static::$container, $config);
 
         $form = $this->getMock('FOF30\Form\Form', array('filter', 'validate', 'getErrors'), array(static::$container, 'Foobar'));
-        $form->expects($this->any())->method('filter')->willReturn($test['mock']['filter']);
-        $form->expects($this->any())->method('validate')->willReturn($test['mock']['validate']);
-        $form->expects($this->any())->method('getErrors')->willReturn($test['mock']['errors']);
+        $form->method('filter')->willReturn($test['mock']['filter']);
+        $form->method('validate')->willReturn($test['mock']['validate']);
+        $form->method('getErrors')->willReturn($test['mock']['errors']);
 
         if($check['exception'])
         {

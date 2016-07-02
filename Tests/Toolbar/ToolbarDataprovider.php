@@ -1,10 +1,16 @@
 <?php
+/**
+ * @package     FOF
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
+ */
 
 class ToolbarDataprovider
 {
     public static function getTestRenderToolbar()
     {
         $data[] = array(
+	        //test
             array(
                 'mock' => array(
                     'getName'       => '',
@@ -19,6 +25,7 @@ class ToolbarDataprovider
                 'view'      => null,
                 'task'      => null
             ),
+            //check
             array(
                 'case'         => 'Component template, no render_toolbar flag',
                 'config'       => '',
@@ -64,7 +71,7 @@ class ToolbarDataprovider
             ),
             array(
                 'case'         => 'No view/task passed, no view/task in the input',
-                'config'       => 'models.Cpanels.toolbar.main',
+                'config'       => 'views.Cpanels.toolbar.main',
                 'counter'      => array()
             )
         );
@@ -84,7 +91,7 @@ class ToolbarDataprovider
             ),
             array(
                 'case'         => 'View passed, no view/task in the input',
-                'config'       => 'models.Views.toolbar.main',
+                'config'       => 'views.Views.toolbar.main',
                 'counter'      => array('onViews' => 1)
             )
         );
@@ -104,7 +111,7 @@ class ToolbarDataprovider
             ),
             array(
                 'case'         => 'View/task passed',
-                'config'       => 'models.Foobars.toolbar.task',
+                'config'       => 'views.Foobars.toolbar.task',
                 'counter'      => array('onTask' => 1)
             )
         );
@@ -124,7 +131,7 @@ class ToolbarDataprovider
             ),
             array(
                 'case'         => 'View/task passed',
-                'config'       => 'models.Foobars.toolbar.dummy',
+                'config'       => 'views.Foobars.toolbar.dummy',
                 'counter'      => array('onFoobarsDummy' => 1)
             )
         );
@@ -147,7 +154,7 @@ class ToolbarDataprovider
             ),
             array(
                 'case'         => 'No View/task passed, fetching them from the input',
-                'config'       => 'models.Foobars.toolbar.dummy',
+                'config'       => 'views.Foobars.toolbar.dummy',
                 'counter'      => array('onFoobarsDummy' => 1)
             )
         );
@@ -167,7 +174,7 @@ class ToolbarDataprovider
             ),
             array(
                 'case'         => 'No View/task passed, no view/task in the input, using controller default',
-                'config'       => 'models.Foobars.toolbar.dummy',
+                'config'       => 'views.Foobars.toolbar.dummy',
                 'counter'      => array('onFoobarsDummy' => 1)
             )
         );
@@ -187,8 +194,8 @@ class ToolbarDataprovider
             ),
             array(
                 'case'         => 'Using the configuration file',
-                'config'       => 'models.Foobars.toolbar.dummy',
-                'counter'      => array()
+                'config'       => 'views.Foobars.toolbar.dummy',
+                'counter'      => array('onFoobarsDummy' => 1)
             )
         );
 
@@ -302,15 +309,13 @@ class ToolbarDataprovider
                 'model'   => ''
             ),
             array(
-                'case' => 'On backend, is a dataview',
+                'case' => 'On backend, is a dataview, no model',
                 'submenu' => true,
                 'methods' => array(
                     'title' => 1,
                     'addNew' => 1,
                     'editList' => 1,
-                    'divider' => 2,
-                    'publishList' => 1,
-                    'unpublishList' => 1,
+                    'divider' => 1,
                     'deleteList' => 1
                 )
             )
@@ -331,10 +336,10 @@ class ToolbarDataprovider
                     'editstate' => true,
                     'delete'    => true,
                 ),
-                'model'   => 'checkin'
+                'model'   => 'specialfields'
             ),
             array(
-                'case' => 'On backend, is a dataview, model with checkin support',
+                'case' => 'On backend, is a dataview, model with special fields support',
                 'submenu' => true,
                 'methods' => array(
                     'title' => 1,
@@ -367,15 +372,13 @@ class ToolbarDataprovider
                 'model'   => 'bare'
             ),
             array(
-                'case' => 'On backend, is a dataview, model no checkin support',
+                'case' => 'On backend, is a dataview, model no special fields support',
                 'submenu' => true,
                 'methods' => array(
                     'title' => 1,
                     'addNew' => 1,
                     'editList' => 1,
-                    'divider' => 2,
-                    'publishList' => 1,
-                    'unpublishList' => 1,
+                    'divider' => 1,
                     'deleteList' => 1
                 )
             )
@@ -400,6 +403,32 @@ class ToolbarDataprovider
             ),
             array(
                 'case' => 'On backend, is a dataview, user can\'t do anything',
+                'submenu' => true,
+                'methods' => array(
+                    'title' => 1
+                )
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'isAdmin'  => true,
+                    'dataView' => true
+                ),
+                'submenu' => false,
+                'buttons' => false,
+                'perms'   => array(
+                    'manage'    => false,
+                    'create'    => false,
+                    'edit'      => false,
+                    'editstate' => false,
+                    'delete'    => false,
+                ),
+                'model'   => 'specialfields'
+            ),
+            array(
+                'case' => 'On backend, is a dataview, model with special fields support, user can\'t do anything',
                 'submenu' => true,
                 'methods' => array(
                     'title' => 1

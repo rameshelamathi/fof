@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -11,7 +11,7 @@ use FOF30\Container\Container;
 use FOF30\Controller\Controller;
 use FOF30\Toolbar\Exception\MissingAttribute;
 use FOF30\Toolbar\Exception\UnknownButtonType;
-use FOF30\Utils\String;
+use FOF30\Utils\StringHelper;
 use FOF30\View\DataView\DataViewInterface;
 use FOF30\View\View;
 use JToolBarHelper;
@@ -288,7 +288,7 @@ class Toolbar
 
 		// Setup
 		$option = $this->container->componentName;
-		$view = $this->container->input->getCmd('view', 'cpanel');
+		$view   = $this->container->input->getCmd('view', 'cpanel');
 
 		// Set toolbar title
 		$subtitle_key = strtoupper($option . '_TITLE_' . $view);
@@ -315,11 +315,21 @@ class Toolbar
 			JToolBarHelper::divider();
 		}
 
-		if ($this->perms->editstate)
+		// Published buttons are only added if there is a enabled field in the table
+		try
 		{
-			JToolBarHelper::publishList();
-			JToolBarHelper::unpublishList();
-			JToolBarHelper::divider();
+			$model = $this->container->factory->model($view);
+
+			if ($model->hasField('enabled') && $this->perms->editstate)
+			{
+				JToolBarHelper::publishList();
+				JToolBarHelper::unpublishList();
+				JToolBarHelper::divider();
+			}
+		}
+		catch (\Exception $e)
+		{
+			// Yeah. Let's not add the buttons if we can't load the model...
 		}
 
 		if ($this->perms->delete)
@@ -333,7 +343,7 @@ class Toolbar
 		{
 			$model = $this->container->factory->model($view);
 
-			if ($model->hasField('locked_on'))
+			if ($model->hasField('locked_on') && $this->perms->edit)
 			{
 				JToolBarHelper::checkin();
 			}
@@ -805,6 +815,20 @@ class Toolbar
 	}
 
 	/**
+	* Simplified default rendering without any attributes.
+	*
+	* @access	protected
+	* @param	array	$tasks	Array of tasks.
+	*
+	* @return	void
+	*/
+	protected function renderToolbarElements($tasks)
+	{
+		foreach($tasks as $task)
+			$this->renderToolbarElement($task);
+	}
+
+	/**
 	 * Render a toolbar element.
 	 *
 	 * @param   string  $type        The element type.
@@ -821,7 +845,12 @@ class Toolbar
 		switch ($type)
 		{
 			case 'title':
-				$icon = isset($attributes['icon']) ? $attributes['icon'] : 'generic.png';
+				$icon  = isset($attributes['icon']) ? $attributes['icon'] : 'generic.png';
+				if (isset($attributes['translate']))
+				{
+					$value = JText::_($value);
+				}
+
 				JToolbarHelper::title($value, $icon);
 				break;
 
@@ -835,7 +864,7 @@ class Toolbar
 				$iconOver = isset($attributes['icon_over']) ? $attributes['icon_over'] : '';
 				$alt = isset($attributes['alt']) ? $attributes['alt'] : '';
 				$listSelect = isset($attributes['list_select']) ?
-					String::toBool($attributes['list_select']) : true;
+					StringHelper::toBool($attributes['list_select']) : true;
 
 				JToolbarHelper::custom($task, $icon, $iconOver, $alt, $listSelect);
 				break;
@@ -843,7 +872,7 @@ class Toolbar
 			case 'preview':
 				$url = isset($attributes['url']) ? $attributes['url'] : '';
 				$update_editors = isset($attributes['update_editors']) ?
-					String::toBool($attributes['update_editors']) : false;
+					StringHelper::toBool($attributes['update_editors']) : false;
 
 				JToolbarHelper::preview($url, $update_editors);
 				break;
@@ -855,7 +884,7 @@ class Toolbar
 				}
 
 				$ref = $attributes['help'];
-				$com = isset($attributes['com']) ? String::toBool($attributes['com']) : false;
+				$com = isset($attributes['com']) ? StringHelper::toBool($attributes['com']) : false;
 				$override = isset($attributes['override']) ? $attributes['override'] : null;
 				$component = isset($attributes['component']) ? $attributes['component'] : null;
 
@@ -883,6 +912,7 @@ class Toolbar
 				JToolbarHelper::assign($task, $alt);
 				break;
 
+			case 'addNew':
 			case 'new':
 				$area = isset($attributes['acl']) ? $attributes['acl'] : 'create';
 
@@ -891,7 +921,7 @@ class Toolbar
 					$task = isset($attributes['task']) ? $attributes['task'] : 'add';
 					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_NEW';
 					$check = isset($attributes['check']) ?
-						String::toBool($attributes['check']) : false;
+						StringHelper::toBool($attributes['check']) : false;
 
 					JToolbarHelper::addNew($task, $alt, $check);
 				}
@@ -921,7 +951,7 @@ class Toolbar
 					$task = isset($attributes['task']) ? $attributes['task'] : 'publish';
 					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_PUBLISH';
 					$check = isset($attributes['check']) ?
-						String::toBool($attributes['check']) : false;
+						StringHelper::toBool($attributes['check']) : false;
 
 					JToolbarHelper::publish($task, $alt, $check);
 				}
@@ -949,7 +979,7 @@ class Toolbar
 					$task = isset($attributes['task']) ? $attributes['task'] : 'unpublish';
 					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_UNPUBLISH';
 					$check = isset($attributes['check']) ?
-						String::toBool($attributes['check']) : false;
+						StringHelper::toBool($attributes['check']) : false;
 
 					JToolbarHelper::unpublish($task, $alt, $check);
 				}
@@ -1043,10 +1073,10 @@ class Toolbar
 
 				if ($this->checkACL($area))
 				{
-					$task = isset($attributes['task']) ? $attributes['task'] : 'remove';
+					$task = isset($attributes['task']) ? $attributes['task'] : 'trash';
 					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_TRASH';
 					$check = isset($attributes['check']) ?
-						String::toBool($attributes['check']) : true;
+						StringHelper::toBool($attributes['check']) : true;
 
 					JToolbarHelper::trash($task, $alt, $check);
 				}
@@ -1093,7 +1123,7 @@ class Toolbar
 				$task = isset($attributes['task']) ? $attributes['task'] : 'checkin';
 				$alt = isset($attributes['alt']) ? $attributes['alt'] :'JTOOLBAR_CHECKIN';
 				$check = isset($attributes['check']) ?
-					String::toBool($attributes['check']) : true;
+					StringHelper::toBool($attributes['check']) : true;
 
 				JToolbarHelper::checkin($task, $alt, $check);
 				break;

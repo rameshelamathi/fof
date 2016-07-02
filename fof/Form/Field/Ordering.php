@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -171,7 +171,7 @@ class Ordering extends \JFormField implements FieldInterface
 
 		$view = $this->form->getView();
 
-		$ordering = $view->getLists()->order == 'ordering';
+		$ordering = $view->getLists()->order == $this->item->getFieldAlias('ordering');
 
 		if (!$view->hasAjaxOrderingSupport())
 		{

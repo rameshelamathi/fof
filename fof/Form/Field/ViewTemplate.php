@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -123,7 +123,7 @@ class ViewTemplate extends \JFormField implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
-		return $this->getRenderedTemplate();
+		return $this->getRenderedTemplate(true);
 	}
 
 	/**
@@ -143,7 +143,7 @@ class ViewTemplate extends \JFormField implements FieldInterface
 	 *
 	 * @return string
 	 */
-	protected function getRenderedTemplate()
+	protected function getRenderedTemplate($isRepeatable = false)
 	{
 		$sourceTemplate = isset($this->element['source']) ? (string) $this->element['source'] : null;
 		$sourceView = isset($this->element['source_view']) ? (string) $this->element['source_view'] : null;
@@ -171,7 +171,7 @@ class ViewTemplate extends \JFormField implements FieldInterface
 		$viewObject->populateFromModel($this->form->getModel());
 
 		return $viewObject->loadAnyTemplate($sourceTemplate, array(
-			'model'        => $this->form->getModel(),
+			'model'        => $isRepeatable ? $this->item : $this->form->getModel(),
 			'form'         => $this->form,
 			'formType'     => $this->form->getAttribute('type', 'edit'),
 			'fieldValue'   => $this->value,

@@ -6,7 +6,7 @@
 	show_pagination="1"
 	norows_placeholder="COM_AKEEBASUBS_COMMON_NORECORDS"
 >
-	<headerset>
+	<headerset name="headers">
 		<header name="akeebasubs_apicoupon_id" type="RowSelect" tdwidth="20px" />
 
 		<header name="akeebasubs_apicoupon_id" type="Field" tdwidth="20px" label="#" id="num" />

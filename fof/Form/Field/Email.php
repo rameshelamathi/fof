@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -10,6 +10,7 @@ namespace FOF30\Form\Field;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
+use FOF30\Utils\StringHelper;
 use \JText;
 
 defined('_JEXEC') or die;
@@ -145,7 +146,7 @@ class Email extends \JFormFieldEMail implements FieldInterface
 		$id    = isset($fieldOptions['id']) ? 'id="' . $fieldOptions['id'] . '" ' : '';
 		$class = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
 
-		$show_link         = in_array((string) $this->element['show_link'], array('true', '1', 'on', 'yes'));
+		$show_link         = StringHelper::toBool((string) $this->element['show_link']);
 		$empty_replacement = $this->element['empty_replacement'] ? (string) $this->element['empty_replacement'] : '';
 
 		if (!empty($empty_replacement) && empty($this->value))
@@ -172,7 +173,7 @@ class Email extends \JFormFieldEMail implements FieldInterface
 				$value . '</a>';
 		}
 
-		return '<span ' . ($id ? $id : '') . 'class="' . $class . '"">' .
+		return '<span ' . ($id ? $id : '') . 'class="' . $class . '">' .
 			$html .
 			'</span>';
 	}
@@ -190,34 +191,33 @@ class Email extends \JFormFieldEMail implements FieldInterface
 
 		// Replace [ITEM:ID] in the URL with the item's key value (usually:
 		// the auto-incrementing numeric ID)
-		$keyfield = $this->item->getKeyName();
-		$replace  = $this->item->$keyfield;
+        if (is_null($this->item))
+        {
+            $this->item = $this->form->getModel();
+        }
+
+		$replace  = $this->item->getId();
 		$ret = str_replace('[ITEM:ID]', $replace, $ret);
 
 		// Replace the [ITEMID] in the URL with the current Itemid parameter
 		$ret = str_replace('[ITEMID]', $this->form->getContainer()->input->getInt('Itemid', 0), $ret);
 
+		// Replace the [TOKEN] in the URL with the Joomla! form token
+		$ret = str_replace('[TOKEN]', \JFactory::getSession()->getFormToken(), $ret);
+
 		// Replace other field variables in the URL
-		$fields = $this->item->getTableFields();
+		$data = $this->item->getData();
 
-		foreach ($fields as $fielddata)
+		foreach ($data as $field => $value)
 		{
-			$fieldname = $fielddata->Field;
+		    // Skip non-processable values
+            if(is_array($value) || is_object($value))
+            {
+                continue;
+            }
 
-			if (empty($fieldname))
-			{
-				$fieldname = $fielddata->column_name;
-			}
-
-			$search    = '[ITEM:' . strtoupper($fieldname) . ']';
-			$replace   = $this->item->$fieldname;
-
-			if (!is_string($replace))
-			{
-				continue;
-			}
-
-			$ret  = str_replace($search, $replace, $ret);
+			$search = '[ITEM:' . strtoupper($field) . ']';
+			$ret    = str_replace($search, $value, $ret);
 		}
 
 		return $ret;

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -332,7 +332,7 @@ class RelationManager
 	 *
 	 * @throws Relation\Exception\RelationNotFound
 	 */
-	public function getData($name, callable $callback = null, \FOF30\Utils\Collection $dataCollection = null)
+	public function getData($name, $callback = null, \FOF30\Utils\Collection $dataCollection = null)
 	{
 		if (!isset($this->relations[$name]))
 		{

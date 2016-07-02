@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -546,13 +546,25 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
 	}
 
 	/**
+	 * Resets the Collection (removes all items)
+	 *
+	 * @return  Collection
+	 */
+	public function reset()
+	{
+		$this->items = array();
+
+		return $this;
+	}
+
+	/**
 	 * Transform each item in the collection using a callback.
 	 *
 	 * @param  callable $callback
 	 *
 	 * @return Collection
 	 */
-	public function transform(callable $callback)
+	public function transform($callback)
 	{
 		$this->items = array_map($callback, $this->items);
 

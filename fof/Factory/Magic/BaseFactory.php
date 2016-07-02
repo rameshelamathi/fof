@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -20,6 +20,14 @@ abstract class BaseFactory
 	 */
 	protected $container = null;
 
+    /**
+     * Section used to build the namespace prefix. We have to pass it since in CLI scaffolding we need
+     * to force the section we're in (ie Site or Admin). {@see \FOF30\Container\Container::getNamespacePrefix() } for valid values
+     *
+     * @var   string
+     */
+    protected $section = 'auto';
+
 	/**
 	 * Public constructor
 	 *
@@ -29,4 +37,20 @@ abstract class BaseFactory
 	{
 		$this->container = $container;
 	}
+
+    /**
+     * @return string
+     */
+    public function getSection()
+    {
+        return $this->section;
+    }
+
+    /**
+     * @param string $section
+     */
+    public function setSection($section)
+    {
+        $this->section = $section;
+    }
 }

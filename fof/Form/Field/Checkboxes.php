@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -10,6 +10,7 @@ namespace FOF30\Form\Field;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
+use FOF30\Utils\StringHelper;
 use \JText;
 
 defined('_JEXEC') or die;
@@ -145,7 +146,7 @@ class Checkboxes extends \JFormFieldCheckboxes implements FieldInterface
 		$id    = isset($fieldOptions['id']) ? 'id="' . $fieldOptions['id'] . '" ' : '';
 		$class = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
 
-		$translate = $this->element['translate'] ? (string) $this->element['translate'] : false;
+		$translate = StringHelper::toBool($this->element['translate']) ? true : false;
 
 		$html = '<span ' . ($id ? $id : '') . 'class="' . $class . '">';
 

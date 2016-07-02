@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -14,7 +14,7 @@ class lib_fof30InstallerScript
 	 *
 	 * @var   string
 	 */
-	protected $minimumPHPVersion = '5.3.4';
+	protected $minimumPHPVersion = '5.3.3';
 
 	/**
 	 * The minimum Joomla! version required to install this extension
@@ -127,8 +127,26 @@ class lib_fof30InstallerScript
 		$src = $grandpa->getPath('source');
 		$sqlSource = $src . '/fof/sql';
 
-		$dbInstaller = new FOF30\Database\Installer($db, $sqlSource);
-		$dbInstaller->updateSchema();
+		// If we have an uppercase db prefix we can expect the database update to fail because we cannot detect reliably
+		// the existence of database tables. See https://github.com/joomla/joomla-cms/issues/10928#issuecomment-228549658
+		$prefix = $db->getPrefix();
+		$canFail = preg_match('/[A-Z]/', $prefix);
+
+		try
+		{
+			$dbInstaller = new FOF30\Database\Installer($db, $sqlSource);
+			$dbInstaller->updateSchema();
+		}
+		catch (\Exception $e)
+		{
+			if (!$canFail)
+			{
+				throw $e;
+			}
+		}
+
+        // Since we're adding common table, I have to nuke the installer cache, otherwise checks on their existence would fail
+        $dbInstaller->nukeCache();
 
 		// Clear the FOF cache
 		$fakeController = \FOF30\Container\Container::getInstance('com_FOOBAR');
@@ -250,7 +268,7 @@ class lib_fof30InstallerScript
 		try
 		{
 			$dependencies = $db->setQuery($query)->loadResult();
-			$dependencies = json_decode($dependencies);
+			$dependencies = json_decode($dependencies, true);
 
 			if (empty($dependencies))
 			{

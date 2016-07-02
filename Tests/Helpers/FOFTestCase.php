@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -29,15 +29,16 @@ class FOFTestCase extends ApplicationTestCase
 	 */
 	protected function saveFactoryState()
 	{
-		$this->savedFactoryState['application']	 = \JFactory::$application;
-		$this->savedFactoryState['config']		 = \JFactory::$config;
+        // We have to clone the objects, otherwise it's useless to save them
+		$this->savedFactoryState['application']	 = is_object(\JFactory::$application) ? clone \JFactory::$application : \JFactory::$application;
+		$this->savedFactoryState['config']		 = is_object(\JFactory::$config) ? clone \JFactory::$config : \JFactory::$config;
 		$this->savedFactoryState['dates']		 = \JFactory::$dates;
-		$this->savedFactoryState['session']		 = \JFactory::$session;
-		$this->savedFactoryState['language']	 = \JFactory::$language;
-		$this->savedFactoryState['document']	 = \JFactory::$document;
-		$this->savedFactoryState['acl']			 = \JFactory::$acl;
-		$this->savedFactoryState['database']	 = \JFactory::$database;
-		$this->savedFactoryState['mailer']		 = \JFactory::$mailer;
+		$this->savedFactoryState['session']		 = is_object(\JFactory::$session) ? clone \JFactory::$session : \JFactory::$session;
+		$this->savedFactoryState['language']	 = is_object(\JFactory::$language) ? clone \JFactory::$language : \JFactory::$language;
+		$this->savedFactoryState['document']	 = is_object(\JFactory::$document) ? clone \JFactory::$document : \JFactory::$document;
+		$this->savedFactoryState['acl']			 = is_object(\JFactory::$acl) ? clone \JFactory::$acl : \JFactory::$acl;
+		$this->savedFactoryState['database']	 = is_object(\JFactory::$database) ? clone \JFactory::$database : \JFactory::$database;
+		$this->savedFactoryState['mailer']		 = is_object(\JFactory::$mailer) ? clone \JFactory::$mailer : \JFactory::$mailer;
 	}
 
 	/**
@@ -114,7 +115,7 @@ class FOFTestCase extends ApplicationTestCase
 				$callback	 = array(get_called_class(), 'mock' . $method);
 			}
 
-			$mockObject->expects($this->any())
+			$mockObject
 				->method($methodName)
 				->will($this->returnCallback($callback));
 		}
@@ -133,7 +134,7 @@ class FOFTestCase extends ApplicationTestCase
 	{
 		foreach ($array as $method => $return)
 		{
-			$mockObject->expects($this->any())
+			$mockObject
 				->method($method)
 				->will($this->returnValue($return));
 		}

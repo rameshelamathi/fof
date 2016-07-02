@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -10,8 +10,8 @@ namespace FOF30\Container;
 use FOF30\Autoloader\Autoloader;
 use FOF30\Factory\FactoryInterface;
 use FOF30\Inflector\Inflector;
+use FOF30\Params\Params;
 use FOF30\Platform\Joomla\Filesystem as JoomlaFilesystem;
-use FOF30\Platform\Joomla\Platform as JoomlaPlatform;
 use FOF30\Render\RenderInterface;
 use FOF30\Template\Template;
 use FOF30\TransparentAuthentication\TransparentAuthentication as TransparentAuth;
@@ -47,10 +47,11 @@ defined('_JEXEC') or die;
  * @property  string                                   $bareComponentName  The name of the component without com_ (something)
  * @property  string                                   $componentNamespace The namespace of the component's classes (\Foobar)
  * @property  string                                   $frontEndPath       The absolute path to the front-end files
- * @property  string                                   $backEndPath        The absolute path to the front-end files
+ * @property  string                                   $backEndPath        The absolute path to the back-end files
  * @property  string                                   $thisPath           The preferred path. Backend for Admin application, frontend otherwise
  * @property  string                                   $rendererClass      The fully qualified class name of the view renderer we'll be using. Must implement FOF30\Render\RenderInterface.
- * @property  string                                   $factoryClass       The fully qualified class name or slug (basic, switch) of the MVC Factory object, default is FOF30\Factory\BasicFactory.
+ * @property  string                                   $factoryClass       The fully qualified class name of the MVC Factory object, default is FOF30\Factory\BasicFactory.
+ * @property  string                                   $platformClass      The fully qualified class name of the Platform abstraction object, default is FOF30\Platform\Joomla\Platform.
  * @property  string                                   $mediaVersion       A version string for media files in forms. Default: md5 of release version, release date and site secret (if found)
  *
  * @property-read  \FOF30\Configuration\Configuration  $appConfig          The application configuration registry
@@ -60,6 +61,7 @@ defined('_JEXEC') or die;
  * @property-read  \FOF30\Factory\FactoryInterface     $factory            The MVC object factory
  * @property-read  \FOF30\Platform\FilesystemInterface $filesystem         The filesystem abstraction layer object
  * @property-read  \FOF30\Inflector\Inflector          $inflector          The English word inflector (pluralise / singularise words etc)
+ * @property-read  \FOF30\Params\Params          	   $params             The component's params
  * @property-read  \FOF30\Input\Input                  $input              The input object
  * @property-read  \FOF30\Platform\PlatformInterface   $platform           The platform abstraction layer object
  * @property-read  \FOF30\Render\RenderInterface       $renderer           The view renderer
@@ -213,21 +215,30 @@ class Container extends ContainerBase
 
 		// Get the values overrides from fof.xml
 		$values = array_merge(array(
-			'factoryClass' => '\\FOF30\\Factory\\BasicFactory',
-			'scaffolding' => false,
-			'saveScaffolding' => false,
+			'factoryClass'              => '\\FOF30\\Factory\\BasicFactory',
+			'platformClass'             => '\\FOF30\\Platform\\Joomla\\Platform',
+			'scaffolding'               => false,
+			'saveScaffolding'           => false,
+			'saveControllerScaffolding' => false,
+			'saveModelScaffolding'      => false,
+			'saveViewScaffolding'       => false,
+			'section'					=> $section,
 		), $values);
 
 		$values = array_merge($values, array(
-			'componentName' => $component,
-			'componentNamespace' => $namespace,
-			'frontEndPath' => $frontEndPath,
-			'backEndPath' => $backEndPath,
-			'thisPath' => $thisPath,
-			'rendererClass' => $appConfig->get('container.rendererClass', null),
-			'factoryClass' => $appConfig->get('container.factoryClass', $values['factoryClass']),
-			'scaffolding' => $appConfig->get('container.scaffolding', $values['scaffolding']),
-			'saveScaffolding' => $appConfig->get('container.saveScaffolding', $values['saveScaffolding']),
+			'componentName'             => $component,
+			'componentNamespace'        => $namespace,
+			'frontEndPath'              => $frontEndPath,
+			'backEndPath'               => $backEndPath,
+			'thisPath'                  => $thisPath,
+			'rendererClass'             => $appConfig->get('container.rendererClass', null),
+			'factoryClass'              => $appConfig->get('container.factoryClass', $values['factoryClass']),
+			'platformClass'             => $appConfig->get('container.platformClass', $values['platformClass']),
+			'scaffolding'               => $appConfig->get('container.scaffolding', $values['scaffolding']),
+			'saveScaffolding'           => $appConfig->get('container.saveScaffolding', $values['saveScaffolding']),
+			'saveControllerScaffolding' => $appConfig->get('container.saveControllerScaffolding', $values['saveControllerScaffolding']),
+			'saveModelScaffolding'      => $appConfig->get('container.saveModelScaffolding', $values['saveModelScaffolding']),
+			'saveViewScaffolding'       => $appConfig->get('container.saveViewScaffolding', $values['saveViewScaffolding']),
 		));
 
 		if (empty($values['rendererClass']))
@@ -275,6 +286,7 @@ class Container extends ContainerBase
 		$this->backEndPath = '';
 		$this->thisPath = '';
 		$this->factoryClass = 'FOF30\\Factory\\BasicFactory';
+		$this->platformClass = 'FOF30\\Platform\\Joomla\\Platform';
 
 		// Try to construct this container object
 		parent::__construct($values);
@@ -356,9 +368,16 @@ class Container extends ContainerBase
 		// Platform abstraction service
 		if (!isset($this['platform']))
 		{
+			if (empty($c['platformClass']))
+			{
+				$c['platformClass'] = 'FOF30\\Platform\\Joomla\\Platform';
+			}
+
 			$this['platform'] = function (Container $c)
 			{
-				return new JoomlaPlatform($c);
+				$className = $c['platformClass'];
+
+				return new $className($c);
 			};
 		}
 
@@ -416,6 +435,26 @@ class Container extends ContainerBase
 					$factory->setSaveScaffolding($c['saveScaffolding']);
 				}
 
+                if (isset($c['saveControllerScaffolding']))
+                {
+                    $factory->setSaveControllerScaffolding($c['saveControllerScaffolding']);
+                }
+
+                if (isset($c['saveModelScaffolding']))
+                {
+                    $factory->setSaveModelScaffolding($c['saveModelScaffolding']);
+                }
+
+                if (isset($c['saveViewScaffolding']))
+                {
+                    $factory->setSaveViewScaffolding($c['saveViewScaffolding']);
+                }
+
+                if (isset($c['section']))
+                {
+                    $factory->setSection($c['section']);
+                }
+
 				return $factory;
 			};
 		}
@@ -433,6 +472,15 @@ class Container extends ContainerBase
 				}
 
 				return new $class($c);
+			};
+		}
+
+		// Component Params service
+		if (!isset($this['params']))
+		{
+			$this['params'] = function (Container $c)
+			{
+				return new Params($c);
 			};
 		}
 

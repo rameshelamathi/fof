@@ -1,11 +1,10 @@
 <?php
 /**
- * @package	    FrameworkOnFramework.UnitTest
- * @subpackage  TableBehaviors
- *
- * @copyright   Copyright (C) 2010 - 2015 Akeeba Ltd. All rights reserved.
- * @license	    GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FOF
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
+
 namespace FOF30\Tests\DataModel;
 
 use FOF30\Model\DataModel\Behaviour\Assets;
@@ -29,7 +28,7 @@ class AssetsTest extends DatabaseTest
      */
     public function testOnAfterSave($test, $check)
     {
-        $msg = 'Own::onAfterBuildQuery %s - Case: '.$check['case'];
+        $msg = 'Assets::onAfterBuildQuery %s - Case: '.$check['case'];
         $db  = \JFactory::getDbo();
 
         $config = array(
@@ -103,7 +102,7 @@ class AssetsTest extends DatabaseTest
      */
     public function testOnAfterBind($test, $check)
     {
-        $msg = 'Own::onAfterBuildQuery %s - Case: '.$check['case'];
+        $msg = 'Assets::onAfterBuildQuery %s - Case: '.$check['case'];
 
         $config = array(
             'idFieldName' => $test['tableid'],
@@ -137,7 +136,7 @@ class AssetsTest extends DatabaseTest
      */
     public function testOnBeforeDelete($test, $check)
     {
-        $msg = 'Own::onBeforeDelete %s - Case: '.$check['case'];
+        $msg = 'Assets::onBeforeDelete %s - Case: '.$check['case'];
         $db  = \JFactory::getDbo();
 
         $config = array(

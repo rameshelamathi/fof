@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -238,6 +238,13 @@ class Controller
 		{
 			$mName = $rMethod->getName();
 
+			// If the developer screwed up and declared one of the helper method public do NOT make them available as
+			// tasks.
+			if ((substr($mName, 0, 8) == 'onBefore') || (substr($mName, 0, 7) == 'onAfter') || substr($mName, 0, 1) == '_')
+			{
+				continue;
+			}
+
 			// Add default display method if not explicitly declared.
 			if (!in_array($mName, $xMethods) || $mName == 'display' || $mName == 'main')
 			{
@@ -340,10 +347,17 @@ class Controller
 			throw new TaskNotFound(\JText::sprintf('JLIB_APPLICATION_ERROR_TASK_NOT_FOUND', $task), 404);
 		}
 
+		$result = $this->triggerEvent('onBeforeExecute', array(&$task));
+
+		if ($result === false)
+		{
+			return false;
+		}
+
 		$eventName = 'onBefore' . ucfirst($task);
 		$result = $this->triggerEvent($eventName);
 
-		if (!$result)
+		if ($result === false)
 		{
 			return false;
 		}
@@ -370,7 +384,14 @@ class Controller
 		$eventName = 'onAfter' . ucfirst($task);
 		$result = $this->triggerEvent($eventName);
 
-		if (!$result)
+		if ($result === false)
+		{
+			return false;
+		}
+
+		$result = $this->triggerEvent('onAfterExecute', array($task));
+
+		if ($result === false)
 		{
 			return false;
 		}
@@ -441,8 +462,9 @@ class Controller
 				$groups = $user->groups;
 			}
 
-			// Set up safe URL parameters
+			$importantParameters = array();
 
+			// Set up safe URL parameters
 			if (!is_array($urlparams))
 			{
 				$urlparams = array(
@@ -475,13 +497,16 @@ class Controller
 				{
 					// Add your safe url parameters with variable type as value {@see JFilterInput::clean()}.
 					$registeredurlparams->$key = $value;
+
+					// Add the URL-important parameters into the array
+					$importantParameters[$key] = $this->input->get($key, null, $value);
 				}
 
 				$app->registeredurlparams = $registeredurlparams;
 			}
 
 			// Create the cache ID after setting the registered URL params, as they are used to generate the ID
-			$cacheId = md5(serialize(array(\JCache::makeId(), $view->getName(), $this->doTask, $groups)));
+			$cacheId = md5(serialize(array(\JCache::makeId(), $view->getName(), $this->doTask, $groups, $importantParameters)));
 
 			// Get the cached view or cache the current view
 			$cache->get($view, 'display', $cacheId);
@@ -820,7 +845,7 @@ class Controller
 		// Ensure the type is not overwritten by a previous call to setMessage.
 		if (empty($this->messageType))
 		{
-			$this->messageType = 'info';
+			$this->messageType = 'message';
 		}
 
 		// If the type is explicitly set, set it.

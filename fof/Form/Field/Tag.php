@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -89,109 +89,6 @@ class Tag extends \JFormFieldTag implements FieldInterface
 	}
 
 	/**
-	 * Method to get a list of tags
-	 *
-	 * @return  array  The field option objects.
-	 *
-	 * @since   3.1
-	 */
-	protected function getOptions()
-	{
-		$published = $this->element['published']? $this->element['published'] : array(0,1);
-
-		$db		= $this->form->getContainer()->platform->getDbo();
-		$query	= $db->getQuery(true)
-			->select('a.id AS value, a.path, a.title AS text, a.level, a.published')
-			->from('#__tags AS a')
-			->join('LEFT', $db->quoteName('#__tags') . ' AS b ON a.lft > b.lft AND a.rgt < b.rgt');
-
-		if ($this->item instanceof DataModel)
-		{
-			$item = $this->item;
-		}
-		else
-		{
-			$item = $this->form->getModel();
-		}
-
-		if ($item instanceof DataModel)
-		{
-			// Fake value for selected tags
-			$keyfield = $item->getKeyName();
-			$content_id  = $item->$keyfield;
-			$type = $item->getContentType();
-
-			$selected_query = $db->getQuery(true);
-			$selected_query
-				->select('tag_id')
-				->from('#__contentitem_tag_map')
-				->where('content_item_id = ' . (int) $content_id)
-				->where('type_alias = ' . $db->quote($type));
-
-			$db->setQuery($selected_query);
-
-			$this->value = $db->loadColumn();
-		}
-
-		// Ajax tag only loads assigned values
-		if (!$this->isNested())
-		{
-			// Only item assigned values
-			$values = (array) $this->value;
-			\JArrayHelper::toInteger($values);
-			$query->where('a.id IN (' . implode(',', $values) . ')');
-		}
-
-		// Filter language
-		if (!empty($this->element['language']))
-		{
-			$query->where('a.language = ' . $db->quote($this->element['language']));
-		}
-
-		$query->where($db->quoteName('a.alias') . ' <> ' . $db->quote('root'));
-
-		// Filter to only load active items
-
-		// Filter on the published state
-		if (is_numeric($published))
-		{
-			$query->where('a.published = ' . (int) $published);
-		}
-		elseif (is_array($published))
-		{
-			\JArrayHelper::toInteger($published);
-			$query->where('a.published IN (' . implode(',', $published) . ')');
-		}
-
-		$query->group('a.id, a.title, a.level, a.lft, a.rgt, a.parent_id, a.published, a.path')
-			->order('a.lft ASC');
-
-		// Get the options.
-		$db->setQuery($query);
-
-		try
-		{
-			$options = $db->loadObjectList();
-		}
-		catch (\RuntimeException $e)
-		{
-			return false;
-		}
-
-		// Prepare nested data
-		if ($this->isNested())
-		{
-			$this->prepareOptionsNested($options);
-		}
-		else
-		{
-			$options = \JHelperTags::convertPathsToNames($options);
-		}
-
-		return $options;
-	}
-
-	/**
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
 	 *
@@ -247,26 +144,57 @@ class Tag extends \JFormFieldTag implements FieldInterface
 		$id    = isset($fieldOptions['id']) ? 'id="' . $fieldOptions['id'] . '" ' : '';
 		$class = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
 
-		$translate = $this->element['translate'] ? (string) $this->element['translate'] : false;
+		$front_link = $this->element['front_link'] ? (string) $this->element['front_link'] : false;
+		$translate  = $this->element['translate'] ? (string) $this->element['translate'] : false;
 
-		$options = $this->getOptions();
+		$tagIds = is_array($this->value) ? implode(',', $this->value) : $this->value;
 
-		$html = '';
+		if (!$this->item instanceof DataModel)
+		{
+			$this->item = $this->form->getModel();
+		}
 
-		foreach ($options as $option) {
+		if ($tagIds && $this->item instanceof DataModel)
+		{
+			$db = $this->form->getContainer()->platform->getDbo();
+			$query = $db->getQuery(true)
+				->select(array($db->quoteName('id'), $db->quoteName('title')))
+				->from($db->quoteName('#__tags'))
+				->where($db->quoteName('id') . ' IN (' . $tagIds . ')');
+			$query->order($db->quoteName('title'));
 
-			$html .= '<span>';
+			$db->setQuery($query);
+			$tags = $db->loadObjectList();
 
-			if ($translate == true)
+			$html = '';
+
+			foreach ($tags as $tag)
 			{
-				$html .= \JText::_($option->text);
-			}
-			else
-			{
-				$html .= $option->text;
-			}
+				$html .= '<span>';
 
-			$html .= '</span>';
+				if ($front_link)
+				{
+					\JLoader::register('TagsHelperRoute', \JPATH_SITE . '/components/com_tags/helpers/route.php');
+
+					$html .= '<a href="' . \JRoute::_(\TagsHelperRoute::getTagRoute($tag->id)) . '">';
+				}
+
+				if ($translate == true)
+				{
+					$html .= \JText::_($tag->title);
+				}
+				else
+				{
+					$html .= $tag->title;
+				}
+
+				if ($front_link)
+				{
+					$html .= '</a>';
+				}
+
+				$html .= '</span>';
+			}
 		}
 
 		return '<span ' . ($id ? $id : '') . 'class="' . $class . '">' .

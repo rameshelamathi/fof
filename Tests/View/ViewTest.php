@@ -1,8 +1,8 @@
 <?php
 /**
- * @package        FOF
- * @copyright      2014 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license        GNU GPL version 3 or later
+ * @package     FOF
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
 
 namespace FOF30\Tests\View;
@@ -299,7 +299,7 @@ class ViewTest extends FOFTestCase
         }
 
         $view = $this->getMock('\\FOF30\\Tests\\Stubs\\View\\ViewStub', array('loadTemplate', 'preRender'), array(static::$container, array(), $methods));
-        $view->expects($this->any())->method('preRender')->willReturnCallback(function() use($test){
+        $view->method('preRender')->willReturnCallback(function() use($test){
             echo $test['mock']['pre'];
         });
 
@@ -351,8 +351,8 @@ class ViewTest extends FOFTestCase
         $msg = 'View::loadTemplate %s - Case: '.$check['case'];
 
         $view = $this->getMock('\\FOF30\\Tests\\Stubs\\View\\ViewStub', array('loadAnyTemplate', 'getLayout'), array(static::$container));
-        $view->expects($this->any())->method('getLayout')->willReturn($test['mock']['layout']);
-        $view->expects($this->any())->method('loadAnyTemplate')->willReturnCallback(
+        $view->method('getLayout')->willReturn($test['mock']['layout']);
+        $view->method('loadAnyTemplate')->willReturnCallback(
             function() use (&$test){
                 $result = array_shift($test['mock']['any']);
 
@@ -387,47 +387,42 @@ class ViewTest extends FOFTestCase
      * @covers          FOF30\View\View::loadAnyTemplate
      * @dataProvider    ViewDataprovider::getTestLoadAnyTemplate
      */
-    public function testLoadAnyTemplate($test, $check)
+    public function testLoadAnyTemplate($testSetupValues, $expectedResult)
     {
-        $msg = 'View::loadAnyTemplate %s - Case: '.$check['case'];
-        $checkUriPath = array();
+        $msg = 'View::loadAnyTemplate %s - Case: '.$expectedResult['case'];
+        $resolvedPaths = array();
 
         $view = $this->getMock('\\FOF30\\Tests\\Stubs\\View\\ViewStub',
             array('getEngine', 'incrementRender', 'decrementRender', 'flushSectionsIfDoneRendering'),
             array(static::$container));
 
-        $view->expects($this->any())->method('getEngine')->willReturn(new ClosureHelper(array(
-            'get' => function() use($test){
-                return $test['mock']['engineGet'];
+        $view->method('getEngine')->willReturn(new ClosureHelper(array(
+            'get' => function() use($testSetupValues){
+                return $testSetupValues['mock']['engineGet'];
             }
         )));
 
         $viewFinder = new ClosureHelper(array(
-            'resolveUriToPath' => function($self, $uri, $layout, $extra) use($test, &$checkUriPath){
-                $checkUriPath['uri']   = $uri;
-                $checkUriPath['extra'] = $extra;
+            'resolveUriToPath' => function($self, $uri, $layout, $extra) use($testSetupValues, &$resolvedPaths){
+                $resolvedPaths['uri']   = $uri;
+                $resolvedPaths['extra'] = $extra;
                 return null;
             }
         ));
 
-        ReflectionHelper::setValue($view, 'viewTemplateAliases', $test['mock']['alias']);
+        ReflectionHelper::setValue($view, 'viewTemplateAliases', $testSetupValues['mock']['alias']);
         ReflectionHelper::setValue($view, 'viewFinder', $viewFinder);
 
-        if($test['mock']['path'])
+        if($testSetupValues['mock']['templatePaths'])
         {
-            $view->path = $test['mock']['path'];
+            ReflectionHelper::invoke($view, 'setTemplatePath', $testSetupValues['mock']['templatePaths']);
         }
 
-        if($test['mock']['_path'])
-        {
-            $view->_path = $test['mock']['_path'];
-        }
+        $result = $view->loadAnyTemplate($testSetupValues['uri'], $testSetupValues['forceParams'], $testSetupValues['callback']);
 
-        $result = $view->loadAnyTemplate($test['uri'], $test['forceParams'], $test['callback']);
-
-        $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
-        $this->assertEquals($check['uri'], $checkUriPath['uri'], sprintf($msg, 'Failed to set the correct URI'));
-        $this->assertEquals($check['extra'], $checkUriPath['extra'], sprintf($msg, 'Failed to set the correct extra paths'));
+        $this->assertEquals($expectedResult['result'], $result, sprintf($msg, 'Returned the wrong result'));
+        $this->assertEquals($expectedResult['uri'], $resolvedPaths['uri'], sprintf($msg, 'Failed to set the correct URI'));
+        $this->assertEquals($expectedResult['extra'], $resolvedPaths['extra'], sprintf($msg, 'Failed to set the correct extra paths'));
     }
 
     /**
@@ -686,7 +681,7 @@ class ViewTest extends FOFTestCase
     public function testFlushSectionsIfDoneRendering($test, $check)
     {
         $view = $this->getMock('\\FOF30\\Tests\\Stubs\\View\\ViewStub', array('doneRendering', 'flushSections'), array(static::$container));
-        $view->expects($this->any())->method('doneRendering')->willReturn($test['mock']['done']);
+        $view->method('doneRendering')->willReturn($test['mock']['done']);
         $view->expects($check['flush'] ? $this->once() : $this->never())->method('flushSections');
 
         $view->flushSectionsIfDoneRendering();

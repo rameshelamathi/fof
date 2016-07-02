@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -32,7 +32,7 @@ class HasOne extends HasMany
 	 *
 	 * @return Collection|DataModel
 	 */
-	public function getData(callable $callback = null, Collection $dataCollection = null)
+	public function getData($callback = null, Collection $dataCollection = null)
 	{
 		if (is_null($dataCollection))
 		{

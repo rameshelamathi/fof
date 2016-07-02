@@ -1,3 +1,118 @@
+FOF 3.0.11
+================================================================================
+~ Changing the #__akeeba_common table schema
+~ Workaround for sites with upper- or mixed-case prefixes / table names on MySQL servers running on case-insensitive filesystems and lower_case_table_names = 1 (default on Windows)
+
+FOF 3.0.10
+================================================================================
+~ gh-594 Use the correct numeric field types in scaffolding
++ Blade: @token to get Joomla!'s form token
++ Blade: @editor to get Joomla!'s WYSIWYG editor
++ Dispatcher mixin: ViewAliases, creates aliases for view names
+# [HIGH] Passing $section in Container::getInstance had practically no effect
+
+FOF 3.0.9
+================================================================================
++ Improved detection and removal of duplicate update sites
++ Reset the APC cache, if enabled, before installing/updating an extension using an InstallScript script class.
+# [HIGH] Params won't work properly with Conservative caching
+# [MEDIUM] Config helper and installscript would fail in rare cases
+
+FOF 3.0.8
+================================================================================
++ utf8mb4 support in schema installer under Joomla! 3.5+
++ gh-584 removeHeader method added in Form, allowing you to remove a header from an XML form.
+# [HIGH] FOF30\Update\Joomla could not detect Joomla! updates due to changes in Joomla! XML update sources
+# [HIGH] Assets tracking was broken due to wrong use of in_array instead of array_key_exists
+# [HIGH] The access model state was always filled with the default access level, making it impossible to filter by viewing access level.
+
+FOF 3.0.7
+================================================================================
+# [HIGH] The caching ID was always wrong since JCache::makeId() is never called any more in Joomla!.
+
+FOF 3.0.6
+================================================================================
++ gh-579 Title field, added slug_separator attribute
+
+FOF 3.0.5
+================================================================================
+~ No change to 3.0.4. I'm trying to get Packagist to work.
+
+FOF 3.0.4
+================================================================================
+# [HIGH] If you declared onBefore/onAfter Controller methods public FOF would erroneously treat them as tasks
+
+FOF 3.0.3
+================================================================================
++ gh-572 Allow to translate toolbar title in fof.xml
++ gh-570 Pass the form to child, needed for parseFieldTags
++ gh-565 Fine grained caching control for controller tasks
+~ InstallScript: use is_file / is_dir instead of JFile/JFolder
+# [MEDIUM] gh-571 $rowId is not a monotonically increasing ID
+# [HIGH] push() does not save relations of new items
+
+FOF 3.0.2
+================================================================================
+~ Clear the OPcache when installing / updating an extension as long as it uses Installscript
+~ You can now use a folder called ViewTemplate in your extension to hold your view templates
+# [LOW] empty() returns false even when there are no items in a collection
+
+FOF 3.0.1
+================================================================================
++ Added Params service to the container to easily get/set the component's options
++ Added appropriate responses on CRUD json save
++ Color Field
++ Added parse_value attribute in the Model field. Allows for `[ITEM:fieldName]` replacement in rendered drop-down values.
++ Form Field Button, added listItemTask attribute for sending POST task in the JHtml grid.
++ Browse view: Only show Publish buttons in the Toolbar if the DataModel has an "enabled" field
++ Numeric field type
++ Added forceDelete method in DataController to always delete, never trash, selected record(s)
++ Added onAfterApplySaveError event in DataController when saving fails
++ Rebasing of relation after item creation
+~ Use the 'as' parameter of the JDatabase API for the HasMany relation
+~ Ip helper class: let the workarounds be disabled
+~ Updating bundled cacert.pem
+# [HIGH] The "callable" type hint is not compatible with PHP 5.3
+# [HIGH] DataModel reorder is non-deterministic when multiple records with the same ordering value exist in the same scope
+# [HIGH] LayoutHelper: we aren't loading files from the layouts directory
+# [HIGH] When a record is locked and cannot be unlocked it should not be saved regardless
+# [MEDIUM] You couldn't create new records using HTTP verbs (e.g. JSON API)
+# [MEDIUM] DataModel's automatic validation for INT columns with '0' default value was broken
+# [LOW] Front-end rendering of XML forms results in a superfluous div when sidebar rendering is disabled.
+# [LOW] InstallScript::_createAdminMenus didn't assign values for NOT NULL columns of the menu database table
+# [LOW] AkeebaStrapper renderer would not access the session through the container
+# [LOW] Json view would use getItemsArray() instead of get() thus not making use of eager loaded relations
+
+FOF 3.0.0
+================================================================================
++ CLI tool to quickly create FOF components – not included in the library ZIP package, look at https://github.com/akeeba/fof/tree/development/cli
++ Preliminary changes for PHP 7 compatibility
++ Improve performance of AccessLevel field in Browse views
++ Improve performance of Language field in Browse views
++ Add relation depth support in Forms
++ Container: assign custom platform classes with platformClass parameter
++ Add support for [TOKEN] in XML form field text replacements
++ ViewTemplate field: pass $this->item as $model in repeatable (browse) mode
++ You can now set default values for the add task
++ Allow field value overrides when copying items
++ DataModel::check(): use default value for NOT NULL but empty fields
++ DataModel::check() set default ordering to 0 when it's NULL
++ XML forms pass the format and tmpl parameters if they are set in the request
++ Model header and form field: "with" attribute
++ DataModel: getRawDataArray() to get the raw database query results
++ DataModel\Collection: reset() allows you to clear all elements in the collection
+~ Reworked Tags field
+~ Suppress warnings in Selectable and GenericList headers when developers provide invalid list data
+# Two Model fields on the same form would result in the wrong data being displayed
+# Typo: tdwith instead of tdwidth in Scaffolding
+# Media field: did not take `directory` attribute into account
+# Filter order and direction not passed correctly to the view
+# Calendar field type, notice thrown when the format attribute was not defined
+# InstallScript would screw up trying to remove post-installation messages resulting in removal not happening
+# Scaffolidng: some language keys had a double underscore
+# Relation field: wrong Model object instance used
+# Floating sidebar and messages didn't play along nicely
+
 FOF 3.0.0.b2
 ================================================================================
 + Controller: Additional special ACL tasks "guest" and "user"

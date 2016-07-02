@@ -53,9 +53,7 @@ All we ask you to do is to subscribe to this low volume mailing list and volunte
 
 #### Documentation
 
-The main documentation of FOF is written in the DocBook 5 XML format and is located in the [documentation/fof-guide.xml](https://github.com/akeeba/fof/blob/development/documentation/fof-guide.xml) file in the Git repository.
-
-We are not the only project using DocBook XML for our documentation. The Firebird project has a [great documentation page on how to edit DocBook XML files](http://www.firebirdsql.org/manual/docwritehowto-docbook-authoring-tools.html). It basically boils down to you having to use either a plain text editor or a specialised XML editor. While the FOF documentation authors use XMLMind XML Editor and highly recommend it we have to warn you that it's pricey. That said, you can easily edit the file with a plain text editor such as Notepad++ (Windows), gEdit (Linux), Kate (Linux), Smultron (Mac OS X) or TextWrangler (Mac OS X).
+[The main documentation of FOF](https://github.com/akeeba/fof/wiki) is located in the [github wiki](https://github.com/akeeba/fof/wiki) in the Git repository.
 
 Make sure you read the "How do I submit a Pull Request" section to find out how to contribute your changes to the project.
 
@@ -73,7 +71,7 @@ Once you have made your changes please sure you read the "How do I submit a Pull
 
 Unit Testing is an especially sensitive coding area. We'd recommend to first take a look at the [Unit Testing introductory presentation](http://prezi.com/qqv6dqkoqvl3/php-unit-testing-a-practical-approach/) by FOF contributor Davide Tampellini. It will get you up to speed with how testing works.
 
-All tests are stored in the [tests/unit/suites/fof](https://github.com/akeeba/fof/tree/development/tests/unit/suites/fof) directory of the Git repository. As you saw in the presentation the folder structure mirrors that of the fof directory of the Git repository.
+All tests are stored in the [Tests](https://github.com/akeeba/fof/tree/development/Tests) directory of the Git repository. As you saw in the presentation the folder structure mirrors that of the fof directory of the Git repository.
 
 Once you have made your changes please sure you read the "How do I submit a Pull Request" section to find out how to contribute your changes to the project.
 

@@ -1,8 +1,8 @@
 <?php
 /**
- * @package        FOF
- * @copyright      2014 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license        GNU GPL version 3 or later
+ * @package     FOF
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
 
 namespace FOF30\Tests\Controller;
@@ -98,8 +98,6 @@ class ControllerTest extends ApplicationTestCase
         unset($tasks['__call']);
 
         $check = array(
-            'onBeforeDummy' => 'onBeforeDummy',
-            'onAfterDummy'  => 'onAfterDummy',
             'display'       => 'display',
             'main'          => 'main',
             '__default'     => 'main'
@@ -221,12 +219,12 @@ class ControllerTest extends ApplicationTestCase
 
         $viewMethods = array('setDefaultModel', 'setLayout', 'display');
         $view = $this->getMock('\\FOF30\\Tests\\Stubs\\View\\ViewStub', $viewMethods, array($container));
-        $view->expects($this->any())->method('setDefaultModel')->willReturnCallback(
+        $view->method('setDefaultModel')->willReturnCallback(
             function($model) use (&$modelCounter){
                 $modelCounter++;
             }
         );
-        $view->expects($this->any())->method('setLayout')->willReturnCallback(
+        $view->method('setLayout')->willReturnCallback(
             function($layout) use (&$layoutCounter, &$layoutCheck){
                 $layoutCounter++;
                 $layoutCheck = $layout;
@@ -234,8 +232,8 @@ class ControllerTest extends ApplicationTestCase
         );
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\ControllerStub', array('getView', 'getModel'), array($container));
-        $controller->expects($this->any())->method('getModel')->willReturn($test['mock']['getModel']);
-        $controller->expects($this->any())->method('getView')->willReturn($view);
+        $controller->method('getModel')->willReturn($test['mock']['getModel']);
+        $controller->method('getView')->willReturn($view);
 
         ReflectionHelper::setValue($controller, 'task'  , $test['mock']['task']);
         ReflectionHelper::setValue($controller, 'doTask', $test['mock']['doTask']);

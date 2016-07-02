@@ -1,14 +1,13 @@
 <?php
 /**
  * @package     FOF
- * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
 namespace FOF30\Form;
 
 use FOF30\Container\Container;
-use FOF30\Form\Field\Model;
 use FOF30\Form\Header\HeaderBase;
 use FOF30\Model\DataModel;
 use FOF30\View\DataView\DataViewInterface;
@@ -278,7 +277,7 @@ class Form extends JForm
 		foreach ($elements as $element)
 		{
 			// Get the field groups for the element.
-			$attrs = $element->xpath('ancestor::headers[@name]/@name');
+			$attrs = $element->xpath('ancestor::headerset[@name]/@name');
 			$groups = array_map('strval', $attrs ? $attrs : array());
 			$group = implode('.', $groups);
 
@@ -376,7 +375,7 @@ class Form extends JForm
 	 *
 	 * @param   string $name  The name of the header field.
 	 * @param   string $group The optional dot-separated form group path on which to find the field.
-	 * @param   mixed  $value The optional value to use as the default for the field.
+	 * @param   mixed  $value The optional value to use as the default for the field. (DEPRECATED)
 	 *
 	 * @return  HeaderInterface|bool  The HeaderInterface object for the field or boolean false on error.
 	 *
@@ -399,7 +398,7 @@ class Form extends JForm
 			return false;
 		}
 
-		return $this->loadHeader($element, $group, $value);
+		return $this->loadHeader($element, $group);
 	}
 
 	/**
@@ -537,6 +536,39 @@ class Form extends JForm
 		{
 			return false;
 		}
+	}
+
+	/**
+	 * Method to remove a header from the form definition.
+	 *
+	 * @param   string  $name   The name of the form field for which remove.
+	 * @param   string  $group  The optional dot-separated form group path on which to find the field.
+	 *
+	 * @return  boolean  True on success, false otherwise.
+	 *
+	 * @throws  \UnexpectedValueException
+	 */
+	public function removeHeader($name, $group = null)
+	{
+		// Make sure there is a valid JForm XML document.
+		if (!($this->xml instanceof SimpleXMLElement))
+		{
+			throw new \UnexpectedValueException(sprintf('%s::getFieldAttribute `xml` is not an instance of SimpleXMLElement', get_class($this)));
+		}
+
+		// Find the form field element from the definition.
+		$element = $this->findHeader($name, $group);
+
+		// If the element exists remove it from the form definition.
+		if ($element instanceof SimpleXMLElement)
+		{
+			$dom = dom_import_simplexml($element);
+			$dom->parentNode->removeChild($dom);
+
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -841,7 +873,9 @@ class Form extends JForm
 
 		if (is_object($data) && ($data instanceof DataModel))
 		{
-			return parent::bind($this->modelToBindSource($data));
+			$maxDepth = (int) $this->getAttribute('relation_depth', '1');
+
+			return parent::bind($this->modelToBindSource($data, $maxDepth));
 		}
 
 		return parent::bind($data);
@@ -1054,8 +1088,27 @@ class Form extends JForm
 		return $element;
 	}
 
-	protected function modelToBindSource(DataModel $model)
+	/**
+	 * Converts a DataModel into data suitable for use with the form. The difference to the Model's getData() method is
+	 * that we process hasOne and belongsTo relations. This is a recursive function which will be called at most
+	 * $maxLevel deep. You can set this in the form XML file, in the relation_depth attribute.
+	 *
+	 * The $modelsProcessed array which is passed in successive recursions lets us prevent pointless Inception-style
+	 * recursions, e.g. Model A is related to Model B is related to Model C is related to Model A. You clearly don't
+	 * care to see a.b.c.a.b in the results. You just want a.b.c. Obviously c is indirectly related to a because that's
+	 * where you began the recursion anyway.
+	 *
+	 * @param   DataModel  $model            The item to dump its contents into an array
+	 * @param   int        $maxLevel         Maximum nesting level of relations to process. Default: 1.
+	 * @param   array      $modelsProcessed  Array of the fully qualified model class names already processed.
+	 *
+	 * @return  array
+	 * @throws  DataModel\Relation\Exception\RelationNotFound
+	 */
+	protected function modelToBindSource(DataModel $model, $maxLevel = 1, $modelsProcessed = array())
 	{
+		$maxLevel--;
+
 		$data = $model->toArray();
 
 		$relations = $model->getRelations()->getRelationNames();
@@ -1065,7 +1118,7 @@ class Form extends JForm
 		}, $relationTypes);
 		$relationTypes = array_flip($relationTypes);
 
-		if (is_array($relations) && count($relations))
+		if (is_array($relations) && count($relations) && ($maxLevel >= 0))
 		{
 			foreach ($relations as $relationName)
 			{
@@ -1077,11 +1130,12 @@ class Form extends JForm
 					continue;
 				}
 
-				if ($relationTypes[$class] != 'hasOne')
+				if (!in_array($relationTypes[$class], array('hasOne', 'belongsTo')))
 				{
 					continue;
 				}
 
+				/** @var DataModel $relData */
 				$relData = $model->$relationName;
 
 				if (!($relData instanceof DataModel))
@@ -1089,9 +1143,18 @@ class Form extends JForm
 					continue;
 				}
 
-				$relDataArray = $relData->toArray();
+				$modelType = get_class($relData);
 
-				if (empty($relDataArray) || !is_array($relDataArray))
+				if (in_array($modelType, $modelsProcessed))
+				{
+					continue;
+				}
+
+				$modelsProcessed[] = $modelType;
+
+				$relDataArray = $this->modelToBindSource($relData, $maxLevel, $modelsProcessed);
+
+				if (!is_array($relDataArray) || empty($relDataArray))
 				{
 					continue;
 				}
@@ -1105,4 +1168,6 @@ class Form extends JForm
 
 		return $data;
 	}
+
+
 }
