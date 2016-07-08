@@ -520,7 +520,7 @@ class F0FDatabaseInstaller
 			case 'type':
 				try
 				{
-					$tableColumns = $this->db->getTableColumns($tableNormal, true);
+					$tableColumns = $this->db->getTableColumns($tableNormal, false);
 				}
 				catch (\Exception $e)
 				{
@@ -536,7 +536,7 @@ class F0FDatabaseInstaller
 					if (!empty($coltype))
 					{
 						$coltype = strtolower($coltype);
-						$currentType = strtolower($tableColumns[$value]);
+						$currentType = strtolower($tableColumns[$value]->Type);
 
 						$condition = ($coltype == $currentType);
 					}
