@@ -536,7 +536,7 @@ class F0FDatabaseInstaller
 					if (!empty($coltype))
 					{
 						$coltype = strtolower($coltype);
-						$currentType = strtolower($tableColumns[$value]->Type);
+						$currentType = strtolower($tableColumns[$value]);
 
 						$condition = ($coltype == $currentType);
 					}
