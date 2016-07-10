@@ -520,7 +520,7 @@ class F0FDatabaseInstaller
 			case 'type':
 				try
 				{
-					$tableColumns = $this->db->getTableColumns($tableNormal, true);
+					$tableColumns = $this->db->getTableColumns($tableNormal, false);
 				}
 				catch (\Exception $e)
 				{
