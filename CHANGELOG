@@ -1,3 +1,7 @@
+FOF 3.0.12
+================================================================================
+# [LOW] gh-617 Notice in DataModel::check() when you have added custom known fields
+
 FOF 3.0.11
 ================================================================================
 ~ Changing the #__akeeba_common table schema
