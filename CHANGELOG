@@ -1,6 +1,7 @@
 FOF 3.0.12
 ================================================================================
 # [LOW] gh-617 Notice in DataModel::check() when you have added custom known fields
+# [MEDIUM] Component menu item does not appear in the backend when there's another extension with the same element name as the component
 
 FOF 3.0.11
 ================================================================================
