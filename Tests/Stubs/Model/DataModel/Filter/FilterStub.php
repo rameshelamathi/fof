@@ -30,4 +30,16 @@ class FilterStub extends AbstractFilter
     {
         return '';
     }
+
+	public function range($from, $to, $include = true)
+	{
+		return '';
+	}
+
+	public function modulo($from, $interval, $include = true)
+	{
+		return '';
+	}
+
+
 }

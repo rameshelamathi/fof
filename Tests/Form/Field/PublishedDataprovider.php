@@ -98,29 +98,29 @@ class PublishedDataprovider
             'check' => array(
                 'case'   => '',
                 'result' => <<<HTML
-<a class="btn btn-micro hasTooltip" href="javascript:void(0);" onclick="return listItemTask('cb2','publish')" title="JLIB_HTML_PUBLISH_ITEM"><i class="icon-unpublish"></i></a>
+<a class="btn btn-micro hasTooltip" href="javascript:void(0);" onclick="return listItemTask('cb2','publish')" title="JLIB_HTML_PUBLISH_ITEM"><span class="icon-unpublish"></span></a>
 HTML
 
             )
         );
 
-        $data[] = array(
-            'input' => array(
-                'attribs' => array(
-                    'prefix' => 'foo',
-                    'checkbox' => 'dd',
-                    'publish_up' => '2015-08-05',
-                    'publish_down' => '2015-08-10'
-                )
-            ),
-            'check' => array(
-                'case'   => '',
-                'result' => <<<HTML
-<a class="btn btn-micro hasTooltip" href="javascript:void(0);" onclick="return listItemTask('dd2','foopublish')" title="JLIB_HTML_PUBLISH_ITEM&lt;br /&gt;JLIB_HTML_PUBLISHED_START&lt;br /&gt;JLIB_HTML_PUBLISHED_FINISHED"><i class="icon-unpublish"></i></a>
+	    $data[] = array(
+		    'input' => array(
+			    'attribs' => array(
+				    'prefix' => 'foo',
+				    'checkbox' => 'dd',
+				    'publish_up' => '2015-08-05',
+				    'publish_down' => '2015-08-10'
+			    )
+		    ),
+		    'check' => array(
+			    'case'   => '',
+			    'result' => <<<HTML
+<a class="btn btn-micro hasTooltip" href="javascript:void(0);" onclick="return listItemTask('dd2','foopublish')" title="JLIB_HTML_PUBLISH_ITEM&lt;br /&gt;JLIB_HTML_PUBLISHED_START&lt;br /&gt;JLIB_HTML_PUBLISHED_FINISHED"><span class="icon-unpublish"></span></a>
 HTML
 
-            )
-        );
+		    )
+	    );
 
         return $data;
     }

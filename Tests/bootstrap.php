@@ -9,6 +9,7 @@
 use FOF30\Tests\Helpers\TravisLogger;
 
 define('_JEXEC', 1);
+define('JDEBUG', 0);
 
 if (!defined('JPATH_TESTS'))
 {
@@ -59,28 +60,8 @@ if (version_compare(PHP_VERSION, '5.4.0', 'lt'))
 	ini_set('magic_quotes_runtime', 0);
 }
 
-// Timezone fix; avoids errors printed out by PHP 5.3.3+
-if (function_exists('date_default_timezone_get') && function_exists('date_default_timezone_set'))
-{
-	if (function_exists('error_reporting'))
-	{
-		$oldLevel = error_reporting(0);
-	}
-
-	$serverTimezone = @date_default_timezone_get();
-
-	if (empty($serverTimezone) || !is_string($serverTimezone))
-	{
-		$serverTimezone = 'UTC';
-	}
-
-	if (function_exists('error_reporting'))
-	{
-		error_reporting($oldLevel);
-	}
-
-	@date_default_timezone_set($serverTimezone);
-}
+// Fixed timezone to preserve our sanity
+@date_default_timezone_set('UTC');
 
 $jversion_test = getenv('JVERSION_TEST') ? getenv('JVERSION_TEST') : '3.4';
 

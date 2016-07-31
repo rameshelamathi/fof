@@ -181,7 +181,7 @@ class OrderingDataprovider
             ),
             'check' => array(
                 'case' => 'Ajax support, list not ordered by the ordering field, no edit perms',
-                'result' => '<span class="sortable-handler inactive" ><i class="icon-menu"></i></span>'
+                'result' => '<span class="sortable-handler inactive" ><span class="icon-menu"></span></span>'
             )
         );
 
@@ -200,7 +200,7 @@ class OrderingDataprovider
             ),
             'check' => array(
                 'case' => 'Ajax support, list not ordered by the ordering field, with edit perms',
-                'result' => '<div class="order-disabled"><span class="sortable-handler " title="" rel="tooltip"><i class="icon-menu"></i></span></div>'
+                'result' => '<div class="order-disabled"><span class="sortable-handler " title="" rel="tooltip"><span class="icon-menu"></span></span></div>'
             )
         );
 
@@ -219,7 +219,7 @@ class OrderingDataprovider
             ),
             'check' => array(
                 'case' => 'Ajax support, list ordered by the ordering field, with edit perms',
-                'result' => '<div class="order-enabled"><span class="sortable-handler " title="" rel="tooltip"><i class="icon-menu"></i></span><input type="text" name="order[]" size="5" class="input-mini text-area-order" value="10" /></div>'
+                'result' => '<div class="order-enabled"><span class="sortable-handler " title="" rel="tooltip"><span class="icon-menu"></span></span><input type="text" name="order[]" size="5" class="input-mini text-area-order" value="10" /></div>'
             )
         );
 
@@ -238,7 +238,7 @@ class OrderingDataprovider
             ),
             'check' => array(
                 'case' => 'Ajax support but no saveOrder, list ordered by the ordering field, with edit perms',
-                'result' => '<div class="order-enabled"><span class="sortable-handler inactive tip-top" title="JORDERINGDISABLED" rel="tooltip"><i class="icon-menu"></i></span><input type="text" name="order[]" size="5" class="input-mini text-area-order" value="10" /></div>'
+                'result' => '<div class="order-enabled"><span class="sortable-handler inactive tip-top" title="JORDERINGDISABLED" rel="tooltip"><span class="icon-menu"></span></span><input type="text" name="order[]" size="5" class="input-mini text-area-order" value="10" /></div>'
             )
         );
 
