@@ -904,8 +904,9 @@ class DataModelGenericTest extends DatabaseTest
 
         $this->assertInternalType('array', $result, sprintf($msg, 'Should return an array'));
 
-        $key  = array_shift(array_keys($result));
-        $item = array_shift($result);
+	    $array_keys = array_keys($result);
+	    $key        = array_shift($array_keys);
+        $item       = array_shift($result);
 
         $this->assertSame(1, $key, sprintf($msg, 'Should index the array by the record id'));
         $this->assertInstanceOf('FOF30\Model\DataModel', $item, sprintf($msg, 'Should return an array of DataModels'));
