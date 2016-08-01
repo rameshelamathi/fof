@@ -125,7 +125,7 @@ class Relation extends GenericList
 
 		$value_field = $this->element['value_field'] ? (string) $this->element['value_field'] : 'title';
 		$name = (string) $this->element['name'];
-        	$class = $this->element['relationclass'] ? (string) $this->element['relationclass'] : $name;
+        	$class = $this->element['model'] ? (string) $this->element['model'] : $name;
 
 		$view      = $this->form->getView()->getName();
 		$relation  = $this->form->getModel()->getContainer()->inflector->pluralize($class);
