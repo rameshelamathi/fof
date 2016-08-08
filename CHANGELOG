@@ -1,5 +1,7 @@
 FOF 3.0.13
 ================================================================================
+! mcrypt is deprecated in PHP 7.1. Replacing it with OpenSSL.
++ Relation Form Field now has a "model" attribute for cases when the field name is not the same of the model class name (ie: company_types vs CompanyTypes)
 
 FOF 3.0.12
 ================================================================================

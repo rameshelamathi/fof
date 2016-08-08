@@ -379,7 +379,7 @@ class AesTest extends FOFTestCase
 	 */
 	public function testCryptProcess192()
 	{
-		if (function_exists('mcrypt_module_open') || function_exists('openssl_encrypt'))
+		if (function_exists('mcrypt_module_open'))
 		{
 			$this->aes = new Aes('The quick brown fox jumped over the lazy dog', 192);
 
@@ -412,7 +412,7 @@ class AesTest extends FOFTestCase
 		}
 		else
 		{
-			$this->markTestSkipped('mcrypt and OpenSSL are not supported on this system');
+			$this->markTestSkipped('mcrypt is not supported on this system');
 		}
 	}
 
@@ -504,6 +504,45 @@ class AesTest extends FOFTestCase
 		}
 	}
 
-	// TODO Test encrypt/decrypt with new key expansion
+	/**
+	 * @covers FOF30\Encrypt\Aes
+	 *
+	 * @return  void
+	 */
+	public function testCryptWithProperKeyExpansion()
+	{
+		if (function_exists('mcrypt_module_open') || function_exists('openssl_encrypt'))
+		{
+			$aes   = new Aes('x123456789012345678901234567890x', 128, 'cbc');
+
+			// Yeah, a terrible password.
+			$aes->setPassword('p@$$w0rd');
+
+			$clearText = 'The quick brown fox jumped over the lazy dog';
+			$encrypted = $aes->encryptString($clearText);
+
+			$sameDecrypted = $aes->decryptString($encrypted);
+			// Remember, the decrypted result is zero-padded!
+			$sameDecrypted = rtrim($sameDecrypted, "\0");
+			$this->assertTrue($sameDecrypted == $clearText, 'Same object must be able to decrypt the original message');
+
+			$wrongAes = new Aes('p@$$w0rd', 128, 'cbc');
+			$wrongDecrypted = $wrongAes->decryptString($encrypted);
+			// Remember, the decrypted result is zero-padded!
+			$wrongDecrypted = rtrim($wrongDecrypted, "\0");
+			$this->assertFalse($wrongDecrypted == $clearText, 'Legacy key expansion must not be able to decrypt new message');
+
+			$rightAes = new Aes('changeme', 128, 'cbc');
+			$rightAes->setPassword('p@$$w0rd');
+			$rightDecrypted = $rightAes->decryptString($encrypted);
+			// Remember, the decrypted result is zero-padded!
+			$rightDecrypted = rtrim($rightDecrypted, "\0");
+			$this->assertTrue($rightDecrypted == $clearText, 'New key expansion must be able to decrypt new message');
+		}
+		else
+		{
+			$this->markTestSkipped('mcrypt or OpenSSL is not supported on this system');
+		}
+	}
 }
  
