@@ -15,8 +15,18 @@ use FOF30\Utils\Phpfunc;
 defined('_JEXEC') or die;
 
 /**
- * A simple implementation of AES-128, AES-192 and AES-256 encryption using the
- * high performance mcrypt library.
+ * A simple abstraction to AES encryption
+ *
+ * Usage:
+ *
+ * // Create a new instance. The key is ignored – only use it if you have legacy encrypted content you need to decrypt
+ * $aes = new Aes('ignored');
+ * // Set the password. Do not use uf you have legacy encrypted content you need to decrypt
+ * $aes->setPassword('yourRealPassword');
+ * // Encrypt something.
+ * $cipherText = $aes->encryptString($sourcePlainText);
+ * // Decypt something
+ * $plainText = $aes->decryptString($sourceCipherText);
  */
 class Aes
 {
