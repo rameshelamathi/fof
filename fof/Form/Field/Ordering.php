@@ -166,8 +166,16 @@ class Ordering extends \JFormField implements FieldInterface
 
 		$class = isset($this->class) ? $this->class : 'input-mini';
 		$icon  = isset($this->element['icon']) ? $this->element['icon'] : 'icon-menu';
-		$dnd = isset($this->element['dragndrop']) ? (string) $this->element['dragndrop'] : '1';
-		$dnd = in_array(strtolower($dnd), array('1', 'true', 'yes', 'on', 'enabled'), true);
+		$dnd = isset($this->element['dragndrop']) ? (string) $this->element['dragndrop'] : 'notbroken';
+
+		if (strtolower($dnd) == 'notbroken')
+		{
+			$dnd = !version_compare(JVERSION, '3.5.0', 'ge');
+		}
+		else
+		{
+			$dnd = in_array(strtolower($dnd), array('1', 'true', 'yes', 'on', 'enabled'), true);
+		}
 
 		$html = '';
 

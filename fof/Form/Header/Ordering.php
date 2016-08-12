@@ -26,8 +26,16 @@ class Ordering extends Field
 	{
 		$sortable = ($this->element['sortable'] != 'false');
 
-		$dnd = isset($this->element['dragndrop']) ? (string) $this->element['dragndrop'] : '1';
-		$dnd = in_array(strtolower($dnd), array('1', 'true', 'yes', 'on', 'enabled'), true);
+		$dnd = isset($this->element['dragndrop']) ? (string) $this->element['dragndrop'] : 'notbroken';
+
+		if (strtolower($dnd) == 'notbroken')
+		{
+			$dnd = !version_compare(JVERSION, '3.5.0', 'ge');
+		}
+		else
+		{
+			$dnd = in_array(strtolower($dnd), array('1', 'true', 'yes', 'on', 'enabled'), true);
+		}
 
 		if (!$sortable)
 		{

@@ -2,7 +2,8 @@ FOF 3.0.13
 ================================================================================
 ! mcrypt is deprecated in PHP 7.1. Replacing it with OpenSSL.
 + Relation Form Field now has a "model" attribute for cases when the field name is not the same of the model class name (ie: company_types vs CompanyTypes)
-+ Ability to turn off drag'n'drop reordering in Ordering fields because of a bug in Joomla! 3.5+ they don't want to fix (I submitted the PR and they rejected it)
++ Ability to enable / disable drag'n'drop reordering in Ordering fields because of a bug in Joomla! 3.5+ they don't want to fix (I submitted the PR and they rejected it)
+~ By default drag'n'drop reordering is DISABLED in Joomla! 3.5+ because of a bug in Joomla! 3.5+ they don't want to fix (I submitted the PR and they rejected it)
 ~ Removing visible ordering field from Joomla! 3.5+ when drag'n'drop reordering is enabled due to a bug they don't want to fix (I submitted the PR and they rejected it)
 # [LOW] Warning thrown when passing an empty input array to the Container
 
