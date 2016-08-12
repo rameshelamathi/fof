@@ -32,8 +32,6 @@
 
                 <directory suffix=".php">Tests</directory>
                 <directory suffix=".php">vendor</directory>
-                <directory suffix=".php">strapper</directory>
-                <directory suffix=".php">strapper-sources</directory>
 
                 <directory suffix=".php">fof2</directory>
                 <directory suffix=".php">tests-old</directory>
