@@ -1,6 +1,7 @@
-FOF 2.5.x (Not scheduled for release)
+FOF 2.5.5 (Only available in Joomla! 3 – Not release separately)
 ================================================================================
 # [HIGH] gh-593 Cannot use multiple behaviours under PHP 7
+# [HIGH] mcrypt is deprecated in PHP 7.1
 
 FOF 2.5.4
 ================================================================================
