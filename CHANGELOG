@@ -5,6 +5,7 @@ FOF 3.0.13
 + Ability to enable / disable drag'n'drop reordering in Ordering fields because of a bug in Joomla! 3.5+ they don't want to fix (I submitted the PR and they rejected it)
 ~ By default drag'n'drop reordering is DISABLED in Joomla! 3.5+ because of a bug in Joomla! 3.5+ they don't want to fix (I submitted the PR and they rejected it)
 ~ Removing visible ordering field from Joomla! 3.5+ when drag'n'drop reordering is enabled due to a bug they don't want to fix (I submitted the PR and they rejected it)
+# [HIGH] Transparent Authentication engages even when a user is already logged in
 # [LOW] Warning thrown when passing an empty input array to the Container
 
 FOF 3.0.12
