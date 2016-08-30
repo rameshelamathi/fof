@@ -88,7 +88,7 @@ class Inflector
 			'/(shoe)s$/i'                                                      => '\1',
 			'/(o)es$/i'                                                        => '\1e',
 			'/(bus)es$/i'                                                      => '\1',
-			'/(campus)es$/i'                                                      => '\1',
+			'/(campus)es$/i'                                                   => '\1',
 			'/([m|l])ice$/i'                                                   => '\1ouse',
 			'/(x|ch|ss|sh)es$/i'                                               => '\1',
 			'/(m)ovies$/i'                                                     => '\1ovie',
