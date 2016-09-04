@@ -640,7 +640,7 @@ JS;
 
 				// Get the table data width, if set
 
-				if (!empty($tdwidth))
+				if (!empty((int) $tdwidth))
 				{
 					$tdwidth = 'width="' . $tdwidth . '"';
 				}
@@ -649,14 +649,14 @@ JS;
 					$tdwidth = '';
 				}
 
-				if (!empty($header))
+				if (!empty((int) $header))
 				{
 					$header_html .= "\t\t\t\t\t<th $tdwidth>" . "\n";
 					$header_html .= "\t\t\t\t\t\t" . $header;
 					$header_html .= "\t\t\t\t\t</th>" . "\n";
 				}
 
-				if (!empty($filter))
+				if (!empty((int) $filter))
 				{
 					$filter_html .= '<div class="filter-search btn-group pull-left">' . "\n";
 					$filter_html .= "\t" . '<label for="title" class="element-invisible">';
