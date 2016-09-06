@@ -649,47 +649,50 @@ JS;
 					$tdwidth = '';
 				}
 
-				if (!empty((int) $header))
+				if (!empty($header) && $show_header)
 				{
 					$header_html .= "\t\t\t\t\t<th $tdwidth>" . "\n";
 					$header_html .= "\t\t\t\t\t\t" . $header;
 					$header_html .= "\t\t\t\t\t</th>" . "\n";
 				}
 
-				if (!empty((int) $filter))
+				if ($show_filters)
 				{
-					$filter_html .= '<div class="filter-search btn-group pull-left">' . "\n";
-					$filter_html .= "\t" . '<label for="title" class="element-invisible">';
-					$filter_html .= \JText::_($headerField->label);
-					$filter_html .= "</label>\n";
-					$filter_html .= "\t$filter\n";
-					$filter_html .= "</div>\n";
-
-					if (!empty($buttons))
+					if (!empty($filter))
 					{
-						$filter_html .= '<div class="btn-group pull-left hidden-phone">' . "\n";
-						$filter_html .= "\t$buttons\n";
-						$filter_html .= '</div>' . "\n";
+						$filter_html .= '<div class="filter-search btn-group pull-left">' . "\n";
+						$filter_html .= "\t" . '<label for="title" class="element-invisible">';
+						$filter_html .= \JText::_($headerField->label);
+						$filter_html .= "</label>\n";
+						$filter_html .= "\t$filter\n";
+						$filter_html .= "</div>\n";
+
+						if (!empty($buttons))
+						{
+							$filter_html .= '<div class="btn-group pull-left hidden-phone">' . "\n";
+							$filter_html .= "\t$buttons\n";
+							$filter_html .= '</div>' . "\n";
+						}
 					}
-				}
-				elseif (!empty($options))
-				{
-					$label = $headerField->label;
+					elseif (!empty($options))
+					{
+						$label = $headerField->label;
 
-					$filterName = $headerField->filterFieldName;
-					$filterSource = $headerField->filterSource;
+						$filterName = $headerField->filterFieldName;
+						$filterSource = $headerField->filterSource;
 
-					\JHtmlSidebar::addFilter(
-						'- ' . \JText::_($label) . ' -',
-						$filterName,
-						\JHtml::_(
-							'select.options',
-							$options,
-							'value',
-							'text',
-							$model->getState($filterSource, ''), true
-						)
-					);
+						\JHtmlSidebar::addFilter(
+							'- ' . \JText::_($label) . ' -',
+							$filterName,
+							\JHtml::_(
+								'select.options',
+								$options,
+								'value',
+								'text',
+								$model->getState($filterSource, ''), true
+							)
+						);
+					}
 				}
 			}
 		}
