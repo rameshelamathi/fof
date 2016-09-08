@@ -1,3 +1,7 @@
+FOF 3.0.14
+================================================================================
+! Incompatible with PHP 5.4 or earlier (old versions of PHP don't allow integer typecasting inside `empty()`)
+
 FOF 3.0.13
 ================================================================================
 ! mcrypt is deprecated in PHP 7.1. Replacing it with OpenSSL.
