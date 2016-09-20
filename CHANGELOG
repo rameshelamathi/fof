@@ -1,3 +1,7 @@
+FOF 3.0.15
+================================================================================
+# [HIGH] The form's show_filters must only control the appearance of sidebar filters, not the filters at the top of the form (DO NOT USE SEARCHABLE FIELDS IF YOU DON'T WANT THESE FILTERS!)
+
 FOF 3.0.14
 ================================================================================
 ! Incompatible with PHP 5.4 or earlier (old versions of PHP don't allow integer typecasting inside `empty()`)
