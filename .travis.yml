@@ -11,7 +11,7 @@ php:
   - 5.5
 
 env:
-  - JVERSION_TEST=Staging
+  - JVERSION_TEST=staging
   - JVERSION_TEST=3.7.x
   - JVERSION_TEST=4.0-dev
 
