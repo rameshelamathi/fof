@@ -11,9 +11,9 @@ php:
   - 5.5
 
 env:
-  - JVERSION_TEST=3.4
-  - JVERSION_TEST=3.5-dev
   - JVERSION_TEST=Staging
+  - JVERSION_TEST=3.7.x
+  - JVERSION_TEST=4.0-dev
 
 matrix:
   fast_finish: true
@@ -59,8 +59,7 @@ branches:
     - debug-travis
 
 before_install:
-  - if [[ "$JVERSION_TEST" == "Staging" ]]; then git clone -b staging https://github.com/joomla/joomla-cms.git Tests/environments/Staging; fi
-  - if [[ "$JVERSION_TEST" != "Staging" ]]; then git submodule update --init --recursive Tests/environments/"$JVERSION_TEST"; fi
+  - git clone -b "$JVERSION_TEST" https://github.com/joomla/joomla-cms.git Tests/environments/"$JVERSION_TEST"
 
 install:
   - composer selfupdate
