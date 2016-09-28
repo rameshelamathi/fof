@@ -7,7 +7,7 @@
 
 $environments = array(
 	// The paths to Joomla cloned repo
-	'3.4'     => realpath(__DIR__.'/environments/3.4'),
-	'3.5-dev' => realpath(__DIR__.'/environments/3.5-dev'),
-	'Staging' => realpath(__DIR__.'/environments/Staging'),
+	'Staging'     => realpath(__DIR__.'/environments/Staging'),
+	'3.7.x' => realpath(__DIR__.'/environments/3.7.x'),
+	'4.0-dev' => realpath(__DIR__.'/environments/3.5-dev'),
 );
