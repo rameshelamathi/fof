@@ -13,9 +13,8 @@ php:
   - 5.3
 
 env:
-  global:
-    - JVERSION_TEST=3.4
-    - JVERSION_TEST=3.5-dev
+  - JVERSION_TEST=3.4
+  - JVERSION_TEST=3.5-dev
 
 matrix:
   fast_finish: true
