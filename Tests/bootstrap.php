@@ -94,7 +94,7 @@ if(getenv('TRAVIS'))
     require_once __DIR__ . '/config_travis.php';
 
 	// Set the test configuration site root if not set in travis
-	if (!isset($fofTestConfig['site_root'])
+	if (!isset($fofTestConfig['site_root']))
 	{
 		$fofTestConfig['site_root'] = $siteroot;
 	}
