@@ -92,6 +92,12 @@ if(getenv('TRAVIS'))
 {
     TravisLogger::log(4, 'Including special Travis configuration file');
     require_once __DIR__ . '/config_travis.php';
+
+	// Set the test configuration site root if not set in travis
+	if (!isset($fofTestConfig['site_root'])
+	{
+		$fofTestConfig['site_root'] = $siteroot;
+	}
 }
 else
 {
