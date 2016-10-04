@@ -1,5 +1,6 @@
 FOF 3.0.15
 ================================================================================
+# [MEDIUM] Relations: an empty string foreign key could possibly result in memory exhaustion or at least the wrong related record reported. Now it is treated the same as null (no related records are returned).
 # [HIGH] The form's show_filters must only control the appearance of sidebar filters, not the filters at the top of the form (DO NOT USE SEARCHABLE FIELDS IF YOU DON'T WANT THESE FILTERS!)
 
 FOF 3.0.14
