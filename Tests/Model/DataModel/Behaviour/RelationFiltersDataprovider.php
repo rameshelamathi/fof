@@ -66,7 +66,7 @@ WHERE `reltbl`.`fakeapp_parent_id` = `#__fakeapp_parents`.`fakeapp_parent_id`) <
                 'value'    => array(1,3)
             ),
             array(
-                'case'  => 'Parent with less than 1 and more than 3 child',
+                'case'  => 'Parent with less than 1 and more than 3 children',
                 'query' => "SELECT *
 FROM test
 WHERE (((
@@ -88,7 +88,7 @@ WHERE `reltbl`.`fakeapp_parent_id` = `#__fakeapp_parents`.`fakeapp_parent_id`) >
                 )
             ),
             array(
-                'case'  => 'Parent with less than 1 and more than 3 child',
+                'case'  => 'Parent with value 2, interval 2 children',
                 'query' => "SELECT *
 FROM test
 WHERE (((

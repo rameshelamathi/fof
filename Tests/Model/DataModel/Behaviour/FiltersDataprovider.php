@@ -19,7 +19,7 @@ class FiltersDataprovider
                 )
             ),
             array(
-                'case'  => 'Searching vs primary key, not ignoring the request',
+                'case'  => 'Searching against primary key, not ignoring the request',
                 'query' => "SELECT *
 FROM test"
             )
@@ -35,7 +35,7 @@ FROM test"
                 )
             ),
             array(
-                'case'  => 'Searching vs primary key, ignoring the request',
+                'case'  => 'Searching against primary key, ignoring the request',
                 'query' => "SELECT *
 FROM test
 WHERE (`foftest_foobar_id` = '1')"
@@ -52,7 +52,7 @@ WHERE (`foftest_foobar_id` = '1')"
                 )
             ),
             array(
-                'case'  => 'Searching vs text field',
+                'case'  => 'Searching against text field',
                 'query' => "SELECT *
 FROM test
 WHERE (`title` LIKE '%test%')"
@@ -71,7 +71,7 @@ WHERE (`title` LIKE '%test%')"
                 )
             ),
             array(
-                'case'  => 'Searching using an array',
+                'case'  => 'Searching text using an array, results in LIKE query',
                 'query' => "SELECT *
 FROM test
 WHERE (`title` LIKE '%one%')"
@@ -91,7 +91,7 @@ WHERE (`title` LIKE '%one%')"
                 )
             ),
             array(
-                'case'  => 'Searching using an array, value key not present',
+                'case'  => 'Searching using an array, value key not present (invalid)',
                 'query' => "SELECT *
 FROM test"
             )
@@ -111,7 +111,7 @@ FROM test"
                 )
             ),
             array(
-                'case'  => 'Searching using an array, passing the method in the state - 1',
+                'case'  => 'Searching using an array, passing the method in the state - between dates',
                 'query' => "SELECT *
 FROM test
 WHERE ((`created_on` > '1979-01-01') AND (`created_on` < '1981-12-31'))"
@@ -131,7 +131,7 @@ WHERE ((`created_on` > '1979-01-01') AND (`created_on` < '1981-12-31'))"
                 )
             ),
             array(
-                'case'  => 'Searching using an array, passing the method in the state - 2',
+                'case'  => 'Searching using an array, passing the method in the state - between dates, no lower limit (invalid)',
                 'query' => "SELECT *
 FROM test"
             )
@@ -150,7 +150,7 @@ FROM test"
                 )
             ),
             array(
-                'case'  => 'Searching using an array, passing the method in the state - 3',
+                'case'  => 'Searching using an array, passing the method in the state - between dates, no upper limit (invalid)',
                 'query' => "SELECT *
 FROM test"
             )
@@ -170,7 +170,7 @@ FROM test"
                 )
             ),
             array(
-                'case'  => 'Searching using an array, passing the method in the state - 4',
+                'case'  => 'Searching using an array, passing the method in the state - outside dates',
                 'query' => "SELECT *
 FROM test
 WHERE ((`created_on` < '1979-01-01') AND (`created_on` > '1981-12-31'))"
@@ -191,7 +191,7 @@ WHERE ((`created_on` < '1979-01-01') AND (`created_on` > '1981-12-31'))"
                 )
             ),
             array(
-                'case'  => 'Searching using an array, passing the method in the state - 5',
+                'case'  => 'Searching using an array, passing the method in the state - date interval',
                 'query' => "SELECT *
 FROM test
 WHERE (`created_on` >= DATE_ADD(`created_on`, INTERVAL 1 year))"
@@ -211,7 +211,7 @@ WHERE (`created_on` >= DATE_ADD(`created_on`, INTERVAL 1 year))"
                 )
             ),
             array(
-                'case'  => 'Searching using an array, passing the method in the state - 6',
+                'case'  => 'Searching using an array, passing the method in the state - search date',
                 'query' => "SELECT *
 FROM test
 WHERE (`created_on` = '1979-01-01')"
@@ -233,7 +233,7 @@ WHERE (`created_on` = '1979-01-01')"
                 )
             ),
             array(
-                'case'  => 'Searching using an array, passing the method in the state - 7',
+                'case'  => 'Searching using an array, passing the method in the state - between dates, inclusive',
                 'query' => "SELECT *
 FROM test
 WHERE ((`created_on` >= '1979-01-01') AND (`created_on` <= '1981-12-31'))"
@@ -274,29 +274,6 @@ FROM test"
             ),
             array(
                 'case'  => 'Searching using an array, passing the method and operator in the state',
-                'query' => "SELECT *
-FROM test
-WHERE (`created_on` > '1979-01-01')"
-            )
-        );
-
-
-
-        $data[] = array(
-            array(
-                'ignore' => false,
-                'mock' => array(
-                    'state' => array(
-                        'created_on' => (object) array(
-                            'method' => 'search',
-                            'operator' => '>',
-                            'value' => '1979-01-01',
-                        ),
-                    )
-                )
-            ),
-            array(
-                'case'  => 'Searching using an object, passing the method and operator in the state',
                 'query' => "SELECT *
 FROM test
 WHERE (`created_on` > '1979-01-01')"
