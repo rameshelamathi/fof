@@ -17,16 +17,16 @@ use FOF30\Tests\Stubs\Model\DataModelStub;
 require_once __DIR__.'/OrderingDataprovider.php';
 
 /**
- * @covers  FOF30\Form\Field\Ordering::<private>
- * @covers  FOF30\Form\Field\Ordering::<protected>
+ * @covers  \FOF30\Form\Field\Ordering::<private>
+ * @covers  \FOF30\Form\Field\Ordering::<protected>
  */
 class OrderingTest extends DatabaseTest
 {
     /**
      * @group           OrderingField
      * @group           Ordering__get
-     * @covers          FOF30\Form\Field\Ordering::__get
-     * @dataProvider    FOF30\Tests\Form\Field\OrderingDataprovider::getTest__get
+     * @covers          \FOF30\Form\Field\Ordering::__get
+     * @dataProvider    \FOF30\Tests\Form\Field\OrderingDataprovider::getTest__get
      */
     public function test__get($test, $check)
     {
@@ -45,8 +45,8 @@ class OrderingTest extends DatabaseTest
     /**
      * @group           OrderingField
      * @group           OrderingGetInput
-     * @covers          FOF30\Form\Field\Ordering::getInput
-     * @dataProvider    FOF30\Tests\Form\Field\OrderingDataprovider::getTestGetInput
+     * @covers          \FOF30\Form\Field\Ordering::getInput
+     * @dataProvider    \FOF30\Tests\Form\Field\OrderingDataprovider::getTestGetInput
      */
     public function testGetInput($test, $check)
     {
@@ -91,7 +91,7 @@ class OrderingTest extends DatabaseTest
     /**
      * @group           OrderingField
      * @group           OrderingGetStatic
-     * @covers          FOF30\Form\Field\Ordering::getStatic
+     * @covers          \FOF30\Form\Field\Ordering::getStatic
      */
     public function testGetStatic()
     {
@@ -105,8 +105,8 @@ class OrderingTest extends DatabaseTest
     /**
      * @group           OrderingField
      * @group           OrderingGetRepeatable
-     * @covers          FOF30\Form\Field\Ordering::getRepeatable
-     * @dataProvider    FOF30\Tests\Form\Field\OrderingDataprovider::getTestGetRepeatable
+     * @covers          \FOF30\Form\Field\Ordering::getRepeatable
+     * @dataProvider    \FOF30\Tests\Form\Field\OrderingDataprovider::getTestGetRepeatable
      */
     public function testGetRepeatable($test, $check)
     {
@@ -177,7 +177,7 @@ class OrderingTest extends DatabaseTest
     /**
      * @group           OrderingField
      * @group           OrderingGetRepeatable
-     * @covers          FOF30\Form\Field\Ordering::getRepeatable
+     * @covers          \FOF30\Form\Field\Ordering::getRepeatable
      */
     public function testGetRepeatableException()
     {
