@@ -72,9 +72,12 @@ class DataModelGenericTest extends DatabaseTest
             ReflectionHelper::setValue($model, 'tableName', $test['mock']['tableName']);
         }
 
-        $result = $model->getTableFields($test['table']);
+	    $result   = $model->getTableFields($test['table']);
+	    $db       = $model->getDbo();
+	    $expected = $this->_normalizeTableFields($check['result'], $db);
+	    $actual   = $this->_normalizeTableFields($result, $db);
 
-        $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
+	    $this->assertEquals($expected, $actual, sprintf($msg, 'Returned the wrong result'));
     }
 
     /**
@@ -1317,4 +1320,36 @@ class DataModelGenericTest extends DatabaseTest
         $this->assertSame($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
         $this->assertEquals($check['filters'], $filters, sprintf($msg, 'Failed to set the filters'));
     }
+
+    private function _normalizeTableFields($fields, \JDatabaseDriver $db)
+    {
+    	if (!is_array($fields))
+	    {
+	    	return $fields;
+	    }
+
+    	$ret = array();
+
+	    foreach ($fields as $fieldName => $def)
+	    {
+	    	$def = (array)$def;
+
+		    $def = array_map(function ($value) {
+		    	if (is_null($value)) return '';
+
+			    if (!is_numeric($value) && is_string($value))
+			    {
+			    	$value = str_replace('utf8mb4_', 'utf8_', $value);
+			    	$value = str_replace('_unicode_ci', '_general_ci', $value);
+			    }
+
+			    return $value;
+		    }, $def);
+
+		    $ret[$fieldName] = (object) $def;
+	    }
+
+	    return $ret;
+    }
+
 }
