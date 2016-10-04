@@ -84,7 +84,7 @@ class AbstractFilterTest extends DatabaseTest
         $result = $filter->getSearchMethods();
         $result = array_values($result);
 
-        $check = array('exact', 'partial', 'between', 'outside', 'interval', 'search');
+        $check = array('between', 'exact', 'partial', 'outside', 'interval', 'search', 'modulo', 'range');
 
         sort($result);
         sort($check);
