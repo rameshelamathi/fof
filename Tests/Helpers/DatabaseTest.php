@@ -204,4 +204,45 @@ abstract class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
         \JFactory::$database	= $this->savedFactoryState['database'];
         \JFactory::$mailer		= $this->savedFactoryState['mailer'];
     }
+
+	/**
+	 * Normalizes two arrays containing lists of fields:
+	 * * Converts utf8mb4 references to their utf8 equivalents
+	 * * Converts null to empty strings (since the null/empty string result is db version dependent)
+	 *
+	 * @param                  $fields
+	 * @param \JDatabaseDriver $db
+	 *
+	 * @return array
+	 */
+	protected function _normalizeTableFields($fields, \JDatabaseDriver $db)
+	{
+		if (!is_array($fields))
+		{
+			return $fields;
+		}
+
+		$ret = array();
+
+		foreach ($fields as $fieldName => $def)
+		{
+			$def = (array)$def;
+
+			$def = array_map(function ($value) {
+				if (is_null($value)) return '';
+
+				if (!is_numeric($value) && is_string($value))
+				{
+					$value = str_replace('utf8mb4_', 'utf8_', $value);
+					$value = str_replace('_unicode_ci', '_general_ci', $value);
+				}
+
+				return $value;
+			}, $def);
+
+			$ret[$fieldName] = (object) $def;
+		}
+
+		return $ret;
+	}
 }

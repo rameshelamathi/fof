@@ -81,10 +81,14 @@ class DataModelMagicMethodsTest extends DatabaseTest
         $this->assertEquals($check['relations'], $relations, sprintf($msg, 'Failed to set the relations'));
         $this->assertEquals($check['counterApp'], $counterApp, sprintf($msg, 'Failed to correctly get the container from the Application'));
 
-        if(!is_null($check['fields']))
-        {
-            $this->assertEquals($check['fields'], $knownFields, sprintf($msg, 'Failed to set the known fields'));
-        }
+	    if (!is_null($check['fields']))
+	    {
+		    $db          = $model->getDbo();
+		    $expected    = $this->_normalizeTableFields($check['fields'], $db);
+		    $knownFields = $this->_normalizeTableFields($knownFields, $db);
+
+		    $this->assertEquals($expected, $knownFields, sprintf($msg, 'Failed to set the known fields'));
+	    }
 
         foreach ($check['values'] as $field => $value)
         {
