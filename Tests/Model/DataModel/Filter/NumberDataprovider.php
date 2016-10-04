@@ -207,7 +207,7 @@ class NumberDataprovider
             ),
             array(
                 'case'   => 'From and to are set, not inclusive ',
-                'result' => '((`test` < 1) AND (`test` > 5))'
+                'result' => '((`test` < 1) OR (`test` > 5))'
             )
         );
 
@@ -219,7 +219,7 @@ class NumberDataprovider
             ),
             array(
                 'case'   => 'From and to are set, inclusive ',
-                'result' => '((`test` <= 1) AND (`test` >= 5))'
+                'result' => '((`test` <= 1) OR (`test` >= 5))'
             )
         );
 
@@ -231,7 +231,7 @@ class NumberDataprovider
             ),
             array(
                 'case'   => 'From and to are set and they are negative, inclusive ',
-                'result' => '((`test` <= -5) AND (`test` >= -1))'
+                'result' => '((`test` <= -5) OR (`test` >= -1))'
             )
         );
 
@@ -255,7 +255,7 @@ class NumberDataprovider
             ),
             array(
                 'case'   => 'Floats provided',
-                'result' => '((`test` <= 4.2) AND (`test` >= 6.6))'
+                'result' => '((`test` <= 4.2) OR (`test` >= 6.6))'
             )
         );
 
