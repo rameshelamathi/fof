@@ -269,4 +269,11 @@ class FofApp extends JApplicationCli
     {
         return 'system';
     }
+
+    public function in()
+    {
+        return trim(fgets(STDIN));
+    }
+
+
 }

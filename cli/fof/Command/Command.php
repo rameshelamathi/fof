@@ -73,7 +73,7 @@ abstract class Command
             $app = JFactory::getApplication();
 
 			$app->out("What's your component name? (" . $default_name . ")");
-			$name = $app->in();
+			$name = $this->in();
 		}
 
 		if (!$name)
