@@ -113,7 +113,7 @@ abstract class Command
 
 			if (!$path || !JFolder::exists($path))
             {
-				$this->out('The path does not exists');
+				$this->out('The path does not exist');
 				$this->setDevServer();
 			}
 
