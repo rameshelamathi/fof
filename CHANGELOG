@@ -1,3 +1,7 @@
+FOF 3.0.16
+================================================================================
+# [LOW] gh-637 The empty_replacement was untranslated in Calendar and Email fields
+
 FOF 3.0.15
 ================================================================================
 # [MEDIUM] Relations: an empty string foreign key could possibly result in memory exhaustion or at least the wrong related record reported. Now it is treated the same as null (no related records are returned).
