@@ -1,5 +1,6 @@
 FOF 3.0.16
 ================================================================================
+# [HIGH] Checking against method ACL rules (&something) returning an event alias (@whatever) always returns true without evaluating the event alias
 # [MEDIUM] Joomla returns null instead of false in some ACL checks
 # [MEDIUM] gh-629 Editing produces a layout not found error
 # [LOW] gh-637 The empty_replacement was untranslated in Calendar and Email fields
