@@ -11,4 +11,5 @@ $symlink_folders = array(
 	'../buildfiles/buildlang'					=> 'build/buildlang',
 	'../buildfiles/phingext'					=> 'build/phingext',
 	'../buildfiles/tools'						=> 'build/tools',
+	'../buildfiles/epub'						=> 'build/epub',
 );

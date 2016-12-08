@@ -1,58 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="FrameworkOnFramework" description="Framework-on-Framework for Joomla!" default="all" >
-	<property file="./build.properties" />
+	<import file="${phing.dir}/../../buildfiles/phing/common.xml" />
 	
 	<!-- Default properties, set only if not already assigned in the build.properties file -->
-	<property name="dirs.root" value="${phing.dir}/.." />
 	<property name="dirs.library" value="${dirs.root}/fof" />
-	<property name="dirs.plugins" value="${dirs.root}/plugins" />
-	<property name="dirs.release" value="${dirs.root}/release" />
-	<property name="version" value="dev" />
 
-	<property name="dirs.bin" value="bin" />
-	<property name="dirs.bin.libxml" value="${dirs.bin}/libxml" />
-	<property name="dirs.bin.fop" value="${dirs.bin}/fop" />
-	<property name="dirs.bin.dbxsl" value="${dirs.bin}/dbxsl" />
-	<property name="dirs.bin.release" value="${phing.dir}/../release" />
-
-	<taskdef name="zipme" classname="phingext.ZipmeTask" />
-	<taskdef name="gitversion" classname="phingext.GitVersionTask" />
-	<taskdef name="gitdate" classname="phingext.GitDateTask" />
-		
 	<!--
 	====================================================================================================
 	Tasks - General
 	====================================================================================================
 	-->
-	
+
 	<target name="all" description="Makes everything"
-		depends="git">
+			depends="git">
 	</target>
 	
+	<target name="documentation" description="No documentation in the repository">
+	</target>
+
 	<target name="git" description="Makes only the library package"
 		depends="new-release,setup-properties,library-package">
-	</target>
-	
-	<target name="new-release" description="Create the release directory afresh">
-		<!-- Recreate the release directory -->
-		<delete dir="${dirs.release}" quiet="yes" includeemptydirs="false" />
-		<mkdir dir="${dirs.release}" />
-	</target>
-	
-	<target name="setup-properties" description="Set up version and build properties">
-		<!-- Initialize the git.date timestamp -->
-		<gitdate workingcopy="${dirs.root}" format="Y-m-d H:i:s" propertyname="git.date" />
-
-		<!-- Initialize the version if it's not set -->
-		<if>
-			<equals arg1="${version}" arg2="dev" />
-			<then>
-				<gitversion workingcopy="${dirs.root}" propertyname="git.lastrevision" />
-				<gitdate workingcopy="${dirs.root}" propertyname="git.timestamp" />
-				<!--<property name="version" value="rev${git.lastrevision}" override="true" />-->
-				<property name="version" value="rev${git.lastrevision}-${git.timestamp}" override="true" />
-			</then>
-		</if>
 	</target>
 	
 	<!--
@@ -127,42 +94,9 @@
 	====================================================================================================
 	-->
     <target name="link" description="Internal linker">
-        <exec command="php ../buildfiles/tools/link.php ${application.startdir}/.." dir="${application.startdir}/.." passthru="true" />
-        <!--<exec command="php ../buildfiles/tools/langlink.php ${application.startdir}/.." dir="${application.startdir}/.." passthru="true" />-->
+		<exec executable="php" dir="${dirs.root}" passthru="true">
+			<arg file="${dirs.root}/../buildfiles/tools/link.php" />
+			<arg path="${dirs.root}" />
+		</exec>
     </target>
-
-	<target name="ftpdeploy" depends="git">
-		<echo>Uploading dev release</echo>
-		<ftpdeploy
-			host="${ftp.host}"
-			port="${ftp.port}"
-			username="${ftp.username}"
-			password="${ftp.password}"
-			dir="${ftp.dir}/libfof/${version}"
-			mode="${ftp.mode}"
-			passive="true"
-			level="debug">
-			<fileset dir="${dirs.release}">
-				<include name="lib_*.zip"/>
-			</fileset>			
-		</ftpdeploy>
-	</target>
-	
-	<target name="release" depends="setup-properties" description="Upload the release to AkeebaBackup.com">
-		<copy file="./templates/release.json" tofile="${dirs.root}/release.json" overwrite="true">
-			<filterchain id="standard-tokens">
-				<replacetokens begintoken="##" endtoken="##">
-					<token key="DATE" value="${git.date}" />
-					<token key="VERSION" value="${version}" />
-					<token key="RELEASEDIR" value="${dirs.release}" />
-					<token key="REPODIR" value="${dirs.root}" />
-				</replacetokens>
-			</filterchain>
-		</copy>
-
-		<exec command="php ${project.basedir}/../../releasemaker/releasemaker/index.php ${project.basedir}/../release.json" dir="${project.basedir}" passthru="true" />
-
-		<delete file="${dirs.root}/release.json" quiet="yes" />
-	</target>
-	
 </project>

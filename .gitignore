@@ -8,7 +8,6 @@
 /build/build.properties
 /build/buildlang
 /build/phingext
-/build/templates/release*
 /build/tools
 
 /cli/fof.phar
