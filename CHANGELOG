@@ -1,3 +1,7 @@
+FOF 3.0.17
+================================================================================
+~ Fixed packaging error
+
 FOF 3.0.16
 ================================================================================
 # [HIGH] Checking against method ACL rules (&something) returning an event alias (@whatever) always returns true without evaluating the event alias
