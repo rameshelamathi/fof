@@ -7,6 +7,14 @@
 
 defined('_JEXEC') or die();
 
+// Do not declare the class if it's already defined. We have to put this check otherwise while updating
+// multiple components at once will result in a fatal error since the class lib_fof30InstallerScript
+// is already declared
+if (class_exists('lib_fof30InstallerScript', false))
+{
+	return;
+}
+
 class lib_fof30InstallerScript
 {
 	/**
