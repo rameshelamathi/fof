@@ -46,7 +46,7 @@ class CalendarTest extends FOFTestCase
      */
     public function test__get($test, $check)
     {
-        $field = $this->>getMockBuilder('FOF30\Form\Field\Calendar')->setMethods(array('getStatic', 'getRepeatable'))->getMock();
+        $field = $this->getMockBuilder('FOF30\Form\Field\Calendar')->setMethods(array('getStatic', 'getRepeatable'))->getMock();
         $field->expects($this->exactly($check['static']))->method('getStatic');
         $field->expects($this->exactly($check['repeat']))->method('getRepeatable');
 
