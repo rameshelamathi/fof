@@ -28,16 +28,12 @@ class MockLanguage
 		$methods = static::getMethods();
 
 		// Create the mock.
-		$mockObject = $test->getMock(
-			'\JLanguage',
-			$methods,
-			// Constructor arguments.
-			array(),
-			// Mock class name.
-			'',
-			// Call original constructor.
-			false
-		);
+		$mockObject = $test->getMockBuilder('\JLanguage')
+			->setMethods($methods)
+			->setConstructorArgs(array())
+			->setMockClassName('')
+			->disableOriginalConstructor()
+			->getMock();
 
 		// Mock selected methods.
 		$test->assignMockReturns(
