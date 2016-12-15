@@ -75,7 +75,7 @@ class DataControllertest extends DatabaseTest
     public function testExecute($test, $check)
     {
         $controller = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub')
-            >setMethods(array('getCrudTask', 'read'))
+            ->setMethods(array('getCrudTask', 'read'))
             ->setConstructorArgs(array(self::$container))
             ->getMock();
 
