@@ -88,9 +88,16 @@ class DataModelRealtionTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('save'), array(static::$container, $config));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('save'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
 
-        $relation = $this->getMock('\\FOF30\\Model\\DataModel\\RelationManager', array('getRelationNames', 'save'), array($model));
+        $relation = $this->getMockBuilder('FOF30\\Model\\DataModel\\RelationManager')
+            ->setMethods(array('getRelationNames', 'save'))
+            ->setConstructorArgs(array($model))
+            ->getMock();
+
         $relation->method('getRelationNames')->willReturn($test['mock']['names']);
         $relation->method('save')->with($this->callback(function($name) use (&$check){
             $current = array_shift($check['save']);
@@ -140,8 +147,15 @@ class DataModelRealtionTest extends DatabaseTest
 
         $collection = Collection::make($items);
 
-        $model    = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getRelations'), array(static::$container, $config));
-        $relation = $this->getMock('\\FOF30\\Model\\DataModel\\RelationManager', array('getData', 'getForeignKeyMap'), array($model));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('getRelations'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
+        $relation = $this->getMockBuilder('FOF30\\Model\\DataModel\\RelationManager')
+            ->setMethods(array('getData', 'getForeignKeyMap'))
+            ->setConstructorArgs(array($model))
+            ->getMock();
 
         // Let's check if the logic of swapping the callback function when it's not callable works
         $relation->expects($check['getData'] ? $this->atLeastOnce() : $this->never())->method('getData')->with(

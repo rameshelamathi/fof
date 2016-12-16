@@ -410,7 +410,11 @@ class RelationManagerTest extends DatabaseTest
         $result = '';
 
         $model = $this->buildModel();
-        $relation = $this->getMock('FOF30\\Model\\DataModel\\RelationManager', array('addRelation', 'getData'), array($model));
+
+        $relation = $this->getMockBuilder('FOF30\\Model\\DataModel\\RelationManager')
+            ->setMethods(array('addRelation', 'getData'))
+            ->setConstructorArgs(array($model))
+            ->getMock();
 
         $getData     = $relation->expects($check['get'] ? $this->once() : $this->never())->method('getData')->willReturnSelf();
         $addRelation = $relation->expects($check['add'] ? $this->once() : $this->never())->method('addRelation')->willReturnSelf();

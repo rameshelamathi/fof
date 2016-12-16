@@ -30,7 +30,10 @@ class OrderingTest extends DatabaseTest
      */
     public function test__get($test, $check)
     {
-        $field = $this->getMock('FOF30\Form\Field\Ordering', array('getStatic', 'getRepeatable'));
+        $field = $this->getMockBuilder('FOF30\Form\Field\Ordering')
+            ->setMethods(array('getStatic', 'getRepeatable'))
+            ->getMock();
+
         $field->expects($this->exactly($check['static']))->method('getStatic');
         $field->expects($this->exactly($check['repeat']))->method('getRepeatable');
 

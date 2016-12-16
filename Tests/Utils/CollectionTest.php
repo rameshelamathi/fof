@@ -49,14 +49,19 @@ class CollectionTest extends FOFTestCase
 	}
 
     public function testToArrayCallsToArrayOnEachItemInCollection()
-	{
-		$item1 = $this->getMock('FOF30\\Registry\\Registry', array('toArray'));
+    {
+        $item1 = $this->getMockBuilder('FOF30\\Registry\\Registry')
+            ->setMethods(array('toArray'))
+            ->getMock();
 		$item1
 			->expects($this->once())
 			->method('toArray')
 			->will($this->returnValue('foo.array'));
 
-		$item2 = $this->getMock('FOF30\\Registry\\Registry', array('toArray'));
+		$item2 = $this->getMockBuilder('FOF30\\Registry\\Registry')
+            ->setMethods(array('toArray'))
+            ->getMock();
+
 		$item2
 			->expects($this->once())
 			->method('toArray')
@@ -70,7 +75,9 @@ class CollectionTest extends FOFTestCase
 
     public function testToJsonEncodesTheToArrayResult()
 	{
-		$c = $this->getMock('FOF30\Utils\Collection', array('toArray'));
+        $c = $this->getMockBuilder('FOF30\Utils\Collection')
+            ->setMethods(array('toArray'))
+            ->getMock();
 		$c->expects($this->once())->method('toArray')->will($this->returnValue('foo'));
 		$results = $c->toJson();
 
@@ -79,7 +86,10 @@ class CollectionTest extends FOFTestCase
 
     public function testCastingToStringJsonEncodesTheToArrayResult()
 	{
-		$c = $this->getMock('FOF30\Utils\Collection', array('toArray'));
+		$c = $this->getMockBuilder('FOF30\Utils\Collection')
+            ->setMethods(array('toArray'))
+            ->getMock();
+
 		$c->expects($this->once())->method('toArray')->will($this->returnValue('foo'));
 
 		$this->assertEquals(json_encode('foo'), (string) $c);

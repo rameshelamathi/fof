@@ -168,7 +168,11 @@ class DataModelGenericTest extends DatabaseTest
 
         $model = new DataModelStub(self::$container, $config);
 
-        $relation = $this->getMock('\\FOF30\\Model\\DataModel\\RelationManager', array('resetRelations'), array($model));
+        $relation = $this->getMockBuilder('FOF30\\Model\\DataModel\\RelationManager')
+            ->setMethods(array('resetRelations'))
+            ->setConstructorArgs(array($model))
+            ->getMock();
+
         //$relation->expects($check['resetRelations'] ? $this->once() : $this->never())->method('resetRelations');
 
         ReflectionHelper::setValue($model, 'relationManager', $relation);
@@ -343,7 +347,11 @@ class DataModelGenericTest extends DatabaseTest
         $model->method('buildQuery')->willReturn($mockedQuery);
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered
-        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array(static::$container));
+        $dispatcher = $this->getMockBuilder('\\FOF30\\Event\\Dispatcher')
+            ->setMethods(array('trigger'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $dispatcher->expects($this->once())->method('trigger')->withConsecutive(
             array($this->equalTo('onBuildCountQuery'))
         );
@@ -413,7 +421,11 @@ class DataModelGenericTest extends DatabaseTest
         );
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered
-        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array(static::$container));
+        $dispatcher = $this->getMockBuilder('\\FOF30\\Event\\Dispatcher')
+            ->setMethods(array('trigger'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $dispatcher->expects($this->exactly(2))->method('trigger')->withConsecutive(
             array($this->equalTo('onBeforeBuildQuery')),
             array($this->equalTo('onAfterBuildQuery'))

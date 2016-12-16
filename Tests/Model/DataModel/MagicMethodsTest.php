@@ -131,7 +131,11 @@ class DataModelMagicMethodsTest extends DatabaseTest
 
         $model  = new DataModelStub(static::$container, $config);
 
-        $relation = $this->getMock('\\FOF30\\Model\\DataModel\\RelationManager', array('isMagicMethod', '__call'), array($model));
+        $relation = $this->getMockBuilder('FOF30\\Model\\DataModel\\RelationManager')
+            ->setMethods(array('isMagicMethod', '__call'))
+            ->setConstructorArgs(array($model))
+            ->getMock();
+
         $relation->expects($check['magic'] ? $this->once() : $this->never())->method('isMagicMethod')->willReturn($test['mock']['magic']);
         $relation->expects($check['relationCall'] ? $this->once() : $this->never())->method('__call')->willReturn(null);
 
@@ -186,7 +190,11 @@ class DataModelMagicMethodsTest extends DatabaseTest
         $model->expects($check['getField'] ? $this->once() : $this->never())->method('getFieldValue')->with($check['getField'])
             ->willReturn($test['mock']['getField']);
 
-        $relation = $this->getMock('\\FOF30\\Model\\DataModel\\RelationManager', array('isMagicProperty', '__get'), array($model));
+        $relation = $this->getMockBuilder('FOF30\\Model\\DataModel\\RelationManager')
+            ->setMethods(array('isMagicProperty', '__get'))
+            ->setConstructorArgs(array($model))
+            ->getMock();
+
         $relation->expects($check['magic'] ? $this->once() : $this->never())->method('isMagicProperty')->with($check['magic'])
             ->willReturn($test['mock']['magic']);
         $relation->expects($check['relationGet'] ? $this->once() : $this->never())->method('__get')->willReturn($test['mock']['relationGet']);
@@ -224,7 +232,11 @@ class DataModelMagicMethodsTest extends DatabaseTest
         $model->expects($check['getState'] ? $this->once() : $this->never())->method('getState')->with($check['getState'])
             ->willReturn($test['mock']['getState']);
 
-        $relation = $this->getMock('\\FOF30\\Model\\DataModel\\RelationManager', array('isMagicProperty', '__get'), array($model));
+        $relation = $this->getMockBuilder('FOF30\\Model\\DataModel\\RelationManager')
+            ->setMethods(array('isMagicProperty', '__get'))
+            ->setConstructorArgs(array($model))
+            ->getMock();
+
         $relation->expects($check['magic'] ? $this->once() : $this->never())->method('isMagicProperty')->with($check['magic'])
             ->willReturn($test['mock']['magic']);
         $relation->expects($check['relationGet'] ? $this->once() : $this->never())->method('__get')->willReturn($test['mock']['relationGet']);

@@ -69,7 +69,11 @@ class DataModelSpecialColumnsTest extends DatabaseTest
         $model = new DataModelStub(static::$container, $config, $methods);
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered
-        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array(static::$container));
+        $dispatcher = $this->getMockBuilder('\\FOF30\\Event\\Dispatcher')
+            ->setMethods(array('trigger'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $dispatcher->expects($this->exactly(2))->method('trigger')->withConsecutive(
             array($this->equalTo('onBeforeReorder')),
             array($this->equalTo('onAfterReorder'))
@@ -325,7 +329,11 @@ class DataModelSpecialColumnsTest extends DatabaseTest
         $model->method('getId')->willReturn(1);
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered
-        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array(static::$container));
+        $dispatcher = $this->getMockBuilder('\\FOF30\\Event\\Dispatcher')
+            ->setMethods(array('trigger'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $dispatcher->expects($this->exactly($check['dispatcher']))->method('trigger')->withConsecutive(
             array($this->equalTo('onBeforeUnlock')),
             array($this->equalTo('onAfterUnlock'))

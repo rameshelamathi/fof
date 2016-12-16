@@ -197,7 +197,11 @@ class DataModelCrudTest extends DatabaseTest
             }
         );
 
-        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array(static::$container));
+        $dispatcher = $this->getMockBuilder('\\FOF30\\Event\\Dispatcher')
+            ->setMethods(array('trigger'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $dispatcher->expects($this->exactly($check['dispatcher']))->method('trigger')->withConsecutive(
             array($this->equalTo('onBeforeBind')),
             array($this->equalTo('onAfterBind'))
@@ -449,7 +453,11 @@ class DataModelCrudTest extends DatabaseTest
         $model->expects($check['find'] ? $this->once() : $this->never())->method('findOrFail')->willReturn(null);
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered
-        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array(static::$container));
+        $dispatcher = $this->getMockBuilder('\\FOF30\\Event\\Dispatcher')
+            ->setMethods(array('trigger'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $dispatcher->expects($this->exactly(2))->method('trigger')->withConsecutive(
             array($this->equalTo('onBeforeDelete')),
             array($this->equalTo('onAfterDelete'))

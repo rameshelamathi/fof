@@ -50,7 +50,11 @@ class DataModelPublishTest extends DatabaseTest
         $model->method('getId')->willReturn(1);
         $model->expects($check['save'] ? $this->once() : $this->never())->method('save');
 
-        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array(static::$container));
+        $dispatcher = $this->getMockBuilder('\\FOF30\\Event\\Dispatcher')
+            ->setMethods(array('trigger'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $dispatcher->expects($this->exactly($check['dispatcher']))->method('trigger')->withConsecutive(
             array($this->equalTo('onBeforeArchive')),
             array($this->equalTo('onAfterArchive'))
@@ -127,7 +131,11 @@ class DataModelPublishTest extends DatabaseTest
         $model->expects($check['find'] ? $this->once() : $this->never())->method('findOrFail')->willReturn(null);
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered
-        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array(static::$container));
+        $dispatcher = $this->getMockBuilder('\\FOF30\\Event\\Dispatcher')
+            ->setMethods(array('trigger'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $dispatcher->expects($this->exactly($check['dispatcher']))->method('trigger')->withConsecutive(
             array($this->equalTo('onBeforeTrash')),
             array($this->equalTo('onAfterTrash'))
@@ -195,7 +203,11 @@ class DataModelPublishTest extends DatabaseTest
         $model->method('getId')->willReturn(1);
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered
-        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array(static::$container));
+        $dispatcher = $this->getMockBuilder('\\FOF30\\Event\\Dispatcher')
+            ->setMethods(array('trigger'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $dispatcher->expects($this->exactly($check['dispatcher']))->method('trigger')->withConsecutive(
             array($this->equalTo('onBeforePublish')),
             array($this->equalTo('onAfterPublish'))
@@ -263,7 +275,11 @@ class DataModelPublishTest extends DatabaseTest
         $model->expects($check['find'] ? $this->once() : $this->never())->method('findOrFail');
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered
-        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array(static::$container));
+        $dispatcher = $this->getMockBuilder('\\FOF30\\Event\\Dispatcher')
+            ->setMethods(array('trigger'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $dispatcher->expects($this->exactly($check['dispatcher']))->method('trigger')->withConsecutive(
             array($this->equalTo('onBeforeRestore')),
             array($this->equalTo('onAfterRestore'))
@@ -330,7 +346,11 @@ class DataModelPublishTest extends DatabaseTest
         $model->method('getId')->willReturn(1);
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered
-        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array(static::$container));
+        $dispatcher = $this->getMockBuilder('\\FOF30\\Event\\Dispatcher')
+            ->setMethods(array('trigger'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $dispatcher->expects($this->exactly($check['dispatcher']))->method('trigger')->withConsecutive(
             array($this->equalTo('onBeforeUnpublish')),
             array($this->equalTo('onAfterUnpublish'))

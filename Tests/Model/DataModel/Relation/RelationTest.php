@@ -72,7 +72,12 @@ class RelationTest extends DatabaseTest
     public function testRebase()
     {
         $model    = $this->buildModel();
-        $relation = $this->getMock('FOF30\Tests\Stubs\Model\RelationStub', array('reset'), array($model, 'Fakeapp\Model\Children'));
+
+        $relation = $this->getMockBuilder('FOF30\Tests\Stubs\Model\RelationStub')
+            ->setMethods(array('reset'))
+            ->setConstructorArgs(array($model, 'Fakeapp\Model\Children'))
+            ->getMock();
+
         $relation->method('reset')->willReturnSelf();
 
         $newModel = $this->buildModel('\Fakeapp\Site\Model\Datafoobars');
