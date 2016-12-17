@@ -76,7 +76,7 @@ class ModelTest extends FOFTestCase
     {
         $this->setExpectedException('FOF30\Model\Exception\CannotGetName');
 
-        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\ModelStub')
             ->setMethods(array('getState'))
             ->setConstructorArgs(array(static::$container))
             ->getMock();
@@ -200,7 +200,7 @@ class ModelTest extends FOFTestCase
      */
     public function test__get()
     {
-        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\ModelStub')
             ->setMethods(array('getState'))
             ->setConstructorArgs(array(static::$container))
             ->getMock();
@@ -224,7 +224,7 @@ class ModelTest extends FOFTestCase
             'input' => $input
         ));
 
-        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\ModelStub')
             ->setMethods(array('getState'))
             ->setConstructorArgs(array($container))
             ->getMock();
@@ -242,7 +242,7 @@ class ModelTest extends FOFTestCase
      */
     public function test__set()
     {
-        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\ModelStub')
             ->setMethods(array('setState'))
             ->setConstructorArgs(array(static::$container))
             ->getMock();
@@ -260,7 +260,7 @@ class ModelTest extends FOFTestCase
      */
     public function test__call()
     {
-        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\ModelStub')
             ->setMethods(array('setState'))
             ->setConstructorArgs(array(static::$container))
             ->getMock();
@@ -304,7 +304,10 @@ class ModelTest extends FOFTestCase
             ))
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\ModelStub', array('savestate'), array($container));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\ModelStub')
+            ->setMethods(array('savestate'))
+            ->setConstructorArgs(array($container))
+            ->getMock();
 
         $matcher = $this->never();
 
