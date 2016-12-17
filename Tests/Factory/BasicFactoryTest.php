@@ -285,7 +285,13 @@ class BasicFactoryTest extends FOFTestCase
     {
         $msg  = 'BasicFactory::viewFinder %s';
 
-        $configuration = $this->getMock('FOF30\Configuration\Configuration', array('get'), array(), '', false);
+        $configuration = $this->getMockBuilder('FOF30\Configuration\Configuration')
+            ->setMethods(array('get'))
+            ->setConstructorArgs(array())
+            ->setMockClassName('')
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $configuration->method('get')->willReturnCallback(
             function($key, $default){
                 return $default;

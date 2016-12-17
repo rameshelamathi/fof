@@ -608,7 +608,10 @@ class DataModelGenericTest extends DatabaseTest
             'tableName'   => '#__foftest_foobars'
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('setState'), array(static::$container, $config));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('setState'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
         $model->expects($this->exactly(2))->method('setState')->withConsecutive(
             array($this->equalTo('filter_order'), $this->equalTo($check['field'])),
             array($this->equalTo('filter_order_Dir'), $this->equalTo($check['dir']))
@@ -634,7 +637,10 @@ class DataModelGenericTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('setState'), array(static::$container, $config));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('setState'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
         $model->expects($this->once())->method('setState')->with($this->equalTo('limitstart'), $this->equalTo($check['limitstart']));
 
         $result = $model->skip($test['limitstart']);
@@ -657,7 +663,10 @@ class DataModelGenericTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('setState'), array(static::$container, $config));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('setState'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
         $model->expects($this->once())->method('setState')->with($this->equalTo('limit'), $this->equalTo($check['limit']));
 
         $result = $model->take($test['limit']);
@@ -849,7 +858,10 @@ class DataModelGenericTest extends DatabaseTest
             'tableName'   => $test['table']
         );
 
-        $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('setState'), array(static::$container, $config));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('setState'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
         $model->expects($check['state'] ? $this->once() : $this->never())->method('setState');
 
         $result = $model->applyAccessFiltering();

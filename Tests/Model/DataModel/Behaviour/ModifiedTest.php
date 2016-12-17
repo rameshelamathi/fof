@@ -35,7 +35,10 @@ class ModifiedTest extends DatabaseTest
         $platform = static::$container->platform;
         $platform::$user = (object)array('id' => 99);
 
-        $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('addSkipCheckField'), array(static::$container, $config));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('addSkipCheckField'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
         $model->expects($this->exactly(2))->method('addSkipCheckField')
             ->withConsecutive(
                 array($this->equalTo('modified_on')),

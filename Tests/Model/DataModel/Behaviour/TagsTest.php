@@ -211,7 +211,11 @@ class TagsTest extends DatabaseTest
             'tableName'   => '#__foftest_foobars'
         );
 
-        $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('updateUcmContent'), array(static::$container, $config));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('updateUcmContent'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->expects($this->once())->method('updateUcmContent');
 
         $dispatcher = $model->getBehavioursDispatcher();
@@ -232,7 +236,11 @@ class TagsTest extends DatabaseTest
             'tableName'   => '#__foftest_foobars'
         );
 
-        $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('updateUcmContent'), array(static::$container, $config));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('updateUcmContent'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->expects($this->once())->method('updateUcmContent');
 
         $dispatcher = $model->getBehavioursDispatcher();

@@ -46,7 +46,10 @@ class DataModelPublishTest extends DatabaseTest
             $methods['onAfterArchive'] = $test['mock']['after'];
         }
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('save', 'getId'), array(static::$container, $config, $methods));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('save', 'getId'))
+            ->setConstructorArgs(array(static::$container, $config, $methods))
+            ->getMock();
         $model->method('getId')->willReturn(1);
         $model->expects($check['save'] ? $this->once() : $this->never())->method('save');
 
@@ -199,7 +202,10 @@ class DataModelPublishTest extends DatabaseTest
             }
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('save', 'getId'), array(static::$container, $config, $methods));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('save', 'getId'))
+            ->setConstructorArgs(array(static::$container, $config, $methods))
+            ->getMock();
         $model->method('getId')->willReturn(1);
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered
@@ -342,7 +348,10 @@ class DataModelPublishTest extends DatabaseTest
             }
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('save', 'getId'), array(static::$container, $config, $methods));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('save', 'getId'))
+            ->setConstructorArgs(array(static::$container, $config, $methods))
+            ->getMock();
         $model->method('getId')->willReturn(1);
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered

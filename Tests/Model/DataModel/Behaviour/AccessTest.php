@@ -65,7 +65,10 @@ class AccessTest extends DatabaseTest
             'tableName'   => $test['table']
         );
 
-        $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('reset', 'getFieldValue'), array($container, $config));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('reset', 'getFieldValue'))
+            ->setConstructorArgs(array($container, $config))
+            ->getMock();
         $model->expects($check['reset'] ? $this->once() : $this->never())->method('reset');
         $model->method('getFieldValue')->willReturn($test['mock']['access']);
 

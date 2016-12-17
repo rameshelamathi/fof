@@ -44,7 +44,10 @@ class ContentHistoryTest extends DatabaseTest
             'tableName'   => '#__foftest_foobars'
         );
 
-        $model = $this->getMock('\FOF30\Tests\Stubs\Model\DataModelStub', array('getContentType', 'checkContentType'), array(static::$container, $config));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('getContentType', 'checkContentType'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
         $model->method('getContentType')->willReturn('com_foftest');
 
         $dispatcher = $model->getBehavioursDispatcher();
@@ -86,7 +89,10 @@ class ContentHistoryTest extends DatabaseTest
             'tableName'   => '#__foftest_foobars'
         );
 
-        $model = $this->getMock('\FOF30\Tests\Stubs\Model\DataModelStub', array('getContentType', 'checkContentType'), array(static::$container, $config));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('getContentType', 'checkContentType'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
         $model->method('getContentType')->willReturn('com_foftest');
 
         $dispatcher = $model->getBehavioursDispatcher();
@@ -124,7 +130,11 @@ class ContentHistoryTest extends DatabaseTest
             'tableName'   => '#__foftest_foobars'
         );
 
-        $model = $this->getMock('\FOF30\Tests\Stubs\Model\DataModelStub', array('updateUcmContent'), array(static::$container, $config));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('updateUcmContent'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->expects($this->once())->method('updateUcmContent');
 
         $dispatcher = $model->getBehavioursDispatcher();
@@ -145,7 +155,10 @@ class ContentHistoryTest extends DatabaseTest
             'tableName'   => '#__foftest_foobars'
         );
 
-        $model = $this->getMock('\FOF30\Tests\Stubs\Model\DataModelStub', array('updateUcmContent'), array(static::$container, $config));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('updateUcmContent'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
         $model->expects($this->once())->method('updateUcmContent');
 
         $dispatcher = $model->getBehavioursDispatcher();
