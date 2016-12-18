@@ -45,7 +45,15 @@ class DataModelMagicMethodsTest extends DatabaseTest
         );
 
         // Setup the class but do not instantiate it, so we an mock the methods
-        $model = $this->getMock('FOF30\\Model\\DataModel', array('getName', 'addBehaviour', 'getState'), array(), '', false);
+        $methods = array('getName', 'addBehaviour', 'getState');
+
+        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods($methods)
+            ->setConstructorArgs(array())
+            ->setMockClassName('')
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $model->method('getName')->willReturn('test');
         $model->expects($this->exactly($check['addBehaviour']))->method('addBehaviour');
         $model->method('getState')->willReturnCallback(function($field) use ($test){
@@ -186,7 +194,13 @@ class DataModelMagicMethodsTest extends DatabaseTest
             'tableName'   => '#__foftest_foobars'
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getFieldValue'), array(static::$container, $config));
+        $methods = array('getFieldValue');
+
+        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods($methods)
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->expects($check['getField'] ? $this->once() : $this->never())->method('getFieldValue')->with($check['getField'])
             ->willReturn($test['mock']['getField']);
 
@@ -225,7 +239,13 @@ class DataModelMagicMethodsTest extends DatabaseTest
             'tableName'   => '#__foftest_foobars'
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getFieldValue', 'getState'), array(static::$container, $config));
+        $methods = array('getFieldValue', 'getState');
+
+        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods($methods)
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->expects($check['getField'] ? $this->once() : $this->never())->method('getFieldValue')->with($check['getField'])
             ->willReturn($test['mock']['getField']);
 

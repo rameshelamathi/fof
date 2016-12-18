@@ -91,7 +91,13 @@ class TagsTest extends DatabaseTest
             'input'         => new Input($test['input'])
         ));
 
-        $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('getContentType', 'checkContentType'), array($container, $config));
+        $methods = array('getContentType', 'checkContentType');
+
+        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods($methods)
+            ->setConstructorArgs(array($container, $config))
+            ->getMock();
+
         $model->expects($this->exactly($check['contentType']))->method('getContentType')->willReturn('com_foftest.foobars');
         $model->expects($check['checkContent'] ? $this->once() : $this->never())->method('checkContentType');
 
@@ -133,7 +139,11 @@ class TagsTest extends DatabaseTest
             'tableName'   => '#__foftest_foobars'
         );
 
-        $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('getContentType'), array(static::$container, $config));
+        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('getContentType'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->method('getContentType')->willReturn('com_foftest.foobars');
 
         $fakeHelper = new ClosureHelper(array(
@@ -170,7 +180,11 @@ class TagsTest extends DatabaseTest
         $platform = static::$container->platform;
         $platform::$getUserStateFromRequest = function(){ return null; };
 
-        $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('getContentType', 'addKnownField'), array(static::$container, $config));
+        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('getContentType', 'addKnownField'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->expects($check['contentType'] ? $this->once() : $this->never())->method('getContentType')->willReturn('com_foftest.foobars');
         $model->expects($check['addKnown'] ? $this->once() : $this->never())->method('addKnownField');
 

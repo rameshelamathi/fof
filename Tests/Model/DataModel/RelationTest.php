@@ -52,7 +52,10 @@ class DataModelRealtionTest extends DatabaseTest
             )
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('check', 'reorder'), array($container, $config));
+        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('check', 'reorder'))
+            ->setConstructorArgs(array($container, $config))
+            ->getMock();
 
         ReflectionHelper::setValue($model, 'touches', array('children'));
 
@@ -138,10 +141,16 @@ class DataModelRealtionTest extends DatabaseTest
                 'setDataFromCollection' => function(){}
             ));
 
-            $mockedItem = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getRelations'), array(static::$container, $config));
-            $mockedItem->method('getRelations')->willReturn($fakeRelationManager);
+            $methods = array('getRelations');
 
-            $item = clone $mockedItem;
+            $mockedModelRelation = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+                ->setMethods($methods)
+                ->setConstructorArgs(array(static::$container, $config))
+                ->getMock();
+
+            $mockedModelRelation->method('getRelations')->willReturn($fakeRelationManager);
+
+            $item = clone $mockedModelRelation;
             $items[] = $item;
         }
 
@@ -197,10 +206,20 @@ class DataModelRealtionTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('addBehaviour'), array(static::$container, $config));
+        $methods = array('addBehaviour');
+
+        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods($methods)
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->expects($check['add'] ? $this->once() : $this->never())->method('addBehaviour');
 
-        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('hasObserverClass'), array(static::$container));
+        $dispatcher = $this->getMockBuilder('\\FOF30\\Event\\Dispatcher')
+            ->setMethods(array('hasObserverClass'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $dispatcher->method('hasObserverClass')->willReturn($test['mock']['hasClass']);
 
         ReflectionHelper::setValue($model, 'behavioursDispatcher', $dispatcher);
@@ -264,7 +283,13 @@ class DataModelRealtionTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('has'), array(static::$container, $config));
+        $methods = array('has');
+
+        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods($methods)
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->method('has')->with(
             $this->equalTo('dummy'),
             $this->equalTo('callback'),

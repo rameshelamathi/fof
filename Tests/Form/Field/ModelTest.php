@@ -133,7 +133,12 @@ class ModelTest extends DatabaseTest
         );
 
         $methods = array('applyAccessFiltering', 'with', 'setState', 'get');
-        $model   = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', $methods, array(static::$container, $config));
+
+        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods($methods)
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->expects($this->exactly($check['applyAccess']))->method('applyAccessFiltering');
         $model->expects($this->exactly($check['with']))->method('with');
         $model->method('get')->willReturn($test['mock']['get']);

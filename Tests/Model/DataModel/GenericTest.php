@@ -236,7 +236,13 @@ class DataModelGenericTest extends DatabaseTest
             'tableName'   => '#__foftest_foobars'
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getFieldAlias'), array(self::$container, $config));
+        $methods = array('getFieldAlias');
+
+        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods($methods)
+            ->setConstructorArgs(array(self::$container, $config))
+            ->getMock();
+
         $model->method('getFieldAlias')->willReturn($test['mock']['getAlias']);
 
         ReflectionHelper::setValue($model, 'knownFields', $test['mock']['fields']);
@@ -311,7 +317,13 @@ class DataModelGenericTest extends DatabaseTest
             'transform' => function(){}
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('count', 'get'), array(self::$container, $config));
+        $methods = array('count', 'get');
+
+        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods($methods)
+            ->setConstructorArgs(array(self::$container, $config))
+            ->getMock();
+
         $model->expects($this->once())->method('count')->willReturn($test['mock']['count']);
         $model->expects($this->exactly($check['get']))->method('get')->willReturn($fakeGet);
 
@@ -343,7 +355,12 @@ class DataModelGenericTest extends DatabaseTest
         );
 
         $mockedQuery = $db->getQuery(true)->select('*')->from('#__foftest_bares');
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('buildQuery'), array(static::$container, $config, $methods));
+
+        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('buildQuery'))
+            ->setConstructorArgs(array(static::$container, $config, $methods))
+            ->getMock();
+
         $model->method('buildQuery')->willReturn($mockedQuery);
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered
@@ -397,7 +414,11 @@ class DataModelGenericTest extends DatabaseTest
             }
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getState'), array(static::$container, $config, $methods));
+        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods('getState')
+            ->setConstructorArgs(array(static::$container, $config, $methods))
+            ->getMock();
+
         $model->expects($check['filter'] ? $this->exactly(2) : $this->never())->method('getState')->willReturnCallback(
             function($state, $default) use ($test)
             {
@@ -763,7 +784,11 @@ class DataModelGenericTest extends DatabaseTest
         $model->method('getIdFieldName')->willReturn($test['mock']['id_field']);
         $model->expects($this->once())->method('setState')->with($this->equalTo($check['field']), $this->equalTo($check['options']));
 
-        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('hasObserverClass'), array(static::$container, $config));
+        $dispatcher = $this->getMockBuilder('\\FOF30\\Event\\Dispatcher')
+            ->setMethods(array('hasObserverClass'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $dispatcher->method('hasObserverClass')->willReturn($test['mock']['hasClass']);
 
         ReflectionHelper::setValue($model, 'behavioursDispatcher', $dispatcher);
@@ -931,7 +956,11 @@ class DataModelGenericTest extends DatabaseTest
             }
         );
 
-        $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('buildQuery'), array(static::$container, $config, $methods));
+        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('buildQuery'))
+            ->setConstructorArgs(array(static::$container, $config, $methods))
+            ->getMock();
+
         $model->method('buildQuery')->willReturn($query);
 
         $result = $model->getItemsArray(0, 0, false);
@@ -1214,7 +1243,11 @@ class DataModelGenericTest extends DatabaseTest
 
         $container = clone static::$container;
 
-        $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('loadForm'), array(static::$container, $config, $methods));
+        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('loadForm'))
+            ->setConstructorArgs(array(static::$container, $config, $methods))
+            ->getMock();
+
         $model->method('loadForm')
             ->with($this->equalTo($check['name']), $this->equalTo($check['source']), $this->equalTo($check['options']))
             ->willReturnCallback(function($name) use ($test, $container){
