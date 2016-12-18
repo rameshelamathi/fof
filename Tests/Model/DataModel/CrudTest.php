@@ -385,7 +385,11 @@ class DataModelCrudTest extends DatabaseTest
             }
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('reset', 'getId', 'bind'), array(static::$container, $config, $methods));
+        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('reset', 'getId', 'bind'))
+            ->setConstructorArgs(array(static::$container, $config, $methods))
+            ->getMock();
+
         $model->method('getId')->willReturn($test['mock']['id']);
         $model->expects($check['bind'] ? $this->once() : $this->never())->method('bind')->willReturn(null);
 
@@ -447,7 +451,11 @@ class DataModelCrudTest extends DatabaseTest
             }
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getId', 'findOrFail', 'reset'), array(static::$container, $config, $methods));
+        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('getId', 'findOrFail', 'reset'))
+            ->setConstructorArgs(array(static::$container, $config, $methods))
+            ->getMock();
+
         $model->expects($this->once())->method('reset')->willReturn(null);
         $model->method('getId')->willReturn($test['mock']['id']);
         $model->expects($check['find'] ? $this->once() : $this->never())->method('findOrFail')->willReturn(null);

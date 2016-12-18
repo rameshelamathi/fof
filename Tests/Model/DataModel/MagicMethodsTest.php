@@ -288,7 +288,11 @@ class DataModelMagicMethodsTest extends DatabaseTest
             'tableName'   => '#__foftest_foobars'
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('setFieldValue', 'setState', '__call'), array(static::$container, $config));
+        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('setFieldValue', 'setState', '__call'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->expects($check['call'] ? $this->once() : $this->never())->method('__call')->willReturn(null);
 
         $model->expects($check['setField'] ? $this->once() : $this->never())->method('setFieldValue')->with($this->equalTo($check['setField']))->willReturn(null);

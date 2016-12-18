@@ -129,7 +129,11 @@ class DataModelPublishTest extends DatabaseTest
             }
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('save', 'getId', 'findOrFail'), array(static::$container, $config, $methods));
+        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('save', 'getId', 'findOrFail'))
+            ->setConstructorArgs(array(static::$container, $config, $methods))
+            ->getMock();
+
         $model->method('getId')->willReturn(1);
         $model->expects($check['find'] ? $this->once() : $this->never())->method('findOrFail')->willReturn(null);
 
@@ -276,7 +280,11 @@ class DataModelPublishTest extends DatabaseTest
             }
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('save', 'getId', 'findOrFail'), array(static::$container, $config, $methods));
+        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('save', 'getId', 'findOrFail'))
+            ->setConstructorArgs(array(static::$container, $config, $methods))
+            ->getMock();
+
         $model->method('getId')->willReturn(1);
         $model->expects($check['find'] ? $this->once() : $this->never())->method('findOrFail');
 

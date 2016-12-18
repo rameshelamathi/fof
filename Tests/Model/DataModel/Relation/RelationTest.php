@@ -173,7 +173,11 @@ class RelationTest extends DatabaseTest
             'tableName'   => '#__fakeapp_parents'
         );
 
-        $item = $this->getMock('\FOF30\Tests\Stubs\Model\DataModelStub', array('save'), array(static::$container, $config));
+        $item = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('save'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $item->expects($this->once())->method('save')->willReturn(null);
 
         $collection = new Collection(array($item));

@@ -476,7 +476,11 @@ class DataModelSpecialColumnsTest extends DatabaseTest
             'tableName'   => $test['table']
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('unlock', 'isAssetsTracked', 'getAssetKey'), array($container, $config));
+        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('unlock', 'isAssetsTracked', 'getAssetKey'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->expects($check['unlock'] ? $this->once() : $this->never())->method('unlock')->willReturnSelf();
         $model->method('isAssetsTracked')->willReturn($test['mock']['assetsTracked']);
         $model->method('getAssetKey')->willReturn('foobars.dummy');

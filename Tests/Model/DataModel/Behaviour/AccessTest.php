@@ -34,7 +34,11 @@ class AccessTest extends DatabaseTest
             'tableName'   => $test['table']
         );
 
-        $model = $this->getMock('\FOF30\Tests\Stubs\Model\DataModelStub', array('applyAccessFiltering'), array(static::$container, $config));
+        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('applyAccessFiltering'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->expects($check['access'] ? $this->once() : $this->never())->method('applyAccessFiltering');
 
         $query      = \JFactory::getDbo()->getQuery(true)->select('*')->from('test');

@@ -464,7 +464,10 @@ class DataModelGenericTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getState', 'getItemsArray', 'eagerLoad'), array(self::$container, $config));
+        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('getState', 'getItemsArray', 'eagerLoad'))
+            ->setConstructorArgs(array(self::$container, $config))
+            ->getMock();
 
         $model->method('getState')->willReturnCallback(
             function($state, $default) use ($test)
@@ -751,7 +754,11 @@ class DataModelGenericTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getIdFieldName', 'setState', 'addBehaviour'), array(static::$container, $config));
+        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('getIdFieldName', 'setState', 'addBehaviour'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->expects($check['add'] ? $this->once() : $this->never())->method('addBehaviour')->willReturn(null);
         $model->method('getIdFieldName')->willReturn($test['mock']['id_field']);
         $model->expects($this->once())->method('setState')->with($this->equalTo($check['field']), $this->equalTo($check['options']));

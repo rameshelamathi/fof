@@ -338,7 +338,11 @@ class RelationManagerTest extends DatabaseTest
         $model      = $this->buildModel();
         $relation   = new RelationManager($model);
 
-        $hasMany = $this->getMock('FOF30\Model\DataModel\Relation\HasMany', array('getForeignKeyMap'), array($model, 'Fakeapp\Model\Children', ));
+        $hasMany = $this->getMockBuilder('FOF30\Model\DataModel\Relation\HasMany')
+            ->setMethods(array('getForeignKeyMap'))
+            ->setConstructorArgs(array($model, 'Fakeapp\Model\Children', ))
+            ->getMock();
+
         $hasMany->expects($this->once())->method('getForeignKeyMap')->willReturn(null);
 
         ReflectionHelper::setValue($relation, 'relations', array('test' => $hasMany));
