@@ -1295,7 +1295,11 @@ class DataModelGenericTest extends DatabaseTest
 
         $model = new DataModelStub(static::$container, $config);
 
-        $form = $this->getMock('FOF30\Form\Form', array('filter', 'validate', 'getErrors'), array(static::$container, 'Foobar'));
+        $form = $this->getMockBuilder('FOF30\Form\Form')
+            ->setMethods(array('filter', 'validate', 'getErrors'))
+            ->setConstructorArgs(array(static::$container, 'Foobar'))
+            ->getMock();
+
         $form->method('filter')->willReturn($test['mock']['filter']);
         $form->method('validate')->willReturn($test['mock']['validate']);
         $form->method('getErrors')->willReturn($test['mock']['errors']);

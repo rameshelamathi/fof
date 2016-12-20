@@ -29,7 +29,10 @@ class ActionsTest extends FOFTestCase
      */
     public function test__get($test, $check)
     {
-        $field = $this->getMock('FOF30\Form\Field\Actions', array('getStatic', 'getRepeatable'));
+        $field = $this->getMockBuilder('FOF30\Form\Field\Actions')
+            ->setMethods(array('getStatic', 'getRepeatable'))
+            ->getMock();
+
         $field->expects($this->exactly($check['static']))->method('getStatic');
         $field->expects($this->exactly($check['repeat']))->method('getRepeatable');
 
@@ -79,7 +82,10 @@ class ActionsTest extends FOFTestCase
             }
         ));
 
-        $field = $this->getMock('FOF30\Form\Field\Actions', array('getPublishedField'));
+        $field = $this->getMockBuilder('FOF30\Form\Field\Actions')
+            ->setMethods(array('getPublishedField'))
+            ->getMock();
+
         $field->expects($this->exactly($check['publishField']))->method('getPublishedField')->willReturn($fakeField);
 
         $data  = '<field type="Actions"';

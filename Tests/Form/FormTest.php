@@ -93,7 +93,11 @@ class FormTest extends FOFTestCase
             }
         ));
 
-        $form = $this->getMock('FOF30\Form\Form', array('getAttribute', 'getView'), array(static::$container, 'Foobar'));
+        $form = $this->getMockBuilder('FOF30\Form\Form')
+            ->setMethods(array('getAttribute', 'getView'))
+            ->setConstructorArgs(array(static::$container, 'Foobar'))
+            ->getMock();
+
         $form->method('getAttribute')->willReturnCallback(function($attribute) use($test){
             if(isset($test['mock']['attributes'][$attribute]))
             {
@@ -127,7 +131,11 @@ class FormTest extends FOFTestCase
             }
         ));
 
-        $form = $this->getMock('FOF30\Form\Form', array('getAttribute', 'getView'), array(static::$container, 'Foobar'));
+        $form = $this->getMockBuilder('FOF30\Form\Form')
+            ->setMethods(array('getAttribute', 'getView'))
+            ->setConstructorArgs(array(static::$container, 'Foobar'))
+            ->getMock();
+
         $form->method('getAttribute')->willReturnCallback(function($attribute) use($test){
             if(isset($test['mock']['attributes'][$attribute]))
             {
@@ -276,7 +284,11 @@ class FormTest extends FOFTestCase
             $groups = $xml->xpath('//header');
         }
 
-        $form = $this->getMock('FOF30\Form\Form', array('findHeadersByGroup', 'loadHeader'), array(static::$container, 'Foobar'));
+        $form = $this->getMockBuilder('FOF30\Form\Form')
+            ->setMethods(array('findHeadersByGroup', 'loadHeader'))
+            ->setConstructorArgs(array(static::$container, 'Foobar'))
+            ->getMock();
+
         $form->method('findHeadersByGroup')->willReturn($groups);
         $form->method('loadHeader')->willReturnCallback(function($element, $group) use (&$test, &$checker){
             $checker[] = $group;
@@ -299,7 +311,11 @@ class FormTest extends FOFTestCase
     {
         $msg = 'Form::getHeader %s - Case: '.$check['case'];
 
-        $form = $this->getMock('FOF30\Form\Form', array('findHeader', 'loadHeader'), array(static::$container, 'Foobar'));
+        $form = $this->getMockBuilder('FOF30\Form\Form')
+            ->setMethods(array('findHeader', 'loadHeader'))
+            ->setConstructorArgs(array(static::$container, 'Foobar'))
+            ->getMock();
+
         $form->method('findHeader')->willReturn($test['mock']['find']);
         $form->method('loadHeader')->willReturn('mocked');
 

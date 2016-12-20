@@ -116,7 +116,11 @@ class BasicFactoryTest extends FOFTestCase
         $msg   = 'BasicFactory::view %s - Case: '.$check['case'];
         $names = array();
 
-        $factory = $this->getMock('FOF30\Factory\BasicFactory', array('createView'), array(static::$container));
+        $factory = $this->getMockBuilder('FOF30\Factory\BasicFactory')
+            ->setMethods(array('createView'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $factory->method('createView')->willReturnCallback(function($class) use(&$test, &$names){
             $names[] = $class;
             $result = array_shift($test['mock']['create']);
@@ -148,7 +152,11 @@ class BasicFactoryTest extends FOFTestCase
         $msg  = 'BasicFactory::dispatcher %s - Case: '.$check['case'];
         $name = '';
 
-        $factory = $this->getMock('FOF30\Factory\BasicFactory', array('createDispatcher'), array(static::$container));
+        $factory = $this->getMockBuilder('FOF30\Factory\BasicFactory')
+            ->setMethods(array('createDispatcher'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $factory->method('createDispatcher')->willReturnCallback(function($class) use($test, &$name){
                 $name   = $class;
                 $result = $test['mock']['create'];
@@ -184,7 +192,11 @@ class BasicFactoryTest extends FOFTestCase
         $msg  = 'BasicFactory::toolbar %s - Case: '.$check['case'];
         $name = '';
 
-        $factory = $this->getMock('FOF30\Factory\BasicFactory', array('createToolbar'), array(static::$container));
+        $factory = $this->getMockBuilder('FOF30\Factory\BasicFactory')
+            ->setMethods(array('createToolbar'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $factory->method('createToolbar')->willReturnCallback(function($class) use($test, &$name){
             $name   = $class;
             $result = $test['mock']['create'];
@@ -220,7 +232,11 @@ class BasicFactoryTest extends FOFTestCase
         $msg  = 'BasicFactory::transparentAuthentication %s - Case: '.$check['case'];
         $name = '';
 
-        $factory = $this->getMock('FOF30\Factory\BasicFactory', array('createTransparentAuthentication'), array(static::$container));
+        $factory = $this->getMockBuilder('FOF30\Factory\BasicFactory')
+            ->setMethods(array('createTransparentAuthentication'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $factory->method('createTransparentAuthentication')->willReturnCallback(function($class) use($test, &$name){
             $name   = $class;
             $result = $test['mock']['create'];
@@ -255,7 +271,11 @@ class BasicFactoryTest extends FOFTestCase
     {
         $msg  = 'BasicFactory::form %s - Case: '.$check['case'];
 
-        $factory = $this->getMock('FOF30\Factory\BasicFactory', array('getFormFilename'), array(static::$container));
+        $factory = $this->getMockBuilder('FOF30\Factory\BasicFactory')
+            ->setMethods(array('getFormFilename'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $factory->method('getFormFilename')->willReturn($test['mock']['formFilename']);
 
         ReflectionHelper::setValue($factory, 'scaffolding', $test['mock']['scaffolding']);
