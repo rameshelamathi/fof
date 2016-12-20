@@ -47,7 +47,7 @@ class DataModelMagicMethodsTest extends DatabaseTest
         // Setup the class but do not instantiate it, so we an mock the methods
         $methods = array('getName', 'addBehaviour', 'getState');
 
-        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('FOF30\\Model\\DataModel')
             ->setMethods($methods)
             ->setConstructorArgs(array())
             ->setMockClassName('')
