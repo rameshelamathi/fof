@@ -246,7 +246,7 @@ class DataModelSpecialColumnsTest extends DatabaseTest
             }
         );
 
-        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
             ->setMethods(array('save', 'getId'))
             ->setConstructorArgs(array($container, $config, $methods))
             ->getMock();
@@ -416,7 +416,7 @@ class DataModelSpecialColumnsTest extends DatabaseTest
             'tableName'   => $test['table']
         );
 
-        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
             ->setMethods(array('save', 'getId'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();
@@ -488,7 +488,7 @@ class DataModelSpecialColumnsTest extends DatabaseTest
             'tableName'   => $test['table']
         );
 
-        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
             ->setMethods(array('unlock', 'isAssetsTracked', 'getAssetKey'))
             ->setConstructorArgs(array($container, $config))
             ->getMock();

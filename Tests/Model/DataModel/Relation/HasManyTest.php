@@ -84,7 +84,7 @@ WHERE `reltbl`.`fakeapp_parent_id` = `#__fakeapp_parents`.`fakeapp_parent_id`';
     {
         if(!$class)
         {
-            $class = '\FOF30\Tests\Stubs\Model\DataModelStub';
+            $class = '\\FOF30\\Tests\\Stubs\\Model\\DataModelStub';
         }
 
         $config = array(

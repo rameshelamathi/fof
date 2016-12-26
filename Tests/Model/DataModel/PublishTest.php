@@ -129,7 +129,7 @@ class DataModelPublishTest extends DatabaseTest
             }
         );
 
-        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
             ->setMethods(array('save', 'getId', 'findOrFail'))
             ->setConstructorArgs(array(static::$container, $config, $methods))
             ->getMock();
@@ -280,7 +280,7 @@ class DataModelPublishTest extends DatabaseTest
             }
         );
 
-        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
             ->setMethods(array('save', 'getId', 'findOrFail'))
             ->setConstructorArgs(array(static::$container, $config, $methods))
             ->getMock();

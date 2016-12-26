@@ -192,7 +192,7 @@ class DataModelMagicMethodsTest extends DatabaseTest
             'tableName'   => '#__foftest_foobars'
         );
 
-        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
             ->setMethods(array('getFieldValue'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();
@@ -235,7 +235,7 @@ class DataModelMagicMethodsTest extends DatabaseTest
             'tableName'   => '#__foftest_foobars'
         );
 
-        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
             ->setMethods(array('getFieldValue', 'getState'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();
@@ -302,7 +302,7 @@ class DataModelMagicMethodsTest extends DatabaseTest
             'tableName'   => '#__foftest_foobars'
         );
 
-        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
             ->setMethods(array('setFieldValue', 'setState', '__call'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();

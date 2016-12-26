@@ -173,7 +173,7 @@ class RelationTest extends DatabaseTest
             'tableName'   => '#__fakeapp_parents'
         );
 
-        $item = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $item = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
             ->setMethods(array('save'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();
@@ -215,7 +215,7 @@ class RelationTest extends DatabaseTest
     {
         if(!$class)
         {
-            $class = '\FOF30\Tests\Stubs\Model\DataModelStub';
+            $class = '\\FOF30\\Tests\\Stubs\\Model\\DataModelStub';
         }
 
         $config = array(

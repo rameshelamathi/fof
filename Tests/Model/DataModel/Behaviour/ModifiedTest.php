@@ -70,7 +70,7 @@ class ModifiedTest extends DatabaseTest
         $platform = static::$container->platform;
         $platform::$user = (object)array('id' => 99);
 
-        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
             ->setMethods(array('isLocked'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();

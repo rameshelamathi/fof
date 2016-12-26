@@ -36,7 +36,7 @@ class FiltersTest extends DatabaseTest
             'tableName'   => '#__foftest_foobars'
         );
 
-        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
             ->setMethods(array('getState'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();

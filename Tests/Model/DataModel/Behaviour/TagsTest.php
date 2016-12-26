@@ -91,7 +91,7 @@ class TagsTest extends DatabaseTest
             'input'         => new Input($test['input'])
         ));
 
-        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
             ->setMethods(array('getContentType', 'checkContentType'))
             ->setConstructorArgs(array($container, $config))
             ->getMock();
@@ -137,7 +137,7 @@ class TagsTest extends DatabaseTest
             'tableName'   => '#__foftest_foobars'
         );
 
-        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
             ->setMethods(array('getContentType'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();
@@ -178,7 +178,7 @@ class TagsTest extends DatabaseTest
         $platform = static::$container->platform;
         $platform::$getUserStateFromRequest = function(){ return null; };
 
-        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
             ->setMethods(array('getContentType', 'addKnownField'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();

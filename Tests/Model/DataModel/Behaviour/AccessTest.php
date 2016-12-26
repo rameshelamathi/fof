@@ -34,7 +34,7 @@ class AccessTest extends DatabaseTest
             'tableName'   => $test['table']
         );
 
-        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
             ->setMethods(array('applyAccessFiltering'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();

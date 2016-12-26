@@ -236,7 +236,7 @@ class DataModelGenericTest extends DatabaseTest
             'tableName'   => '#__foftest_foobars'
         );
 
-        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
             ->setMethods(array('getFieldAlias'))
             ->setConstructorArgs(array(self::$container, $config))
             ->getMock();
@@ -315,7 +315,7 @@ class DataModelGenericTest extends DatabaseTest
             'transform' => function(){}
         ));
 
-        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
             ->setMethods(array('count', 'get'))
             ->setConstructorArgs(array(self::$container, $config))
             ->getMock();
@@ -352,7 +352,7 @@ class DataModelGenericTest extends DatabaseTest
 
         $mockedQuery = $db->getQuery(true)->select('*')->from('#__foftest_bares');
 
-        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
             ->setMethods(array('buildQuery'))
             ->setConstructorArgs(array(static::$container, $config, $methods))
             ->getMock();
@@ -410,7 +410,7 @@ class DataModelGenericTest extends DatabaseTest
             }
         );
 
-        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
             ->setMethods(array('getState'))
             ->setConstructorArgs(array(static::$container, $config, $methods))
             ->getMock();
@@ -481,7 +481,7 @@ class DataModelGenericTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
             ->setMethods(array('getState', 'getItemsArray', 'eagerLoad'))
             ->setConstructorArgs(array(self::$container, $config))
             ->getMock();
@@ -771,7 +771,7 @@ class DataModelGenericTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
             ->setMethods(array('getIdFieldName', 'setState', 'addBehaviour'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();
@@ -952,7 +952,7 @@ class DataModelGenericTest extends DatabaseTest
             }
         );
 
-        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
             ->setMethods(array('buildQuery'))
             ->setConstructorArgs(array(static::$container, $config, $methods))
             ->getMock();
@@ -1239,7 +1239,7 @@ class DataModelGenericTest extends DatabaseTest
 
         $container = clone static::$container;
 
-        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
             ->setMethods(array('loadForm'))
             ->setConstructorArgs(array(static::$container, $config, $methods))
             ->getMock();

@@ -60,7 +60,7 @@ class LanguageTest extends DatabaseTest
             ));
         };
 
-        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
             ->setMethods(array('blacklistFilters'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();
@@ -127,7 +127,7 @@ class LanguageTest extends DatabaseTest
             ));
         };
 
-        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
             ->setMethods(array('reset'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();
