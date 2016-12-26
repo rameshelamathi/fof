@@ -411,7 +411,7 @@ class DataModelGenericTest extends DatabaseTest
         );
 
         $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
-            ->setMethods('getState')
+            ->setMethods(array('getState'))
             ->setConstructorArgs(array(static::$container, $config, $methods))
             ->getMock();
 
