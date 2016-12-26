@@ -30,7 +30,8 @@ class ComponentsTest extends FOFTestCase
      */
     public function test__get($test, $check)
     {
-        $field = $this->getMock('FOF30\Form\Field\Components', array('getStatic', 'getRepeatable'));
+        $field = $this->getMockBuilder('FOF30\Form\Field\Components')->setMethods(array('getStatic', 'getRepeatable'))->getMock();
+
         $field->expects($this->exactly($check['static']))->method('getStatic');
         $field->expects($this->exactly($check['repeat']))->method('getRepeatable');
 
@@ -49,7 +50,8 @@ class ComponentsTest extends FOFTestCase
      */
     public function testGetStatic()
     {
-        $field = $this->getMock('FOF30\Form\Field\Components', array('getFieldContents'));
+        $field = $this->getMockBuilder('FOF30\Form\Field\Components')->setMethods(array('getFieldContents'))->getMock();
+
         $field->expects($this->once())->method('getFieldContents')->with($this->equalTo(array('id' => 'foo')));
 
         $field->id = 'foo';
@@ -64,7 +66,8 @@ class ComponentsTest extends FOFTestCase
      */
     public function testGetRepeatable()
     {
-        $field = $this->getMock('FOF30\Form\Field\Components', array('getFieldContents'));
+        $field = $this->getMockBuilder('FOF30\Form\Field\Components')->setMethods(array('getFieldContents'))->getMock();
+
         $field->expects($this->once())->method('getFieldContents')->with($this->equalTo(array('class' => 'foo')));
 
         $field->id = 'foo';
@@ -88,7 +91,8 @@ class ComponentsTest extends FOFTestCase
             array('value' => 'test', 'text' => 'Test component'),
         );
 
-        $field = $this->getMock('FOF30\Form\Field\Components', array('getOptions'));
+        $field = $this->getMockBuilder('FOF30\Form\Field\Components')->setMethods(array('getOptions'))->getMock();
+
         $field->method('getOptions')->willReturn($components);
 
         $field->class = 'foo-class';

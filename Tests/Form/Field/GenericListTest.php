@@ -45,7 +45,8 @@ class GenericListTest extends DatabaseTest
      */
     public function test__get($test, $check)
     {
-        $field = $this->getMock('FOF30\Form\Field\GenericList', array('getStatic', 'getRepeatable'));
+        $field = $this->getMockBuilder('FOF30\Form\Field\GenericList')->setMethods(array('getStatic', 'getRepeatable'))->getMock();
+
         $field->expects($this->exactly($check['static']))->method('getStatic');
         $field->expects($this->exactly($check['repeat']))->method('getRepeatable');
 
@@ -72,7 +73,8 @@ class GenericListTest extends DatabaseTest
             array('value' => 'foo', 'text' => 'Foobar')
         );
 
-        $field = $this->getMock('FOF30\Form\Field\GenericList', array('getInput', 'getOptions'));
+        $field = $this->getMockBuilder('FOF30\Form\Field\GenericList')->setMethods(array('getInput', 'getOptions'))->getMock();
+
         $field->expects($this->exactly($check['input']))->method('getInput');
         $field->expects($this->exactly($check['options']))->method('getOptions')->willReturn($options);
 
@@ -110,7 +112,8 @@ class GenericListTest extends DatabaseTest
             array('value' => 'foo', 'text' => 'Foobar')
         );
 
-        $field = $this->getMock('FOF30\Form\Field\GenericList', array('getInput', 'getOptions', 'parseFieldTags'));
+        $field = $this->getMockBuilder('FOF30\Form\Field\GenericList')->setMethods(array('getInput', 'getOptions', 'parseFieldTags'))->getMock();
+
         $field->expects($this->exactly($check['input']))->method('getInput');
         $field->expects($this->exactly($check['options']))->method('getOptions')->willReturn($options);
         $field->method('parseFieldTags')->willReturn('__PARSED__');
