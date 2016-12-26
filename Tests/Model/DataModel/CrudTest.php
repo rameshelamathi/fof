@@ -194,10 +194,8 @@ class DataModelCrudTest extends DatabaseTest
             'tableName'   => $test['table']
         );
 
-        $methods = array('setFieldValue');
-
         $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
-            ->setMethods($methods)
+            ->setMethods(array('setFieldValue'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();
 
@@ -267,10 +265,8 @@ class DataModelCrudTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $methods = array('getForm');
-
         $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
-            ->setMethods($methods)
+            ->setMethods(array('getForm'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();
 
@@ -305,10 +301,8 @@ class DataModelCrudTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $methods = array('save');
-
         $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
-            ->setMethods($methods)
+            ->setMethods(array('save'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();
 
@@ -335,10 +329,8 @@ class DataModelCrudTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $methods = array('trash', 'forceDelete');
-
         $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
-            ->setMethods($methods)
+            ->setMethods(array('trash', 'forceDelete'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();
 
@@ -367,10 +359,8 @@ class DataModelCrudTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $methods = array('find', 'getId');
-
         $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
-            ->setMethods($methods)
+            ->setMethods(array('find', 'getId'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();
 
@@ -564,10 +554,8 @@ class DataModelCrudTest extends DatabaseTest
             }
         ));
 
-        $methods = array('get', 'create');
-
         $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
-            ->setMethods($methods)
+            ->setMethods(array('get', 'create'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();
 
@@ -598,10 +586,8 @@ class DataModelCrudTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $methods = array('reset', 'bind', 'save');
-
         $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
-            ->setMethods($methods)
+            ->setMethods(array('reset', 'bind', 'save'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();
 
@@ -634,10 +620,8 @@ class DataModelCrudTest extends DatabaseTest
             }
         ));
 
-        $methods = array('get');
-
         $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
-            ->setMethods($methods)
+            ->setMethods(array('get'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();
 
@@ -674,10 +658,8 @@ class DataModelCrudTest extends DatabaseTest
             }
         ));
 
-        $methods = array('get', 'reset');
-
         $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
-            ->setMethods($methods)
+            ->setMethods(array('get', 'reset'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();
 
@@ -709,10 +691,8 @@ class DataModelCrudTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $methods = array('save');
-
         $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
-            ->setMethods($methods)
+            ->setMethods(array('save'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();
 
@@ -739,10 +719,8 @@ class DataModelCrudTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $methods = array('reset', 'findOrFail');
-
         $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
-            ->setMethods($methods)
+            ->setMethods(array('reset', 'findOrFail'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();
 

@@ -191,9 +191,8 @@ class DataControllertest extends DatabaseTest
     {
         $msg     = 'DataController::read %s - Case: '.$check['case'];
 
-        $modelMethods = array('getId', 'getForm', 'setFormName');
         $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
-            ->setMethods($modelMethods)
+            ->setMethods(array('getId', 'getForm', 'setFormName'))
             ->setConstructorArgs(array())
             ->setMockClassName('')
             ->disableOriginalConstructor()
@@ -330,9 +329,8 @@ class DataControllertest extends DatabaseTest
 
         $container->session->set('dummycontrollers.savedata', $test['mock']['session'], 'com_fakeapp');
 
-        $modelMethods = array('getId', 'lock', 'bind', 'setFormName', 'getForm', 'isLocked');
         $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
-            ->setMethods($modelMethods)
+            ->setMethods(array('getId', 'lock', 'bind', 'setFormName', 'getForm', 'isLocked'))
             ->setConstructorArgs(array())
             ->setMockClassName('')
             ->disableOriginalConstructor()

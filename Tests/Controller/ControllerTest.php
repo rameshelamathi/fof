@@ -222,9 +222,8 @@ class ControllerTest extends ApplicationTestCase
         $platform = $container->platform;
         $platform::$template = 'fake_test_template';
 
-        $viewMethods = array('setDefaultModel', 'setLayout', 'display');
         $view = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\View\\ViewStub')
-            ->setMethods($viewMethods)
+            ->setMethods(array('setDefaultModel', 'setLayout', 'display'))
             ->setConstructorArgs(array($container))
             ->getMock();
         $view->method('setDefaultModel')->willReturnCallback(

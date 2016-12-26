@@ -141,10 +141,8 @@ class DataModelRealtionTest extends DatabaseTest
                 'setDataFromCollection' => function(){}
             ));
 
-            $methods = array('getRelations');
-
             $mockedModelRelation = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
-                ->setMethods($methods)
+                ->setMethods(array('getRelations'))
                 ->setConstructorArgs(array(static::$container, $config))
                 ->getMock();
 
@@ -206,10 +204,8 @@ class DataModelRealtionTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $methods = array('addBehaviour');
-
         $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
-            ->setMethods($methods)
+            ->setMethods(array('addBehaviour'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();
 
@@ -283,10 +279,8 @@ class DataModelRealtionTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $methods = array('has');
-
         $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
-            ->setMethods($methods)
+            ->setMethods(array('has'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();
 

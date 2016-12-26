@@ -236,10 +236,8 @@ class DataModelGenericTest extends DatabaseTest
             'tableName'   => '#__foftest_foobars'
         );
 
-        $methods = array('getFieldAlias');
-
         $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
-            ->setMethods($methods)
+            ->setMethods(array('getFieldAlias'))
             ->setConstructorArgs(array(self::$container, $config))
             ->getMock();
 
@@ -317,10 +315,8 @@ class DataModelGenericTest extends DatabaseTest
             'transform' => function(){}
         ));
 
-        $methods = array('count', 'get');
-
         $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
-            ->setMethods($methods)
+            ->setMethods(array('count', 'get'))
             ->setConstructorArgs(array(self::$container, $config))
             ->getMock();
 

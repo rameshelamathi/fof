@@ -91,10 +91,8 @@ class TagsTest extends DatabaseTest
             'input'         => new Input($test['input'])
         ));
 
-        $methods = array('getContentType', 'checkContentType');
-
         $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
-            ->setMethods($methods)
+            ->setMethods(array('getContentType', 'checkContentType'))
             ->setConstructorArgs(array($container, $config))
             ->getMock();
 

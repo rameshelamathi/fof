@@ -416,10 +416,8 @@ class DataModelSpecialColumnsTest extends DatabaseTest
             'tableName'   => $test['table']
         );
 
-        $methods = array('save', 'getId');
-
         $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
-            ->setMethods($methods)
+            ->setMethods(array('save', 'getId'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();
 

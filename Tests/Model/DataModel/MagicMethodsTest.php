@@ -44,11 +44,9 @@ class DataModelMagicMethodsTest extends DatabaseTest
             'relations'             => $test['relations']
         );
 
-        // Setup the class but do not instantiate it, so we an mock the methods
-        $methods = array('getName', 'addBehaviour', 'getState');
-
+        // Setup the class but do not instantiate it, so we to mock the methods
         $model = $this->getMockBuilder('FOF30\\Model\\DataModel')
-            ->setMethods($methods)
+            ->setMethods(array('getName', 'addBehaviour', 'getState'))
             ->setConstructorArgs(array())
             ->setMockClassName('')
             ->disableOriginalConstructor()
@@ -194,10 +192,8 @@ class DataModelMagicMethodsTest extends DatabaseTest
             'tableName'   => '#__foftest_foobars'
         );
 
-        $methods = array('getFieldValue');
-
         $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
-            ->setMethods($methods)
+            ->setMethods(array('getFieldValue'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();
 
@@ -239,10 +235,8 @@ class DataModelMagicMethodsTest extends DatabaseTest
             'tableName'   => '#__foftest_foobars'
         );
 
-        $methods = array('getFieldValue', 'getState');
-
         $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
-            ->setMethods($methods)
+            ->setMethods(array('getFieldValue', 'getState'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();
 
