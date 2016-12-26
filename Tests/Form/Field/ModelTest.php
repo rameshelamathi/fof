@@ -135,7 +135,7 @@ class ModelTest extends DatabaseTest
             'idFieldName' => 'foftest_foobar_id'
         );
 
-        $model = $this->getMockBuilder('\FOF30\Tests\Stubs\Model\DataModelStub')
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
             ->setMethods(array('applyAccessFiltering', 'with', 'setState', 'get'))
             ->setConstructorArgs(array(static::$container, $config))
             ->getMock();
