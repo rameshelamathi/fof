@@ -601,7 +601,7 @@ class DataControllertest extends DatabaseTest
         );
 
         $controller = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub')
-            ->setMethods(array('csrfProtection', 'getModel', 'getIDsFromRequest', 'setRedirect', 'publish'))
+            ->setMethods(array('csrfProtection', 'getModel', 'getIDsFromRequest', 'setRedirect'))
             ->setConstructorArgs(array($container))
             ->getMock();
 
