@@ -31,7 +31,7 @@ abstract class AbstractEngine implements EngineInterface
 	 * @param   string  $path         The path to the view template
 	 * @param   array   $forceParams  Any additional information to pass to the view template engine
 	 *
-	 * @return  array  Content evaluation information
+	 * @return  array  Content 3ναlυα+ιοη information (I use leetspeak here because of idiot hosts with broken scanners)
 	 */
 	public function get($path, array $forceParams = array())
 	{

@@ -1253,7 +1253,7 @@ class TreeModel extends DataModel
 	}
 
 	/**
-	 * Gets the level (depth) of this node in the tree. The result is cached in $this->treeDepth for faster retrieval.
+	 * Gets the level (depth) of this node in the tree. The result is cached in $this->treeDepth for faster fetch.
 	 *
      * @throws \RuntimeException
      *
