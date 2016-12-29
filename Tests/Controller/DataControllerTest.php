@@ -336,6 +336,8 @@ class DataControllertest extends DatabaseTest
             ->disableOriginalConstructor()
             ->getMock();
 
+var_dump($model);
+
         $model->method('getId')->willReturn($test['mock']['getId']);
 
         $method = $model->method('lock');
@@ -357,6 +359,8 @@ class DataControllertest extends DatabaseTest
             ->setMethods(array('getModel', 'getIDsFromRequest', 'setRedirect', 'display'))
             ->setConstructorArgs(array($container))
             ->getMock();
+
+var_dump($controller);
 
         $controller->method('getModel')->willReturn($model);
         $controller->expects($check['getFromReq'] ? $this->once() : $this->never())->method('getIDsFromRequest');
