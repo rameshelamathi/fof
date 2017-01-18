@@ -1,6 +1,7 @@
 FOF 3.0.18
 ================================================================================
 ~ Work around broken file scanners in cheap hosts. If you were affected SWITCH HOSTS IMMEDIATELY, YOUR HOST IS BROKEN BEYOND REPAIR.
+~ Installation script workaround for Joomla! 3.7's new backend menu manager
 
 FOF 3.0.17
 ================================================================================
