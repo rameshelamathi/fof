@@ -246,7 +246,7 @@ class BasicFactoryDataprovider
         return $data;
     }
 
-    public static function getTestForm()
+    public static function getTestFormClass()
     {
         $data[] = array(
             array(
