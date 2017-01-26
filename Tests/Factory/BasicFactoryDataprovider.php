@@ -246,6 +246,37 @@ class BasicFactoryDataprovider
         return $data;
     }
 
+    public static function getTestForm()
+    {
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'create' => true
+                )
+            ),
+            array(
+                'case' => 'Toolbar found',
+                'name' => '\Fakeapp\Site\Form\Form',
+                'result' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'create' => 'FOF30\Factory\Exception\FormrNotFound'
+                )
+            ),
+            array(
+                'case' => 'Form not found, fall back to the default one',
+                'name' => '\Fakeapp\Site\Form\Form',
+                'result' => true
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestTransparentAuthentication()
     {
         $data[] = array(
