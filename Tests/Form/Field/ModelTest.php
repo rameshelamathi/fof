@@ -31,7 +31,8 @@ class ModelTest extends DatabaseTest
      */
     public function test__get($test, $check)
     {
-        $field = $this->getMock('FOF30\Form\Field\Model', array('getStatic', 'getRepeatable'));
+        $field = $this->getMockBuilder('FOF30\Form\Field\Model')->setMethods(array('getStatic', 'getRepeatable'))->getMock();
+
         $field->expects($this->exactly($check['static']))->method('getStatic');
         $field->expects($this->exactly($check['repeat']))->method('getRepeatable');
 
@@ -50,7 +51,8 @@ class ModelTest extends DatabaseTest
      */
     public function testGetStatic()
     {
-        $field = $this->getMock('FOF30\Form\Field\Model', array('getOptions'));
+        $field = $this->getMockBuilder('FOF30\Form\Field\Model')->setMethods(array('getOptions'))->getMock();
+
         $field->method('getOptions')->willReturn(array(
             array('value' => 'foo', 'text' => 'Foobar'),
             array('value' => 'dummy', 'text' => 'Dummy'),
@@ -75,7 +77,8 @@ class ModelTest extends DatabaseTest
     {
         $msg = 'Model::getRepeatable %s - Case: '.$check['case'];
 
-        $field = $this->getMock('FOF30\Form\Field\Model', array('parseFieldTags', 'getOptions'));
+        $field = $this->getMockBuilder('FOF30\Form\Field\Model')->setMethods(array('parseFieldTags', 'getOptions'))->getMock();
+
         $field->method('parseFieldTags')->willReturn('__PARSED__');
         $field->method('getOptions')->willReturn(array(
             array('value' => 'foo', 'text' => 'Foobar'),
@@ -132,8 +135,11 @@ class ModelTest extends DatabaseTest
             'idFieldName' => 'foftest_foobar_id'
         );
 
-        $methods = array('applyAccessFiltering', 'with', 'setState', 'get');
-        $model   = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', $methods, array(static::$container, $config));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('applyAccessFiltering', 'with', 'setState', 'get'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->expects($this->exactly($check['applyAccess']))->method('applyAccessFiltering');
         $model->expects($this->exactly($check['with']))->method('with');
         $model->method('get')->willReturn($test['mock']['get']);
@@ -150,7 +156,8 @@ class ModelTest extends DatabaseTest
             }
         ));
 
-        $field = $this->getMock('FOF30\Form\Field\Model', array('parseFieldTags'));
+        $field = $this->getMockBuilder('FOF30\Form\Field\Model')->setMethods(array('parseFieldTags'))->getMock();
+
         $field->method('parseFieldTags')->willReturn('__PARSED__');
 
         $form = new Form($container, 'Foobar');

@@ -74,7 +74,10 @@ class OwnTest extends DatabaseTest
         $platform = static::$container->platform;
         $platform::$user = (object)array('id' => 99);
 
-        $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('reset', 'getFieldValue'), array(static::$container, $config));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('reset', 'getFieldValue'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
         $model->expects($check['reset'] ? $this->once() : $this->never())->method('reset');
         $model->method('getFieldValue')->willReturn($test['mock']['created_by']);
 

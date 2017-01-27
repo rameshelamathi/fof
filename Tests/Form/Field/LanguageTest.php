@@ -27,7 +27,8 @@ class LanguageTest extends FOFTestCase
      */
     public function test__get($test, $check)
     {
-        $field = $this->getMock('FOF30\Form\Field\Language', array('getStatic', 'getRepeatable'));
+        $field = $this->getMockBuilder('FOF30\Form\Field\Language')->setMethods(array('getStatic', 'getRepeatable'))->getMock();
+
         $field->expects($this->exactly($check['static']))->method('getStatic');
         $field->expects($this->exactly($check['repeat']))->method('getRepeatable');
 
@@ -47,7 +48,8 @@ class LanguageTest extends FOFTestCase
      */
     public function testGetStatic($test, $check)
     {
-        $field = $this->getMock('FOF30\Form\Field\Language', array('getInput', 'getFieldContents'));
+        $field = $this->getMockBuilder('FOF30\Form\Field\Language')->setMethods(array('getInput', 'getFieldContents'))->getMock();
+
         $field->expects($this->exactly($check['input']))->method('getInput');
         $field->expects($this->exactly($check['contents']))->method('getFieldContents')->with(array('id' => 'foo'));
 
@@ -75,7 +77,7 @@ class LanguageTest extends FOFTestCase
      */
     public function testGetRepeatable($test, $check)
     {
-        $field = $this->getMock('FOF30\Form\Field\Language', array('getInput', 'getFieldContents'));
+        $field = $this->getMockBuilder('FOF30\Form\Field\Language')->setMethods(array('getInput', 'getFieldContents'))->getMock();
         $field->expects($this->exactly($check['input']))->method('getInput');
         $field->expects($this->exactly($check['contents']))->method('getFieldContents')->with(array('class' => 'foo'));
 
@@ -105,7 +107,8 @@ class LanguageTest extends FOFTestCase
     {
         $msg = 'Language::getFieldContents %s - Case: '.$check['case'];
 
-        $field = $this->getMock('FOF30\Form\Field\Language', array('getOptions'));
+        $field = $this->getMockBuilder('FOF30\Form\Field\Language')->setMethods(array('getOptions'))->getMock();
+
         $field->method('getOptions')->willReturn(array(
             array('value' => 'it-IT', 'text' => 'Italian'),
             array('value' => 'en-GB', 'text' => 'English'),

@@ -50,16 +50,11 @@ class MockApplicationCli extends MockApplicationBase
 		$methods = self::getMethods();
 
 		// Create the mock.
-		$mockObject = $test->getMock(
-			'\JApplicationCli',
-			$methods,
-			// Constructor arguments.
-			array(),
-			// Mock class name.
-			'',
-			// Call original constructor.
-			true
-		);
+		$mockObject = $test->getMockBuilder('\JApplicationCli')
+			->setMethods($methods)
+			->setConstructorArgs(array())
+			->setMockClassName('')
+			->getMock();
 
 		$mockObject = self::addBehaviours($test, $mockObject, $options);
 

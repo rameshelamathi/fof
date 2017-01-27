@@ -134,8 +134,10 @@ class ViewTest extends FOFTestCase
     {
         $this->setExpectedException('FOF30\View\Exception\CannotGetName');
 
-        $view = $this->getMock('\\FOF30\\Tests\\Stubs\\View\\ViewStub', array('escape'),
-            array(static::$container, array(), array('getName' => 'parent')));
+        $view  = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\View\\ViewStub')
+            ->setMethods(array('escape'))
+            ->setConstructorArgs(array(static::$container, array(), array('getName' => 'parent')))
+            ->getMock();
 
         ReflectionHelper::setValue($view, 'name', null);
 
@@ -221,7 +223,10 @@ class ViewTest extends FOFTestCase
     {
         $model = new ModelStub(static::$container);
 
-        $view  = $this->getMock('\\FOF30\\Tests\\Stubs\\View\\ViewStub', array('setDefaultModelName', 'setModel'), array(static::$container));
+        $view  = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\View\\ViewStub')
+            ->setMethods(array('setDefaultModelName', 'setModel'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
         $view->expects($this->once())->method('setDefaultModelName')->with($this->equalTo('nestedset'));
         // The first param is NULL since we mocked the previous function and the property defaultModel is not set
         $view->expects($this->once())->method('setModel')->with($this->equalTo(null), $this->equalTo($model));
@@ -298,7 +303,11 @@ class ViewTest extends FOFTestCase
             };
         }
 
-        $view = $this->getMock('\\FOF30\\Tests\\Stubs\\View\\ViewStub', array('loadTemplate', 'preRender'), array(static::$container, array(), $methods));
+        $view = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\View\\ViewStub')
+            ->setMethods(array('loadTemplate', 'preRender'))
+            ->setConstructorArgs(array(static::$container, array(), $methods))
+            ->getMock();
+
         $view->method('preRender')->willReturnCallback(function() use($test){
             echo $test['mock']['pre'];
         });
@@ -350,7 +359,11 @@ class ViewTest extends FOFTestCase
     {
         $msg = 'View::loadTemplate %s - Case: '.$check['case'];
 
-        $view = $this->getMock('\\FOF30\\Tests\\Stubs\\View\\ViewStub', array('loadAnyTemplate', 'getLayout'), array(static::$container));
+        $view  = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\View\\ViewStub')
+            ->setMethods(array('loadAnyTemplate', 'getLayout'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $view->method('getLayout')->willReturn($test['mock']['layout']);
         $view->method('loadAnyTemplate')->willReturnCallback(
             function() use (&$test){
@@ -392,9 +405,10 @@ class ViewTest extends FOFTestCase
         $msg = 'View::loadAnyTemplate %s - Case: '.$expectedResult['case'];
         $resolvedPaths = array();
 
-        $view = $this->getMock('\\FOF30\\Tests\\Stubs\\View\\ViewStub',
-            array('getEngine', 'incrementRender', 'decrementRender', 'flushSectionsIfDoneRendering'),
-            array(static::$container));
+        $view  = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\View\\ViewStub')
+            ->setMethods(array('getEngine', 'incrementRender', 'decrementRender', 'flushSectionsIfDoneRendering'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
 
         $view->method('getEngine')->willReturn(new ClosureHelper(array(
             'get' => function() use($testSetupValues){
@@ -481,9 +495,10 @@ class ViewTest extends FOFTestCase
     {
         $msg = 'View::renderEach %s - Case: '.$check['case'];
 
-        $view = $this->getMock('\\FOF30\\Tests\\Stubs\\View\\ViewStub',
-            array('loadAnyTemplate'),
-            array(static::$container));
+        $view  = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\View\\ViewStub')
+            ->setMethods(array('loadAnyTemplate'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
 
         $view->expects($check['loadAny'] ? $this->atLeastOnce() : $this->never())->method('loadAnyTemplate')
             ->willReturnCallback(function() use(&$test) {
@@ -680,7 +695,11 @@ class ViewTest extends FOFTestCase
      */
     public function testFlushSectionsIfDoneRendering($test, $check)
     {
-        $view = $this->getMock('\\FOF30\\Tests\\Stubs\\View\\ViewStub', array('doneRendering', 'flushSections'), array(static::$container));
+        $view  = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\View\\ViewStub')
+            ->setMethods(array('doneRendering', 'flushSections'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $view->method('doneRendering')->willReturn($test['mock']['done']);
         $view->expects($check['flush'] ? $this->once() : $this->never())->method('flushSections');
 

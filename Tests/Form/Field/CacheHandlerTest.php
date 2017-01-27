@@ -26,7 +26,7 @@ class CacheHandlerLevelTest extends FOFTestCase
      */
     public function test__get($test, $check)
     {
-        $field = $this->getMock('FOF30\Form\Field\CacheHandler', array('getStatic', 'getRepeatable'));
+        $field = $this->getMockBuilder('FOF30\Form\Field\CacheHandler')->setMethods(array('getStatic', 'getRepeatable'))->getMock();
         $field->expects($this->exactly($check['static']))->method('getStatic');
         $field->expects($this->exactly($check['repeat']))->method('getRepeatable');
 
@@ -46,7 +46,7 @@ class CacheHandlerLevelTest extends FOFTestCase
      */
     public function testGetStatic($test, $check)
     {
-        $field = $this->getMock('FOF30\Form\Field\CacheHandler', array('getInput', 'getFieldContents'));
+        $field = $this->getMockBuilder('FOF30\Form\Field\CacheHandler')->setMethods(array('getInput', 'getFieldContents'))->getMock();
         $field->expects($this->exactly($check['input']))->method('getInput');
         $field->expects($this->exactly($check['contents']))->method('getFieldContents')->with(array('id' => 'foo'));
 
@@ -74,7 +74,7 @@ class CacheHandlerLevelTest extends FOFTestCase
      */
     public function testGetRepeatable($test, $check)
     {
-        $field = $this->getMock('FOF30\Form\Field\CacheHandler', array('getInput', 'getFieldContents'));
+        $field = $this->getMockBuilder('FOF30\Form\Field\CacheHandler')->setMethods(array('getInput', 'getFieldContents'))->getMock();
         $field->expects($this->exactly($check['input']))->method('getInput');
         $field->expects($this->exactly($check['contents']))->method('getFieldContents')->with(array('class' => 'foo'));
 
@@ -104,7 +104,7 @@ class CacheHandlerLevelTest extends FOFTestCase
     {
         $msg = 'CacheHandler::getFieldContents %s - Case: '.$check['case'];
 
-        $field = $this->getMock('FOF30\Form\Field\CacheHandler', array('getOptions'));
+        $field = $this->getMockBuilder('FOF30\Form\Field\CacheHandler')->setMethods(array('getOptions'))->getMock();
         $field->method('getOptions')->willReturn(array(
             array('value' => 'apc', 'text' => 'APC'),
             array('value' => 'file', 'text' => 'File'),

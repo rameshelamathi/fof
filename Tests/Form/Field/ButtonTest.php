@@ -25,7 +25,10 @@ class ButtonTest extends FOFTestCase
      */
     public function testGetStatic()
     {
-        $field = $this->getMock('FOF30\Form\Field\Button', array('getInput'));
+        $field = $this->getMockBuilder('FOF30\Form\Field\Button')
+            ->setMethods(array('getInput'))
+            ->getMock();
+
         $field->expects($this->once())->method('getInput');
 
         $field->getStatic();
@@ -38,7 +41,10 @@ class ButtonTest extends FOFTestCase
      */
     public function testGetRepeatable()
     {
-        $field = $this->getMock('FOF30\Form\Field\Button', array('getInput'));
+        $field = $this->getMockBuilder('FOF30\Form\Field\Button')
+            ->setMethods(array('getInput'))
+            ->getMock();
+
         $field->expects($this->once())->method('getInput');
 
         $field->getRepeatable();
@@ -54,7 +60,10 @@ class ButtonTest extends FOFTestCase
     {
         $msg = 'Button::getInput %s - Case: '.$check['case'];
 
-        $field = $this->getMock('FOF30\Form\Field\Button', array('parseFieldTags'));
+        $field = $this->getMockBuilder('FOF30\Form\Field\Button')
+            ->setMethods(array('parseFieldTags'))
+            ->getMock();
+
         $field->method('parseFieldTags')->willReturn('__FAKE_URL__');
 
         $xml = simplexml_load_string($test['xml']);

@@ -45,7 +45,8 @@ class PublishedTest extends FOFTestCase
 	 */
 	public function test__get($test, $check)
 	{
-		$field = $this->getMock('FOF30\Form\Field\Published', array('getStatic', 'getRepeatable'));
+		$field = $this->getMockBuilder('FOF30\Form\Field\Published')->setMethods(array('getStatic', 'getRepeatable'))->getMock();
+
 		$field->expects($this->exactly($check['static']))->method('getStatic');
 		$field->expects($this->exactly($check['repeat']))->method('getRepeatable');
 
@@ -67,7 +68,8 @@ class PublishedTest extends FOFTestCase
 	{
 		$msg = 'Published::getStatic %s - Case: ' . $check['case'];
 
-		$field = $this->getMock('FOF30\Form\Field\Published', array('getOptions'));
+		$field = $this->getMockBuilder('FOF30\Form\Field\Published')->setMethods(array('getOptions'))->getMock();
+
 		$field->method('getOptions')->willReturn(array(
 			array('value' => 1, 'text' => 'Published'),
 			array('value' => 0, 'text' => 'Unpublished'),

@@ -76,7 +76,10 @@ class ModelTest extends FOFTestCase
     {
         $this->setExpectedException('FOF30\Model\Exception\CannotGetName');
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\ModelStub', array('getState'), array(static::$container));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\ModelStub')
+            ->setMethods(array('getState'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
 
         ReflectionHelper::setValue($model, 'name', null);
 
@@ -197,7 +200,10 @@ class ModelTest extends FOFTestCase
      */
     public function test__get()
     {
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\ModelStub', array('getState'), array(static::$container));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\ModelStub')
+            ->setMethods(array('getState'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
         $model->expects($this->once())->method('getState')->with($this->equalTo('foo'))->willReturn('bar');
 
         $result = $model->foo;
@@ -218,7 +224,10 @@ class ModelTest extends FOFTestCase
             'input' => $input
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\ModelStub', array('getState'), array($container));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\ModelStub')
+            ->setMethods(array('getState'))
+            ->setConstructorArgs(array($container))
+            ->getMock();
         $model->expects($this->never())->method('getState');
 
         $result = $model->input;
@@ -233,7 +242,10 @@ class ModelTest extends FOFTestCase
      */
     public function test__set()
     {
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\ModelStub', array('setState'), array(static::$container));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\ModelStub')
+            ->setMethods(array('setState'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
         $model->expects($this->once())->method('setState')->with($this->equalTo('foo'), $this->equalTo('bar'));
 
         $result = $model->foo = 'bar';
@@ -248,7 +260,10 @@ class ModelTest extends FOFTestCase
      */
     public function test__call()
     {
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\ModelStub', array('setState'), array(static::$container));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\ModelStub')
+            ->setMethods(array('setState'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
         $model->expects($this->once())->method('setState')->with($this->equalTo('foo'), $this->equalTo('bar'));
 
         $result = $model->foo('bar');
@@ -289,7 +304,10 @@ class ModelTest extends FOFTestCase
             ))
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\ModelStub', array('savestate'), array($container));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\ModelStub')
+            ->setMethods(array('savestate'))
+            ->setConstructorArgs(array($container))
+            ->getMock();
 
         $matcher = $this->never();
 
