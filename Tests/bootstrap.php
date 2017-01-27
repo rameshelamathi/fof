@@ -13,7 +13,7 @@ define('JDEBUG', 0);
 
 if (!defined('JPATH_TESTS'))
 {
-    define('JPATH_TESTS', __DIR__);
+	define('JPATH_TESTS', __DIR__);
 }
 
 // Include the FOF autoloader.
@@ -65,33 +65,33 @@ if (version_compare(PHP_VERSION, '5.4.0', 'lt'))
 
 $jversion_test = getenv('JVERSION_TEST') ? getenv('JVERSION_TEST') : 'staging';
 
-TravisLogger::log(4, 'Including environment info. Joomla version: '.$jversion_test);
+TravisLogger::log(4, 'Including environment info. Joomla version: ' . $jversion_test);
 
 require_once __DIR__ . '/environments.php';
 
-if(!isset($environments[$jversion_test]))
+if (!isset($environments[$jversion_test]))
 {
-    echo('Joomla environment '.$jversion_test.' not recognized');
-    TravisLogger::log(4, 'Joomla environment '.$jversion_test.' not recognized');
-    exit(1);
+	echo('Joomla environment ' . $jversion_test . ' not recognized');
+	TravisLogger::log(4, 'Joomla environment ' . $jversion_test . ' not recognized');
+	exit(1);
 }
 
 $siteroot = $environments[$jversion_test];
 
-TravisLogger::log(4, 'Siteroot for this tests: '.$siteroot);
+TravisLogger::log(4, 'Siteroot for this tests: ' . $siteroot);
 
-if(!$siteroot)
+if (!$siteroot)
 {
-    echo('Empty siteroot, we can not continue');
-    TravisLogger::log(4, 'Empty siteroot, we can not continue');
-    exit(1);
+	echo('Empty siteroot, we can not continue');
+	TravisLogger::log(4, 'Empty siteroot, we can not continue');
+	exit(1);
 }
 
 //Am I in Travis CI?
-if(getenv('TRAVIS'))
+if (getenv('TRAVIS'))
 {
-    TravisLogger::log(4, 'Including special Travis configuration file');
-    require_once __DIR__ . '/config_travis.php';
+	TravisLogger::log(4, 'Including special Travis configuration file');
+	require_once __DIR__ . '/config_travis.php';
 
 	// Set the test configuration site root if not set in travis
 	if (!isset($fofTestConfig['site_root']))
@@ -101,12 +101,12 @@ if(getenv('TRAVIS'))
 }
 else
 {
-    if(!file_exists(__DIR__.'/config.php'))
-    {
-        echo "Configuration file not found. Please copy the config.dist.php file and rename it to config.php\n";
-        echo "Then update its contents with the connection details to your database";
-        exit(1);
-    }
+	if (!file_exists(__DIR__ . '/config.php'))
+	{
+		echo "Configuration file not found. Please copy the config.dist.php file and rename it to config.php\n";
+		echo "Then update its contents with the connection details to your database";
+		exit(1);
+	}
 
 	require_once __DIR__ . '/config.php';
 
@@ -116,11 +116,11 @@ else
 	}
 }
 
-if(!isset($fofTestConfig['host']) || !isset($fofTestConfig['user']) || !isset($fofTestConfig['password']) || !isset($fofTestConfig['db']))
+if (!isset($fofTestConfig['host']) || !isset($fofTestConfig['user']) || !isset($fofTestConfig['password']) || !isset($fofTestConfig['db']))
 {
-    echo "Your config file is missing one or more required info. Please copy the config.dist.php file and rename it to config.php\n";
-    echo "then update its contents with the connection details to your database";
-    exit(1);
+	echo "Your config file is missing one or more required info. Please copy the config.dist.php file and rename it to config.php\n";
+	echo "then update its contents with the connection details to your database";
+	exit(1);
 }
 
 TravisLogger::log(4, 'Including defines.php from Joomla environment');
@@ -155,51 +155,62 @@ $config->set('host', $fofTestConfig['host']);
 $config->set('user', $fofTestConfig['user']);
 $config->set('password', $fofTestConfig['password']);
 $config->set('db', $fofTestConfig['db']);
-$config->set('tmp_path', JPATH_ROOT.'/tmp');
-$config->set('log_path', JPATH_ROOT.'/logs');
+$config->set('tmp_path', JPATH_ROOT . '/tmp');
+$config->set('log_path', JPATH_ROOT . '/logs');
+// Despite its name, this is the session STORAGE, NOT the session HANDLER. Because that somehow makes sense. NOT.
+$config->set('session_handler', 'none');
+
+// We need to set up the JSession object
+require_once 'Stubs/Session/FakeSession.php';
+$sessionHandler = new JSessionHandlerFake();
+$session = JSession::getInstance('none', array(), $sessionHandler);
+$input = new JInputCli();
+$dispatcher = new JEventDispatcher();
+$session->initialise($input, $dispatcher);
+JFactory::$session = $session;
 
 // Do I have a Joomla database schema ready? If not, let's import the installation SQL file
 $db = JFactory::getDbo();
 
 try
 {
-    TravisLogger::log(4, 'Checking if core tables are there');
-    $db->setQuery('SHOW COLUMNS FROM `jos_assets`')->execute();
+	TravisLogger::log(4, 'Checking if core tables are there');
+	$db->setQuery('SHOW COLUMNS FROM `jos_assets`')->execute();
 }
 catch (Exception $e)
 {
-    TravisLogger::log(4, 'Core tables not found, attempt to create them');
+	TravisLogger::log(4, 'Core tables not found, attempt to create them');
 
-    // Core table missing, let's import them
-    $file = JPATH_SITE.'/installation/sql/mysql/joomla.sql';
-    $queries = $db->splitSql(file_get_contents($file));
+	// Core table missing, let's import them
+	$file    = JPATH_SITE . '/installation/sql/mysql/joomla.sql';
+	$queries = $db->splitSql(file_get_contents($file));
 
-    foreach($queries as $query)
-    {
-        $query = trim($query);
+	foreach ($queries as $query)
+	{
+		$query = trim($query);
 
-        if(!$query)
-        {
-            continue;
-        }
+		if (!$query)
+		{
+			continue;
+		}
 
-        try
-        {
-            $db->setQuery($query)->execute();
-        }
-        catch(Exception $e)
-        {
-            // Something went wrong, let's log the exception and then throw it again
-            TravisLogger::log(4, 'An error occurred while creating core tables. Error: '.$e->getMessage());
-            throw $e;
-        }
-    }
+		try
+		{
+			$db->setQuery($query)->execute();
+		}
+		catch (Exception $e)
+		{
+			// Something went wrong, let's log the exception and then throw it again
+			TravisLogger::log(4, 'An error occurred while creating core tables. Error: ' . $e->getMessage());
+			throw $e;
+		}
+	}
 }
 
 TravisLogger::log(4, 'Create test specific tables');
 
 // Let's use our class to create the schema
-$importer = new \FOF30\Database\Installer(JFactory::getDbo(), JPATH_TESTS.'/Stubs/schema');
+$importer = new \FOF30\Database\Installer(JFactory::getDbo(), JPATH_TESTS . '/Stubs/schema');
 $importer->updateSchema();
 unset($importer);
 
