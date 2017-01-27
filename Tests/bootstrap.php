@@ -63,7 +63,7 @@ if (version_compare(PHP_VERSION, '5.4.0', 'lt'))
 // Fixed timezone to preserve our sanity
 @date_default_timezone_set('UTC');
 
-$jversion_test = getenv('JVERSION_TEST') ? getenv('JVERSION_TEST') : '3.4';
+$jversion_test = getenv('JVERSION_TEST') ? getenv('JVERSION_TEST') : 'staging';
 
 TravisLogger::log(4, 'Including environment info. Joomla version: '.$jversion_test);
 
