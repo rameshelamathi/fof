@@ -162,6 +162,9 @@ class PlatformJoomlaTest extends FOFTestCase
 
 		$this->assertInternalType('array', $baseDirs);
 
+		$expectedDirs = array_map('realpath', $expectedDirs);
+		$baseDirs = array_map('realpath', $baseDirs);
+
 		foreach ($expectedDirs as $k => $v)
 		{
 			$this->assertArrayHasKey($k, $baseDirs, "Platform directories must contain $k key");
@@ -188,6 +191,9 @@ class PlatformJoomlaTest extends FOFTestCase
 			'main' => JPATH_SITE . '/' . $expectedMain,
 			'alt' => JPATH_SITE . '/' . $expectedAlt,
 		);
+
+		$actual = array_map('realpath', $actual);
+		$expected = array_map('realpath', $expected);
 
 		foreach ($expected as $k => $v)
 		{

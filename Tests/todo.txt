@@ -13,8 +13,6 @@ Model
 
 Platform
     PlatformJoomlaTest\
-        testGetPlatformBaseDirs
-        testGetComponentBaseDirs
         testLoginUser
         testLogoutUser
         testGetUserStateFromRequest
