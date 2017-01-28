@@ -28,7 +28,7 @@ class AesTest extends FOFTestCase
 	protected function setUp()
 	{
 		// Check if PHP has mcrypt installed
-		if (function_exists('mcrypt_module_open'))
+		if (function_exists('mcrypt_module_open') || function_exists('openssl_encrypt'))
 		{
 			$this->aes = new Aes('x123456789012345678901234567890x');
 		}
@@ -41,6 +41,11 @@ class AesTest extends FOFTestCase
 	 */
 	public function testIsSupported()
 	{
+		if (version_compare(PHP_VERSION, '7.0.0', 'ge'))
+		{
+			$this->markTestSkipped('mcrypt is deprecated in PHP 7');
+		}
+
 		$functions_enabled = array(
 			'mcrypt_get_key_size',
 			'mcrypt_get_iv_size',
@@ -254,6 +259,11 @@ class AesTest extends FOFTestCase
 	 */
 	public function testCryptCrossCompatibility()
 	{
+		if (version_compare(PHP_VERSION, '7.0.0', 'ge'))
+		{
+			$this->markTestSkipped('mcrypt is deprecated in PHP 7');
+		}
+
 		if (function_exists('mcrypt_module_open') && function_exists('openssl_encrypt'))
 		{
 			$phpfunc = new MockPhpfunc();

@@ -165,11 +165,11 @@ class Aes
 			$phpfunc = new Phpfunc();
 		}
 
-		$adapter = new Mcrypt();
+		$adapter = new OpenSSL();
 
 		if (!$adapter->isSupported($phpfunc))
 		{
-			$adapter = new OpenSSL();
+			$adapter = new Mcrypt();
 		}
 
 		if (!$adapter->isSupported($phpfunc))
