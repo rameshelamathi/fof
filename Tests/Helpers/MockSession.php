@@ -119,7 +119,7 @@ class MockSession
 	 *
 	 * @since   11.3
 	 */
-	public function mockGet($key)
+	public static function mockGet($key)
 	{
 		switch ($key)
 		{

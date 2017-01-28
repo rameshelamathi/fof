@@ -83,7 +83,7 @@ class MockLanguage
 		return $string;
 	}
 
-	public function mockload($extension = 'joomla', $basePath = JPATH_BASE, $lang = null, $reload = false, $default = true)
+	public static function mockload($extension = 'joomla', $basePath = JPATH_BASE, $lang = null, $reload = false, $default = true)
 	{
 		static::$loadedLanguages[] = array($extension, $basePath, $lang, $reload, $default);
 	}

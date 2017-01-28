@@ -125,8 +125,16 @@ class AssetsTest extends DatabaseTest
         $rules  = $model->getRules();
 
         $this->assertTrue($return, sprintf($msg, 'Returned a wrong value'));
-        $this->assertJsonStringEqualsJsonString($check['rules'], (string) $rules, sprintf($msg, 'Set rules wrong'));
-    }
+
+        if (empty($check['rules']))
+		{
+			$this->assertEquals($check['rules'], (string) $rules, sprintf($msg, 'Set rules wrong'));
+		}
+		else
+		{
+			$this->assertJsonStringEqualsJsonString($check['rules'], (string) $rules, sprintf($msg, 'Set rules wrong'));
+		}
+	}
 
     /**
      * @group           Behaviour
