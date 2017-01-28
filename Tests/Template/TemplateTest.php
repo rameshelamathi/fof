@@ -193,6 +193,10 @@ class TemplateTest extends FOFTestCase
 	public function testParsePath($path, $localfile, $expect, $message)
 	{
 		$fullurl = static::$container->template->parsePath($path, $localfile);
+
+		$expect = realpath($expect);
+		$fullurl = realpath($fullurl);
+
 		$this->assertEquals(
 			$expect,
 			$fullurl,

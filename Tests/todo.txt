@@ -17,9 +17,6 @@ Platform
         testLogoutUser
         testGetUserStateFromRequest
 
-Template
-    TemplateTest\testParsePath
-
 View
     ViewTest\
         test__construct
