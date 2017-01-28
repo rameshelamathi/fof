@@ -10,7 +10,7 @@ namespace FOF30\Tests\Form\Field;
 use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
 
-require_once __DIR__.'/HiddenDataprovider.php';
+require_once __DIR__ . '/HiddenDataprovider.php';
 
 /**
  * @covers  FOF30\Form\Field\Hidden::<private>

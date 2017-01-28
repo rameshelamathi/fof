@@ -11,7 +11,7 @@ use FOF30\Form\Field\Language;
 use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
 
-require_once __DIR__.'/LanguageDataprovider.php';
+require_once __DIR__ . '/LanguageDataprovider.php';
 
 /**
  * @covers  FOF30\Form\Field\Language::<private>

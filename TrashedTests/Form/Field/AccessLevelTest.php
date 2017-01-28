@@ -11,23 +11,25 @@ use FOF30\Form\Form;
 use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
 
-require_once __DIR__.'/PluginsDataprovider.php';
+require_once __DIR__ . '/AccessLevelDataprovider.php';
 
 /**
- * @covers  FOF30\Form\Field\Plugins::<private>
- * @covers  FOF30\Form\Field\Plugins::<protected>
+ * @covers  FOF30\Form\Field\AccessLevel::<private>
+ * @covers  FOF30\Form\Field\AccessLevel::<protected>
  */
-class PluginsTest extends FOFTestCase
+class AccessLevelTest extends FOFTestCase
 {
     /**
-     * @group           Plugins
-     * @group           Plugins__get
-     * @covers          FOF30\Form\Field\Plugins::__get
-     * @dataProvider    PluginsDataprovider::getTest__get
+     * @group           AccessLevel
+     * @group           AccessLevel__get
+     * @covers          FOF30\Form\Field\AccessLevel::__get
+     * @dataProvider    AccessLevelDataprovider::getTest__get
      */
     public function test__get($test, $check)
     {
-        $field = $this->getMockBuilder('FOF30\Form\Field\Plugins')->setMethods(array('getStatic', 'getRepeatable'))->getMock();
+        $field = $this->getMockBuilder('FOF30\Form\Field\AccessLevel')
+            ->setMethods(array('getStatic', 'getRepeatable'))
+            ->getMock();
 
         $field->expects($this->exactly($check['static']))->method('getStatic');
         $field->expects($this->exactly($check['repeat']))->method('getRepeatable');
@@ -41,21 +43,23 @@ class PluginsTest extends FOFTestCase
     }
 
     /**
-     * @group           Plugins
-     * @group           PluginsGetStatic
-     * @covers          FOF30\Form\Field\Plugins::getStatic
-     * @dataProvider    PluginsDataprovider::getTestGetStatic
+     * @group           AccessLevel
+     * @group           AccessLevelGetStatic
+     * @covers          FOF30\Form\Field\AccessLevel::getStatic
+     * @dataProvider    AccessLevelDataprovider::getTestGetStatic
      */
     public function testGetStatic($test, $check)
     {
-        $field = $this->getMockBuilder('FOF30\Form\Field\Plugins')->setMethods(array('getInput', 'getFieldContents'))->getMock();
+        $field = $this->getMockBuilder('FOF30\Form\Field\AccessLevel')
+            ->setMethods(array('getInput', 'getFieldContents'))
+            ->getMock();
 
         $field->expects($this->exactly($check['input']))->method('getInput');
         $field->expects($this->exactly($check['contents']))->method('getFieldContents')->with(array('id' => 'foo'));
 
         $field->id = 'foo';
 
-        $data  = '<field type="Plugins" name="foobar" ';
+        $data  = '<field type="AccessLevel" name="foobar" ';
 
         if($test['legacy'])
         {
@@ -70,21 +74,23 @@ class PluginsTest extends FOFTestCase
     }
 
     /**
-     * @group           Plugins
-     * @group           PluginsGetRepeatable
-     * @covers          FOF30\Form\Field\Plugins::getRepeatable
-     * @dataProvider    PluginsDataprovider::getTestGetRepeatable
+     * @group           AccessLevel
+     * @group           AccessLevelGetRepeatable
+     * @covers          FOF30\Form\Field\AccessLevel::getRepeatable
+     * @dataProvider    AccessLevelDataprovider::getTestGetRepeatable
      */
     public function testGetRepeatable($test, $check)
     {
-        $field = $this->getMockBuilder('FOF30\Form\Field\Plugins')->setMethods(array('getInput', 'getFieldContents'))->getMock();
+        $field = $this->getMockBuilder('FOF30\Form\Field\AccessLevel')
+            ->setMethods(array('getInput', 'getFieldContents'))
+            ->getMock();
 
         $field->expects($this->exactly($check['input']))->method('getInput');
         $field->expects($this->exactly($check['contents']))->method('getFieldContents')->with(array('class' => 'foo'));
 
         $field->id = 'foo';
 
-        $data  = '<field type="Plugins" name="foobar" ';
+        $data  = '<field type="AccessLevel" name="foobar" ';
 
         if($test['legacy'])
         {
@@ -99,18 +105,23 @@ class PluginsTest extends FOFTestCase
     }
 
     /**
-     * @group           Plugins
-     * @group           PluginsGetFieldContents
-     * @covers          FOF30\Form\Field\Plugins::getFieldContents
-     * @dataProvider    PluginsDataprovider::getTestGetFieldContents
+     * @group           AccessLevel
+     * @group           AccessLevelGetFieldContents
+     * @covers          FOF30\Form\Field\AccessLevel::getFieldContents
+     * @dataProvider    AccessLevelDataprovider::getTestGetFieldContents
      */
     public function testGetFieldContents($test, $check)
     {
-        $msg = 'Plugins::getFieldContents %s - Case: '.$check['case'];
+        $msg = 'AccessLevel::getFieldContents %s - Case: '.$check['case'];
 
-        $field = $this->getMockBuilder('FOF30\Form\Field\Plugins')->setMethods(array('getOptions'))->getMock();
+        $field = $this->getMockBuilder('FOF30\Form\Field\AccessLevel')
+            ->setMethods(array('getOptions'))
+            ->getMock();
 
         $field->method('getOptions')->willReturn($test['mock']['options']);
+
+        $form = new Form(static::$container, 'Foobar');
+        $field->setForm($form);
 
         // Registered access level
         $field->value = $test['value'];

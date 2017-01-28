@@ -11,7 +11,7 @@ use FOF30\Form\Form;
 use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
 
-require_once __DIR__.'/IntegerDataprovider.php';
+require_once __DIR__ . '/IntegerDataprovider.php';
 
 /**
  * @covers  FOF30\Form\Field\Integer::<private>

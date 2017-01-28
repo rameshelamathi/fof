@@ -13,7 +13,7 @@ use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
 use FOF30\Tests\Stubs\Model\DataModelStub;
 
-require_once __DIR__.'/ActionsDataprovider.php';
+require_once __DIR__ . '/ActionsDataprovider.php';
 
 /**
  * @covers  FOF30\Form\Field\Actions::<private>

@@ -11,7 +11,7 @@ use FOF30\Form\Field\Color;
 use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
 
-require_once __DIR__.'/ColorDataprovider.php';
+require_once __DIR__ . '/ColorDataprovider.php';
 
 /**
  * @covers  FOF30\Form\Field\Color::<private>

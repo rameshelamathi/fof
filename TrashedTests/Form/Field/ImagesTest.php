@@ -14,7 +14,7 @@ use FOF30\Tests\Helpers\ReflectionHelper;
 use FOF30\Tests\Helpers\TestJoomlaPlatform;
 use org\bovigo\vfs\vfsStream;
 
-require_once __DIR__.'/ImagesDataprovider.php';
+require_once __DIR__ . '/ImagesDataprovider.php';
 
 /**
  * @covers  FOF30\Form\Field\Images::<private>

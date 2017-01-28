@@ -14,7 +14,7 @@ use FOF30\Tests\Helpers\DatabaseTest;
 use FOF30\Tests\Helpers\ReflectionHelper;
 use FOF30\Tests\Stubs\Model\DataModelStub;
 
-require_once __DIR__.'/EmailDataprovider.php';
+require_once __DIR__ . '/EmailDataprovider.php';
 
 /**
  * @covers  FOF30\Form\Field\Email::<private>

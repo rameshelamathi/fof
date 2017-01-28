@@ -14,7 +14,7 @@ use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
 use FOF30\Tests\Helpers\TestJoomlaPlatform;
 
-require_once __DIR__.'/ComponentsDataprovider.php';
+require_once __DIR__ . '/ComponentsDataprovider.php';
 
 /**
  * @covers  FOF30\Form\Field\Components::<private>

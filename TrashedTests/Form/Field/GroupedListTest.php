@@ -12,7 +12,7 @@ use FOF30\Form\Form;
 use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
 
-require_once __DIR__.'/GroupedListDataprovider.php';
+require_once __DIR__ . '/GroupedListDataprovider.php';
 
 /**
  * @covers  FOF30\Form\Field\GroupedList::<private>

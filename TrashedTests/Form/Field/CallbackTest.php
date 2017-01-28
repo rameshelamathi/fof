@@ -15,7 +15,7 @@ use FOF30\Tests\Helpers\ReflectionHelper;
 use FOF30\Tests\Helpers\TestContainer;
 use FOF30\Tests\Stubs\Model\DataModelStub;
 
-require_once __DIR__.'/CallbackDataprovider.php';
+require_once __DIR__ . '/CallbackDataprovider.php';
 
 /**
  * @covers  FOF30\Form\Field\Callback::<private>

@@ -14,7 +14,7 @@ use FOF30\Tests\Helpers\DatabaseTest;
 use FOF30\Tests\Helpers\ReflectionHelper;
 use FOF30\Tests\Stubs\Model\DataModelStub;
 
-require_once __DIR__.'/OrderingDataprovider.php';
+require_once __DIR__ . '/OrderingDataprovider.php';
 
 /**
  * @covers  \FOF30\Form\Field\Ordering::<private>

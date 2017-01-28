@@ -7,27 +7,27 @@
 
 namespace FOF30\Tests\Form\Field;
 
-use FOF30\Form\Field\Password;
+use FOF30\Form\Field\Editor;
 use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
 
-require_once __DIR__.'/PasswordDataprovider.php';
+require_once __DIR__ . '/EditorDataprovider.php';
 
 /**
- * @covers  FOF30\Form\Field\Password::<private>
- * @covers  FOF30\Form\Field\Password::<protected>
+ * @covers  FOF30\Form\Field\Editor::<private>
+ * @covers  FOF30\Form\Field\Editor::<protected>
  */
-class PasswordTest extends FOFTestCase
+class EditorTest extends FOFTestCase
 {
     /**
-     * @group           Password
-     * @group           Password__get
-     * @covers          FOF30\Form\Field\Password::__get
-     * @dataProvider    PasswordDataprovider::getTest__get
+     * @group           Editor
+     * @group           Editor__get
+     * @covers          FOF30\Form\Field\Editor::__get
+     * @dataProvider    EditorDataprovider::getTest__get
      */
     public function test__get($test, $check)
     {
-        $field = $this->getMockBuilder('FOF30\Form\Field\Password')->setMethods(array('getStatic', 'getRepeatable'))->getMock();
+        $field = $this->getMockBuilder('FOF30\Form\Field\Editor')->setMethods(array('getStatic', 'getRepeatable'))->getMock();
 
         $field->expects($this->exactly($check['static']))->method('getStatic');
         $field->expects($this->exactly($check['repeat']))->method('getRepeatable');
@@ -41,21 +41,21 @@ class PasswordTest extends FOFTestCase
     }
 
     /**
-     * @group           Password
-     * @group           PasswordGetStatic
-     * @covers          FOF30\Form\Field\Password::getStatic
-     * @dataProvider    PasswordDataprovider::getTestGetStatic
+     * @group           Editor
+     * @group           EditorGetStatic
+     * @covers          FOF30\Form\Field\Editor::getStatic
+     * @dataProvider    EditorDataprovider::getTestGetStatic
      */
     public function testGetStatic($test, $check)
     {
-        $field = $this->getMockBuilder('FOF30\Form\Field\Password')->setMethods(array('getInput', 'getFieldContents'))->getMock();
+        $field = $this->getMockBuilder('FOF30\Form\Field\Editor')->setMethods(array('getInput', 'getFieldContents'))->getMock();
 
         $field->expects($this->exactly($check['input']))->method('getInput');
         $field->expects($this->exactly($check['contents']))->method('getFieldContents')->with(array('id' => 'foo'));
 
         $field->id = 'foo';
 
-        $data  = '<field type="Password" name="foobar" ';
+        $data  = '<field type="Editor" name="foobar" ';
 
         if($test['legacy'])
         {
@@ -70,20 +70,20 @@ class PasswordTest extends FOFTestCase
     }
 
     /**
-     * @group           Password
-     * @group           PasswordGetRepeatable
-     * @covers          FOF30\Form\Field\Password::getRepeatable
-     * @dataProvider    PasswordDataprovider::getTestGetRepeatable
+     * @group           Editor
+     * @group           EditorGetRepeatable
+     * @covers          FOF30\Form\Field\Editor::getRepeatable
+     * @dataProvider    EditorDataprovider::getTestGetRepeatable
      */
     public function testGetRepeatable($test, $check)
     {
-        $field = $this->getMockBuilder('FOF30\Form\Field\Password')->setMethods(array('getInput', 'getFieldContents'))->getMock();
+        $field = $this->getMockBuilder('FOF30\Form\Field\Editor')->setMethods(array('getInput', 'getFieldContents'))->getMock();
         $field->expects($this->exactly($check['input']))->method('getInput');
         $field->expects($this->exactly($check['contents']))->method('getFieldContents')->with(array('class' => 'foo'));
 
         $field->id = 'foo';
 
-        $data  = '<field type="Password" name="foobar" ';
+        $data  = '<field type="Editor" name="foobar" ';
 
         if($test['legacy'])
         {
@@ -98,19 +98,19 @@ class PasswordTest extends FOFTestCase
     }
 
     /**
-     * @group           Password
-     * @group           PasswordGetFieldContents
-     * @covers          FOF30\Form\Field\Password::getFieldContents
-     * @dataProvider    PasswordDataprovider::getTestGetFieldContents
+     * @group           Editor
+     * @group           EditorGetFieldContents
+     * @covers          FOF30\Form\Field\Editor::getFieldContents
+     * @dataProvider    EditorDataprovider::getTestGetFieldContents
      */
     public function testGetFieldContents($test, $check)
     {
-        $msg = 'Password::getFieldContents %s - Case: '.$check['case'];
+        $msg = 'Editor::getFieldContents %s - Case: '.$check['case'];
 
-        $field = new Password();
+        $field = new Editor();
 
-        // Registered access level
-        $field->value = 'password';
+        $field->class = $test['class'];
+        $field->value = $test['value'];
 
         $html = $field->getFieldContents($test['options']);
 
