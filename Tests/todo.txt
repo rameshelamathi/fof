@@ -1,0 +1,28 @@
+Form
+    ** Constantly breaks. Not really wise to use string comparisons?
+    CalendarTest\testGetClandar
+    ComponentsTest\testTranslate
+    LanguageTest\testGetOptions
+    OrderingTest\testGetInput
+    OrderingTest\testGetRepeatable
+
+Model
+    CollectionTest\testFetch
+    HasManyTest\testGetCountSubquery
+    TreeModelTest\testFindByPath
+
+Platform
+    PlatformJoomlaTest\
+        testGetPlatformBaseDirs
+        testGetComponentBaseDirs
+        testLoginUser
+        testLogoutUser
+        testGetUserStateFromRequest
+
+Template
+    TemplateTest\testParsePath
+
+View
+    ViewTest\
+        test__construct
+        testLoadAnyTemplate

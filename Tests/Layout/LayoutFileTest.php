@@ -108,6 +108,9 @@ class LayoutFileTest extends FOFTestCase
 		// PHP file.
 		$actual = ReflectionHelper::invoke($layoutFile, 'getPath');
 
+		$expectedPath = realpath($expectedPath);
+		$actual = realpath($actual);
+
 		$this->assertEquals($expectedPath, $actual, $message);
 	}
 }
