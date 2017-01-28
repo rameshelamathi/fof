@@ -16,8 +16,3 @@ Platform
         testLoginUser
         testLogoutUser
         testGetUserStateFromRequest
-
-View
-    ViewTest\
-        test__construct
-        testLoadAnyTemplate

@@ -72,6 +72,9 @@ class ViewTest extends FOFTestCase
         $baseurl        = ReflectionHelper::getValue($view, 'baseurl');
         $engines        = ReflectionHelper::getValue($view, 'viewEngineMap');
 
+		$check['templatePaths'] = array_map('realpath', $check['templatePaths']);
+		$templatePaths = array_map('realpath', $templatePaths);
+
         $this->assertEquals($check['name'], $name, sprintf($msg, 'Failed to set the name'));
         $this->assertEquals($check['layout'], $layout, sprintf($msg, 'Failed to set the layout'));
         $this->assertEquals($check['layoutTemplate'], $layoutTemplate, sprintf($msg, 'Failed to set the layoutTemplate'));
@@ -433,6 +436,9 @@ class ViewTest extends FOFTestCase
         }
 
         $result = $view->loadAnyTemplate($testSetupValues['uri'], $testSetupValues['forceParams'], $testSetupValues['callback']);
+
+		$expectedResult['extra'] = array_map('realpath', $expectedResult['extra']);
+		$resolvedPaths['extra'] = array_map('realpath', $resolvedPaths['extra']);
 
         $this->assertEquals($expectedResult['result'], $result, sprintf($msg, 'Returned the wrong result'));
         $this->assertEquals($expectedResult['uri'], $resolvedPaths['uri'], sprintf($msg, 'Failed to set the correct URI'));
