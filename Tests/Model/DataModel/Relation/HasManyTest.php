@@ -50,12 +50,16 @@ class HasManyTest extends DatabaseTest
 
         $query = $relation->getCountSubquery();
 
-        $check = '
-SELECT COUNT(*)
-FROM `#__fakeapp_children` AS `reltbl`
-WHERE `reltbl`.`fakeapp_parent_id` = `#__fakeapp_parents`.`fakeapp_parent_id`';
+        $check = 'SELECT COUNT(*) FROM `#__fakeapp_children` AS `reltbl` WHERE `reltbl`.`fakeapp_parent_id` = `#__fakeapp_parents`.`fakeapp_parent_id`';
+        $actual = (string) $query;
+        $actual = str_replace("\r\n", " ", $actual);
+        $actual = str_replace("\n", " ", $actual);
+        $actual = str_replace("\r", " ", $actual);
+        $actual = str_replace("   ", " ", $actual);
+        $actual = str_replace("  ", " ", $actual);
+		$actual = trim($actual);
 
-        $this->assertEquals($check, $query, 'HasMany::getCountSubquery Returned the wrong query');
+        $this->assertEquals($check, $actual, 'HasMany::getCountSubquery Returned the wrong query');
     }
 
     /**

@@ -7,8 +7,6 @@ Form
     OrderingTest\testGetRepeatable
 
 Model
-    CollectionTest\testFetch
-    HasManyTest\testGetCountSubquery
     TreeModelTest\testFindByPath
 
 Platform
