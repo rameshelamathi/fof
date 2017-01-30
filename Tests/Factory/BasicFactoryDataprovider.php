@@ -264,7 +264,7 @@ class BasicFactoryDataprovider
         $data[] = array(
             array(
                 'mock' => array(
-                    'create' => 'FOF30\Factory\Exception\FormrNotFound'
+                    'create' => 'FOF30\Factory\Exception\FormNotFound'
                 )
             ),
             array(

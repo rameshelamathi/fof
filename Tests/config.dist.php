@@ -11,4 +11,5 @@ $fofTestConfig = array(
     'user'      => 'root',
     'password'  => 'root',
     'db'        => 'unittesting3',
+	'site_root' => realpath(__DIR__ . '/environments/staging')
 );

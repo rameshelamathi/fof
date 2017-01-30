@@ -70,7 +70,11 @@ class DataModelCrudTest extends DatabaseTest
             }
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('check', 'reorder'), array($container, $config, $methods));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('check', 'reorder'))
+            ->setConstructorArgs(array($container, $config, $methods))
+            ->getMock();
+
         $model->expects($check['reorder'] ? $this->once() : $this->never())->method('reorder')->with($this->equalTo($check['reorder']));
 
         $dispatcher = $model->getBehavioursDispatcher();
@@ -190,14 +194,22 @@ class DataModelCrudTest extends DatabaseTest
             'tableName'   => $test['table']
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('setFieldValue'), array(static::$container, $config));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('setFieldValue'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->method('setFieldValue')->willReturnCallback(
             function($key, $value) use (&$checkBind){
                 $checkBind[$key] = $value;
             }
         );
 
-        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array(static::$container));
+        $dispatcher = $this->getMockBuilder('\\FOF30\\Event\\Dispatcher')
+            ->setMethods(array('trigger'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $dispatcher->expects($this->exactly($check['dispatcher']))->method('trigger')->withConsecutive(
             array($this->equalTo('onBeforeBind')),
             array($this->equalTo('onAfterBind'))
@@ -253,7 +265,11 @@ class DataModelCrudTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getForm'), array(static::$container, $config));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('getForm'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->method('getForm')->willReturn(false);
 
         ReflectionHelper::setValue($model, 'autoChecks', $test['mock']['auto']);
@@ -285,7 +301,10 @@ class DataModelCrudTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('save'), array(static::$container, $config));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('save'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
 
         $model->find(2);
         $model->copy();
@@ -310,7 +329,11 @@ class DataModelCrudTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('trash', 'forceDelete'), array(static::$container, $config));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('trash', 'forceDelete'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->expects($check['trash'] ? $this->once() : $this->never())->method('trash')->willReturnSelf();
         $model->expects($check['force'] ? $this->once() : $this->never())->method('forceDelete')->willReturnSelf();
 
@@ -336,7 +359,11 @@ class DataModelCrudTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('find', 'getId'), array(static::$container, $config));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('find', 'getId'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->method('find')->willReturn(null);
         $model->method('getId')->willReturn($test['mock']['getId']);
 
@@ -381,7 +408,11 @@ class DataModelCrudTest extends DatabaseTest
             }
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('reset', 'getId', 'bind'), array(static::$container, $config, $methods));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('reset', 'getId', 'bind'))
+            ->setConstructorArgs(array(static::$container, $config, $methods))
+            ->getMock();
+
         $model->method('getId')->willReturn($test['mock']['id']);
         $model->expects($check['bind'] ? $this->once() : $this->never())->method('bind')->willReturn(null);
 
@@ -443,13 +474,21 @@ class DataModelCrudTest extends DatabaseTest
             }
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getId', 'findOrFail', 'reset'), array(static::$container, $config, $methods));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('getId', 'findOrFail', 'reset'))
+            ->setConstructorArgs(array(static::$container, $config, $methods))
+            ->getMock();
+
         $model->expects($this->once())->method('reset')->willReturn(null);
         $model->method('getId')->willReturn($test['mock']['id']);
         $model->expects($check['find'] ? $this->once() : $this->never())->method('findOrFail')->willReturn(null);
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered
-        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array(static::$container));
+        $dispatcher = $this->getMockBuilder('\\FOF30\\Event\\Dispatcher')
+            ->setMethods(array('trigger'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $dispatcher->expects($this->exactly(2))->method('trigger')->withConsecutive(
             array($this->equalTo('onBeforeDelete')),
             array($this->equalTo('onAfterDelete'))
@@ -515,7 +554,11 @@ class DataModelCrudTest extends DatabaseTest
             }
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('get', 'create'), array(static::$container, $config));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('get', 'create'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->expects($this->once())->method('get')->willReturn($fakeCollection);
         $model->expects($check['create'] ? $this->once() : $this->never())->method('create');
 
@@ -543,7 +586,12 @@ class DataModelCrudTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('reset', 'bind', 'save'), array(static::$container, $config));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('reset', 'bind', 'save'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
+
         $model->expects($this->once())->method('reset')->willReturnSelf();
         $model->expects($this->once())->method('bind')->willReturnSelf();
         $model->expects($this->once())->method('save')->willReturnSelf();
@@ -572,7 +620,11 @@ class DataModelCrudTest extends DatabaseTest
             }
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('get'), array(static::$container, $config));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('get'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->expects($this->once())->method('get')->willReturn($fakeCollection);
 
         if($check['exception'])
@@ -606,7 +658,11 @@ class DataModelCrudTest extends DatabaseTest
             }
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('get', 'reset'), array(static::$container, $config));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('get', 'reset'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->expects($this->once())->method('get')->willReturn($fakeCollection);
         $model->expects($check['reset'] ? $this->once() : $this->never())->method('reset');
 
@@ -635,7 +691,10 @@ class DataModelCrudTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $model  = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('save'), array(static::$container, $config));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('save'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
 
         if($test['exception'])
         {
@@ -660,7 +719,11 @@ class DataModelCrudTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $model  = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('reset', 'findOrFail'), array(static::$container, $config));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('reset', 'findOrFail'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->expects($check['reset'] ? $this->once() : $this->never())->method('reset');
 
         if($test['exception'])

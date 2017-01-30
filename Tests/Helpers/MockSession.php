@@ -86,16 +86,12 @@ class MockSession
 		);
 
 		// Create the mock.
-		$mockObject = $test->getMock(
-			'JSession',
-			$methods,
-			// Constructor arguments.
-			array(),
-			// Mock class name.
-			'',
-			// Call original constructor.
-			false
-		);
+		$mockObject = $test->getMockBuilder('JSession')
+			->setMethods($methods)
+			->setConstructorArgs(array())
+			->setMockClassName('')
+			->disableOriginalConstructor()
+			->getMock();
 
 		// Mock selected methods.
 		$test->assignMockReturns(
@@ -123,7 +119,7 @@ class MockSession
 	 *
 	 * @since   11.3
 	 */
-	public function mockGet($key)
+	public static function mockGet($key)
 	{
 		switch ($key)
 		{

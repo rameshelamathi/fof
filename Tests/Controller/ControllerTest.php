@@ -63,7 +63,12 @@ class ControllerTest extends ApplicationTestCase
         $container = new TestContainer($containerSetup);
 
         // First of all let's get the mock of the object WITHOUT calling the constructor
-        $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\ControllerStub', array('registerDefaultTask', 'setModelName', 'setViewName'), array(), '', false);
+        $controller = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Controller\\ControllerStub')
+            ->setMethods(array('registerDefaultTask', 'setModelName', 'setViewName'))
+            ->setConstructorArgs(array())
+            ->setMockClassName('')
+            ->disableOriginalConstructor()
+            ->getMock();
         $controller->expects($this->once())->method('registerDefaultTask')->with($this->equalTo($check['defaultTask']));
         $controller->expects($check['viewName'] ? $this->once() : $this->never())->method('setViewName')->with($this->equalTo($check['viewName']));
         $controller->expects($check['modelName'] ? $this->once() : $this->never())->method('setModelName')->with($this->equalTo($check['modelName']));
@@ -217,8 +222,10 @@ class ControllerTest extends ApplicationTestCase
         $platform = $container->platform;
         $platform::$template = 'fake_test_template';
 
-        $viewMethods = array('setDefaultModel', 'setLayout', 'display');
-        $view = $this->getMock('\\FOF30\\Tests\\Stubs\\View\\ViewStub', $viewMethods, array($container));
+        $view = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\View\\ViewStub')
+            ->setMethods(array('setDefaultModel', 'setLayout', 'display'))
+            ->setConstructorArgs(array($container))
+            ->getMock();
         $view->method('setDefaultModel')->willReturnCallback(
             function($model) use (&$modelCounter){
                 $modelCounter++;
@@ -231,7 +238,10 @@ class ControllerTest extends ApplicationTestCase
             }
         );
 
-        $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\ControllerStub', array('getView', 'getModel'), array($container));
+        $controller = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Controller\\ControllerStub')
+            ->setMethods(array('getView', 'getModel'))
+            ->setConstructorArgs(array($container))
+            ->getMock();
         $controller->method('getModel')->willReturn($test['mock']['getModel']);
         $controller->method('getView')->willReturn($view);
 
@@ -430,7 +440,10 @@ class ControllerTest extends ApplicationTestCase
     {
         $this->setExpectedException('FOF30\Controller\Exception\CannotGetName');
 
-        $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\ControllerStub', array('registerTask'), array(static::$container));
+        $controller = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Controller\\ControllerStub')
+            ->setMethods(array('registerTask'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
 
         ReflectionHelper::setValue($controller, 'name', null);
 
@@ -530,7 +543,11 @@ class ControllerTest extends ApplicationTestCase
         $container  = new TestContainer(array(
             'componentName' => 'com_eastwood'
         ));
-        $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\ControllerStub', array('registerTask'), array($container));
+        $controller = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Controller\\ControllerStub')
+            ->setMethods(array('registerTask'))
+            ->setConstructorArgs(array($container))
+            ->getMock();
+
         $result     = $controller->registerDefaultTask('dummy');
 
         $this->assertInstanceOf('\\FOF30\\Controller\\Controller', $result, 'Controller::registerDefaultTask should return an instance of itself');

@@ -61,7 +61,7 @@ class BelongsToTest extends DatabaseTest
     {
         if(!$class)
         {
-            $class = '\FOF30\Tests\Stubs\Model\DataModelStub';
+            $class = '\\FOF30\\Tests\\Stubs\\Model\\DataModelStub';
         }
 
         $config = array(
