@@ -224,6 +224,46 @@ class BasicFactoryTest extends FOFTestCase
 
     /**
      * @group           BasicFactory
+     * @covers          FOF30\Factory\BasicFactory::form
+     * @dataProvider    BasicFactoryDataprovider::getTestFormClass()
+     */
+    public function testFormClass($test, $check)
+    {
+        $msg  = 'BasicFactory::form %s - Case: '.$check['case'];
+        $name = '';
+
+        $factory = $this->getMockBuilder('FOF30\Factory\BasicFactory')
+            ->setMethods(array('createForm'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
+        $factory->method('createForm')->willReturnCallback(function($class) use($test, &$name){
+            $name   = $class;
+            $result = $test['mock']['create'];
+
+            if($result !== true){
+                throw new $result($class);
+            }
+
+            return $result;
+        });
+
+        $result = $factory->form();
+
+        $this->assertEquals($check['name'], $name, sprintf($msg, 'Failed to search for the correct class'));
+
+        if(is_object($result))
+        {
+            $this->assertEquals('FOF30\Form\Form', get_class($result), sprintf($msg, 'Failed to return the correct result'));
+        }
+        else
+        {
+            $this->assertEquals($check['result'], $result, sprintf($msg, 'Failed to return the correct result'));
+        }
+    }
+
+    /**
+     * @group           BasicFactory
      * @covers          FOF30\Factory\BasicFactory::transparentAuthentication
      * @dataProvider    BasicFactoryDataprovider::getTestTransparentAuthentication
      */
@@ -296,6 +336,8 @@ class BasicFactoryTest extends FOFTestCase
             $this->assertEquals('FOF30\Form\Form', get_class($result), sprintf($msg, 'Returned the wrong result'));
         }
     }
+
+
 
     /**
      * @group           BasicFactory
