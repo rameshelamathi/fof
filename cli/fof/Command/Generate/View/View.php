@@ -35,7 +35,7 @@ class View extends Command
 
         if(!$scaffolding->make($classname, $view, 'html'))
         {
-            throw new \RuntimeException("An error occurred while creating the Model class");
+            throw new \RuntimeException("An error occurred while creating the View class");
         }
     }
 }
