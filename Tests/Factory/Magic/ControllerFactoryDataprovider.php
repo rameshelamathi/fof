@@ -91,7 +91,8 @@ class ControllerFactoryDataprovider
                     'display' => 'display',
                     'main' => 'main',
                     '__default' => 'main',
-                    'forceRemove' => 'forceRemove'
+                    'forceRemove' => 'forceRemove',
+                    'save2copy' => 'save2copy'
                 ),
             )
         );
@@ -161,7 +162,8 @@ class ControllerFactoryDataprovider
                     'display' => 'display',
                     'main' => 'main',
                     '__default' => 'main',
-                    'forceRemove' => 'forceRemove'
+                    'forceRemove' => 'forceRemove',
+                    'save2copy' => 'save2copy'
                 ),
             )
         );
@@ -227,7 +229,8 @@ class ControllerFactoryDataprovider
                     'display' => 'display',
                     'main' => 'main',
                     '__default' => 'main',
-                    'forceRemove' => 'forceRemove'
+                    'forceRemove' => 'forceRemove',
+                    'save2copy' => 'save2copy'
                 ),
             )
         );
