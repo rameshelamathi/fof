@@ -99,4 +99,16 @@
 			<arg path="${dirs.root}" />
 		</exec>
     </target>
+
+	<!--
+	Symlink the library to a Joomla! installation
+
+	site        Absolute filesystem path to the Joomla! installation
+	-->
+	<target name="relink" description="Project relinker">
+		<exec command="php ${dirs.root}/../buildfiles/tools/systemlink.php -d${site}/libraries/lib_fof30 -s${dirs.root}/fof -tsymlink" dir="${dirs.root}" passthru="true" />
+		<exec command="php ${dirs.root}/../buildfiles/tools/systemlink.php -d${site}/language/en-GB/en-GB.lib_fof30.ini -s${dirs.root}/fof/language/en-GB/en-GB.lib_fof30.ini -tsymlink" dir="${dirs.root}" passthru="true" />
+		<exec command="php ${dirs.root}/../buildfiles/tools/systemlink.php -d${site}/administrator/language/en-GB/en-GB.lib_fof30.ini -s${dirs.root}/fof/language/en-GB/en-GB.lib_fof30.ini -tsymlink" dir="${dirs.root}" passthru="true" />
+	</target>
+
 </project>
