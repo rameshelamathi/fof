@@ -21,7 +21,6 @@ defined('_JEXEC') or die;
  * an untested change that completely broke date handling on PHP 7.0 and earlier versions. Since we can no longer trust
  * Joomla's core date and time handling we are providing our own, stable code.
  *
- *
  * Date is a class that stores a date and provides logic to manipulate and render that date in a variety of formats.
  *
  * @method  Date|bool  add(DateInterval $interval)  Adds an amount of days, months, years, hours, minutes and seconds to a JDate object.
@@ -41,8 +40,6 @@ defined('_JEXEC') or die;
  * @property-read  string   $ordinal       S - English ordinal suffix for the day of the month, 2 characters.
  * @property-read  string   $week          W - ISO-8601 week number of year, weeks starting on Monday.
  * @property-read  string   $year          Y - A full numeric representation of a year, 4 digits.
- *
- * @since  11.1
  */
 class Date extends DateTime
 {
@@ -55,7 +52,6 @@ class Date extends DateTime
 	 * The format string to be applied when using the __toString() magic method.
 	 *
 	 * @var    string
-	 * @since  11.1
 	 */
 	public static $format = 'Y-m-d H:i:s';
 
@@ -63,7 +59,6 @@ class Date extends DateTime
 	 * Placeholder for a DateTimeZone object with GMT as the time zone.
 	 *
 	 * @var    object
-	 * @since  11.1
 	 */
 	protected static $gmt;
 
@@ -72,7 +67,6 @@ class Date extends DateTime
 	 * time zone as the time zone.
 	 *
 	 * @var    object
-	 * @since  11.1
 	 */
 	protected static $stz;
 
@@ -80,7 +74,6 @@ class Date extends DateTime
 	 * The DateTimeZone object for usage in rending dates as strings.
 	 *
 	 * @var    DateTimeZone
-	 * @since  12.1
 	 */
 	protected $tz;
 
@@ -89,8 +82,6 @@ class Date extends DateTime
 	 *
 	 * @param   string  $date  String in a format accepted by strtotime(), defaults to "now".
 	 * @param   mixed   $tz    Time zone to be used for the date. Might be a string or a DateTimeZone object.
-	 *
-	 * @since   11.1
 	 */
 	public function __construct($date = 'now', $tz = null)
 	{
@@ -141,8 +132,6 @@ class Date extends DateTime
 	 * @param   string  $name  The name of the property.
 	 *
 	 * @return  mixed   A value if the property name is valid, null otherwise.
-	 *
-	 * @since   11.1
 	 */
 	public function __get($name)
 	{
@@ -214,8 +203,6 @@ class Date extends DateTime
 	 * static member JDate::$format.
 	 *
 	 * @return  string  The date as a formatted string.
-	 *
-	 * @since   11.1
 	 */
 	public function __toString()
 	{
@@ -229,8 +216,6 @@ class Date extends DateTime
 	 * @param   mixed   $tz    Time zone to be used for the date.
 	 *
 	 * @return  Date
-	 *
-	 * @since   11.3
 	 */
 	public static function getInstance($date = 'now', $tz = null)
 	{
@@ -244,8 +229,6 @@ class Date extends DateTime
 	 * @param   boolean  $abbr  Return the abbreviated day string?
 	 *
 	 * @return  string  The day of the week.
-	 *
-	 * @since   11.1
 	 */
 	public function dayToString($day, $abbr = false)
 	{
@@ -277,8 +260,6 @@ class Date extends DateTime
 	 * @param   boolean  $translate  True to translate localised strings
 	 *
 	 * @return  string   The date string in the specified format format.
-	 *
-	 * @since   11.1
 	 */
 	public function calendar($format, $local = false, $translate = true)
 	{
@@ -293,8 +274,6 @@ class Date extends DateTime
 	 * @param   boolean  $translate  True to translate localised strings
 	 *
 	 * @return  string   The date string in the specified format format.
-	 *
-	 * @since   11.1
 	 */
 	public function format($format, $local = false, $translate = true)
 	{
@@ -354,8 +333,6 @@ class Date extends DateTime
 	 * @param   boolean  $hours  True to return the value in hours.
 	 *
 	 * @return  float  The time offset from GMT either in hours or in seconds.
-	 *
-	 * @since   11.1
 	 */
 	public function getOffsetFromGmt($hours = false)
 	{
@@ -369,8 +346,6 @@ class Date extends DateTime
 	 * @param   boolean  $abbr   If true, return the abbreviated month string
 	 *
 	 * @return  string  The month of the year.
-	 *
-	 * @since   11.1
 	 */
 	public function monthToString($month, $abbr = false)
 	{
@@ -411,7 +386,6 @@ class Date extends DateTime
 	 *
 	 * @return  Date
 	 *
-	 * @since   11.1
 	 * @note    This method can't be type hinted due to a PHP bug: https://bugs.php.net/bug.php?id=61483
 	 */
 	public function setTimezone($tz)
@@ -432,7 +406,6 @@ class Date extends DateTime
 	 * @return  string  The date string in ISO 8601 format.
 	 *
 	 * @link    http://www.ietf.org/rfc/rfc3339.txt
-	 * @since   11.1
 	 */
 	public function toISO8601($local = false)
 	{
@@ -448,7 +421,6 @@ class Date extends DateTime
 	 * @return  string     The date string in SQL datetime format.
 	 *
 	 * @link    http://dev.mysql.com/doc/refman/5.0/en/datetime.html
-	 * @since   11.4
 	 */
 	public function toSql($local = false, JDatabaseDriver $db = null)
 	{
@@ -469,7 +441,6 @@ class Date extends DateTime
 	 * @return  string   The date string in RFC 822 format.
 	 *
 	 * @link    http://www.ietf.org/rfc/rfc2822.txt
-	 * @since   11.1
 	 */
 	public function toRFC822($local = false)
 	{
@@ -480,8 +451,6 @@ class Date extends DateTime
 	 * Gets the date as UNIX time stamp.
 	 *
 	 * @return  integer  The date as a UNIX timestamp.
-	 *
-	 * @since   11.1
 	 */
 	public function toUnix()
 	{
