@@ -7,6 +7,8 @@
 
 namespace FOF30\Platform\Joomla;
 
+use FOF30\Date\Date;
+use FOF30\Date\DateDecorator;
 use FOF30\Inflector\Inflector;
 use FOF30\Input\Input;
 use FOF30\Platform\Base\Platform as BasePlatform;
@@ -337,17 +339,25 @@ class Platform extends BasePlatform
 	 * @param   null  $tzOffest The timezone offset
 	 * @param   bool  $locale   Should I try to load a specific class for current language?
 	 *
-	 * @return  \JDate object
+	 * @return  Date object
 	 */
 	public function getDate($time = 'now', $tzOffest = null, $locale = true)
 	{
 		if ($locale)
 		{
-			return \JFactory::getDate($time, $tzOffest);
+			// Work around a bug in Joomla! 3.7.0.
+			if ($time == 'now')
+			{
+				$time = time();
+			}
+
+			$coreObject = \JFactory::getDate($time, $tzOffest);
+
+			return new DateDecorator($coreObject);
 		}
 		else
 		{
-			return new \JDate($time, $tzOffest);
+			return new Date($time, $tzOffest);
 		}
 	}
 
