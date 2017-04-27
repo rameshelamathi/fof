@@ -31,11 +31,17 @@ class DateDecorator extends Date
 		if (is_object($date) && ($date instanceof DateTime))
 		{
 			$this->decorated = $date;
-
-			return;
+		}
+		else
+		{
+			$this->decorated = new Date($date, $tz);
 		}
 
-		$this->decorated = new Date($date, $tz);
+		parent::__construct($this->decorated->toUnix(), 'UTC');
+
+		$this->setTimezone($this->decorated->getTimezone());
+
+		return;
 	}
 
 	/**
