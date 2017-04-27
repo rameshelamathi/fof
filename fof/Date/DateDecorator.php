@@ -37,7 +37,9 @@ class DateDecorator extends Date
 			$this->decorated = new Date($date, $tz);
 		}
 
-		parent::__construct($this->decorated->toUnix(), 'UTC');
+		$timestamp = $this->decorated->toISO8601(true);
+
+		parent::__construct($timestamp);
 
 		$this->setTimezone($this->decorated->getTimezone());
 

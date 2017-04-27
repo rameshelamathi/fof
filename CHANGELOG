@@ -1,3 +1,7 @@
+FOF 3.0.20
+================================================================================
+! DateDecorator causes an exception when passed a DateTime object with a negative date and time
+
 FOF 3.0.19
 ================================================================================
 + Date package. Only way to elegantly work around the broken Joomla! 3.7.0 JDate constructor.
