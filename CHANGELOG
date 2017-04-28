@@ -1,3 +1,7 @@
+FOF 3.0.21
+================================================================================
+! Date class not working on PHP 7.1
+
 FOF 3.0.20
 ================================================================================
 ! DateDecorator causes an exception when passed a DateTime object with a negative date and time
