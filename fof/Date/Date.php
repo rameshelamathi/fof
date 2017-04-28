@@ -105,16 +105,16 @@ class Date extends DateTime
 			}
 		}
 
-		// If the date is numeric assume a unix timestamp and convert it.
-		date_default_timezone_set('UTC');
-		$date = is_numeric($date) ? date('c', $date) : $date;
-
 		// On PHP 7.1 and later use an integer timestamp, without microseconds, to preserve backwards compatibility.
 		// See http://php.net/manual/en/migration71.incompatible.php#migration71.incompatible.datetime-microseconds
 		if ($date === 'now' && version_compare(PHP_VERSION, '7.1.0', '>='))
 		{
 			$date = time();
 		}
+
+		// If the date is numeric assume a unix timestamp and convert it.
+		date_default_timezone_set('UTC');
+		$date = is_numeric($date) ? date('c', $date) : $date;
 
 		// Call the DateTime constructor.
 		parent::__construct($date, $tz);
