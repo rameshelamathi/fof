@@ -13,6 +13,8 @@ use FOF30\Date\DateDecorator;
 use FOF30\Inflector\Inflector;
 use FOF30\Input\Input;
 use FOF30\Platform\Base\Platform as BasePlatform;
+use JApplicationCms;
+use JApplicationWeb;
 use JCache;
 use JUri;
 
@@ -911,24 +913,36 @@ class Platform extends BasePlatform
 	 *
 	 * @throws  \Exception
 	 */
-	public function redirect($url, $status = 303, $msg = null, $type = 'message')
+	public function redirect($url, $status = 303, $msg = '', $type = 'message')
 	{
 		// Necessary workaround for broken System - Page Cache plugin in Joomla! 3.7.0
 		$this->bugfixJoomlaCachePlugin();
 
 		$app = \JFactory::getApplication();
 
-		if (!empty($msg))
+		if (class_exists('JApplicationCms') && class_exists('JApplicationWeb')
+			&& ($app instanceof JApplicationCms)
+			&& ($app instanceof JApplicationWeb))
 		{
-			if (empty($type))
+			// In modern Joomla! versions we have versatility on setting the message and the redirection HTTP code
+			if (!empty($msg))
 			{
-				$type = 'message';
+				if (empty($type))
+				{
+					$type = 'message';
+				}
+
+				$app->enqueueMessage($msg, $type);
 			}
 
-			$app->enqueueMessage($msg, $type);
+			$app->redirect($url, $status);
 		}
 
-		$app->redirect($url, $status);
+		/**
+		 * If you're here, you have an ancient Joomla version and we have to use the legacy four parameter method...
+		 * Note that we can't set a custom HTTP code, we can only tell it if it's a permanent redirection or not.
+		 */
+		$app->redirect($url, $msg, $type, $status == 301);
 	}
 
 	/**
