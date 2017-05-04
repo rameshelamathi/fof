@@ -7,6 +7,7 @@
 
 namespace FOF30\Platform\Joomla;
 
+use Exception;
 use FOF30\Date\Date;
 use FOF30\Date\DateDecorator;
 use FOF30\Inflector\Inflector;
@@ -928,6 +929,23 @@ class Platform extends BasePlatform
 		}
 
 		$app->redirect($url, $status);
+	}
+
+	/**
+	 * Handle an exception in a way that results to an error page. We use this under Joomla! to work around a bug in
+	 * Joomla! 3.7 which results in error pages leading to white pages because Joomla's System - Page Cache plugin is
+	 * broken.
+	 *
+	 * @param   Exception  $exception  The exception to handle
+	 *
+	 * @throws  Exception  We rethrow the exception
+	 */
+	public function showErrorPage(Exception $exception)
+	{
+		// Necessary workaround for broken System - Page Cache plugin in Joomla! 3.7.0
+		$this->bugfixJoomlaCachePlugin();
+
+		throw $exception;
 	}
 
 	/**
