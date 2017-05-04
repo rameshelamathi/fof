@@ -66,7 +66,7 @@ class Platform extends BasePlatform
 	 */
 	public function raiseError($code, $message)
 	{
-		throw new \Exception($message, $code);
+		$this->showErrorPage(new \Exception($message, $code));
 	}
 
 	/**
