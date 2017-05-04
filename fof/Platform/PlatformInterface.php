@@ -468,4 +468,20 @@ interface PlatformInterface
 	 * @return  void
 	 */
 	public function unsetSessionVar($name, $namespace = 'default');
+
+	/**
+	 * Return the session token. Two types of tokens can be returned:
+	 *
+	 * Session token ($formToken == false): Used for anti-spam protection of forms. This is specific to a session
+	 *   object.
+	 *
+	 * Form token ($formToken == true): A secure hash of the user ID with the session token. Both the session and the
+	 *   user are fetched from the application container.
+	 *
+	 * @param   bool  $formToken  Should I return a form token?
+	 * @param   bool  $forceNew   Should I force the creation of a new token?
+	 *
+	 * @return  mixed
+	 */
+	public function getToken($formToken = false, $forceNew = false);
 }

@@ -311,7 +311,7 @@ class Platform extends BasePlatform
 		if ($this->isBackend())
 		{
 			// Master access check for the back-end, Joomla! 1.6 style.
-			$user = \JFactory::getUser();
+			$user = $this->getUser();
 
 			if (!$user->authorise('core.manage', $component)
 				&& !$user->authorise('core.admin', $component)
@@ -437,14 +437,20 @@ class Platform extends BasePlatform
 	 */
 	public function getUserStateFromRequest($key, $request, $input, $default = null, $type = 'none', $setUserState = true)
 	{
-		// TODO Refactor this without going through the session
 		list($isCLI, $isAdmin) = $this->isCliAdmin();
 
 		unset($isAdmin); // Just to make phpStorm happy
 
 		if ($isCLI)
 		{
-			return $input->get($request, $default, $type);
+			$ret = $input->get($request, $default, $type);
+
+			if ($ret === $default)
+			{
+				$input->set($request, $ret);
+			}
+
+			return $ret;
 		}
 
 		$app = \JFactory::getApplication();
@@ -1049,6 +1055,54 @@ class Platform extends BasePlatform
 	public function unsetSessionVar($name, $namespace = 'default')
 	{
 		$this->setSessionVar($name, null, $namespace);
+	}
+
+	/**
+	 * Return the session token. Two types of tokens can be returned:
+	 *
+	 * Session token ($formToken == false): Used for anti-spam protection of forms. This is specific to a session
+	 *   object.
+	 *
+	 * Form token ($formToken == true): A secure hash of the user ID with the session token. Both the session and the
+	 *   user are fetched from the application container. They are interpolated with the site's secret and passed
+	 *   through MD5, making this harder to spoof than the plain old session token.
+	 *
+	 * @param   bool  $formToken  Should I return a form token?
+	 * @param   bool  $forceNew   Should I force the creation of a new token?
+	 *
+	 * @return  mixed
+	 */
+	public function getToken($formToken = false, $forceNew = false)
+	{
+		// For CLI apps we implement our own fake token system
+		if ($this->isCli())
+		{
+			$token = $this->getSessionVar('session.token');
+
+			// Create a token
+			if (is_null($token) || $forceNew)
+			{
+				$token = \JUserHelper::genRandomPassword(32);
+				$this->setSessionVar('session.token', $token);
+			}
+
+			if (!$formToken)
+			{
+				return $token;
+			}
+
+			$user = $this->getUser();
+
+			return \JApplicationHelper::getHash($user->id . $token);
+		}
+
+		// Web application, go through the regular Joomla! API.
+		if ($formToken)
+		{
+			return \JSession::getFormToken($forceNew);
+		}
+
+		return \JFactory::getSession()->getToken($forceNew);
 	}
 
 	/**

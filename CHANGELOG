@@ -1,6 +1,21 @@
-FOF 3.0.22
+FOF 3.1.0
 ================================================================================
 ! Joomla! 3.7 has a broken System - Page Cache plugin which leads to white pages
++ Abstraction of session get/set variables in the Platform
+
+Backwards compatibility notes:
+
+* If you use a custom Platform class which doesn't extend FOF30\Platform\Joomla\Platform you will need to implement the
+  new methods from the PlatformInterface. This is a potential b/c break. We're willing to take the bet and not call this
+  FOF 4.0 since we've not yet heard of anyone using their custom platform. This is not exactly SemVer but hey, it's not
+  like Joomla! itself offers SemVer...
+* Using session tokens is deprecated. Use form tokens. You can get one with $container->platform->getToken(true).
+* Tokens must be used in forms with the token as the variable name and a value of 1. Using the variable name _token
+  with the token as the value is deprecated.
+* Using the $container->session is deprecated. You can get/set session variables through the getSessionVar/setSessionVar
+  methods of the Platform object ($container->platform).
+
+Tip: All deprecated practices are logged in Joomla's deprecated log file.
 
 FOF 3.0.21
 ================================================================================
