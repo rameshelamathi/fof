@@ -11,6 +11,7 @@ use Exception;
 use FOF30\Container\Container;
 use FOF30\Date\Date;
 use FOF30\Input\Input;
+use Joomla\Registry\Registry;
 
 defined('_JEXEC') or die;
 
@@ -312,7 +313,7 @@ interface PlatformInterface
 	/**
 	 * Returns an object that holds the configuration of the current site.
 	 *
-	 * @return  \JRegistry
+	 * @return  Registry
 	 */
 	public function getConfig();
 

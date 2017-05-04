@@ -56,7 +56,7 @@ class Platform extends BasePlatform
 	/**
 	 * The table and table field cache object, used to speed up database access
 	 *
-	 * @var  \JRegistry|null
+	 * @var  \JRegistry|Registry|null
 	 */
 	private $_cache = null;
 
@@ -670,7 +670,7 @@ class Platform extends BasePlatform
 	 *
 	 * @param   boolean $force Should I forcibly reload the registry?
 	 *
-	 * @return  \JRegistry
+	 * @return  \JRegistry|Registry
 	 */
 	private function &getCacheObject($force = false)
 	{
@@ -681,11 +681,19 @@ class Platform extends BasePlatform
 			$cache = \JFactory::getCache('fof', '');
 			$this->_cache = $cache->get('cache', 'fof');
 
-			if (!is_object($this->_cache) || !($this->_cache instanceof \JRegistry))
+			\JLoader::import('joomla.registry.registry');
+
+			$isRegistry = is_object($this->_cache);
+
+			if ($isRegistry)
 			{
-				// Create a new JRegistry object
-				\JLoader::import('joomla.registry.registry');
-				$this->_cache = new \JRegistry;
+				$isRegistry = class_exists('JRegistry') ? ($this->_cache instanceof \JRegistry) : ($this->_cache instanceof Registry);
+			}
+
+			if (!$isRegistry)
+			{
+				// Create a new Registry object
+				$this->_cache = class_exists('JRegistry') ? new \JRegistry() : new Registry();
 			}
 		}
 
@@ -699,7 +707,7 @@ class Platform extends BasePlatform
 	 */
 	private function saveCache()
 	{
-		// Get the JRegistry object of our cached data
+		// Get the Registry object of our cached data
 		$registry = $this->getCacheObject();
 
 		$cache = \JFactory::getCache('fof', '');
@@ -726,7 +734,7 @@ class Platform extends BasePlatform
 	/**
 	 * Returns an object that holds the configuration of the current site.
 	 *
-	 * @return  \JRegistry
+	 * @return  \JRegistry|Registry
 	 *
 	 * @codeCoverageIgnore
 	 */
