@@ -892,6 +892,9 @@ class Platform extends BasePlatform
 	 */
 	public function closeApplication($code = 0)
 	{
+		// Necessary workaround for broken System - Page Cache plugin in Joomla! 3.7.0
+		$this->bugfixJoomlaCachePlugin();
+
 		\JFactory::getApplication()->close($code);
 	}
 
@@ -909,6 +912,9 @@ class Platform extends BasePlatform
 	 */
 	public function redirect($url, $status = 301, $msg = null, $type = 'message')
 	{
+		// Necessary workaround for broken System - Page Cache plugin in Joomla! 3.7.0
+		$this->bugfixJoomlaCachePlugin();
+
 		$app = \JFactory::getApplication();
 
 		if (!empty($msg))
@@ -922,5 +928,38 @@ class Platform extends BasePlatform
 		}
 
 		$app->redirect($url, $status);
+	}
+
+	/**
+	 * Joomla! 3.7 has a broken System - Page Cache plugin. When this plugin is enabled it FORCES the caching of all
+	 * pages as soon as Joomla! starts loading, before the plugin has a chance to request to not be cached. Event worse,
+	 * in case of a redirection, it doesn't try to remove the cache lock. This means that the next request will be
+	 * treated as though the result of the page should be cached. Since there is NO cache content for the page Joomla!
+	 * returns an empty response with a 200 OK header. This will, of course, get in the way of every single attempt to
+	 * perform a redirection in the frontend of the site.
+	 */
+	private function bugfixJoomlaCachePlugin()
+	{
+		// Only Joomla! 3.7 and later is broken.
+		if (version_compare(JVERSION, '3.6.999', 'le'))
+		{
+			return;
+		}
+
+		// Only do something when the System - Cache plugin is activated
+		if (!class_exists('PlgSystemCache'))
+		{
+			return;
+		}
+
+		// Forcibly uncache the current request
+		$options = array(
+			'defaultgroup' => 'page',
+			'browsercache' => false,
+			'caching'      => false,
+		);
+
+		$cache_key = JUri::getInstance()->toString();
+		JCache::getInstance('page', $options)->cache->remove($cache_key, 'page');
 	}
 }
