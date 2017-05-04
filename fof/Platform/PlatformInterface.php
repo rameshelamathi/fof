@@ -412,4 +412,18 @@ interface PlatformInterface
 	 * @return  void
 	 */
 	public function closeApplication($code = 0);
+
+	/**
+	 * Perform a redirection to a different page, optionally enqueuing a message for the user.
+	 *
+	 * @param   string  $url     The URL to redirect to
+	 * @param   int     $status  (optional) The HTTP redirection status code, default 301
+	 * @param   string  $msg     (optional) A message to enqueue
+	 * @param   string  $type    (optional) The message type, e.g. 'message' (default), 'warning' or 'error'.
+	 *
+	 * @return  void
+	 *
+	 * @throws  \Exception
+	 */
+	public function redirect($url, $status = 301, $msg = null, $type = 'message');
 }

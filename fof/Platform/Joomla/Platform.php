@@ -12,6 +12,8 @@ use FOF30\Date\DateDecorator;
 use FOF30\Inflector\Inflector;
 use FOF30\Input\Input;
 use FOF30\Platform\Base\Platform as BasePlatform;
+use JCache;
+use JUri;
 
 defined('_JEXEC') or die;
 
@@ -891,5 +893,34 @@ class Platform extends BasePlatform
 	public function closeApplication($code = 0)
 	{
 		\JFactory::getApplication()->close($code);
+	}
+
+	/**
+	 * Perform a redirection to a different page, optionally enqueuing a message for the user.
+	 *
+	 * @param   string  $url     The URL to redirect to
+	 * @param   int     $status  (optional) The HTTP redirection status code, default 301
+	 * @param   string  $msg     (optional) A message to enqueue
+	 * @param   string  $type    (optional) The message type, e.g. 'message' (default), 'warning' or 'error'.
+	 *
+	 * @return  void
+	 *
+	 * @throws  \Exception
+	 */
+	public function redirect($url, $status = 301, $msg = null, $type = 'message')
+	{
+		$app = \JFactory::getApplication();
+
+		if (!empty($msg))
+		{
+			if (empty($type))
+			{
+				$type = 'message';
+			}
+
+			$app->enqueueMessage($msg, $type);
+		}
+
+		$app->redirect($url, $status);
 	}
 }
