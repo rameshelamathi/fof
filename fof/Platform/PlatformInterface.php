@@ -436,4 +436,36 @@ interface PlatformInterface
 	 * @throws  Exception  Possibly rethrown exception
 	 */
 	public function showErrorPage(Exception $exception);
+
+	/**
+	 * Set a variable in the user session
+	 *
+	 * @param   string  $name       The name of the variable to set
+	 * @param   string  $value      (optional) The value to set it to, default is null
+	 * @param   string  $namespace  (optional) The variable's namespace e.g. the component name. Default: 'default'
+	 *
+	 * @return  void
+	 */
+	public function setSessionVar($name, $value = null, $namespace = 'default');
+
+	/**
+	 * Get a variable from the user session
+	 *
+	 * @param   string  $name       The name of the variable to set
+	 * @param   string  $default    (optional) The default value to return if the variable does not exit, default: null
+	 * @param   string  $namespace  (optional) The variable's namespace e.g. the component name. Default: 'default'
+	 *
+	 * @return  mixed
+	 */
+	public function getSessionVar($name, $default = null, $namespace = 'default');
+
+	/**
+	 * Unset a variable from the user session
+	 *
+	 * @param   string  $name       The name of the variable to unset
+	 * @param   string  $namespace  (optional) The variable's namespace e.g. the component name. Default: 'default'
+	 *
+	 * @return  void
+	 */
+	public function unsetSessionVar($name, $namespace = 'default');
 }

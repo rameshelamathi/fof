@@ -8,6 +8,7 @@
 namespace FOF30\Platform\Joomla;
 
 use Exception;
+use FOF30\Container\Container;
 use FOF30\Date\Date;
 use FOF30\Date\DateDecorator;
 use FOF30\Inflector\Inflector;
@@ -16,6 +17,7 @@ use FOF30\Platform\Base\Platform as BasePlatform;
 use JApplicationCms;
 use JApplicationWeb;
 use JCache;
+use Joomla\Registry\Registry;
 use JUri;
 
 defined('_JEXEC') or die;
@@ -29,11 +31,27 @@ defined('_JEXEC') or die;
  */
 class Platform extends BasePlatform
 {
-	/** @var null|bool Is this a CLI application? */
+	/**
+	 * Is this a CLI application?
+	 *
+	 * @var   bool
+	 */
 	protected static $isCLI = null;
 
-	/** @var null|bool Is this an administrator application? */
+	/**
+	 * Is this an administrator application?
+	 *
+	 * @var   bool
+	 */
 	protected static $isAdmin = null;
+
+	/**
+	 * A fake session storage for CLI apps. Since CLI applications cannot have a session we are using a Registry object
+	 * we manage internally.
+	 *
+	 * @var   Registry
+	 */
+	protected static $fakeSession = null;
 
 	/**
 	 * The table and table field cache object, used to speed up database access
@@ -43,11 +61,28 @@ class Platform extends BasePlatform
 	private $_cache = null;
 
 	/**
+	 * Public constructor.
+	 *
+	 * Overridden to cater for CLI applications not having access to a session object.
+	 *
+	 * @param   \FOF30\Container\Container  $c  The component container
+	 */
+	public function __construct(Container $c)
+	{
+		parent::__construct($c);
+
+		if ($this->isCli())
+		{
+			self::$fakeSession = new Registry();
+		}
+	}
+
+	/**
 	 * Checks if the current script is run inside a valid CMS execution
 	 *
-	 * @see PlatformInterface::checkExecution()
+	 * @see     PlatformInterface::checkExecution()
 	 *
-	 * @return bool
+	 * @return  bool
 	 */
 	public function checkExecution()
 	{
@@ -303,7 +338,7 @@ class Platform extends BasePlatform
 	{
 		// If I'm in CLI and I have an ID, let's load the User directly, otherwise JFactory will check the session
 		// (which doesn't exists in CLI)
-		if($this->isCli() && $id)
+		if ($this->isCli() && $id)
 		{
 			return \JUser::getInstance($id);
 		}
@@ -402,6 +437,7 @@ class Platform extends BasePlatform
 	 */
 	public function getUserStateFromRequest($key, $request, $input, $default = null, $type = 'none', $setUserState = true)
 	{
+		// TODO Refactor this without going through the session
 		list($isCLI, $isAdmin) = $this->isCliAdmin();
 
 		unset($isAdmin); // Just to make phpStorm happy
@@ -960,6 +996,59 @@ class Platform extends BasePlatform
 		$this->bugfixJoomlaCachePlugin();
 
 		throw $exception;
+	}
+
+	/**
+	 * Set a variable in the user session
+	 *
+	 * @param   string  $name       The name of the variable to set
+	 * @param   string  $value      (optional) The value to set it to, default is null
+	 * @param   string  $namespace  (optional) The variable's namespace e.g. the component name. Default: 'default'
+	 *
+	 * @return  void
+	 */
+	public function setSessionVar($name, $value = null, $namespace = 'default')
+	{
+		if ($this->isCli())
+		{
+			self::$fakeSession->set("$namespace.$name", $value);
+
+			return;
+		}
+
+		\JFactory::getSession()->set($name, $value, $namespace);
+	}
+
+	/**
+	 * Get a variable from the user session
+	 *
+	 * @param   string  $name       The name of the variable to set
+	 * @param   string  $default    (optional) The default value to return if the variable does not exit, default: null
+	 * @param   string  $namespace  (optional) The variable's namespace e.g. the component name. Default: 'default'
+	 *
+	 * @return  mixed
+	 */
+	public function getSessionVar($name, $default = null, $namespace = 'default')
+	{
+		if ($this->isCli())
+		{
+			return self::$fakeSession->get("$namespace.$name", $default);
+		}
+
+		return \JFactory::getSession()->get($name, $default, $namespace);
+	}
+
+	/**
+	 * Unset a variable from the user session
+	 *
+	 * @param   string  $name       The name of the variable to unset
+	 * @param   string  $namespace  (optional) The variable's namespace e.g. the component name. Default: 'default'
+	 *
+	 * @return  void
+	 */
+	public function unsetSessionVar($name, $namespace = 'default')
+	{
+		$this->setSessionVar($name, null, $namespace);
 	}
 
 	/**
