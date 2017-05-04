@@ -727,9 +727,7 @@ class Controller
 	{
 		if ($this->redirect)
 		{
-			$app = \JFactory::getApplication();
-			$app->enqueueMessage($this->message, $this->messageType);
-			$app->redirect($this->redirect);
+			$this->container->platform->redirect($this->redirect, 301, $this->message, $this->messageType);
 
 			return true;
 		}

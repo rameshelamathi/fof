@@ -903,7 +903,7 @@ class Platform extends BasePlatform
 	 * Perform a redirection to a different page, optionally enqueuing a message for the user.
 	 *
 	 * @param   string  $url     The URL to redirect to
-	 * @param   int     $status  (optional) The HTTP redirection status code, default 301
+	 * @param   int     $status  (optional) The HTTP redirection status code, default 303 (See Other)
 	 * @param   string  $msg     (optional) A message to enqueue
 	 * @param   string  $type    (optional) The message type, e.g. 'message' (default), 'warning' or 'error'.
 	 *
@@ -911,7 +911,7 @@ class Platform extends BasePlatform
 	 *
 	 * @throws  \Exception
 	 */
-	public function redirect($url, $status = 301, $msg = null, $type = 'message')
+	public function redirect($url, $status = 303, $msg = null, $type = 'message')
 	{
 		// Necessary workaround for broken System - Page Cache plugin in Joomla! 3.7.0
 		$this->bugfixJoomlaCachePlugin();
