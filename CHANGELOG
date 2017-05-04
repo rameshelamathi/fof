@@ -1,3 +1,7 @@
+FOF 3.0.22
+================================================================================
+! Joomla! 3.7 has a broken System - Page Cache plugin which leads to white pages
+
 FOF 3.0.21
 ================================================================================
 ! Date class not working on PHP 7.1
