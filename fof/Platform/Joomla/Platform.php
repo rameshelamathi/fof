@@ -155,6 +155,7 @@ class Platform extends BasePlatform
 		return array(
 			'root'   => JPATH_ROOT,
 			'public' => JPATH_SITE,
+			'media'  => JPATH_SITE . '/media',
 			'admin'  => JPATH_ADMINISTRATOR,
 			'tmp'    => \JFactory::getConfig()->get('tmp_path'),
 			'log'    => \JFactory::getConfig()->get('log_path')
