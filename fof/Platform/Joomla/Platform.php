@@ -829,7 +829,9 @@ class Platform extends BasePlatform
 		$options = array('remember' => false);
 		$parameters = array('username' => $this->getUser()->username);
 
-		return $app->triggerEvent('onLogoutUser', array($parameters, $options));
+		$ret = $app->triggerEvent('onLogoutUser', array($parameters, $options));
+
+		return !in_array(false, $ret, true);
 	}
 
 	/**
