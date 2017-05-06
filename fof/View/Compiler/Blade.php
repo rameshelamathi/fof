@@ -504,7 +504,7 @@ class Blade implements CompilerInterface
 	 */
 	protected function compileToken($expression)
 	{
-		return "<?php echo \\JFactory::getSession()->getFormToken(); ?>";
+		return "<?php echo \$this->container->platform->getToken(true); ?>";
 	}
 
 	/**
@@ -731,7 +731,7 @@ class Blade implements CompilerInterface
 	 */
 	protected function compileRoute($expression)
 	{
-		return "<?php echo \JRoute::_{$expression}; ?>";
+		return "<?php echo \$this->container->template->route{$expression}; ?>";
 	}
 
 	/**

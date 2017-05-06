@@ -680,101 +680,113 @@ class Template
 	}
 
 	/**
-	 * Merges the current url with new or changed parameters.
+	 * Performs SEF routing on a non-SEF URL, returning the SEF URL.
 	 *
-	 * This method merges the route string with the url parameters defined
-	 * in current url. The parameters defined in current url, but not given
-	 * in route string, will automatically reused in the resulting url.
-	 * But only these following parameters will be reused:
-	 *
-	 * option, view, layout, format
-	 *
-	 * Example:
-	 *
-	 * Assuming that current url is:
+	 * When the $merge option is set to true the option, view, layout and format parameters of the current URL and the
+	 * requested route will be merged. For example, assuming that current url is
 	 * http://example.com/index.php?option=com_foo&view=cpanel
-	 *
-	 * <code>
-	 * <?php echo $template->route('view=categories&layout=tree'); ?>
-	 * </code>
-	 *
-	 * Result:
+	 * then
+	 * $template->route('view=categories&layout=tree');
+	 * will result to
 	 * http://example.com/index.php?option=com_foo&view=categories&layout=tree
 	 *
+	 * If $merge is unspecified (null) we will auto-detect the intended behavior. If you haven't specified option and
+	 * one of view or task we will merge. Otherwise no merging takes place. This covers most use cases of FOF 3.0.
+	 *
 	 * @param   string  $route  The parameters string
+	 * @param   bool    $merge  Should I perform parameter merging?
 	 *
 	 * @return  string  The human readable, complete url
 	 */
-	public function route($route = '')
+	public function route($route = '', $merge = null)
 	{
 		$route = trim($route);
 
-		// Special cases
-
-		if ($route == 'index.php' || $route == 'index.php?')
+		/**
+		 * Backwards compatibility with FOF 3.0: if the merge option is unspecified we will auto-detect the behaviour.
+		 * If option and either one of view or task are present we won't merge.
+		 */
+		if (is_null($merge))
 		{
-			$result = $route;
+			$hasOption = (strpos($route, 'option=') !== false);
+			$hasView  = (strpos($route, 'view=') !== false);
+			$hasTask  = (strpos($route, 'task=') !== false);
+
+			$merge = !($hasOption && ($hasView || $hasTask));
 		}
-		elseif (substr($route, 0, 1) == '&')
+
+		if ($merge)
 		{
-			$url = \JURI::getInstance();
-			$vars = array();
-			parse_str($route, $vars);
+			// Handle special cases before trying to merge
+			if ($route == 'index.php' || $route == 'index.php?')
+			{
+				$result = 'index.php';
+			}
+			elseif (substr($route, 0, 1) == '&')
+			{
+				$url = \JURI::getInstance();
+				$vars = array();
+				parse_str($route, $vars);
 
-			$url->setQuery(array_merge($url->getQuery(true), $vars));
+				$url->setQuery(array_merge($url->getQuery(true), $vars));
 
-			$result = 'index.php?' . $url->getQuery();
+				$result = 'index.php?' . $url->getQuery();
+			}
+			else
+			{
+				$url = \JURI::getInstance();
+				$props = $url->getQuery(true);
+
+				// Strip 'index.php?'
+				if (substr($route, 0, 10) == 'index.php?')
+				{
+					$route = substr($route, 10);
+				}
+
+				// Parse route
+				$parts = array();
+				parse_str($route, $parts);
+				$result = array();
+
+				// Check to see if there is component information in the route if not add it
+
+				if (!isset($parts['option']) && isset($props['option']))
+				{
+					$result[] = 'option=' . $props['option'];
+				}
+
+				// Add the layout information to the route only if it's not 'default'
+
+				if (!isset($parts['view']) && isset($props['view']))
+				{
+					$result[] = 'view=' . $props['view'];
+
+					if (!isset($parts['layout']) && isset($props['layout']))
+					{
+						$result[] = 'layout=' . $props['layout'];
+					}
+				}
+
+				// Add the format information to the URL only if it's not 'html'
+
+				if (!isset($parts['format']) && isset($props['format']) && $props['format'] != 'html')
+				{
+					$result[] = 'format=' . $props['format'];
+				}
+
+				// Reconstruct the route
+
+				if (!empty($route))
+				{
+					$result[] = $route;
+				}
+
+				$result = 'index.php?' . implode('&', $result);
+			}
 		}
 		else
 		{
-			$url = \JURI::getInstance();
-			$props = $url->getQuery(true);
-
-			// Strip 'index.php?'
-			if (substr($route, 0, 10) == 'index.php?')
-			{
-				$route = substr($route, 10);
-			}
-
-			// Parse route
-			$parts = array();
-			parse_str($route, $parts);
-			$result = array();
-
-			// Check to see if there is component information in the route if not add it
-
-			if (!isset($parts['option']) && isset($props['option']))
-			{
-				$result[] = 'option=' . $props['option'];
-			}
-
-			// Add the layout information to the route only if it's not 'default'
-
-			if (!isset($parts['view']) && isset($props['view']))
-			{
-				$result[] = 'view=' . $props['view'];
-
-				if (!isset($parts['layout']) && isset($props['layout']))
-				{
-					$result[] = 'layout=' . $props['layout'];
-				}
-			}
-
-			// Add the format information to the URL only if it's not 'html'
-
-			if (!isset($parts['format']) && isset($props['format']) && $props['format'] != 'html')
-			{
-				$result[] = 'format=' . $props['format'];
-			}
-
-			// Reconstruct the route
-
-			if (!empty($route))
-			{
-				$result[] = $route;
-			}
-
-			$result = 'index.php?' . implode('&', $result);
+			$result = $route;
 		}
 
 		return \JRoute::_($result);
