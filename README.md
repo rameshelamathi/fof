@@ -103,31 +103,7 @@ the following tools:
 
 You will also need the following path structure on your system:
 * `fof` This repository, a.k.a. MAIN directory
-* `buildfiles` [Akeeba Build Tools](https://github.com/akeeba/buildfiles)
-
-### Initialising the repository
-
-All of the following commands are to be run from the MAIN directory. Lines
-starting with $ indicate a Mac OS X / Linux / other *NIX system commands. Lines
-starting with > indicate Windows commands. The starting character ($ or >) MUST
-NOT be typed!
-
-1. You will first need to do the initial link with Akeeba Build Tools, running
-   the following command (Mac OS X, Linux, other *NIX systems):
-
-		$ php ../buildfiles/tools/link.php `pwd`
-
-   or, on Windows:
-
-		> php ../buildfiles/tools/link.php %CD%
-
-1. After the initial linking takes place, go inside the build directory:
-
-		$ cd build
-
-   and run the link phing task:
-
-		$ phing link
+* `buildfiles` [Akeeba Build Tools](https://github.com/akeeba/buildfiles). The name of the directory is important. This is where the master Phing script, also used by FOF to build packages, is located in.
 
 ### Useful Phing tasks
 
