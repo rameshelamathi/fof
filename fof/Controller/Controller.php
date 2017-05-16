@@ -448,6 +448,7 @@ class Controller
 		{
 			// Get a JCache object
 			$option = $this->input->get('option', 'com_foobar', 'cmd');
+			/** @var \JCacheControllerView $cache */
 			$cache = \JFactory::getCache($option, 'view');
 
 			// Set up a cache ID based on component, view, task and user group assignment
