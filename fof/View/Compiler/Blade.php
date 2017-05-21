@@ -497,6 +497,21 @@ class Blade implements CompilerInterface
 	}
 
 	/**
+	 * Compile the plural statements into valid PHP.
+	 *
+	 * e.g. @plural('COM_FOOBAR_N_ITEMS_SAVED', $countItemsSaved)
+	 *
+	 * @see JText::plural()
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compilePlural($expression)
+	{
+		return "<?php echo \\JText::plural$expression; ?>";
+	}
+
+	/**
 	 * Compile the token statements into valid PHP.
 	 *
 	 * @param  string  $expression
