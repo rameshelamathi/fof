@@ -82,6 +82,18 @@ class Container extends ContainerBase
 	protected static $instances = array();
 
 	/**
+	 * The container SHOULD NEVER been serialised. If this happens, it means that any of the installed version is doing
+	 * something REALLY BAD, so let's die and inform the user of what it's going on.
+	 */
+	public function __sleep()
+	{
+		$msg = "Something on your site, most likely the template, is broken and tries to save the plugin state in the cache.".
+			   "This will cause your site to not work properly. Go to your site's backend, Global Configuration and set Caching to OFF";
+
+		die($msg);
+	}
+
+	/**
 	 * Returns a container instance for a specific component. This method goes through fof.xml to read the default
 	 * configuration values for the container. You are advised to use this unless you have a specific reason for
 	 * instantiating a Container without going through the fof.xml file.
