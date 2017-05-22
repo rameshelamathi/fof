@@ -4,6 +4,7 @@ FOF 3.1.1
 + Model mixins
 + @plural() Blade statement to support JText::plural()
 + @jlayout() Blade statement to load and render JLayout view templates
++ ViewTemplate field passes $rowid to the view template
 
 FOF 3.1.0
 ================================================================================
