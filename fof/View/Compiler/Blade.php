@@ -706,6 +706,22 @@ class Blade implements CompilerInterface
 	}
 
 	/**
+	 * Compile the jlayout statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileJlayout($expression)
+	{
+		if (starts_with($expression, '('))
+		{
+			$expression = substr($expression, 1, -1);
+		}
+
+		return "<?php echo \\FOF30\\Layout\\LayoutHelper::render(\$this->container, $expression); ?>";
+	}
+
+	/**
 	 * Compile the stack statements into the content
 	 *
 	 * @param  string  $expression
