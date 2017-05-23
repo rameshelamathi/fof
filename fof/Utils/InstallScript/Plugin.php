@@ -100,8 +100,14 @@ class Plugin extends BaseInstaller
 	 */
 	public function postflight($type, $parent)
 	{
+		/**
+		 * We are not doing dependency tracking for modules and plugins because of the way Joomla package uninstallation
+		 * works. FOF's uninstall() method would get called before the extensions are uninstalled, therefore its
+		 * uninstallation would fail and make the entire package uninstallation to fail (the package is impossible to
+		 * uninstall).
+		 */
 		// Add ourselves to the list of extensions depending on FOF30
-		$this->addDependency('fof30', $this->getDependencyName());
+		// $this->addDependency('fof30', $this->getDependencyName());
 
 		// Install or update database
 		$schemaPath  = $parent->getParent()->getPath('source') . '/' . $this->schemaXmlPath;
@@ -142,8 +148,14 @@ class Plugin extends BaseInstaller
 		// Uninstall post-installation messages on Joomla! 3.2 and later
 		$this->uninstallPostInstallationMessages();
 
+		/**
+		 * We are not doing dependency tracking for modules and plugins because of the way Joomla package uninstallation
+		 * works. FOF's uninstall() method would get called before the extensions are uninstalled, therefore its
+		 * uninstallation would fail and make the entire package uninstallation to fail (the package is impossible to
+		 * uninstall).
+		 */
 		// Remove ourselves from the list of extensions depending on FOF30
-		$this->removeDependency('fof30', $this->getDependencyName());
+		// $this->removeDependency('fof30', $this->getDependencyName());
 	}
 
 	/**
