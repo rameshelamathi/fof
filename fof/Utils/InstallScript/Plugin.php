@@ -40,14 +40,14 @@ class Plugin extends BaseInstaller
 	 *
 	 * @var   string
 	 */
-	protected $pluginName = 'mod_foobar';
+	protected $pluginName = 'foobar';
 
 	/**
 	 * The plugins's folder, e.g. system (for plg_system_foobar)
 	 *
 	 * @var   string
 	 */
-	protected $pluginFolder = 'site';
+	protected $pluginFolder = 'system';
 
 	/**
 	 * The path where the schema XML files are stored. The path is relative to the folder which contains the extension's
