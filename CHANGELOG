@@ -6,6 +6,7 @@ FOF 3.1.1
 + @jlayout() Blade statement to load and render JLayout view templates
 + ViewTemplate field passes $rowid to the view template
 + Published field takes into account ACL
++ Installation script classes for modules and plugins
 ~ Working around Joomla's bug about forgotten files on update
 
 FOF 3.1.0
