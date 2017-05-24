@@ -189,6 +189,8 @@ class Module extends BaseInstaller
 	 */
 	protected function bugfixFilesNotCopiedOnUpdate($parent)
 	{
+		\JLog::add("Joomla! extension update workaround for $this->moduleClient module $this->moduleName", \JLog::INFO, 'fof3_extension_installation');
+
 		$temporarySource = $parent->getParent()->getPath('source');
 		$rootFolder      = ($this->moduleClient == 'site') ? JPATH_SITE : JPATH_ADMINISTRATOR;
 
@@ -203,6 +205,8 @@ class Module extends BaseInstaller
 
 		foreach ($copyMap as $source => $target)
 		{
+			\JLog::add(__CLASS__ . ":: Conditional copy $source to $target", \JLog::DEBUG, 'fof3_extension_installation');
+
 			$this->recursiveConditionalCopy($source, $target);
 		}
 	}

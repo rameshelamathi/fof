@@ -198,6 +198,8 @@ class Plugin extends BaseInstaller
 	 */
 	protected function bugfixFilesNotCopiedOnUpdate($parent)
 	{
+		\JLog::add("Joomla! extension update workaround for $this->pluginFolder plugin $this->pluginName", \JLog::INFO, 'fof3_extension_installation');
+
 		$temporarySource = $parent->getParent()->getPath('source');
 
 		$copyMap = array(
@@ -211,6 +213,8 @@ class Plugin extends BaseInstaller
 
 		foreach ($copyMap as $source => $target)
 		{
+			\JLog::add(__CLASS__ . ":: Conditional copy $source to $target", \JLog::DEBUG, 'fof3_extension_installation');
+
 			$this->recursiveConditionalCopy($source, $target);
 		}
 	}
