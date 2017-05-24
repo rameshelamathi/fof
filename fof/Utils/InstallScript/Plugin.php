@@ -77,7 +77,7 @@ class Plugin extends BaseInstaller
 				$this->pluginFolder = $classParts[1];
 			}
 
-			if ($this->pluginName)
+			if (empty($this->pluginName))
 			{
 				$this->pluginName   = $classParts[2];
 			}
