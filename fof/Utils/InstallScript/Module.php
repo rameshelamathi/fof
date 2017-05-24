@@ -71,7 +71,7 @@ class Module extends BaseInstaller
 			$words              = strtolower(preg_replace('/(?<=\\w)([A-Z])/', '_\\1', $words));
 			$classParts         = explode('_', $words);
 
-			$this->moduleName = 'mod_' . $classParts[1];
+			$this->moduleName = 'mod_' . $classParts[2];
 		}
 	}
 
