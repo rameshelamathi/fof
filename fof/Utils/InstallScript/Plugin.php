@@ -28,7 +28,9 @@ if (!class_exists('FOF30\\Utils\\InstallScript\\BaseInstaller', true))
 /**
  * A helper class which you can use to create plugin installation scripts.
  *
- * Example usage: class Mod_ExampleInstallerScript extends FOF30\Utils\InstallScript\Module
+ * Example usage: class PlgSystemExampleInstallerScript extends FOF30\Utils\InstallScript\Module
+ *
+ * NB: The class name is always Plg<Plugin Folder><Plugin Name>InstallerScript per Joomla's conventions.
  *
  * This namespace contains more classes for creating installation scripts for other kinds of Joomla! extensions as well.
  * Do keep in mind that only components, modules and plugins could have post-installation scripts before Joomla! 3.3.
@@ -36,18 +38,18 @@ if (!class_exists('FOF30\\Utils\\InstallScript\\BaseInstaller', true))
 class Plugin extends BaseInstaller
 {
 	/**
-	 * The plugins's name, e.g. foobar (for plg_system_foobar)
+	 * The plugins's name, e.g. foobar (for plg_system_foobar). Auto-filled from the class name.
 	 *
 	 * @var   string
 	 */
-	protected $pluginName = 'foobar';
+	protected $pluginName = '';
 
 	/**
-	 * The plugins's folder, e.g. system (for plg_system_foobar)
+	 * The plugins's folder, e.g. system (for plg_system_foobar). Auto-filled from the class name.
 	 *
 	 * @var   string
 	 */
-	protected $pluginFolder = 'system';
+	protected $pluginFolder = '';
 
 	/**
 	 * The path where the schema XML files are stored. The path is relative to the folder which contains the extension's
@@ -56,6 +58,31 @@ class Plugin extends BaseInstaller
 	 * @var string
 	 */
 	protected $schemaXmlPath = 'sql/xml';
+
+	/**
+	 * Plugin installer script constructor.
+	 */
+	public function __construct()
+	{
+		// Get the plugin name and folder from the class name (it's always plgFolderPluginInstallerScript) if necessary.
+		if (empty($this->pluginFolder) || empty($this->pluginName))
+		{
+			$class              = get_class($this);
+			$words              = preg_replace('/(\s)+/', '_', $class);
+			$words              = strtolower(preg_replace('/(?<=\\w)([A-Z])/', '_\\1', $words));
+			$classParts         = explode('_', $words);
+
+			if (empty($this->pluginFolder))
+			{
+				$this->pluginFolder = $classParts[1];
+			}
+
+			if ($this->pluginName)
+			{
+				$this->pluginName   = $classParts[2];
+			}
+		}
+	}
 
 	/**
 	 * Joomla! pre-flight event. This runs before Joomla! installs or updates the component. This is our last chance to

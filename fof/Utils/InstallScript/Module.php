@@ -36,18 +36,18 @@ if (!class_exists('FOF30\\Utils\\InstallScript\\BaseInstaller', true))
 class Module extends BaseInstaller
 {
 	/**
-	 * The modules's name, e.g. mod_foobar
-	 *
-	 * @var   string
-	 */
-	protected $moduleName = 'mod_foobar';
-
-	/**
 	 * Which side of the site is this module installed in? Use 'site' or 'administrator'.
 	 *
 	 * @var   string
 	 */
 	protected $moduleClient = 'site';
+
+	/**
+	 * The modules's name, e.g. mod_foobar. Auto-filled from the class name.
+	 *
+	 * @var   string
+	 */
+	protected $moduleName = '';
 
 	/**
 	 * The path where the schema XML files are stored. The path is relative to the folder which contains the extension's
@@ -56,6 +56,24 @@ class Module extends BaseInstaller
 	 * @var string
 	 */
 	protected $schemaXmlPath = 'sql/xml';
+
+
+	/**
+	 * Module installer script constructor.
+	 */
+	public function __construct()
+	{
+		// Get the plugin name and folder from the class name (it's always plgFolderPluginInstallerScript) if necessary.
+		if (empty($this->moduleName))
+		{
+			$class              = get_class($this);
+			$words              = preg_replace('/(\s)+/', '_', $class);
+			$words              = strtolower(preg_replace('/(?<=\\w)([A-Z])/', '_\\1', $words));
+			$classParts         = explode('_', $words);
+
+			$this->moduleName = 'mod_' . $classParts[1];
+		}
+	}
 
 	/**
 	 * Joomla! pre-flight event. This runs before Joomla! installs or updates the component. This is our last chance to

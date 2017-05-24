@@ -39,11 +39,11 @@ if (!class_exists('FOF30\\Utils\\InstallScript\\BaseInstaller', true))
 class Component extends BaseInstaller
 {
 	/**
-	 * The component's name
+	 * The component's name. Auto-filled from the class name.
 	 *
 	 * @var   string
 	 */
-	protected $componentName = 'com_foobar';
+	protected $componentName = '';
 
 	/**
 	 * The title of the component (printed on installation and uninstallation messages)
@@ -145,6 +145,22 @@ class Component extends BaseInstaller
 	 */
 	protected $isPaid = false;
 
+	/**
+	 * Module installer script constructor.
+	 */
+	public function __construct()
+	{
+		// Get the plugin name and folder from the class name (it's always plgFolderPluginInstallerScript) if necessary.
+		if (empty($this->componentName))
+		{
+			$class              = get_class($this);
+			$words              = preg_replace('/(\s)+/', '_', $class);
+			$words              = strtolower(preg_replace('/(?<=\\w)([A-Z])/', '_\\1', $words));
+			$classParts         = explode('_', $words);
+
+			$this->componentName = 'com_' . $classParts[1];
+		}
+	}
 
 	/**
 	 * Joomla! pre-flight event. This runs before Joomla! installs or updates the component. This is our last chance to
