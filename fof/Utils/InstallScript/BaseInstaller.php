@@ -59,12 +59,13 @@ class BaseInstaller
 	/**
 	 * Recursively copy a bunch of files, but only if the source and target file have a different size.
 	 *
-	 * @param   string $source Path to copy FROM
-	 * @param   string $dest   Path to copy TO
+	 * @param   string  $source   Path to copy FROM
+	 * @param   string  $dest     Path to copy TO
+	 * @param   array   $ignored  List of entries to ignore (first level entries are taken into account)
 	 *
 	 * @return  void
 	 */
-	protected function recursiveConditionalCopy($source, $dest)
+	protected function recursiveConditionalCopy($source, $dest, $ignored = array())
 	{
 		// Make sure source and destination exist
 		if (!@is_dir($source))
@@ -108,6 +109,12 @@ class BaseInstaller
 
 			$sourcePath = $entry->getPathname();
 			$fileName   = $entry->getFilename();
+
+			// Do not copy ignored files
+			if (!empty($ignored) && in_array($fileName, $ignored))
+			{
+				continue;
+			}
 
 			// If it's a directory do a recursive copy
 			if ($entry->isDir())

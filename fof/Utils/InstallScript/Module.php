@@ -196,18 +196,29 @@ class Module extends BaseInstaller
 
 		$copyMap = array(
 			// Module files
-			$temporarySource            => $rootFolder . '/modules/' . $this->moduleName,
+			$temporarySource               => $rootFolder . '/modules/' . $this->moduleName,
 			// Language
-			'language/backend'          => $rootFolder . '/language',
+			$temporarySource . '/language' => $rootFolder . '/language',
 			// Media files
-			$temporarySource . '/media' => JPATH_ROOT . '/media/' . $this->moduleName,
+			$temporarySource . '/media'    => JPATH_ROOT . '/media/' . $this->moduleName,
 		);
 
 		foreach ($copyMap as $source => $target)
 		{
 			\JLog::add(__CLASS__ . ":: Conditional copy $source to $target", \JLog::DEBUG, 'fof3_extension_installation');
 
-			$this->recursiveConditionalCopy($source, $target);
+			$ignored = array();
+
+			if ($source == $temporarySource)
+			{
+				$ignored = array(
+					'index.html',  'index.htm', 'LICENSE.txt', 'license.txt', 'readme.htm', 'readme.html', 'README.md',
+					'script.php', 'language', 'media',
+				);
+
+			}
+
+			$this->recursiveConditionalCopy($source, $target, $ignored);
 		}
 	}
 

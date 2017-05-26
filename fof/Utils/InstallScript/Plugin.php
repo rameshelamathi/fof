@@ -204,18 +204,28 @@ class Plugin extends BaseInstaller
 
 		$copyMap = array(
 			// Plugin files
-			$temporarySource            => JPATH_ROOT . '/plugins/' . $this->pluginFolder . '/' . $this->pluginName,
+			$temporarySource               => JPATH_ROOT . '/plugins/' . $this->pluginFolder . '/' . $this->pluginName,
 			// Language (always stored in administrator for plugins)
-			'language/backend'          => JPATH_ADMINISTRATOR . '/language',
+			$temporarySource . '/language' => JPATH_ADMINISTRATOR . '/language',
 			// Media files, e.g. /media/plg_system_foobar
-			$temporarySource . '/media' => JPATH_ROOT . '/media/' . $this->getDependencyName(),
+			$temporarySource . '/media'    => JPATH_ROOT . '/media/' . $this->getDependencyName(),
 		);
 
 		foreach ($copyMap as $source => $target)
 		{
 			\JLog::add(__CLASS__ . ":: Conditional copy $source to $target", \JLog::DEBUG, 'fof3_extension_installation');
 
-			$this->recursiveConditionalCopy($source, $target);
+			$ignored = array();
+
+			if ($source == $temporarySource)
+			{
+				$ignored = array(
+					'index.html',  'index.htm', 'LICENSE.txt', 'license.txt', 'readme.htm', 'readme.html', 'README.md',
+					'script.php', 'language', 'media',
+				);
+			}
+
+			$this->recursiveConditionalCopy($source, $target, $ignored);
 		}
 	}
 
