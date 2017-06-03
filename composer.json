@@ -2,9 +2,8 @@
 	"name": "akeeba/fof",
 	"type": "library",
 	"description": "FOF (Framework on Framework) is a Rapid Application Development framework for Joomla!",
-	"require" : {
-		"php": ">=5.3.4",
-		"nikic/php-parser": "^3.0"
+	"require": {
+		"php": "~5.3.10||>=5.4,<5.5||>=5.5"
 	},
 	"keywords": ["framework","joomla","mvc","rad"],
 	"homepage": "https://github.com/akeeba/fof",
@@ -19,10 +18,11 @@
 	],
 	"require-dev": {
 		"mikey179/vfsStream": "dev-master",
-		"phpunit/phpunit": "~4.5.0",
-		"phpunit/dbunit": "~1.2",
-		"mockery/mockery": "0.9.4",
-		"fiunchinho/phpunit-randomizer": "1.0.*@dev"
+		"phpunit/phpunit": "~4.8||~5.7",
+		"phpunit/dbunit": "~1.4||~2.0",
+		"mockery/mockery": "0.9.4||~0.9.5",
+		"fiunchinho/phpunit-randomizer": "1.0.*@dev",
+		"nikic/php-parser": "~1.0||~2.0||~3.0"
 	},
 	"autoload" : {
 		"psr-4": {
