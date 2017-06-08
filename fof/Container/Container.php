@@ -87,8 +87,14 @@ class Container extends ContainerBase
 	 */
 	public function __sleep()
 	{
-		$msg = "Something on your site, most likely the template, is broken and tries to save the plugin state in the cache.".
-			   "This will cause your site to not work properly. Go to your site's backend, Global Configuration and set Caching to OFF";
+		$msg = <<< END
+Something on your site, most likely a highly insecure JoomlaShine template, is broken and tries to save the plugin state 
+in the cache. This is a major security issue and will cause your site to not work properly. Go to your site's backend,
+Global Configuration and set Caching to OFF as a temporary solution. If you are using a JoomlaShine template contact
+them and ask for a full refund. They are aware of this major security issue since May 2017 and refuse to fix it. The
+only solution in this case is using a template from a different provider, preferably one who knows how to write secure 
+code - unlike JoomlaShine.
+END;
 
 		die($msg);
 	}
