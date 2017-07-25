@@ -1,5 +1,6 @@
 FOF 3.1.2
 ================================================================================
++ You can now pass a hash_view to the Model's constructor to modify the way the hash is generated when none is provided
 + You can now pass a custom state hash to the Model's constructor and/or set it with the setHash() method
 ~ Fix the handling of chained IPs in X-Forwarded-For
 
