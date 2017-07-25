@@ -8,7 +8,9 @@
 namespace FOF30\Model;
 
 use FOF30\Container\Container;
+use FOF30\Input\Input;
 use FOF30\Model\Exception\CannotGetName;
+use FOF30\Utils\StringHelper;
 
 defined('_JEXEC') or die;
 
@@ -64,6 +66,14 @@ class Model
 	protected $container;
 
 	/**
+	 * The state key hash returned by getHash(). This is typically something like "com_foobar.example." (note the dot
+	 * at the end). Always use getHash to get it and setHash to set it.
+	 *
+	 * @var null|string
+	 */
+	private $stateHash = null;
+
+	/**
 	 * Public class constructor
 	 *
 	 * You can use the $config array to pass some configuration values to the object:
@@ -83,6 +93,12 @@ class Model
 		if (isset($config['name']))
 		{
 			$this->name = $config['name'];
+		}
+
+		// Do we have a configured state hash? Since 3.1.2.
+		if (isset($config['hash']) && !empty($config['hash']))
+		{
+			$this->setHash($config['hash']);
 		}
 
 		// If $config['name'] is not set, auto-detect the model's name
@@ -210,14 +226,46 @@ class Model
 	 */
 	public function getHash()
 	{
-		static $hash = null;
-
-		if (is_null($hash))
+		if (is_null($this->stateHash))
 		{
-			$hash = ucfirst($this->container->componentName) . '.' . $this->getName() . '.';
+			$this->stateHash = ucfirst($this->container->componentName) . '.' . $this->getName() . '.';
 		}
 
-		return $hash;
+		return $this->stateHash;
+	}
+
+	/**
+	 * Sets the unique hash to prefix the state variables. The hash is cleaned according to the 'CMD' input filtering,
+	 * must end in a dot (if not a dot is added automatically) and cannot be empty.
+	 *
+	 * @param   string  $hash
+	 *
+	 * @return  void
+	 *
+	 * @see   self::getHash()
+	 */
+	public function setHash($hash)
+	{
+		// Clean the hash, it has to conform to 'CMD' filtering
+		$tempInput = new Input(array('hash' => $hash));
+		$hash      = $tempInput->getCmd('hash', null);
+
+		if (empty($hash))
+		{
+			return;
+		}
+
+		if (substr($hash, -1) == '_')
+		{
+			$hash = substr($hash, 0, -1);
+		}
+
+		if (substr($hash, -1) != '.')
+		{
+			$hash .= '.';
+		}
+
+		$this->stateHash = $hash;
 	}
 
 	/**

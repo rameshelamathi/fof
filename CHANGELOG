@@ -1,5 +1,6 @@
 FOF 3.1.2
 ================================================================================
++ You can now pass a custom state hash to the Model's constructor and/or set it with the setHash() method
 ~ Fix the handling of chained IPs in X-Forwarded-For
 
 FOF 3.1.1
@@ -175,7 +176,7 @@ FOF 3.0.1
 
 FOF 3.0.0
 ================================================================================
-+ CLI tool to quickly create FOF components – not included in the library ZIP package, look at https://github.com/akeeba/fof/tree/development/cli
++ CLI tool to quickly create FOF components ??? not included in the library ZIP package, look at https://github.com/akeeba/fof/tree/development/cli
 + Preliminary changes for PHP 7 compatibility
 + Improve performance of AccessLevel field in Browse views
 + Improve performance of Language field in Browse views
