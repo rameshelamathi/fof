@@ -387,7 +387,8 @@ class ControllerDataprovider
                 'result' => true,
                 'modelName' => 'Foobar',
                 'config' => array(
-                    'modelTemporaryInstance' => true
+                    'modelTemporaryInstance' => true,
+                    'hash_view' => 'dummycontroller',
                 )
             )
         );
@@ -409,7 +410,8 @@ class ControllerDataprovider
                 'result' => 'mocked',
                 'modelName' => 'Foobar',
                 'config' => array(
-                    'modelTemporaryInstance' => true
+                    'modelTemporaryInstance' => true,
+                    'hash_view' => 'dummycontroller',
                 )
             )
         );
