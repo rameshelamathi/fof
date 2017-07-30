@@ -651,13 +651,6 @@ END;
 		{
 			$this['session'] = function ()
 			{
-				\JLog::add(
-					__CLASS__ . ': The session property is deprecated. Use ->platform->getSessionVar/setSessionVar instead',
-					\JLog::WARNING,
-					'deprecated'
-				);
-
-
 				return \JFactory::getSession();
 			};
 		}
