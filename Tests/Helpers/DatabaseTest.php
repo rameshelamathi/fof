@@ -95,6 +95,7 @@ abstract class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
             );
 
             $pdo = new \PDO('mysql:host='.$options['host'].';dbname='.$options['database'], $options['user'], $options['password']);
+            $pdo->exec("SET @@SESSION.sql_mode = '';");
             $connection = $this->createDefaultDBConnection($pdo, $options['database']);
         }
 
