@@ -415,18 +415,6 @@ class PlatformJoomlaTest extends FOFTestCase
 	}
 
 	/**
-	 * @covers FOF30\Platform\Joomla\Platform::getDate
-	 */
-	public function testGetDate()
-	{
-		$date = $this->platform->getDate('now', 'GMT', true);
-		$this->assertInstanceOf('\\JDate', $date, "getDate must return a JDate object");
-
-		$date = $this->platform->getDate('now', 'GMT', false);
-		$this->assertInstanceOf('\\JDate', $date, "getDate must return a JDate object");
-	}
-
-	/**
 	 * @covers FOF30\Platform\Joomla\Platform::loginUser
 	 *
 	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestLoginUser
@@ -436,6 +424,32 @@ class PlatformJoomlaTest extends FOFTestCase
 	{
 		// TODO
 		$this->markTestIncomplete('Not yet implemented');
+	}
+
+	/**
+	 * @covers FOF30\Platform\Joomla\Platform::getDate
+	 *
+	 * @dataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestDate
+	 */
+	public function testGetDate($test)
+	{
+		$date  = $this->platform->getDate($test['time'], $test['offset'], $test['locale']);
+		$case  = $test['case'];
+		$class = $test['intended_class'];
+
+		$this->assertInstanceOf('FOF30\Date\Date', $date, "$case -- getDate must return a Date-compatible object");
+		$this->assertInstanceOf('DateTime', $date, "$case -- getDate must return a DateTime-compatible object");
+		$this->assertInstanceOf($class, $date, "$case -- getDate must return a $class object");
+
+		if ($class == 'FOF30\Date\DateDecorator')
+		{
+			$oRef = new \ReflectionObject($date);
+			$pRef = new \ReflectionProperty($date, 'decorated');
+			$pRef->setAccessible(true);
+			$decorated = $pRef->getValue($date);
+
+			$this->assertInstanceOf('\\JDate', $decorated, "$case -- The decorated property must be a JDate object");
+		}
 	}
 
 	/**
