@@ -21,7 +21,6 @@
 		"phpunit/phpunit": "~4.8||~5.7",
 		"phpunit/dbunit": "~1.4||~2.0",
 		"mockery/mockery": "0.9.4||~0.9.5",
-		"fiunchinho/phpunit-randomizer": "1.0.*@dev",
 		"nikic/php-parser": "~1.0||~2.0||~3.0"
 	},
 	"autoload" : {
