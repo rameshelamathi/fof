@@ -149,8 +149,8 @@ $config = JFactory::getConfig(JPATH_SITE . '/installation/configuration.php-dist
 
 TravisLogger::log(4, 'Changing values for the JConfig object');
 // ... and then hijack some details
-// Let's force the driver to PDO to prevent connection dropping errors
-$config->set('dbtype', 'pdomysql');
+$dbtype = function_exists('mysqli_connect') ? 'mysqli' : 'mysql';
+$config->set('dbtype', $dbtype);
 $config->set('host', $fofTestConfig['host']);
 $config->set('user', $fofTestConfig['user']);
 $config->set('password', $fofTestConfig['password']);
