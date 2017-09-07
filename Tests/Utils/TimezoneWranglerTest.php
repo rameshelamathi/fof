@@ -182,9 +182,29 @@ class TimezoneWranglerTest extends FOFTestCase
 		$this->assertEquals($expected, $actual, $message);
 	}
 
-	public function testGetGMTDateTime()
+	/**
+	 * @dataProvider FOF30\Tests\Utils\TimezoneWranglerProvider::getTestGetGMTDateTime
+	 */
+	public function testGetGMTDateTime($localTime, $timezone, $gmtTime, $message, $negativeTest = false)
 	{
-		$this->markTestIncomplete();
+		$tzWrangler = new TimezoneWrangler(static::$container);
+		$tzWrangler->setForcedTimezone($timezone);
+
+		$gmtDate = $tzWrangler->getGMTDateTime(null, $localTime);
+
+		$this->assertTrue(is_object($gmtDate), "Return must be an object");
+		$this->assertInstanceOf('FOF30\Date\Date', $gmtDate, "Return must be a Date object");
+
+		$actual = $gmtDate->format('Y-m-d H:i:s', true);
+
+		if ($negativeTest)
+		{
+			$this->assertNotEquals($gmtTime, $actual, $message);
+
+			return;
+		}
+
+		$this->assertEquals($gmtTime, $actual, $message);
 	}
 
 	public function testGetLocalTimeStamp()

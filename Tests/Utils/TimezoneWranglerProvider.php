@@ -107,6 +107,65 @@ class TimezoneWranglerProvider
 		];
 	}
 
+	public static function getTestGetGMTDateTime()
+	{
+		return [
+			// $localTime, $timezone, $gmtTime, $message, $negativeTest
+			/**
+			 * Negative tests: when converting to GMT can lead to two different hours due to DST ambiguity, the timezone
+			 * conversion in PHP always uses the later (higher) GMT date/time. Therefore converting between GMT and
+			 * local is always lossy wherever there's GMT or other reasons for date/time overlap.
+			 */
+
+			// US Eastern ........... America/New_York      DST began Mar 12, 2017 (UTC-4) ** DST ends Nov 5, 2017 (UTC-5)
+			['2017-08-14 20:11:22', 'America/New_York', '2017-08-15 00:11:22', "New York, date within DST range"],
+			['2017-02-14 19:11:22', 'America/New_York', '2017-02-15 00:11:22', "New York, date outside DST range"],
+			['2017-03-12 01:59:59', 'America/New_York', '2017-03-12 06:59:59', "New York, date before DST start"],
+			['2017-03-12 02:00:00', 'America/New_York', '2017-03-12 07:00:00', "New York, date right on DST start"],
+			['2017-03-12 02:15:00', 'America/New_York', '2017-03-12 07:15:00', "New York, INVALID TIME DUE TO DST"],
+			['2017-03-12 03:00:00', 'America/New_York', '2017-03-12 07:00:00', "New York, date right on DST start (duplicate time, same second)"],
+			['2017-11-05 01:00:00', 'America/New_York', '2017-11-05 05:00:00', "New York, an hour before DST end"],
+			['2017-11-05 01:59:59', 'America/New_York', '2017-11-05 05:59:59', "New York, date before DST end"],
+			['2017-11-05 02:00:00', 'America/New_York', '2017-11-05 06:00:00', "New York, date right on DST end (invalid conversion)", true],
+			['2017-11-05 02:00:00', 'America/New_York', '2017-11-05 07:00:00', "New York, date right on DST end"],
+
+			// US Mountain .......... America/Denver        DST began Mar 12, 2017 (UTC-6) ** DST ends Nov 5, 2017 (UTC-7)
+			['2017-08-14 18:11:22', 'America/Denver', '2017-08-15 00:11:22', "Denver, date within DST range"],
+			['2017-02-14 17:11:22', 'America/Denver', '2017-02-15 00:11:22', "Denver, date outside DST range"],
+			['2017-03-12 01:59:59', 'America/Denver', '2017-03-12 08:59:59', "Denver, date before DST start"],
+			['2017-03-12 02:00:00', 'America/Denver', '2017-03-12 09:00:00', "Denver, date right on DST start"],
+			['2017-03-12 02:15:00', 'America/Denver', '2017-03-12 09:15:00', "Denver, INVALID TIME DUE TO DST"],
+			['2017-03-12 03:00:00', 'America/Denver', '2017-03-12 09:00:00', "Denver, date right on DST start (duplicate time, same second)"],
+			['2017-11-05 01:00:00', 'America/Denver', '2017-11-05 07:00:00', "Denver, an hour before DST end"],
+			['2017-11-05 01:59:59', 'America/Denver', '2017-11-05 07:59:59', "Denver, date before DST end"],
+			['2017-11-05 02:00:00', 'America/Denver', '2017-11-05 08:00:00', "Denver, date right on DST end", true],
+			['2017-11-05 02:00:00', 'America/Denver', '2017-11-05 09:00:00', "Denver, date right on DST end"],
+
+			// US Mountain no DST ... America/Phoenix       UTC-7 all year round
+			// No negative tests here (no DST!)
+			['2017-08-14 17:11:22', 'America/Phoenix', '2017-08-15 00:11:22', "Phoenix, date within DST range"],
+			['2017-02-14 17:11:22', 'America/Phoenix', '2017-02-15 00:11:22', "Phoenix, date outside DST range"],
+			['2017-03-12 01:59:59', 'America/Phoenix', '2017-03-12 08:59:59', "Phoenix, date before DST start"],
+			['2017-03-12 02:00:00', 'America/Phoenix', '2017-03-12 09:00:00', "Phoenix, date right on DST start"],
+			['2017-11-05 00:59:59', 'America/Phoenix', '2017-11-05 07:59:59', "Phoenix, date before DST end"],
+			['2017-11-05 00:00:00', 'America/Phoenix', '2017-11-05 07:00:00', "Phoenix, an hour before DST end"],
+			['2017-11-05 01:00:00', 'America/Phoenix', '2017-11-05 08:00:00', "Phoenix, date right on DST end"],
+
+			// EEST (follows DST) ... Asia/Nicosia          DST began Mar 26, 2017 (UTC+3) ** DST ends Oct 29, 2017 (UTC+2)
+			['2017-08-15 03:11:22', 'Asia/Nicosia', '2017-08-15 00:11:22', "EEST, date within DST range"],
+			['2017-02-15 02:11:22', 'Asia/Nicosia', '2017-02-15 00:11:22', "EEST, date outside DST range"],
+			['2017-03-26 02:59:59', 'Asia/Nicosia', '2017-03-26 00:59:59', "EEST, date right before DST start"],
+			['2017-03-26 03:00:00', 'Asia/Nicosia', '2017-03-26 01:00:00', "EEST, date right on DST start"],
+			['2017-03-26 03:15:00', 'Asia/Nicosia', '2017-03-26 01:15:00', "EEST, INVALID DATE DUE TO DST"],
+			['2017-03-26 04:00:00', 'Asia/Nicosia', '2017-03-26 01:00:00', "EEST, date right on DST start (duplicate time, same second)"],
+			// NEGATIVE TEST: the conversion can be satisfied by the GMT time which translates to the same local time without using DST
+			['2017-10-29 02:59:59', 'Asia/Nicosia', '2017-10-28 23:59:59', "EEST, date right before DST end"],
+			['2017-10-29 03:00:00', 'Asia/Nicosia', '2017-10-29 00:00:00', "EEST, date right on DST end", true],
+			['2017-10-29 03:00:00', 'Asia/Nicosia', '2017-10-29 01:00:00', "EEST, date right on DST end"],
+			['2017-10-29 04:00:00', 'Asia/Nicosia', '2017-10-29 02:00:00', "EEST, date one hour after DST end"],
+		];
+	}
+
 	public static function getTestGetApplicableTimezone()
 	{
 		return [
