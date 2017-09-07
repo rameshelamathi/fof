@@ -17,9 +17,21 @@ use FOF30\Utils\TimezoneWrangler;
  */
 class TimezoneWranglerTest extends FOFTestCase
 {
+	/**
+	 * The timezone before we entered this test
+	 *
+	 * @var   string
+	 */
+	public static $savedOffset;
+
+	/**
+	 * Prepare for these tests by forcing the timezone in the Global Configuration and creating custom test users.
+	 */
 	public static function setUpBeforeClass()
 	{
 		parent::setUpBeforeClass();
+
+		self::$savedOffset = \JFactory::getConfig()->get('offset', 'America/New_York');
 
 		// Set up the Server Timezone as US Eastern Time (GMT-05:00, follows GMT)
 		\JFactory::getConfig()->set('offset', 'America/New_York');
@@ -29,14 +41,22 @@ class TimezoneWranglerTest extends FOFTestCase
 		self::createCustomUsers();
 	}
 
+	/**
+	 * Undo the setUpBeforeClass changes
+	 */
 	public static function tearDownAfterClass()
 	{
+		\JFactory::getConfig()->set('offset', self::$savedOffset);
+
 		parent::tearDownAfterClass();
 
 		// Delete users 1001 etc
 		self::deleteCustomUsers();
 	}
 
+	/**
+	 * Deletes our custom users 1001 (user with timezone) and 1002 (user without timezone)
+	 */
 	private static function deleteCustomUsers()
 	{
 		$db    = \JFactory::getDbo();
@@ -55,6 +75,9 @@ class TimezoneWranglerTest extends FOFTestCase
 		unset($query, $db);
 	}
 
+	/**
+	 * Creates our custom users 1001 (user with timezone) and 1002 (user without timezone)
+	 */
 	private static function createCustomUsers()
 	{
 		$db = \JFactory::getDbo();
@@ -114,11 +137,6 @@ class TimezoneWranglerTest extends FOFTestCase
 	}
 
 	/**
-	 * @param $userID
-	 * @param $forced
-	 * @param $expected
-	 * @param $message
-	 *
 	 * @dataProvider FOF30\Tests\Utils\TimezoneWranglerProvider::getTestGetApplicableTimezone()
 	 */
 	public function testGetApplicableTimezone($userID, $forced, $expected, $message)
@@ -147,9 +165,21 @@ class TimezoneWranglerTest extends FOFTestCase
 		$this->assertEquals($expected, $actual, $message);
 	}
 
-	public function testGetLocalDateTime()
+	/**
+	 * @dataProvider FOF30\Tests\Utils\TimezoneWranglerProvider::getTestGetLocalDateTime
+	 */
+	public function testGetLocalDateTime($sourceTime, $timezone, $expected, $message)
 	{
-		$this->markTestIncomplete();
+		$tzWrangler = new TimezoneWrangler(static::$container);
+		$tzWrangler->setForcedTimezone($timezone);
+
+		$localDate = $tzWrangler->getLocalDateTime(null, $sourceTime);
+
+		$this->assertTrue(is_object($localDate), "Return must be an object");
+		$this->assertInstanceOf('FOF30\Date\Date', $localDate, "Return must be a Date object");
+
+		$actual = $localDate->format('Y-m-d H:i:s', true);
+		$this->assertEquals($expected, $actual, $message);
 	}
 
 	public function testGetGMTDateTime()

@@ -152,7 +152,7 @@ class TimezoneWrangler
 	 *
 	 * @return  DateTimeZone
 	 */
-	public function getApplicableTimezone(JUser $user = null)
+	public function getApplicableTimezone($user = null)
 	{
 		// If we have a forced timezone use it instead of trying to figure anything out.
 		if (is_object($this->forcedTimezone))
@@ -221,7 +221,7 @@ class TimezoneWrangler
 	 *
 	 * @return  Date
 	 */
-	public function getLocalDateTime(JUser $user, $time = null)
+	public function getLocalDateTime($user, $time = null)
 	{
 		$time = empty($time) ? 'now' : $time;
 		$date = new Date($time);
@@ -244,7 +244,7 @@ class TimezoneWrangler
 	 *
 	 * @return  Date
 	 */
-	public function getGMTDateTime(JUser $user, $time)
+	public function getGMTDateTime($user, $time)
 	{
 		$time        = empty($time) ? 'now' : $time;
 		$tz          = $this->getApplicableTimezone($user);
@@ -276,7 +276,7 @@ class TimezoneWrangler
 	 *
 	 * @return  string
 	 */
-	public function getLocalTimeStamp($format = null, JUser $user = null, $time = null, $translate = false)
+	public function getLocalTimeStamp($format = null, $user = null, $time = null, $translate = false)
 	{
 		$date   = $this->getLocalDateTime($user, $time);
 		$format = empty($format) ? $this->defaultFormat : $format;
@@ -305,7 +305,7 @@ class TimezoneWrangler
 	 *
 	 * @return  string
 	 */
-	public function getGMTTimeStamp($format = null, JUser $user = null, $time = null, $translate = false)
+	public function getGMTTimeStamp($format = null, $user = null, $time = null, $translate = false)
 	{
 		$date   = $this->localToGMT($user, $time);
 		$format = empty($format) ? $this->defaultFormat : $format;
@@ -323,7 +323,7 @@ class TimezoneWrangler
 	 *
 	 * @return  Date
 	 */
-	public function localToGMT($time, JUser $user = null)
+	public function localToGMT($time, $user = null)
 	{
 		return $this->getGMTDateTime($user, $time);
 	}
@@ -338,7 +338,7 @@ class TimezoneWrangler
 	 *
 	 * @return  Date
 	 */
-	public function GMTToLocal($time, JUser $user = null)
+	public function GMTToLocal($time, $user = null)
 	{
 		return $this->getLocalDateTime($user, $time);
 	}
