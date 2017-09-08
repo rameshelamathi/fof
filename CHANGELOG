@@ -1,6 +1,7 @@
 FOF 3.1.3
 ================================================================================
 + TimezoneWrangler helper class
++ Automatically refresh the #__extensions version number before fetching updates if it's inconsistent
 ~ Change the way we catch and warn about Container serialization
 
 FOF 3.1.2
