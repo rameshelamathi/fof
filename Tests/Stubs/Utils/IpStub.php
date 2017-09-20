@@ -5,7 +5,7 @@
  * @license     GNU GPL version 2 or later
  */
 
-namespace FOF30\Tests\Stubs\Toolbar;
+namespace FOF30\Tests\Stubs\Utils;
 
 use FOF30\Utils\Ip;
 
@@ -13,7 +13,7 @@ class IpStub extends Ip
 {
 	public static $fakeIP = null;
 
-    public static function detectIP()
+    protected static function detectIP()
 	{
 		if (!is_null(static::$fakeIP))
 		{
@@ -21,5 +21,10 @@ class IpStub extends Ip
 		}
 
 		return parent::detectIP();
+	}
+
+	public static function detectAndCleanIP()
+	{
+		return parent::detectAndCleanIP();
 	}
 }
