@@ -1,5 +1,5 @@
 # Running tests
-In order to run the tests, you have configure your environment:
+In order to run the tests, you have to configure your environment:
  1. Create a database for the tests
  2. Install required libraries with Composer
 
@@ -19,7 +19,8 @@ $fofTestConfig = array(
 );
 ```
 ### Install required libraries with Composer
-You simply have to run `php composer.phar update` in order to install and update all the required libraries.
+You simply have to run `php composer.phar install` in order to install all the required libraries.  
+If you want to update the composer dependencies, run `php composer.phar update`.
 
 ### How to run tests
 Inside the `Tests` folder you can find a shell file named `run-tests.sh`.
