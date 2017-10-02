@@ -3854,8 +3854,8 @@ class DataModel extends Model implements \JTableInterface
 						'dbtable' => $this->getTableName(),
 						'key'     => $this->getKeyName(),
 						'type'    => $name,
-						'prefix'  => $this->_tablePrefix,
-						'class'   => 'F0FTable',
+						'prefix'  => $this->container->getNamespacePrefix() . '\\Model\\',
+						'class'   => $this->getName(),
 						'config'  => 'array()'
 					),
 					'common' => array(

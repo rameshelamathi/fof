@@ -1,6 +1,7 @@
 FOF 3.1.4
 ================================================================================
 ~ Deprecated DataModel::blacklistFilters for getting the filter list. Use getBlacklistFilters instead.
+# [LOW] The default UCM content type information still referenced FOF 2
 
 FOF 3.1.3
 ================================================================================
