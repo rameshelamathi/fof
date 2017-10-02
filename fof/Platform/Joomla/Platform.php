@@ -214,7 +214,7 @@ class Platform extends BasePlatform
 	public function getTemplateSuffixes()
 	{
 		$jversion = new \JVersion;
-		$versionParts = explode('.', $jversion->RELEASE);
+		$versionParts = explode('.', $jversion->getShortVersion());
 		$majorVersion = array_shift($versionParts);
 		$suffixes = array(
 			'.j' . str_replace('.', '', $jversion->getHelpVersion()),
