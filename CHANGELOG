@@ -1,3 +1,7 @@
+FOF 3.1.4
+================================================================================
+~ Deprecated DataModel::blacklistFilters for getting the filter list. Use getBlacklistFilters instead.
+
 FOF 3.1.3
 ================================================================================
 + TimezoneWrangler helper class
