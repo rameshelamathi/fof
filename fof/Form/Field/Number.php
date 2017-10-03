@@ -7,21 +7,20 @@
 
 namespace FOF30\Form\Field;
 
-use FOF30\Form\Exception\DataModelRequired;
-use FOF30\Form\Exception\GetInputNotAllowed;
-use FOF30\Form\Exception\GetStaticNotAllowed;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
-use JHtml;
+use JText;
 
 defined('_JEXEC') or die;
 
+\JFormHelper::loadFieldClass('number');
+
 /**
- * Form Field class for FOF
- * Renders the checkbox in browse views which allows you to select rows
+ * Form Field class for the FOF framework
+ * Supports a numeric field and currency symbols.
  */
-class SelectRow extends \JFormField implements FieldInterface
+class Number extends \JFormFieldNumber implements FieldInterface
 {
 	/**
 	 * @var  string  Static field output
@@ -91,74 +90,79 @@ class SelectRow extends \JFormField implements FieldInterface
 	}
 
 	/**
-	 * Method to get the field input markup for this field type.
-	 *
-	 * @since 2.0
-	 *
-	 * @return  string  The field input markup.
-	 *
-	 * @throws  GetInputNotAllowed
-	 */
-	protected function getInput()
-	{
-		throw new GetInputNotAllowed(__CLASS__);
-	}
-
-	/**
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
 	 *
 	 * @since 2.0
 	 *
 	 * @return  string  The field HTML
-	 *
-	 * @throws  \LogicException
 	 */
 	public function getStatic()
 	{
-		throw new GetStaticNotAllowed(__CLASS__);
+		return $this->getRepeatable();
 	}
 
 	/**
-	 * Get the rendering of this field type for a repeatable (grid) display,
-	 * e.g. in a view listing many item (typically a "browse" task)
-	 *
-	 * @since 2.0
-	 *
-	 * @return  string  The field HTML
-	 *
-	 * @throws  DataModelRequired
+	 * Print out the number as requested by the attributes
 	 */
 	public function getRepeatable()
 	{
-		// Should I support checked-out elements?
-		$checkoutSupport = false;
+		$currencyPos = $this->getAttribute('currency_position', false);
+		$currencySymbol = $this->getAttribute('currency_symbol', false);
 
-		if (isset($this->element['checkout']))
+		// Initialise
+		$class             = $this->id;
+
+		// Get field parameters
+		if ($this->element['class'])
 		{
-			$checkoutSupportValue = (string)$this->element['checkout'];
-			$checkoutSupport = in_array(strtolower($checkoutSupportValue), array('yes', 'true', 'on', 1));
+			$class = (string) $this->element['class'];
 		}
 
-		if (!($this->item instanceof DataModel))
+		// Start the HTML output
+		$html = '<span class="' . $class . '">';
+
+		// Prepend currency?
+		if ($currencyPos == 'before' && $currencySymbol)
 		{
-			throw new DataModelRequired(__CLASS__);
+			$html .= $currencySymbol;
 		}
 
-		// Is this record checked out?
-		$userId = $this->form->getContainer()->platform->getUser()->get('id', 0);
-		$checked_out = false;
+		$number = $this->value;
 
-		if ($checkoutSupport)
+		// Should we format the number too?
+		$formatNumber = false;
+
+		if (isset($this->element['format_number']))
 		{
-			$checked_out     = $this->item->isLocked($userId);
+			$formatNumberValue = (string)$this->element['format_number'];
+			$formatNumber = in_array(strtolower($formatNumberValue), array('yes', 'true', 'on', 1));
 		}
 
-		// Get the key id for this record
-		$key_field = $this->item->getKeyName();
-		$key_id    = $this->item->$key_field;
+		// Format the number correctly
+		if ($formatNumber)
+		{
+			$numDecimals 	= $this->getAttribute('decimals', 2);
+			$minNumDecimals = $this->getAttribute('min_decimals', 2);
+			$decimalsSep 	= $this->getAttribute('decimals_separator', '.');
+			$thousandSep 	= $this->getAttribute('thousand_separator', ',');
 
-		// Get the HTML
-		return JHtml::_('grid.id', $this->rowid, $key_id, $checked_out);
+			// Format the number
+			$number = number_format((float)$this->value, $numDecimals, $decimalsSep, $thousandSep);
+		}
+
+		// Put it all together
+		$html .= $number;
+
+		// Append currency?
+		if ($currencyPos == 'after' && $currencySymbol)
+		{
+			$html .= $currencySymbol;
+		}
+
+		// End the HTML output
+		$html .= '</span>';
+
+		return $html;
 	}
 }
