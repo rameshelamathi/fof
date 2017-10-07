@@ -3,6 +3,7 @@ FOF 3.1.4
 ! PHP 7.2 compatibility: replace "numeric" field with "number". You have to do this change in your forms manually.
 ~ Deprecated DataModel::blacklistFilters for getting the filter list. Use getBlacklistFilters instead.
 # [LOW] The default UCM content type information still referenced FOF 2
+# [LOW] The logoutUser platform method did not work
 
 FOF 3.1.3
 ================================================================================

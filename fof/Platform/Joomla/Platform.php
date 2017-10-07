@@ -826,10 +826,20 @@ class Platform extends BasePlatform
 	{
 		\JLoader::import('joomla.user.authentication');
 		$app = \JFactory::getApplication();
+		$user = $this->getUser();
 		$options = array('remember' => false);
-		$parameters = array('username' => $this->getUser()->username);
+		$parameters = array(
+			'username' => $user->username,
+			'id' => $user->id
+		);
 
-		$ret = $app->triggerEvent('onLogoutUser', array($parameters, $options));
+		// Set clientid in the options array if it hasn't been set already and shared sessions are not enabled.
+		if (!$app->get('shared_session', '0'))
+		{
+			$options['clientid'] = $app->getClientId();
+		}
+
+		$ret = $app->triggerEvent('onUserLogout', array($parameters, $options));
 
 		return !in_array(false, $ret, true);
 	}
