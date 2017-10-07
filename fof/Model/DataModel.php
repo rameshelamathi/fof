@@ -3854,8 +3854,8 @@ class DataModel extends Model implements \JTableInterface
 						'dbtable' => $this->getTableName(),
 						'key'     => $this->getKeyName(),
 						'type'    => $name,
-						'prefix'  => $this->_tablePrefix,
-						'class'   => 'F0FTable',
+						'prefix'  => $this->container->getNamespacePrefix() . '\\Model\\',
+						'class'   => $this->getName(),
 						'config'  => 'array()'
 					),
 					'common' => array(
@@ -4197,12 +4197,15 @@ class DataModel extends Model implements \JTableInterface
 	}
 
 	/**
-	 * Set or get the backlisted filters
+	 * Set or get the backlisted filters.
+	 *
+	 * Note: passing a null $list to get the filter blacklist is deprecated as of FOF 3.1. Pleas use getBlacklistFilters
+	 *       instead.
 	 *
 	 * @param   mixed    $list    A filter or list of filters to backlist. If null return the list of backlisted filter
 	 * @param   boolean  $reset   Reset the blacklist if true
 	 *
-	 * @return  void|array  Return an array of value if $list is null
+	 * @return  null|array  Return an array of value if $list is null
 	 */
 	public function blacklistFilters($list = null, $reset = false)
 	{
@@ -4222,6 +4225,18 @@ class DataModel extends Model implements \JTableInterface
 		}
 
 		$this->setBehaviorParam('blacklistFilters', $list);
+
+		return null;
+	}
+
+	/**
+	 * Get the blacklisted filters.
+	 *
+	 * @return  array
+	 */
+	public function getBlacklistFilters()
+	{
+		return $this->getBehaviorParam('blacklistFilters', array());
 	}
 
 	/**
