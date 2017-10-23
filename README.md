@@ -104,6 +104,7 @@ the following tools:
 You will also need the following path structure on your system:
 * `fof` This repository, a.k.a. MAIN directory
 * `buildfiles` [Akeeba Build Tools](https://github.com/akeeba/buildfiles). The name of the directory is important. This is where the master Phing script, also used by FOF to build packages, is located in.
+* `translations` [Akeeba Translations](https://github.com/akeeba/translations). The name of the directory is important. This is where we store all of the language files.
 
 ### Useful Phing tasks
 
