@@ -92,7 +92,7 @@ class Joomla3 extends AkeebaStrapper
 			$classes = array_unique($classes);
 		}
 
-		echo '<div id="akeeba-renderjoomla" class="' . implode($classes, ' ') . "\">\n";
+		$this->openPageWrapper($classes);
 
 		// Render the submenu and toolbar
 		if ($input->getBool('render_toolbar', true))
@@ -133,7 +133,8 @@ class Joomla3 extends AkeebaStrapper
 			return;
 		}
 
-		echo "</div>\n";    // Closes akeeba-renderjoomla div
+		// Closes akeeba-renderjoomla div
+		$this->closePageWrapper();
 	}
 
 	/**
@@ -202,6 +203,28 @@ class Joomla3 extends AkeebaStrapper
 		$html .= "</label>\n";
 
 		return $html;
+	}
+
+	/**
+	 * Opens a page wrapper. The component output will be inside this wrapper.
+	 *
+	 * @param   array  $classes  An array of additional CSS classes to add to the outer page wrapper element.
+	 *
+	 * @return  void
+	 */
+	protected function openPageWrapper($classes)
+	{
+		echo '<div id="akeeba-renderjoomla" class="' . implode($classes, ' ') . "\">\n";
+	}
+
+	/**
+	 * Outputs HTML which closes the page wrappers opened with openPageWrapper.
+	 *
+	 * @return  void
+	 */
+	protected function closePageWrapper()
+	{
+		echo "</div>\n";
 	}
 
 }
