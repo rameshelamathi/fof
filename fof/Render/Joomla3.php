@@ -59,9 +59,9 @@ class Joomla3 extends AkeebaStrapper
 
 		// Wrap output in various classes
 		$version = new \JVersion;
-		$versionParts = explode('.', $version->RELEASE);
-		$minorVersion = str_replace('.', '', $version->RELEASE);
-		$majorVersion = array_shift($versionParts);
+		$versionParts = explode('.', JVERSION);
+		$minorVersion = $versionParts[1];
+		$majorVersion = $versionParts[0];
 
 		$classes = array();
 
