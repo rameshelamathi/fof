@@ -4,6 +4,7 @@ FOF 3.1.4
 ~ Deprecated DataModel::blacklistFilters for getting the filter list. Use getBlacklistFilters instead.
 ~ Joomla! 4: Bump maximum Joomla! version suported by FOF and FOF-based extensions to 4.0.999
 ~ Joomla! 4: Do not use JVersion constant access as class properties
+~ Joomla! 4: Component installation workarounds for Joomla! 3 (_createAdminMenus and _reallyPublishAdminMenuItems) will not run under Joomla! 4 as they'd break the installation.
 # [LOW] The default UCM content type information still referenced FOF 2
 # [LOW] The logoutUser platform method did not work
 
