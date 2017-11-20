@@ -58,9 +58,8 @@ class Joomla3 extends AkeebaStrapper
 		\JHTML::_('jquery.framework', true);
 
 		// Wrap output in various classes
-		$version = new \JVersion;
 		$versionParts = explode('.', JVERSION);
-		$minorVersion = $versionParts[1];
+		$minorVersion = $versionParts[0] . $versionParts[1];
 		$majorVersion = $versionParts[0];
 
 		$classes = array();
