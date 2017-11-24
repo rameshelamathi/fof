@@ -24,6 +24,7 @@ use FOF30\Model\DataModel\Exception\NoTableColumns;
 use FOF30\Model\DataModel\Exception\RecordNotLoaded;
 use FOF30\Model\DataModel\Exception\SpecialColumnMissing;
 use FOF30\Model\DataModel\RelationManager;
+use FOF30\Utils\ArrayHelper;
 
 defined('_JEXEC') or die;
 
@@ -3761,7 +3762,7 @@ class DataModel extends Model implements \JTableInterface
 			throw new BaseException($historyTable->getError());
 		}
 
-		$rowArray = \JArrayHelper::fromObject(json_decode($historyTable->version_data));
+		$rowArray = ArrayHelper::fromObject(json_decode($historyTable->version_data));
 
 		$typeId = \JTable::getInstance('Contenttype')->getTypeId($alias);
 
