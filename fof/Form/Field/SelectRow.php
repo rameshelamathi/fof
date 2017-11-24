@@ -20,6 +20,8 @@ defined('_JEXEC') or die;
 /**
  * Form Field class for FOF
  * Renders the checkbox in browse views which allows you to select rows
+ *
+ * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
 class SelectRow extends \JFormField implements FieldInterface
 {

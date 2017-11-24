@@ -169,6 +169,8 @@ class Joomla3 extends AkeebaStrapper
 	 * @param 	string  $title  The title of the label
 	 *
 	 * @return 	string  The rendered label
+	 *
+	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
 	 */
 	public function renderFieldsetLabel($field, Form &$form, $title)
 	{

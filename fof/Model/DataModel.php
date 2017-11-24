@@ -132,13 +132,31 @@ class DataModel extends Model implements \JTableInterface
 	/** @var  string  The UCM content type (typically: com_something.viewname, e.g. com_foobar.items) */
 	protected $contentType = null;
 
-	/** @var  string|null  The name of the XML form to load */
+	/**
+	 * The name of the XML form to load
+	 *
+	 * @var  string|null
+	 *
+	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
+	 */
 	protected $formName = null;
 
-	/** @var  Form[]  Array of form objects */
+	/**
+	 * Array of form objects
+	 *
+	 * @var  Form[]
+	 *
+	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
+	 */
 	protected $_forms = array();
 
-	/** @var  array  The data to load into a form */
+	/**
+	 * The data to load into a form
+	 *
+	 * @var  array
+	 *
+	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
+	 */
 	protected $_formData = array();
 
  	/** @var  array  Shared parameters for behaviors */
@@ -656,10 +674,7 @@ class DataModel extends Model implements \JTableInterface
 	 * Basically, if you find yourself using this method you are probably doing something very wrong or very advanced.
 	 * If you do not feel confident with debugging FOF code STOP WHATEVER YOU'RE DOING and rethink your Model. Why are
 	 * you using a JOIN? If you want to filter the records by a field found in another table you can still use
-	 * relations and whereHas with a callback. If you want to display data from related entries in an XML form
-	 * you can do that with relations, using the dot notation (name_from="relationName.fieldName"). If you want to do
-	 * advanced grouping of records (GROUP clauses) then allright, you can't use relations. But if you are doing this
-	 * kind of advanced stuff you needn't be reading introductory texts like this so get back to coding already!
+	 * relations and whereHas with a callback.
 	 *
 	 * @param   string  $fieldName  The name of the field
 	 * @param   mixed   $default    Default value, used by reset() (default: null)
@@ -3951,6 +3966,8 @@ class DataModel extends Model implements \JTableInterface
 	 * @param   string  $formName  The abstract form file name to set, e.g. "form.default"
 	 *
 	 * @return  void
+	 *
+	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
 	 */
 	public function setFormName($formName)
 	{
@@ -3960,7 +3977,9 @@ class DataModel extends Model implements \JTableInterface
 	/**
 	 * Gets the abstract XML form file name
 	 *
-	 * @return  string  The abstract form file name to set, e.g. "form.default"
+	 * @return  string  The abstract form file name, e.g. "form.default"
+	 *
+	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
 	 */
 	public function getFormName()
 	{
@@ -3977,6 +3996,8 @@ class DataModel extends Model implements \JTableInterface
 	 * @return  Form|bool  A Form object on success, false on failure
 	 *
 	 * @since   2.0
+	 *
+	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
 	 */
 	public function getForm($data = array(), $loadData = true, $source = null)
 	{
@@ -4028,6 +4049,8 @@ class DataModel extends Model implements \JTableInterface
 	 *
 	 * @see     Form
 	 * @since   2.0
+	 *
+	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
 	 */
 	protected function loadForm($name, $source, $options = array(), $clear = false, $xpath = false)
 	{
@@ -4083,6 +4106,8 @@ class DataModel extends Model implements \JTableInterface
 	 * @return  array    The default data is an empty array.
 	 *
 	 * @since   2.0
+	 *
+	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
 	 */
 	protected function loadFormData()
 	{
@@ -4108,6 +4133,8 @@ class DataModel extends Model implements \JTableInterface
 	 * @since   2.0
 	 *
 	 * @throws  \Exception if there is an error in the form event.
+	 *
+	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
 	 */
 	protected function preprocessForm(Form &$form, &$data, $group = 'content')
 	{
@@ -4133,6 +4160,8 @@ class DataModel extends Model implements \JTableInterface
 	 * @see     \JFilterInput
 	 *
 	 * @since   2.0
+	 *
+	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
 	 */
 	public function validateForm($form, $data, $group = null)
 	{

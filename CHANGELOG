@@ -2,6 +2,7 @@ FOF 3.1.4
 ================================================================================
 ! PHP 7.2 compatibility: replace "numeric" field with "number". You have to do this change in your forms manually.
 ~ Deprecated DataModel::blacklistFilters for getting the filter list. Use getBlacklistFilters instead.
+~ Deprecated XML Forms and associated features (fields, automatic validation, scaffolding, ...). They will be removed in FOF 4.0. We recommend using Blade (or PHP) templates instead.
 ~ Joomla! 4: Bump maximum Joomla! version suported by FOF and FOF-based extensions to 4.0.999
 ~ Joomla! 4: Do not use JVersion constant access as class properties
 ~ Joomla! 4: Component installation workarounds for Joomla! 3 (_createAdminMenus and _reallyPublishAdminMenuItems) will not run under Joomla! 4 as they'd break the installation.
