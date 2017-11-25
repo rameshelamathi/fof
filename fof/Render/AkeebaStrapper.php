@@ -225,10 +225,6 @@ JS;
 	 */
 	protected function renderLinkbar_classic($view, $task)
 	{
-		// Prevent phpStorm from complaining
-		if ($view) {}
-		if ($task) {}
-
 		$platform = $this->container->platform;
 
 		if ($platform->isCli())
@@ -236,9 +232,12 @@ JS;
 			return;
 		}
 
+		$isJoomla4 = version_compare(JVERSION, '3.99999.99999', 'gt');
+		$isJoomla3 = !$isJoomla4 && version_compare(JVERSION, '3.0.0', 'ge');
+
 		// Do not render a submenu unless we are in the the admin area
-		$toolbar				 = $this->container->toolbar;
-		$renderFrontendSubmenu	 = $toolbar->getRenderFrontendSubmenu();
+		$toolbar               = $this->container->toolbar;
+		$renderFrontendSubmenu = $toolbar->getRenderFrontendSubmenu();
 
 		if (!$platform->isBackend() && !$renderFrontendSubmenu)
 		{
@@ -317,27 +316,38 @@ JS;
 				}
 				else
 				{
-					echo "<li";
+					echo "<li class=\"nav-item";
 
-					if ($link['active'])
+					if ($link['active'] && $isJoomla3)
 					{
-						echo ' class="active"';
+						echo ' active"';
 					}
 
-					echo ">";
+					echo "\">";
 
 					if ($link['icon'])
 					{
-						echo "<i class=\"icon icon-" . $link['icon'] . "\"></i>";
+						echo "<span class=\"icon icon-" . $link['icon'] . "\"></span>";
 					}
 
-					if ($link['link'])
+					if ($isJoomla3)
 					{
-						echo "<a href=\"" . $link['link'] . "\">" . $link['name'] . "</a>";
+						if ($link['link'])
+						{
+							echo "<a href=\"" . $link['link'] . "\">" . $link['name'] . "</a>";
+						}
+						else
+						{
+							echo $link['name'];
+						}
 					}
 					else
 					{
-						echo $link['name'];
+						$class = $link['active'] ? 'active' : '';
+
+						$href = $link['link'] ? $link['link'] : '#';
+
+						echo "<a href=\"$href\" class=\"nav-link $class\">{$link['name']}</a>";
 					}
 				}
 
@@ -360,10 +370,6 @@ JS;
 	 */
 	protected function renderLinkbar_joomla($view, $task)
 	{
-		// Prevent phpStorm from complaining
-		if ($view) {}
-		if ($task) {}
-
 		$platform = $this->container->platform;
 
 		// On command line don't do anything
@@ -373,8 +379,8 @@ JS;
 		}
 
 		// Do not render a submenu unless we are in the the admin area
-		$toolbar				 = $this->container->toolbar;
-		$renderFrontendSubmenu	 = $toolbar->getRenderFrontendSubmenu();
+		$toolbar               = $this->container->toolbar;
+		$renderFrontendSubmenu = $toolbar->getRenderFrontendSubmenu();
 
 		if (!$platform->isBackend() && !$renderFrontendSubmenu)
 		{

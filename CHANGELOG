@@ -7,6 +7,7 @@ FOF 3.1.4
 ~ Joomla! 4: Bump maximum Joomla! version suported by FOF and FOF-based extensions to 4.0.999
 ~ Joomla! 4: Do not use JVersion constant access as class properties
 ~ Joomla! 4: Component installation workarounds for Joomla! 3 (_createAdminMenus and _reallyPublishAdminMenuItems) will not run under Joomla! 4 as they'd break the installation.
+~ Joomla! 4: Change rendering of toolbar tabs to match Bootstrap 4 styling, when using the "classic" linkbar rendering option (default)
 ~ Joomla! 3 renderer: using methods to open and close the component HTML output wrapper elements instead of hardcoding the output in pre-/post-render methods.
 # [LOW] The default UCM content type information still referenced FOF 2
 # [LOW] The logoutUser platform method did not work
