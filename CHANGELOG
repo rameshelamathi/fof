@@ -1,3 +1,7 @@
+FOF 3.1.5
+================================================================================
++ Component version helper
+
 FOF 3.1.4
 ================================================================================
 ! PHP 7.2 compatibility: replace "numeric" field with "number". You have to do this change in your forms manually.
