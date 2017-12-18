@@ -1,6 +1,7 @@
-FOF 3.1.5
+FOF 3.2.0
 ================================================================================
 + Component version helper
++ Akeeba FEF renderer (to be used by Akeeba components in 2018)
 # [HIGH] The defaultView option in fof.xml was being ignored
 
 FOF 3.1.4
