@@ -667,7 +667,7 @@ abstract class FEFHelperSelect
 			$attribs = ArrayHelper::toString($attribs);
 		}
 
-		$id_text = $idtag ?: $name;
+		$id_text = empty($idtag) ? $name : $idtag;
 
 		$html = '';
 
