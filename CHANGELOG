@@ -1,3 +1,7 @@
+FOF 3.2.2
+================================================================================
+# [MEDIUM] DataModel constructor forcibly applies access level filtering when the model is doing asset tracking
+
 FOF 3.2.1
 ================================================================================
 # [HIGH] DataModel::count() causes a SQL error on MySQL 5.7+ with ONLY_FULL_GROUP_BY SQL mode enabled
