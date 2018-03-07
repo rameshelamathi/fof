@@ -117,6 +117,13 @@ abstract class BrowseView
 
 		$currentValue = $params['list.select'];
 
+		// If fof.autosubmit is enabled and onchange is not set we will add our own handler
+		if ($params['fof.autosubmit'] && is_null($params['onchange']))
+		{
+			$formName = $params['fof.formname'] ? $params['fof.formname'] : 'adminForm';
+			$params['onchange'] = "document.{$formName}.submit()";
+		}
+
 		// Construct SELECT element's attributes
 		$attr = '';
 		$attr .= $params['class'] ? ' class="' . $params['class'] . '"' : '';
@@ -128,16 +135,9 @@ abstract class BrowseView
 		$attr .= $params['onchange'] ? ' onchange="' . $params['onchange'] . '"' : '';
 
 		// We use the constructed SELECT element's attributes only if no 'attr' key was provided
-		if (empty($params['attr']))
+		if (empty($params['list.attr']))
 		{
-			$params['attr'] = $attr;
-		}
-
-		// If fof.autosubmit is enabled and onchange is not set we will add our own handler
-		if ($params['fof.autosubmit'] && is_null($params['onchange']))
-		{
-			$formName = $params['fof.formname'] ? $params['fof.formname'] : 'adminForm';
-			$params['onchange'] = "document.{$formName}.submit()";
+			$params['list.attr'] = $attr;
 		}
 
 		// Merge the options with those fetched from a source (e.g. another Helper object)
@@ -361,12 +361,23 @@ abstract class BrowseView
 			'key_field'    => $model->getKeyName(),
 			'value_field'  => 'title',
 			'apply_access' => false,
-			'none'         => '',
+			'none'         => null,
 			'translate'    => true,
 			'with'         => [],
 		];
 
 		$params = array_merge($defaultParams, $params);
+
+		if (empty($defaultParams['none']) && !is_null(empty($defaultParams['none'])))
+		{
+			$langKey = strtoupper($model->getContainer()->componentName . '_TITLE_' . $model->getName());
+			$placeholder = JText::_($langKey);
+
+			if ($langKey != $placeholder)
+			{
+				$defaultParams['none'] = '&mdash; ' . $placeholder . ' &mdash;';
+			}
+		}
 
 		if (!empty($defaultParams['none']))
 		{
