@@ -513,7 +513,7 @@ END;
 		{
 			$this['blade'] = function (Container $c)
 			{
-				return new Blade();
+				return new Blade($c);
 			};
 		}
 

@@ -7,6 +7,8 @@
 
 namespace FOF30\View\Compiler;
 
+use FOF30\Container\Container;
+
 defined('_JEXEC') or die;
 
 class Blade implements CompilerInterface
@@ -71,6 +73,18 @@ class Blade implements CompilerInterface
 	 * @var int
 	 */
 	protected $forelseCounter = 0;
+
+	/**
+	 * The FOF container we are attached to
+	 *
+	 * @var Container
+	 */
+	protected $container;
+
+	public function __construct(Container $container)
+	{
+		$this->container = $container;
+	}
 
 	/**
 	 * Are the results of this compiler engine cacheable? If the engine makes use of the forcedParams it must return
@@ -829,6 +843,29 @@ class Blade implements CompilerInterface
 	protected function compileJhtml($expression)
 	{
 		return "<?php echo \\JHtml::_{$expression}; ?>";
+	}
+
+	/**
+	 * Compile the `sortgrid` statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileSortgrid($expression)
+	{
+		$expression = trim($expression, '()');
+		$parts = explode(',', $expression, 2);
+
+		$field = $parts[0];
+		$langKey = (count($parts) == 1) ? '' : $parts[1];
+
+		if (empty($langKey))
+		{
+			$nakedField = trim(trim($field), '\'"');
+			$langKey = "\$this->getContainer()->componentName . '_' . \$this->getName() . '_FIELD_$nakedField'";
+		}
+
+		return "<?php echo \\JHtml::_('grid.sort', $langKey, $field, \$this->getLists()->order_Dir, \$this->getLists()->order, \$this->getTask()); ?>";
 	}
 
 	/**

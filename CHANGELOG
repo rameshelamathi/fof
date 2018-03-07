@@ -1,6 +1,7 @@
 FOF 3.2.2
 ================================================================================
 + FEF HTML helper: dragDropReordering
++ Blade: `@sortgrid($field [, $langKey])` implements Joomla sortable titles for browse view table headers
 # [MEDIUM] DataModel constructor forcibly applies access level filtering when the model is doing asset tracking
 
 FOF 3.2.1
