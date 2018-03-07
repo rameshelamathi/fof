@@ -7,9 +7,9 @@
 
 namespace FOF30\Utils\FEFHelper;
 
-use FOF30\Container\Container;
+defined('_JEXEC') or die;
+
 use FOF30\View\DataView\DataViewInterface;
-use FOF30\View\DataView\Raw;
 
 abstract class Html
 {
