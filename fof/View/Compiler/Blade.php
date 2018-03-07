@@ -869,6 +869,20 @@ class Blade implements CompilerInterface
 	}
 
 	/**
+	 * Compile the `fieldtitle` statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileFieldtitle($expression)
+	{
+			$nakedField = trim(trim($expression, "() \t\r\n"), '\'"');
+			$langKey = "\$this->getContainer()->componentName . '_' . \$this->getName() . '_FIELD_$nakedField'";
+
+		return "<?php echo \\JText::_($langKey); ?>";
+	}
+
+	/**
 	 * Compile the media statements into valid PHP.
 	 *
 	 * @param  string  $expression
