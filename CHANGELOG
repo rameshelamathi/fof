@@ -3,6 +3,7 @@ FOF 3.3.0
 + FEF HTML helper: dragDropReordering
 + Blade: `@sortgrid($field [, $langKey])` implements Joomla sortable titles for browse view table headers
 + Blade: `@fieldtitle($field)` returns the translated COM_YourComponent_YourView_FIELD_YourField string
++ Blade: `modelfilter($localField, [$modelTitleField, $modelName])` to create select filters from model data
 + BrowseView helper to help us convert from XML forms to FEF
 # [MEDIUM] DataModel constructor forcibly applies access level filtering when the model is doing asset tracking
 
