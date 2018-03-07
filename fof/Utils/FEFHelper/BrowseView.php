@@ -416,7 +416,7 @@ abstract class BrowseView
 					$value = JText::_($value);
 				}
 
-				$options[] = JHtml::_('FEFHelper.select.option', $params['key_field'], $value);
+				$options[] = JHtml::_('FEFHelper.select.option', $item->{$params['key_field']}, $value);
 			}
 		}
 
