@@ -398,11 +398,11 @@ abstract class BrowseView
 		{
 			foreach ($items as $item)
 			{
-				$value = $params['value_field'];
+				$value = $item->{$params['value_field']};
 
 				if ($params['translate'])
 				{
-					$value = JText::_($params['value_field']);
+					$value = JText::_($value);
 				}
 
 				$options[] = JHtml::_('FEFHelper.select.option', $params['key_field'], $value);
