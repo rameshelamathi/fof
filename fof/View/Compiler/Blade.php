@@ -880,10 +880,7 @@ class Blade implements CompilerInterface
 	 */
 	protected function compileFieldtitle($expression)
 	{
-			$nakedField = trim(trim($expression, "() \t\r\n"), '\'"');
-			$langKey = "\$this->getContainer()->componentName . '_' . \$this->getName() . '_FIELD_$nakedField'";
-
-		return "<?php echo \\JText::_($langKey); ?>";
+		return "<?php echo FOF30\Utils\FEFHelper\BrowseView::fieldLabel{$expression} ?>";
 	}
 
 	/**

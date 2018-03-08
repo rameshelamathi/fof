@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     FOF
- * @copyright Copyright (c)2010-2018 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   Copyright (c)2010-2018 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
 
@@ -11,6 +11,7 @@ defined('_JEXEC') or die;
 
 use FOF30\Container\Container;
 use FOF30\Model\DataModel;
+use FOF30\View\View;
 use JHtml;
 use JText;
 
@@ -25,6 +26,96 @@ use JText;
 abstract class BrowseView
 {
 	/**
+	 * Get the translation key for a field's label
+	 *
+	 * @param string $fieldName The field name
+	 *
+	 * @return string
+	 *
+	 * @since 3.3.0
+	 */
+	public static function fieldLabelKey($fieldName)
+	{
+		$view = self::getViewFromBacktrace();
+
+		try
+		{
+			return strtoupper($view->getContainer()->componentName . '_' . $view->getName() . '_FIELD_' . $fieldName);
+		}
+		catch (\Exception $e)
+		{
+			return ucfirst($fieldName);
+		}
+	}
+
+	/**
+	 * Returns the label for a field (translated)
+	 *
+	 * @param string $fieldName The field name
+	 *
+	 * @return string
+	 */
+	public static function fieldLabel($fieldName)
+	{
+		return JText::_(self::fieldLabelKey($fieldName));
+	}
+
+	/**
+	 * Create a browse view filter from values returned by a model
+	 *
+	 * @param string $localField      Field name
+	 * @param string $modelTitleField Foreign model field for drop-down display values
+	 * @param null   $modelName       Foreign model name
+	 * @param array  $params          Generic select display parameters
+	 *
+	 * @return string
+	 *
+	 * @since 3.3.0
+	 */
+	public static function modelFilter($localField, $modelTitleField = 'title', $modelName = null, array $params = [])
+	{
+		/** @var DataModel $model */
+		$model = self::getViewFromBacktrace()->getModel();
+
+		if (empty($modelName))
+		{
+			$modelName = $model->getForeignModelNameFor($localField);
+		}
+
+		$params = array_merge([
+			'none'           => '&mdash; ' . self::fieldLabel($localField) . ' &mdash;',
+			'value_field'    => $modelTitleField,
+			'fof.autosubmit' => true,
+		], $params);
+
+		return self::modelSelect($localField, $modelName, $model->getState($localField), $params);
+	}
+
+	/**
+	 * Create a browse view filter with dropdown values
+	 *
+	 * @param string $localField      Field name
+	 * @param array $options The JHtml options list to use
+	 * @param array  $params          Generic select display parameters
+	 *
+	 * @return string
+	 *
+	 * @since 3.3.0
+	 */
+	public static function selectFilter($localField, array $options, array $params = [])
+	{
+		/** @var DataModel $model */
+		$model = self::getViewFromBacktrace()->getModel();
+
+		$params = array_merge([
+			'none'           => '&mdash; ' . self::fieldLabel($localField) . ' &mdash;',
+			'fof.autosubmit' => true,
+		], $params);
+
+		return self::genericSelect($localField, $options, $model->getState($localField), $params);
+	}
+
+	/**
 	 * Create a select box from the values returned by a model
 	 *
 	 * @param string $name         Field name
@@ -34,11 +125,13 @@ abstract class BrowseView
 	 * @param array  $modelState   Optional state variables to pass to the model
 	 * @param array  $options      Any JHtml select options you want to add in front of the model's returned values
 	 *
-	 * @see self::getOptionsFromModel
-	 * @see self::getOptionsFromSource
-	 * @see self::genericSelect
+	 * @see   self::getOptionsFromModel
+	 * @see   self::getOptionsFromSource
+	 * @see   self::genericSelect
 	 *
 	 * @return string
+	 *
+	 * @since 3.3.0
 	 */
 	public static function modelSelect($name, $modelName, $currentValue, array $params = [], array $modelState = [], array $options = [])
 	{
@@ -85,6 +178,8 @@ abstract class BrowseView
 	 * @param array $params
 	 *
 	 * @return string
+	 *
+	 * @since 3.3.0
 	 */
 	public static function genericSelect($name, array $options, $currentValue, array $params = [])
 	{
@@ -120,7 +215,7 @@ abstract class BrowseView
 		// If fof.autosubmit is enabled and onchange is not set we will add our own handler
 		if ($params['fof.autosubmit'] && is_null($params['onchange']))
 		{
-			$formName = $params['fof.formname'] ? $params['fof.formname'] : 'adminForm';
+			$formName           = $params['fof.formname'] ? $params['fof.formname'] : 'adminForm';
 			$params['onchange'] = "document.{$formName}.submit()";
 		}
 
@@ -184,6 +279,8 @@ abstract class BrowseView
 	 * @param   DataModel $item The DataModel instance to get values from
 	 *
 	 * @return  string         Text with tags replace
+	 *
+	 * @since 3.3.0
 	 */
 	public static function parseFieldTags($text, DataModel $item)
 	{
@@ -241,6 +338,8 @@ abstract class BrowseView
 	 * @param  array $attribs
 	 *
 	 * @return array
+	 *
+	 * @since 3.3.0
 	 */
 	private static function getOptionsFromSource(array $attribs = [])
 	{
@@ -258,13 +357,13 @@ abstract class BrowseView
 			'source_format'    => '',
 		], $attribs);
 
-		$source_file = $attribs['source_file'];
-		$source_class = $attribs['source_class'];
-		$source_method = $attribs['source_method'];
-		$source_key = $attribs['source_key'];
-		$source_value = $attribs['source_value'];
+		$source_file      = $attribs['source_file'];
+		$source_class     = $attribs['source_class'];
+		$source_method    = $attribs['source_method'];
+		$source_key       = $attribs['source_key'];
+		$source_value     = $attribs['source_value'];
 		$source_translate = $attribs['source_translate'];
-		$source_format = $attribs['source_format'];
+		$source_format    = $attribs['source_format'];
 
 		if ($source_class && $source_method)
 		{
@@ -297,7 +396,7 @@ abstract class BrowseView
 						// Loop through the data and prime the $options array
 						foreach ($source_data as $k => $v)
 						{
-							$key = (empty($source_key) || ($source_key == '*')) ? $k : @$v[$source_key];
+							$key   = (empty($source_key) || ($source_key == '*')) ? $k : @$v[$source_key];
 							$value = (empty($source_value) || ($source_value == '*')) ? $v : @$v[$source_value];
 
 							if ($source_translate)
@@ -328,12 +427,14 @@ abstract class BrowseView
 	 * translate        Should I pass the values through JText? Default: TRUE.
 	 * with             Array of relation names for eager loading.
 	 *
-	 * @param string $modelName    The name of the model, e.g. "items" or "com_foobar.items"
-	 * @param array  $params       Parameters which define which options to get from the model
-	 * @param array  $modelState   Optional state variables to pass to the model
-	 * @param array  $options      Any JHtml select options you want to add in front of the model's returned values
+	 * @param string $modelName  The name of the model, e.g. "items" or "com_foobar.items"
+	 * @param array  $params     Parameters which define which options to get from the model
+	 * @param array  $modelState Optional state variables to pass to the model
+	 * @param array  $options    Any JHtml select options you want to add in front of the model's returned values
 	 *
 	 * @return mixed
+	 *
+	 * @since 3.3.0
 	 */
 	private static function getOptionsFromModel($modelName, array $params = [], array $modelState = [], array $options = [])
 	{
@@ -370,7 +471,7 @@ abstract class BrowseView
 
 		if (empty($defaultParams['none']) && !is_null(empty($defaultParams['none'])))
 		{
-			$langKey = strtoupper($model->getContainer()->componentName . '_TITLE_' . $model->getName());
+			$langKey     = strtoupper($model->getContainer()->componentName . '_TITLE_' . $model->getName());
 			$placeholder = JText::_($langKey);
 
 			if ($langKey != $placeholder)
@@ -427,6 +528,8 @@ abstract class BrowseView
 	 * Get the FOF DI container from the backtrace of the static call. MAGIC!
 	 *
 	 * @return  Container
+	 *
+	 * @since 3.3.0
 	 */
 	private static function getContainerFromBacktrace()
 	{
@@ -442,9 +545,9 @@ abstract class BrowseView
 		 * finding new call stack entries.
 		 */
 		$lastNumberOfEntries = 0;
-		$limit = 4;
-		$skip = 0;
-		$container = null;
+		$limit               = 4;
+		$skip                = 0;
+		$container           = null;
 
 		while (true)
 		{
@@ -452,7 +555,6 @@ abstract class BrowseView
 
 			if (count($backtrace) == $lastNumberOfEntries)
 			{
-				die('asdasd');
 				throw new \RuntimeException(__METHOD__ . ": Cannot retrieve FOF container from call stack. You are either calling me from a non-FEF extension or your PHP is broken.");
 			}
 
@@ -475,23 +577,75 @@ abstract class BrowseView
 					continue;
 				}
 
-				$container = $bt['object']->getContainer();
-
-				break;
+				return $bt['object']->getContainer();
 			}
 
-			if (is_null($container))
-			{
-				$skip = $limit;
-				$limit += 2;
-			}
-			else
-			{
-				break;
-			}
+			$skip  = $limit;
+			$limit += 2;
 		}
 
-		return $container;
+		throw new \RuntimeException(__METHOD__ . ": Cannot retrieve FOF container from call stack. You are either calling me from a non-FEF extension or your PHP is broken.");
+	}
+
+	/**
+	 * Get the FOF View from the backtrace of the static call. MAGIC!
+	 *
+	 * @return  View
+	 *
+	 * @since 3.3.0
+	 */
+	private static function getViewFromBacktrace()
+	{
+		// In case we are on a braindead host
+		if (!function_exists('debug_backtrace'))
+		{
+			throw new \RuntimeException("Your host has disabled the <code>debug_backtrace</code> PHP function. Please ask them to re-enable it. It's required for running this software.");
+		}
+
+		/**
+		 * For performance reasons I look into the last 4 call stack entries. If I don't find a container I
+		 * will expand my search by another 2 entries and so on until I either find a container or I stop
+		 * finding new call stack entries.
+		 */
+		$lastNumberOfEntries = 0;
+		$limit               = 4;
+		$skip                = 0;
+		$container           = null;
+
+		while (true)
+		{
+			$backtrace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, $limit);
+
+			if (count($backtrace) == $lastNumberOfEntries)
+			{
+				throw new \RuntimeException(__METHOD__ . ": Cannot retrieve FOF View from call stack. You are either calling me from a non-FEF extension or your PHP is broken.");
+			}
+
+			$lastNumberOfEntries = count($backtrace);
+
+			if ($skip)
+			{
+				$backtrace = array_slice($backtrace, $skip);
+			}
+
+			foreach ($backtrace as $bt)
+			{
+				if (!isset($bt['object']))
+				{
+					continue;
+				}
+
+				if ($bt['object'] instanceof View)
+				{
+					return $bt['object'];
+				}
+			}
+
+			$skip  = $limit;
+			$limit += 2;
+		}
+
+		throw new \RuntimeException(__METHOD__ . ": Cannot retrieve FOF View from call stack. You are either calling me from a non-FEF extension or your PHP is broken.");
 	}
 
 }
