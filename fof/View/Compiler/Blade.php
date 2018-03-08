@@ -850,6 +850,8 @@ class Blade implements CompilerInterface
 	 *
 	 * @param  string  $expression
 	 * @return string
+	 *
+	 * @since 3.3.0
 	 */
 	protected function compileSortgrid($expression)
 	{
@@ -873,6 +875,8 @@ class Blade implements CompilerInterface
 	 *
 	 * @param  string  $expression
 	 * @return string
+	 *
+	 * @since 3.3.0
 	 */
 	protected function compileFieldtitle($expression)
 	{
@@ -887,6 +891,8 @@ class Blade implements CompilerInterface
 	 *
 	 * @param  string  $expression
 	 * @return string
+	 *
+	 * @since 3.3.0
 	 */
 	protected function compileModelfilter($expression)
 	{
@@ -907,6 +913,31 @@ class Blade implements CompilerInterface
 		}
 
 		return "<?php echo \FOF30\Utils\FEFHelper\BrowseView::modelSelect('$localField', $modelName, \$this->getModel()->getState('$localField'), ['value_field' => '$modelTitleField']) ?>";
+	}
+
+	/**
+	 * Compile the `selectfilter($localField, $options [, $placeholder])` statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 *
+	 * @since 3.3.0
+	 */
+	protected function compileSelectfilter($expression)
+	{
+		$expression = trim($expression, '()');
+		$parts      = explode(',', $expression);
+
+		$localField  = $parts[0];
+		$optionsSpec = $parts[1];
+		$placeholder = isset($parts[2]) ? $parts[2] : null;
+		$params      = var_export([
+			'fof.autosubmit' => true,
+			'none'           => $placeholder,
+		], true);
+
+
+		return "<?php echo \FOF30\Utils\FEFHelper\BrowseView::genericSelect($localField, $optionsSpec, \$this->getModel()->getState($localField), $params) ?>";
 	}
 
 	/**
