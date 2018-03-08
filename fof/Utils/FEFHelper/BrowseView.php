@@ -27,6 +27,14 @@ use JText;
 abstract class BrowseView
 {
 	/**
+	 * Caches the results of getOptionsFromModel keyed by a hash. The hash is computed by the model
+	 * name, the model state and the options passed to getOptionsFromModel.
+	 *
+	 * @var array
+	 */
+	private static $cacheModelOptions = [];
+
+	/**
 	 * Get the translation key for a field's label
 	 *
 	 * @param string $fieldName The field name
@@ -84,6 +92,7 @@ abstract class BrowseView
 	 * @param string $localField      Field name
 	 * @param string $modelTitleField Foreign model field for drop-down display values
 	 * @param null   $modelName       Foreign model name
+	 * @param string $placeholder     Placeholder for no selection
 	 * @param array  $params          Generic select display parameters
 	 *
 	 * @return string
@@ -117,9 +126,10 @@ abstract class BrowseView
 	/**
 	 * Create a browse view filter with dropdown values
 	 *
-	 * @param string $localField Field name
-	 * @param array  $options    The JHtml options list to use
-	 * @param array  $params     Generic select display parameters
+	 * @param string $localField  Field name
+	 * @param array  $options     The JHtml options list to use
+	 * @param string $placeholder Placeholder for no selection
+	 * @param array  $params      Generic select display parameters
 	 *
 	 * @return string
 	 *
@@ -143,11 +153,33 @@ abstract class BrowseView
 		return self::genericSelect($localField, $options, $model->getState($localField), $params);
 	}
 
+	/**
+	 * View access dropdown filter
+	 *
+	 * @param string $localField  Field name
+	 * @param string $placeholder Placeholder for no selection
+	 * @param array  $params      Generic select display parameters
+	 *
+	 * @return string
+	 *
+	 * @since 3.3.0
+	 */
 	public static function accessFilter($localField, $placeholder = null, array $params = [])
 	{
 		return self::selectFilter($localField, SelectOptions::getOptions('access', $params), $placeholder, $params);
 	}
 
+	/**
+	 * Published state dropdown filter
+	 *
+	 * @param string $localField  Field name
+	 * @param string $placeholder Placeholder for no selection
+	 * @param array  $params      Generic select display parameters
+	 *
+	 * @return string
+	 *
+	 * @since 3.3.0
+	 */
 	public static function publishedFilter($localField, $placeholder = null, array $params = [])
 	{
 		return self::selectFilter($localField, SelectOptions::getOptions('published', $params), $placeholder, $params);
@@ -180,6 +212,83 @@ abstract class BrowseView
 		$options = self::getOptionsFromModel($modelName, $params, $modelState, $options);
 
 		return self::genericSelect($name, $options, $currentValue, $params);
+	}
+
+	/**
+	 * Get a (human readable) title from a (typically numeric, foreign key) key value using the data
+	 * returned by a DataModel.
+	 *
+	 * @param string $value      The key value
+	 * @param string $modelName  The name of the model, e.g. "items" or "com_foobar.items"
+	 * @param array  $params     Passed to getOptionsFromModel
+	 * @param array  $modelState Optional state variables to pass to the model
+	 * @param array  $options    Any JHtml select options you want to add in front of the model's returned values
+	 *
+	 * @see   self::getOptionsFromModel
+	 * @see   self::getOptionsFromSource
+	 * @see   self::genericSelect
+	 *
+	 * @return string
+	 *
+	 * @since 3.3.0
+	 */
+	public static function modelOptionName($value, $modelName = null, array $params = [], array $modelState = [], array $options = [])
+	{
+		if (!isset($params['cache']))
+		{
+			$params['cache'] = true;
+		}
+
+		$options = self::getOptionsFromModel($modelName, $params, $modelState, $options);
+
+		return self::getOptionName($value, $options);
+	}
+
+	/**
+	 * Gets the active option's label given an array of JHtml options
+	 *
+	 * @param   mixed   $selected       The currently selected value
+	 * @param   array   $data           The JHtml options to parse
+	 * @param   string  $optKey         Key name, default: value
+	 * @param   string  $optText        Value name, default: text
+	 * @param   bool    $selectFirst    Should I automatically select the first option? Default: true
+	 *
+	 * @return  mixed   The label of the currently selected option
+	 */
+	public static function getOptionName($selected = null, $data, $optKey = 'value', $optText = 'text', $selectFirst = true)
+	{
+		$ret = null;
+
+		foreach ($data as $elementKey => &$element)
+		{
+			if (is_array($element))
+			{
+				$key = $optKey === null ? $elementKey : $element[$optKey];
+				$text = $element[$optText];
+			}
+			elseif (is_object($element))
+			{
+				$key = $optKey === null ? $elementKey : $element->$optKey;
+				$text = $element->$optText;
+			}
+			else
+			{
+				// This is a simple associative array
+				$key = $elementKey;
+				$text = $element;
+			}
+
+			if (is_null($ret) && $selectFirst && ($selected == $key))
+			{
+				$ret = $text;
+			}
+			elseif ($selected == $key)
+			{
+				$ret = $text;
+			}
+		}
+
+		return $ret;
 	}
 
 	/**
@@ -472,6 +581,7 @@ abstract class BrowseView
 	 * none             Placeholder for no selection. Default: NULL (no placeholder).
 	 * translate        Should I pass the values through JText? Default: TRUE.
 	 * with             Array of relation names for eager loading.
+	 * cache            Cache the results for faster reuse
 	 *
 	 * @param string $modelName  The name of the model, e.g. "items" or "com_foobar.items"
 	 * @param array  $params     Parameters which define which options to get from the model
@@ -515,20 +625,43 @@ abstract class BrowseView
 
 		$params = array_merge($defaultParams, $params);
 
-		if (empty($defaultParams['none']) && !is_null($defaultParams['none']))
+		$cache    = isset($params['cache']) && $params['cache'];
+		$cacheKey = null;
+
+		if ($cache)
+		{
+			$cacheKey = sha1(print_r([
+				$model->getContainer()->componentName,
+				$model->getName(),
+				$params['key_field'],
+				$params['value_field'],
+				$params['apply_access'],
+				$params['none'],
+				$params['translate'],
+				$params['with'],
+				$modelState,
+			], true));
+		}
+
+		if ($cache && isset(self::$cacheModelOptions[$cacheKey]))
+		{
+			return self::$cacheModelOptions[$cacheKey];
+		}
+
+		if (empty($params['none']) && !is_null($params['none']))
 		{
 			$langKey     = strtoupper($model->getContainer()->componentName . '_TITLE_' . $model->getName());
 			$placeholder = JText::_($langKey);
 
 			if ($langKey != $placeholder)
 			{
-				$defaultParams['none'] = '&mdash; ' . $placeholder . ' &mdash;';
+				$params['none'] = '&mdash; ' . $placeholder . ' &mdash;';
 			}
 		}
 
-		if (!empty($defaultParams['none']))
+		if (!empty($params['none']))
 		{
-			$options[] = JHtml::_('FEFHelper.select.option', null, JText::_($defaultParams['none']));
+			$options[] = JHtml::_('FEFHelper.select.option', null, JText::_($params['none']));
 		}
 
 
@@ -565,6 +698,11 @@ abstract class BrowseView
 
 				$options[] = JHtml::_('FEFHelper.select.option', $item->{$params['key_field']}, $value);
 			}
+		}
+
+		if ($cache)
+		{
+			self::$cacheModelOptions[$cacheKey] = $options;
 		}
 
 		return $options;
