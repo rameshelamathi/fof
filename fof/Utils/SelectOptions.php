@@ -45,6 +45,7 @@ class SelectOptions
 	 * - cachehandlers  Cache handlers
 	 * - components     Installed components accessible by the current user
 	 * - languages      Site or administrator languages
+	 * - published      Published status
 	 *
 	 * Global params:
 	 * - cache  Should I returned cached data? Default: true.
@@ -279,6 +280,67 @@ class SelectOptions
 		if (!empty($none))
 		{
 			array_unshift($options, JHtml::_('select.option', '*', JText::_($none)));
+		}
+
+		return $options;
+	}
+
+	/**
+	 * Options for a Published field
+	 *
+	 * Params:
+	 * - none           Placeholder for no selection (empty key). Default: null.
+	 * - published      Show "Published"? Default: true
+	 * - unpublished    Show "Unpublished"? Default: true
+	 * - archived       Show "Archived"? Default: false
+	 * - trash          Show "Trashed"? Default: false
+	 * - all            Show "All" option? This is different than none, the key is '*'. Default: false
+	 *
+	 * @param $params
+	 *
+	 * @return array
+	 */
+	private static function published(array $params = [])
+	{
+		$config = array_merge([
+			'none'        => '',
+			'published'   => true,
+			'unpublished' => true,
+			'archived'    => false,
+			'trash'       => false,
+			'all'         => false,
+		], $params);
+
+		$options = array();
+
+		if (!empty($config['none']))
+		{
+			$options[] = JHtml::_('select.option', '', JText::_($config['none']));
+		}
+
+		if ($config['published'])
+		{
+			$options[] = JHtml::_('select.option', '1', JText::_('JPUBLISHED'));
+		}
+
+		if ($config['unpublished'])
+		{
+			$options[] = JHtml::_('select.option', '0', JText::_('JUNPUBLISHED'));
+		}
+
+		if ($config['archived'])
+		{
+			$options[] = JHtml::_('select.option', '2', JText::_('JARCHIVED'));
+		}
+
+		if ($config['trash'])
+		{
+			$options[] = JHtml::_('select.option', '-2', JText::_('JTRASHED'));
+		}
+
+		if ($config['all'])
+		{
+			$options[] = JHtml::_('select.option', '*', JText::_('JALL'));
 		}
 
 		return $options;
