@@ -6,6 +6,7 @@ FOF 3.3.0
 + Blade: `@modelfilter($localField, [$modelTitleField, $modelName])` to create select filters from model data
 + Blade: `@selectfilter($localField, $options [, $placeholder])`
 + BrowseView helper to help us convert from XML forms to FEF
++ SelectOptions helper for getting JHtml option arrays for Joomla core information, such as access levels
 # [MEDIUM] DataModel constructor forcibly applies access level filtering when the model is doing asset tracking
 
 FOF 3.2.1
