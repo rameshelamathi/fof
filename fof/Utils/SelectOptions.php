@@ -79,7 +79,7 @@ class SelectOptions
 
 		if ($fetchNew)
 		{
-			$ret = forward_static_call_array([__CLASS__, $type], $params);
+			$ret = forward_static_call_array([__CLASS__, $type], [$params]);
 		}
 
 		if (!$useCache)
@@ -98,7 +98,10 @@ class SelectOptions
 	/**
 	 * Joomla! Access Levels (previously: view access levels)
 	 *
-	 * @param   bool  $allowAllLevels  Should I add an option to allow all levels?
+	 * Available params:
+	 * - allLevels: Show an option for all levels (default: false)
+	 *
+	 * @param   array  $params  Parameters
 	 *
 	 * @since   3.3.0
 	 *
@@ -106,7 +109,7 @@ class SelectOptions
 	 *
 	 * @see \JHtmlAccess::level()
 	 */
-	private static function access($allowAllLevels = true)
+	private static function access(array $params = [])
 	{
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true)
@@ -120,7 +123,7 @@ class SelectOptions
 		$db->setQuery($query);
 		$options = $db->loadObjectList();
 
-		if ($allowAllLevels)
+		if (isset($params['allLevels']) && $params['allLevels'])
 		{
 			array_unshift($options, JHtml::_('select.option', '', JText::_('JOPTION_ACCESS_SHOW_ALL_LEVELS')));
 		}
@@ -131,7 +134,10 @@ class SelectOptions
 	/**
 	 * Joomla! User Groups
 	 *
-	 * @param   bool   $allowAll  Should I add an option to allow all groups?
+	 * Available params:
+	 * - allGroups: Show an option for all groups (default: false)
+	 *
+	 * @param   array  $params  Parameters
 	 *
 	 * @since   3.3.0
 	 *
@@ -139,7 +145,7 @@ class SelectOptions
 	 *
 	 * @see \JHtmlAccess::usergroup()
 	 */
-	private static function usergroups($allowAll = true)
+	private static function usergroups(array $params = [])
 	{
 		$options = array_values(\JHelperUsergroups::getInstance()->getAll());
 
@@ -150,7 +156,7 @@ class SelectOptions
 		}
 
 		// If all usergroups is allowed, push it into the array.
-		if ($allowAll)
+		if (isset($params['allGroups']) && $params['allGroups'])
 		{
 			array_unshift($options, JHtml::_('select.option', '', JText::_('JOPTION_ACCESS_SHOW_ALL_GROUPS')));
 		}

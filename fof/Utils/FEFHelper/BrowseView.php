@@ -11,6 +11,7 @@ defined('_JEXEC') or die;
 
 use FOF30\Container\Container;
 use FOF30\Model\DataModel;
+use FOF30\Utils\SelectOptions;
 use FOF30\View\View;
 use JHtml;
 use JText;
@@ -40,7 +41,24 @@ abstract class BrowseView
 
 		try
 		{
-			return strtoupper($view->getContainer()->componentName . '_' . $view->getName() . '_FIELD_' . $fieldName);
+			$inflector   = $view->getContainer()->inflector;
+			$viewName    = $inflector->singularize($view->getName());
+			$altViewName = $inflector->pluralize($view->getName());
+
+			$keys = [
+				strtoupper($view->getContainer()->componentName . '_' . $viewName . '_FIELD_' . $fieldName),
+				strtoupper($view->getContainer()->componentName . '_' . $altViewName . '_FIELD_' . $fieldName),
+			];
+
+			foreach ($keys as $key)
+			{
+				if (JText::_($key) != $key)
+				{
+					return $key;
+				}
+			}
+
+			return $key;
 		}
 		catch (\Exception $e)
 		{
@@ -72,7 +90,7 @@ abstract class BrowseView
 	 *
 	 * @since 3.3.0
 	 */
-	public static function modelFilter($localField, $modelTitleField = 'title', $modelName = null, array $params = [])
+	public static function modelFilter($localField, $modelTitleField = 'title', $modelName = null, $placeholder = null, array $params = [])
 	{
 		/** @var DataModel $model */
 		$model = self::getViewFromBacktrace()->getModel();
@@ -82,8 +100,13 @@ abstract class BrowseView
 			$modelName = $model->getForeignModelNameFor($localField);
 		}
 
+		if (is_null($placeholder))
+		{
+			$placeholder = self::fieldLabelKey($localField);
+		}
+
 		$params = array_merge([
-			'none'           => '&mdash; ' . self::fieldLabel($localField) . ' &mdash;',
+			'list.none'      => '&mdash; ' . JText::_($placeholder) . ' &mdash;',
 			'value_field'    => $modelTitleField,
 			'fof.autosubmit' => true,
 		], $params);
@@ -94,25 +117,40 @@ abstract class BrowseView
 	/**
 	 * Create a browse view filter with dropdown values
 	 *
-	 * @param string $localField      Field name
-	 * @param array $options The JHtml options list to use
-	 * @param array  $params          Generic select display parameters
+	 * @param string $localField Field name
+	 * @param array  $options    The JHtml options list to use
+	 * @param array  $params     Generic select display parameters
 	 *
 	 * @return string
 	 *
 	 * @since 3.3.0
 	 */
-	public static function selectFilter($localField, array $options, array $params = [])
+	public static function selectFilter($localField, array $options, $placeholder = null, array $params = [])
 	{
 		/** @var DataModel $model */
 		$model = self::getViewFromBacktrace()->getModel();
 
+		if (is_null($placeholder))
+		{
+			$placeholder = self::fieldLabelKey($localField);
+		}
+
 		$params = array_merge([
-			'none'           => '&mdash; ' . self::fieldLabel($localField) . ' &mdash;',
+			'list.none'      => '&mdash; ' . JText::_($placeholder) . ' &mdash;',
 			'fof.autosubmit' => true,
 		], $params);
 
 		return self::genericSelect($localField, $options, $model->getState($localField), $params);
+	}
+
+	public static function accessFilter($localField, $placeholder = null, array $params = [])
+	{
+		return self::selectFilter($localField, SelectOptions::getOptions('access', $params), $placeholder, $params);
+	}
+
+	public static function publishedFilter($localField, $placeholder = null, array $params = [])
+	{
+		return self::selectFilter($localField, SelectOptions::getOptions('published', $params), $placeholder, $params);
 	}
 
 	/**
@@ -155,6 +193,8 @@ abstract class BrowseView
 	 * - groups If set, looks for keys with the value "<optgroup>" and synthesizes groups from them. Deprecated. Default: true.
 	 * - list.select Either the value of one selected option or an array of selected options. Default: $currentValue.
 	 * - list.translate If true, text and labels are translated via JText::_(). Default is false.
+	 * - list.attr HTML element attributes (key/value array or string)
+	 * - list.none Placeholder for no selection (creates an option with an empty string key)
 	 * - option.id The property in each option array to use as the selection id attribute. Defaults: null.
 	 * - option.key The property in each option array to use as the Default: "value". If set to null, the index of the option array is used.
 	 * - option.label The property in each option array to use as the selection label attribute. Default: null
@@ -197,6 +237,7 @@ abstract class BrowseView
 			'option.attr'    => null,
 			'option.disable' => 'disable',
 			'list.attr'      => '',
+			'list.none'      => '',
 			'id'             => null,
 			'fof.autosubmit' => true,
 			'fof.formname'   => 'adminForm',
@@ -237,6 +278,11 @@ abstract class BrowseView
 
 		// Merge the options with those fetched from a source (e.g. another Helper object)
 		$options = array_merge($options, self::getOptionsFromSource($params));
+
+		if (!empty($params['list.none']))
+		{
+			array_unshift($options, JHtml::_('FEFHelper.select.option', '', JText::_($params['list.none'])));
+		}
 
 		$html = [];
 
@@ -469,7 +515,7 @@ abstract class BrowseView
 
 		$params = array_merge($defaultParams, $params);
 
-		if (empty($defaultParams['none']) && !is_null(empty($defaultParams['none'])))
+		if (empty($defaultParams['none']) && !is_null($defaultParams['none']))
 		{
 			$langKey     = strtoupper($model->getContainer()->componentName . '_TITLE_' . $model->getName());
 			$placeholder = JText::_($langKey);
