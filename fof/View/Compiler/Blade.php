@@ -867,7 +867,7 @@ class Blade implements CompilerInterface
 			$langKey = "\$this->getContainer()->componentName . '_' . \$this->getName() . '_FIELD_$nakedField'";
 		}
 
-		return "<?php echo \\JHtml::_('grid.sort', $langKey, $field, \$this->getLists()->order_Dir, \$this->getLists()->order, \$this->getTask()); ?>";
+		return "<?php echo \\JHtml::_('FEFHelper.browse.sort', $langKey, $field, \$this->getLists()->order_Dir, \$this->getLists()->order, \$this->getTask()); ?>";
 	}
 
 	/**

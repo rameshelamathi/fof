@@ -10,6 +10,7 @@ namespace FOF30\Utils\FEFHelper;
 defined('_JEXEC') or die;
 
 use FOF30\View\DataView\DataViewInterface;
+use JHtml;
 
 abstract class Html
 {
@@ -63,7 +64,7 @@ JS;
 		$orderingAsc	= \JText::_('JGLOBAL_ORDER_ASCENDING');
 		$orderingDesc	= \JText::_('JGLOBAL_ORDER_DESCENDING');
 		$sortBy			= \JText::_('JGLOBAL_SORT_BY');
-		$sortOptions	= \JHtml::_('select.options', $sortFields, 'value', 'text', $order);
+		$sortOptions	= JHtml::_('select.options', $sortFields, 'value', 'text', $order);
 
 		$ascSelected	= ($order_Dir == 'asc') ? 'selected="selected"' : "";
 		$descSelected	= ($order_Dir == 'desc') ? 'selected="selected"' : "";
@@ -119,50 +120,12 @@ HTML;
 	 * @param string            $order         The order value of the current row
 	 * @param string            $class         CSS class for the ordering value INPUT field
 	 * @param string            $icon          CSS class for the d'n'd handle icon
+	 * @param string            $inactiveIcon  CSS class for the d'n'd disabled icon
 	 *
 	 * @return string
 	 */
-	public static function dragDropReordering(DataViewInterface $view, $orderingField, $order, $class = 'input-mini', $icon = 'icon-menu')
+	public static function dragDropReordering(DataViewInterface $view, $orderingField, $order, $class = 'input-sm', $icon = 'akion-drag', $inactiveIcon = 'akion-android-more-vertical')
 	{
-		$dndOrderingActive = $view->getLists()->order == $orderingField;
-
-		// Default inactive ordering
-		$html  = '<span class="sortable-handler inactive" >';
-		$html .= '<span class="' . $icon . '"></span>';
-		$html .= '</span>';
-
-		// The modern drag'n'drop method
-		if ($view->getPerms()->editstate)
-		{
-			$disableClassName = '';
-			$disabledLabel = '';
-
-			// DO NOT REMOVE! It will initialize Joomla libraries and javascript functions
-			$hasAjaxOrderingSupport = $view->hasAjaxOrderingSupport();
-
-			if (!$hasAjaxOrderingSupport['saveOrder'])
-			{
-				$disabledLabel = \JText::_('JORDERINGDISABLED');
-				$disableClassName = 'inactive tip-top';
-			}
-
-			$orderClass = $dndOrderingActive ? 'order-enabled' : 'order-disabled';
-
-			$html  = '<div class="' . $orderClass . '">';
-			$html .= 	'<span class="sortable-handler ' . $disableClassName . '" title="' . $disabledLabel . '" rel="tooltip">';
-			$html .= 		'<span class="' . $icon . '"></span>';
-			$html .= 	'</span>';
-
-			if ($dndOrderingActive)
-			{
-				$joomla35IsBroken = version_compare(JVERSION, '3.5.0', 'ge') ? 'style="display: none"': '';
-
-				$html .= '<input type="text" name="order[]" ' . $joomla35IsBroken . ' size="5" class="' . $class . ' text-area-order" value="' . $order . '" />';
-			}
-
-			$html .= '</div>';
-		}
-
-		return $html;
+		return JHtml::_('FEFHelper.browse.order', $orderingField, $order, $class, $icon, $inactiveIcon, $view);
 	}
 }

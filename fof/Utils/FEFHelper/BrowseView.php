@@ -778,7 +778,7 @@ abstract class BrowseView
 	 *
 	 * @since 3.3.0
 	 */
-	private static function getViewFromBacktrace()
+	public static function getViewFromBacktrace()
 	{
 		// In case we are on a braindead host
 		if (!function_exists('debug_backtrace'))
