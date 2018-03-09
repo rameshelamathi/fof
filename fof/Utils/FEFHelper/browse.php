@@ -5,9 +5,11 @@
  * @license     GNU GPL version 2 or later
  */
 
+use FOF30\Model\DataModel;
 use FOF30\Utils\ArrayHelper;
 use FOF30\Utils\FEFHelper\BrowseView;
 use FOF30\View\DataView\DataViewInterface;
+use FOF30\View\DataView\Raw as DataViewRaw;
 
 /**
  * Custom JHtml (HTMLHelper) class. Offers browse view controls compatible with Akeeba Frontend
@@ -106,17 +108,17 @@ abstract class FEFHelperBrowse
 	/**
 	 * Returns a state change button on the browse view's table
 	 *
-	 * @param   array         $states     array of value/state. Each state is an array of the form
+	 * @param   array        $states      array of value/state. Each state is an array of the form
 	 *                                    (task, text, active title, inactive title, tip (boolean), HTML active class, HTML inactive class)
 	 *                                    or ('task'=>task, 'text'=>text, 'active_title'=>active title,
 	 *                                    'inactive_title'=>inactive title, 'tip'=>boolean, 'active_class'=>html active class,
 	 *                                    'inactive_class'=>html inactive class)
-	 * @param   integer       $value      The state value.
-	 * @param   integer       $i          The row index
-	 * @param   string|array  $prefix     An optional task prefix or an array of options
-	 * @param   boolean       $enabled    An optional setting for access control on the action.
-	 * @param   boolean       $translate  An optional setting for translation.
-	 * @param   string        $checkbox   An optional prefix for checkboxes.
+	 * @param   integer      $value       The state value.
+	 * @param   integer      $i           The row index
+	 * @param   string|array $prefix      An optional task prefix or an array of options
+	 * @param   boolean      $enabled     An optional setting for access control on the action.
+	 * @param   boolean      $translate   An optional setting for translation.
+	 * @param   string       $checkbox    An optional prefix for checkboxes.
 	 *
 	 * @return  string  The HTML markup
 	 *
@@ -126,20 +128,20 @@ abstract class FEFHelperBrowse
 	{
 		if (is_array($prefix))
 		{
-			$options = $prefix;
-			$enabled = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
+			$options   = $prefix;
+			$enabled   = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
 			$translate = array_key_exists('translate', $options) ? $options['translate'] : $translate;
-			$checkbox = array_key_exists('checkbox', $options) ? $options['checkbox'] : $checkbox;
-			$prefix = array_key_exists('prefix', $options) ? $options['prefix'] : '';
+			$checkbox  = array_key_exists('checkbox', $options) ? $options['checkbox'] : $checkbox;
+			$prefix    = array_key_exists('prefix', $options) ? $options['prefix'] : '';
 		}
 
-		$state = ArrayHelper::getValue($states, (int) $value, $states[0]);
-		$task = array_key_exists('task', $state) ? $state['task'] : $state[0];
-		$text = array_key_exists('text', $state) ? $state['text'] : (array_key_exists(1, $state) ? $state[1] : '');
-		$active_title = array_key_exists('active_title', $state) ? $state['active_title'] : (array_key_exists(2, $state) ? $state[2] : '');
+		$state          = ArrayHelper::getValue($states, (int) $value, $states[0]);
+		$task           = array_key_exists('task', $state) ? $state['task'] : $state[0];
+		$text           = array_key_exists('text', $state) ? $state['text'] : (array_key_exists(1, $state) ? $state[1] : '');
+		$active_title   = array_key_exists('active_title', $state) ? $state['active_title'] : (array_key_exists(2, $state) ? $state[2] : '');
 		$inactive_title = array_key_exists('inactive_title', $state) ? $state['inactive_title'] : (array_key_exists(3, $state) ? $state[3] : '');
-		$tip = array_key_exists('tip', $state) ? $state['tip'] : (array_key_exists(4, $state) ? $state[4] : false);
-		$active_class = array_key_exists('active_class', $state) ? $state['active_class'] : (array_key_exists(5, $state) ? $state[5] : '');
+		$tip            = array_key_exists('tip', $state) ? $state['tip'] : (array_key_exists(4, $state) ? $state[4] : false);
+		$active_class   = array_key_exists('active_class', $state) ? $state['active_class'] : (array_key_exists(5, $state) ? $state[5] : '');
 		$inactive_class = array_key_exists('inactive_class', $state) ? $state['inactive_class'] : (array_key_exists(6, $state) ? $state[6] : '');
 
 		return static::action(
@@ -151,13 +153,13 @@ abstract class FEFHelperBrowse
 	/**
 	 * Returns a published state on the browse view's table
 	 *
-	 * @param   integer       $value         The state value.
-	 * @param   integer       $i             The row index
-	 * @param   string|array  $prefix        An optional task prefix or an array of options
-	 * @param   boolean       $enabled       An optional setting for access control on the action.
-	 * @param   string        $checkbox      An optional prefix for checkboxes.
-	 * @param   string        $publish_up    An optional start publishing date.
-	 * @param   string        $publish_down  An optional finish publishing date.
+	 * @param   integer      $value        The state value.
+	 * @param   integer      $i            The row index
+	 * @param   string|array $prefix       An optional task prefix or an array of options
+	 * @param   boolean      $enabled      An optional setting for access control on the action.
+	 * @param   string       $checkbox     An optional prefix for checkboxes.
+	 * @param   string       $publish_up   An optional start publishing date.
+	 * @param   string       $publish_down An optional finish publishing date.
 	 *
 	 * @return  string  The HTML markup
 	 *
@@ -169,10 +171,10 @@ abstract class FEFHelperBrowse
 	{
 		if (is_array($prefix))
 		{
-			$options = $prefix;
-			$enabled = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
+			$options  = $prefix;
+			$enabled  = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
 			$checkbox = array_key_exists('checkbox', $options) ? $options['checkbox'] : $checkbox;
-			$prefix = array_key_exists('prefix', $options) ? $options['prefix'] : '';
+			$prefix   = array_key_exists('prefix', $options) ? $options['prefix'] : '';
 		}
 
 		/**
@@ -180,26 +182,36 @@ abstract class FEFHelperBrowse
 		 *
 		 * (task, text, active title, inactive title, tip (boolean), active icon class (without akion-), inactive icon class (without akion-))
 		 */
-		$states = array(
-			1 => array('unpublish', 'JPUBLISHED', 'JLIB_HTML_UNPUBLISH_ITEM', 'JPUBLISHED', true, '--green checkmark', '--green checkmark'),
-			0 => array('publish', 'JUNPUBLISHED', 'JLIB_HTML_PUBLISH_ITEM', 'JUNPUBLISHED', true, '--red close', '--red close'),
-			2 => array('unpublish', 'JARCHIVED', 'JLIB_HTML_UNPUBLISH_ITEM', 'JARCHIVED', true, '--orange ion-ios-box', '--orange ion-ios-box'),
-			-2 => array('publish', 'JTRASHED', 'JLIB_HTML_PUBLISH_ITEM', 'JTRASHED', true, '--dark trash-a', '--dark trash-a'),
-		);
+		$states = [
+			1  => [
+				'unpublish', 'JPUBLISHED', 'JLIB_HTML_UNPUBLISH_ITEM', 'JPUBLISHED', true, '--green checkmark',
+				'--green checkmark',
+			],
+			0  => [
+				'publish', 'JUNPUBLISHED', 'JLIB_HTML_PUBLISH_ITEM', 'JUNPUBLISHED', true, '--red close', '--red close',
+			],
+			2  => [
+				'unpublish', 'JARCHIVED', 'JLIB_HTML_UNPUBLISH_ITEM', 'JARCHIVED', true, '--orange ion-ios-box',
+				'--orange ion-ios-box',
+			],
+			-2 => [
+				'publish', 'JTRASHED', 'JLIB_HTML_PUBLISH_ITEM', 'JTRASHED', true, '--dark trash-a', '--dark trash-a',
+			],
+		];
 
 		// Special state for dates
 		if ($publish_up || $publish_down)
 		{
 			$nullDate = JFactory::getDbo()->getNullDate();
-			$nowDate = JFactory::getDate()->toUnix();
+			$nowDate  = JFactory::getDate()->toUnix();
 
 			$tz = JFactory::getUser()->getTimezone();
 
-			$publish_up = ($publish_up != $nullDate) ? JFactory::getDate($publish_up, 'UTC')->setTimeZone($tz) : false;
+			$publish_up   = ($publish_up != $nullDate) ? JFactory::getDate($publish_up, 'UTC')->setTimeZone($tz) : false;
 			$publish_down = ($publish_down != $nullDate) ? JFactory::getDate($publish_down, 'UTC')->setTimeZone($tz) : false;
 
 			// Create tip text, only we have publish up or down settings
-			$tips = array();
+			$tips = [];
 
 			if ($publish_up)
 			{
@@ -244,7 +256,9 @@ abstract class FEFHelperBrowse
 				}
 			}
 
-			return static::state($states, $value, $i, array('prefix' => $prefix, 'translate' => !$tip), $enabled, true, $checkbox);
+			return static::state($states, $value, $i, [
+				'prefix' => $prefix, 'translate' => !$tip,
+			], $enabled, true, $checkbox);
 		}
 
 		return static::state($states, $value, $i, $prefix, $enabled, true, $checkbox);
@@ -253,11 +267,11 @@ abstract class FEFHelperBrowse
 	/**
 	 * Returns an isDefault state on the browse view's table
 	 *
-	 * @param   integer       $value     The state value.
-	 * @param   integer       $i         The row index
-	 * @param   string|array  $prefix    An optional task prefix or an array of options
-	 * @param   boolean       $enabled   An optional setting for access control on the action.
-	 * @param   string        $checkbox  An optional prefix for checkboxes.
+	 * @param   integer      $value    The state value.
+	 * @param   integer      $i        The row index
+	 * @param   string|array $prefix   An optional task prefix or an array of options
+	 * @param   boolean      $enabled  An optional setting for access control on the action.
+	 * @param   string       $checkbox An optional prefix for checkboxes.
 	 *
 	 * @return  string  The HTML markup
 	 *
@@ -268,16 +282,19 @@ abstract class FEFHelperBrowse
 	{
 		if (is_array($prefix))
 		{
-			$options = $prefix;
-			$enabled = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
+			$options  = $prefix;
+			$enabled  = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
 			$checkbox = array_key_exists('checkbox', $options) ? $options['checkbox'] : $checkbox;
-			$prefix = array_key_exists('prefix', $options) ? $options['prefix'] : '';
+			$prefix   = array_key_exists('prefix', $options) ? $options['prefix'] : '';
 		}
 
-		$states = array(
-			0 => array('setDefault', '', 'JLIB_HTML_SETDEFAULT_ITEM', '', 1, 'android-star-outline', 'android-star-outline'),
-			1 => array('unsetDefault', 'JDEFAULT', 'JLIB_HTML_UNSETDEFAULT_ITEM', 'JDEFAULT', 1, 'android-star', 'android-star'),
-		);
+		$states = [
+			0 => ['setDefault', '', 'JLIB_HTML_SETDEFAULT_ITEM', '', 1, 'android-star-outline', 'android-star-outline'],
+			1 => [
+				'unsetDefault', 'JDEFAULT', 'JLIB_HTML_UNSETDEFAULT_ITEM', 'JDEFAULT', 1, 'android-star',
+				'android-star',
+			],
+		];
 
 		return static::state($states, $value, $i, $prefix, $enabled, true, $checkbox);
 	}
@@ -285,12 +302,12 @@ abstract class FEFHelperBrowse
 	/**
 	 * Returns a checked-out icon
 	 *
-	 * @param   integer       $i           The row index.
-	 * @param   string        $editorName  The name of the editor.
-	 * @param   string        $time        The time that the object was checked out.
-	 * @param   string|array  $prefix      An optional task prefix or an array of options
-	 * @param   boolean       $enabled     True to enable the action.
-	 * @param   string        $checkbox    An optional prefix for checkboxes.
+	 * @param   integer      $i          The row index.
+	 * @param   string       $editorName The name of the editor.
+	 * @param   string       $time       The time that the object was checked out.
+	 * @param   string|array $prefix     An optional task prefix or an array of options
+	 * @param   boolean      $enabled    True to enable the action.
+	 * @param   string       $checkbox   An optional prefix for checkboxes.
 	 *
 	 * @return  string  The HTML markup
 	 *
@@ -302,14 +319,14 @@ abstract class FEFHelperBrowse
 
 		if (is_array($prefix))
 		{
-			$options = $prefix;
-			$enabled = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
+			$options  = $prefix;
+			$enabled  = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
 			$checkbox = array_key_exists('checkbox', $options) ? $options['checkbox'] : $checkbox;
-			$prefix = array_key_exists('prefix', $options) ? $options['prefix'] : '';
+			$prefix   = array_key_exists('prefix', $options) ? $options['prefix'] : '';
 		}
 
-		$text = $editorName . '<br />' . JHtml::_('date', $time, JText::_('DATE_FORMAT_LC')) . '<br />' . JHtml::_('date', $time, 'H:i');
-		$active_title = JHtml::_('tooltipText', JText::_('JLIB_HTML_CHECKIN'), $text, 0);
+		$text           = $editorName . '<br />' . JHtml::_('date', $time, JText::_('DATE_FORMAT_LC')) . '<br />' . JHtml::_('date', $time, 'H:i');
+		$active_title   = JHtml::_('tooltipText', JText::_('JLIB_HTML_CHECKIN'), $text, 0);
 		$inactive_title = JHtml::_('tooltipText', JText::_('JLIB_HTML_CHECKED_OUT'), $text, 0);
 
 		return static::action(
@@ -340,7 +357,7 @@ abstract class FEFHelperBrowse
 		$dndOrderingActive = $view->getLists()->order == $orderingField;
 
 		// Default inactive ordering
-		$html  = '<span class="sortable-handler inactive" >';
+		$html = '<span class="sortable-handler inactive" >';
 		$html .= '<span class="' . $icon . '"></span>';
 		$html .= '</span>';
 
@@ -348,27 +365,27 @@ abstract class FEFHelperBrowse
 		if ($view->getPerms()->editstate)
 		{
 			$disableClassName = '';
-			$disabledLabel = '';
+			$disabledLabel    = '';
 
 			// DO NOT REMOVE! It will initialize Joomla libraries and javascript functions
 			$hasAjaxOrderingSupport = $view->hasAjaxOrderingSupport();
 
 			if (!$hasAjaxOrderingSupport['saveOrder'])
 			{
-				$disabledLabel = \JText::_('JORDERINGDISABLED');
+				$disabledLabel    = JText::_('JORDERINGDISABLED');
 				$disableClassName = 'inactive tip-top hasTooltip';
 			}
 
 			$orderClass = $dndOrderingActive ? 'order-enabled' : 'order-disabled';
 
-			$html  = '<div class="' . $orderClass . '">';
-			$html .= 	'<span class="sortable-handler ' . $disableClassName . '" title="' . $disabledLabel . '">';
-			$html .= 		'<span class="' . ($disableClassName ? $inactiveIcon : $icon) . '"></span>';
-			$html .= 	'</span>';
+			$html = '<div class="' . $orderClass . '">';
+			$html .= '<span class="sortable-handler ' . $disableClassName . '" title="' . $disabledLabel . '">';
+			$html .= '<span class="' . ($disableClassName ? $inactiveIcon : $icon) . '"></span>';
+			$html .= '</span>';
 
 			if ($dndOrderingActive)
 			{
-				$joomla35IsBroken = version_compare(JVERSION, '3.5.0', 'ge') ? 'style="display: none"': '';
+				$joomla35IsBroken = version_compare(JVERSION, '3.5.0', 'ge') ? 'style="display: none"' : '';
 
 				$html .= '<input type="text" name="order[]" ' . $joomla35IsBroken . ' size="5" class="' . $class . ' text-area-order" value="' . $order . '" />';
 			}
@@ -383,12 +400,12 @@ abstract class FEFHelperBrowse
 	/**
 	 * Creates an order-up action icon.
 	 *
-	 * @param   integer       $i         The row index.
-	 * @param   string        $task      An optional task to fire.
-	 * @param   string|array  $prefix    An optional task prefix or an array of options
-	 * @param   string        $text      An optional text to display
-	 * @param   boolean       $enabled   An optional setting for access control on the action.
-	 * @param   string        $checkbox  An optional prefix for checkboxes.
+	 * @param   integer      $i        The row index.
+	 * @param   string       $task     An optional task to fire.
+	 * @param   string|array $prefix   An optional task prefix or an array of options
+	 * @param   string       $text     An optional text to display
+	 * @param   boolean      $enabled  An optional setting for access control on the action.
+	 * @param   string       $checkbox An optional prefix for checkboxes.
 	 *
 	 * @return  string  The HTML markup
 	 *
@@ -398,11 +415,11 @@ abstract class FEFHelperBrowse
 	{
 		if (is_array($prefix))
 		{
-			$options = $prefix;
-			$text = array_key_exists('text', $options) ? $options['text'] : $text;
-			$enabled = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
+			$options  = $prefix;
+			$text     = array_key_exists('text', $options) ? $options['text'] : $text;
+			$enabled  = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
 			$checkbox = array_key_exists('checkbox', $options) ? $options['checkbox'] : $checkbox;
-			$prefix = array_key_exists('prefix', $options) ? $options['prefix'] : '';
+			$prefix   = array_key_exists('prefix', $options) ? $options['prefix'] : '';
 		}
 
 		return static::action($i, $task, $prefix, $text, $text, false, 'arrow-up-b', 'arrow-up-b', $enabled, true, $checkbox);
@@ -411,12 +428,12 @@ abstract class FEFHelperBrowse
 	/**
 	 * Creates an order-down action icon.
 	 *
-	 * @param   integer       $i         The row index.
-	 * @param   string        $task      An optional task to fire.
-	 * @param   string|array  $prefix    An optional task prefix or an array of options
-	 * @param   string        $text      An optional text to display
-	 * @param   boolean       $enabled   An optional setting for access control on the action.
-	 * @param   string        $checkbox  An optional prefix for checkboxes.
+	 * @param   integer      $i        The row index.
+	 * @param   string       $task     An optional task to fire.
+	 * @param   string|array $prefix   An optional task prefix or an array of options
+	 * @param   string       $text     An optional text to display
+	 * @param   boolean      $enabled  An optional setting for access control on the action.
+	 * @param   string       $checkbox An optional prefix for checkboxes.
 	 *
 	 * @return  string  The HTML markup
 	 *
@@ -426,11 +443,11 @@ abstract class FEFHelperBrowse
 	{
 		if (is_array($prefix))
 		{
-			$options = $prefix;
-			$text = array_key_exists('text', $options) ? $options['text'] : $text;
-			$enabled = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
+			$options  = $prefix;
+			$text     = array_key_exists('text', $options) ? $options['text'] : $text;
+			$enabled  = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
 			$checkbox = array_key_exists('checkbox', $options) ? $options['checkbox'] : $checkbox;
-			$prefix = array_key_exists('prefix', $options) ? $options['prefix'] : '';
+			$prefix   = array_key_exists('prefix', $options) ? $options['prefix'] : '';
 		}
 
 		return static::action($i, $task, $prefix, $text, $text, false, 'arrow-down-b', 'arrow-down-b', $enabled, true, $checkbox);
@@ -439,14 +456,14 @@ abstract class FEFHelperBrowse
 	/**
 	 * Table header for a field which changes the sort order when clicked
 	 *
-	 * @param   string  $title          The link title
-	 * @param   string  $order          The order field for the column
-	 * @param   string  $direction      The current direction
-	 * @param   string  $selected       The selected ordering
-	 * @param   string  $task           An optional task override
-	 * @param   string  $new_direction  An optional direction for the new column
-	 * @param   string  $tip            An optional text shown as tooltip title instead of $title
-	 * @param   string  $form           An optional form selector
+	 * @param   string $title         The link title
+	 * @param   string $order         The order field for the column
+	 * @param   string $direction     The current direction
+	 * @param   string $selected      The selected ordering
+	 * @param   string $task          An optional task override
+	 * @param   string $new_direction An optional direction for the new column
+	 * @param   string $tip           An optional text shown as tooltip title instead of $title
+	 * @param   string $form          An optional form selector
 	 *
 	 * @return  string
 	 *
@@ -458,8 +475,8 @@ abstract class FEFHelperBrowse
 		JHtml::_('bootstrap.popover');
 
 		$direction = strtolower($direction);
-		$icon = array('akion-android-arrow-dropup', 'akion-android-arrow-dropdown');
-		$index = (int) ($direction === 'desc');
+		$icon      = ['akion-android-arrow-dropup', 'akion-android-arrow-dropdown'];
+		$index     = (int) ($direction === 'desc');
 
 		if ($order != $selected)
 		{
@@ -501,9 +518,9 @@ abstract class FEFHelperBrowse
 	/**
 	 * Method to check all checkboxes on the browse view's table
 	 *
-	 * @param   string  $name    The name of the form element
-	 * @param   string  $tip     The text shown as tooltip title instead of $tip
-	 * @param   string  $action  The action to perform on clicking the checkbox
+	 * @param   string $name   The name of the form element
+	 * @param   string $tip    The text shown as tooltip title instead of $tip
+	 * @param   string $action The action to perform on clicking the checkbox
 	 *
 	 * @return  string
 	 *
@@ -518,15 +535,14 @@ abstract class FEFHelperBrowse
 			. '" onclick="' . $action . '" />';
 	}
 
-
 	/**
 	 * Method to create a checkbox for a grid row.
 	 *
-	 * @param   integer  $rowNum      The row index
-	 * @param   integer  $recId       The record id
-	 * @param   boolean  $checkedOut  True if item is checked out
-	 * @param   string   $name        The name of the form element
-	 * @param   string   $stub        The name of stub identifier
+	 * @param   integer $rowNum     The row index
+	 * @param   integer $recId      The record id
+	 * @param   boolean $checkedOut True if item is checked out
+	 * @param   string  $name       The name of the form element
+	 * @param   string  $stub       The name of stub identifier
 	 *
 	 * @return  mixed    String of html with a checkbox if item is not checked out, null if checked out.
 	 *
@@ -536,5 +552,236 @@ abstract class FEFHelperBrowse
 	{
 		return $checkedOut ? '' : '<input type="checkbox" id="' . $stub . $rowNum . '" name="' . $name . '[]" value="' . $recId
 			. '" onclick="Joomla.isChecked(this.checked);" />';
+	}
+
+	/**
+	 * Include the necessary JavaScript for the browse view's table order feature
+	 *
+	 * @param   string $orderBy Filed by which we are currently sorting the table.
+	 * @param   bool   $return  Should I return the JS? Default: false (= add to the page's head)
+	 *
+	 * @return string
+	 */
+	public static function orderjs($orderBy, $return = false)
+	{
+		$js = <<< JS
+
+Joomla.orderTable = function()
+{
+		var table = document.getElementById("sortTable");
+		var direction = document.getElementById("directionTable");
+		var order = table.options[table.selectedIndex].value;
+		var dirn = 'asc';
+
+		if (order !== '$orderBy')
+		{
+			dirn = 'asc';
+		}
+		else {
+			dirn = direction.options[direction.selectedIndex].value;
+		}
+
+		Joomla.tableOrdering(order, dirn);
+	};
+JS;
+
+		if ($return)
+		{
+			return $js;
+		}
+
+		try
+		{
+			JFactory::getApplication()->getDocument()->addScriptDeclaration($js);
+		}
+		catch (Exception $e)
+		{
+			// If we have no application, well, not having table sorting JS is the least of your worries...
+		}
+	}
+
+	/**
+	 * Returns the table ordering / pagination header for a browse view: number of records to display, order direction,
+	 * order by field.
+	 *
+	 * @param   DataViewRaw $view       The view you're rendering against. If not provided we will guess it using MAGIC.
+	 * @param   array       $sortFields Array of field name => description for the ordering fields in the dropdown. If not provided we will use all the fields available in the model.
+	 * @param   JPagination $pagination The Joomla pagination object. If not provided we fetch it from the view.
+	 * @param   string      $sortBy     Order by field name. If not provided we fetch it from the view.
+	 * @param   string      $order_Dir  Order direction. If not provided we fetch it from the view.
+	 *
+	 * @return  string
+	 *
+	 * @since   3.3.0
+	 */
+	public static function orderheader(DataViewRaw $view = null, array $sortFields = [], JPagination $pagination = null, $sortBy = null, $order_Dir = null)
+	{
+		if (is_null($view))
+		{
+			$view = BrowseView::getViewFromBacktrace();
+		}
+
+		if (empty($sortFields))
+		{
+			/** @var DataModel $model */
+			$model      = $view->getModel();
+			$sortFields = isset($view->getLists()->sortFields) ? $view->getLists()->sortFields : [];
+			$sortFields = empty($sortFields) ? self::getSortFields($model) : $sortFields;
+		}
+
+		if (empty($pagination))
+		{
+			$pagination = $view->getPagination();
+		}
+
+		if (empty($sortBy))
+		{
+			$sortBy = $view->getLists()->order;
+		}
+
+		if (empty($order_Dir))
+		{
+			$order_Dir = $view->getLists()->order_Dir;
+
+			if (empty($order_Dir))
+			{
+				$order_Dir = 'asc';
+			}
+		}
+
+		// Static hidden text labels
+		$limitLabel    = JText::_('JFIELD_PLG_SEARCH_SEARCHLIMIT_DESC');
+		$orderingDescr = JText::_('JFIELD_ORDERING_DESC');
+		$sortByLabel   = JText::_('JGLOBAL_SORT_BY');
+
+		// Order direction dropdown
+		$directionSelect = JHtml::_('FEFHelper.select.genericlist', [
+			''     => $orderingDescr,
+			'asc'  => JText::_('JGLOBAL_ORDER_ASCENDING'),
+			'desc' => JText::_('JGLOBAL_ORDER_DESCENDING'),
+		], 'directionTable', [
+			'id'          => 'directionTable',
+			'list.select' => $order_Dir,
+			'list.attr'   => [
+				'class'    => 'input-medium custom-select',
+				'onchange' => 'Joomla.orderTable()',
+			],
+		]);
+
+		// Sort by field dropdown
+
+		$sortTable = JHtml::_('FEFHelper.select.genericlist', array_merge([
+			'' => 'JGLOBAL_SORT_BY',
+		], $sortFields), 'sortTable', [
+			'id'          => 'sortTable',
+			'list.select' => $sortBy,
+			'list.attr'   => [
+				'class'    => 'input-medium custom-select',
+				'onchange' => 'Joomla.orderTable()',
+			],
+		]);
+
+
+		$html = <<<HTML
+		<div class="akeeba-filter-element akeeba-form-group">
+			<label for="limit" class="element-invisible">
+				$limitLabel
+			</label>
+			{$pagination->getLimitBox()}
+		</div>
+
+		<div class="akeeba-filter-element akeeba-form-group">
+			<label for="directionTable" class="element-invisible">
+				$orderingDescr
+			</label>
+			$directionSelect
+		</div>
+
+		<div class="akeeba-filter-element akeeba-form-group">
+			<label for="sortTable" class="element-invisible">
+				{$sortByLabel}
+			</label>
+			$sortTable
+		</div>
+
+HTML;
+
+		return $html;
+	}
+
+	/**
+	 * Get the default sort fields from a model. It creates a hash array where the keys are the model's field names and
+	 * the values are the translation keys for their names, following FOF's naming conventions.
+	 *
+	 * @param   DataModel $model The model for which we get the sort fields
+	 *
+	 * @return  array
+	 *
+	 * @since   3.3.0
+	 */
+	private static function getSortFields(DataModel $model)
+	{
+		$sortFields         = [];
+		$idField            = $model->getIdFieldName() ?: 'id';
+		$defaultFieldLabels = [
+			'publish_up'   => 'JGLOBAL_FIELD_PUBLISH_UP_LABEL',
+			'publish_down' => 'JGLOBAL_FIELD_PUBLISH_DOWN_LABEL',
+			'created_by'   => 'JGLOBAL_FIELD_CREATED_BY_LABEL',
+			'created_on'   => 'JGLOBAL_FIELD_CREATED_LABEL',
+			'modified_by'  => 'JGLOBAL_FIELD_MODIFIED_BY_LABEL',
+			'modified_on'  => 'JGLOBAL_FIELD_MODIFIED_LABEL',
+			'ordering'     => 'JGLOBAL_FIELD_FIELD_ORDERING_LABEL',
+			'id'           => 'JGLOBAL_FIELD_ID_LABEL',
+			'hits'         => 'JGLOBAL_HITS',
+			'title'        => 'JGLOBAL_TITLE',
+			'user_id'      => 'JGLOBAL_USERNAME',
+			'username'     => 'JGLOBAL_USERNAME',
+		];
+		$componentName      = $model->getContainer()->componentName;
+		$viewNameSingular   = $model->getContainer()->inflector->singularize($model->getName());
+		$viewNamePlural     = $model->getContainer()->inflector->pluralize($model->getName());
+
+		foreach ($model->getFields() as $field => $fieldDescriptor)
+		{
+			$possibleKeys = [
+				$componentName . '_' . $viewNamePlural . '_FIELD_' . $field,
+				$componentName . '_' . $viewNamePlural . '_' . $field,
+				$componentName . '_' . $viewNameSingular . '_FIELD_' . $field,
+				$componentName . '_' . $viewNameSingular . '_' . $field,
+			];
+
+			if (array_key_exists($field, $defaultFieldLabels))
+			{
+				$possibleKeys[] = $defaultFieldLabels[$field];
+			}
+
+			if ($field === $idField)
+			{
+				$possibleKeys[] = $defaultFieldLabels['id'];
+			}
+
+			$fieldLabel = '';
+
+			foreach ($possibleKeys as $langKey)
+			{
+				$langKey    = strtoupper($langKey);
+				$fieldLabel = JText::_($langKey);
+
+				if ($fieldLabel !== $langKey)
+				{
+					break;
+				}
+
+				$fieldLabel = '';
+			}
+
+			if (!empty($fieldLabel))
+			{
+				$sortFields[$field] = (new Joomla\Filter\InputFilter())->clean($fieldLabel);
+			}
+
+		}
+
+		return $sortFields;
 	}
 }
