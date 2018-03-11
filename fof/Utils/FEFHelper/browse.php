@@ -396,6 +396,33 @@ abstract class FEFHelperBrowse
 		return $html;
 	}
 
+	/**
+	 * Returns the drag'n'drop reordering table header for Browse views
+	 *
+	 * @param string            $orderingField The name of the field you're ordering by
+	 * @param string            $icon          CSS class for the d'n'd handle icon
+	 *
+	 * @return string
+	 */
+	public static function orderfield($orderingField = 'ordering', $icon = 'akion-stats-bars')
+	{
+		$title = JText::_('JGLOBAL_CLICK_TO_SORT_THIS_COLUMN');
+		$orderingLabel = JText::_('JFIELD_ORDERING_LABEL');
+
+		return <<< HTML
+<a href="#"
+   onclick="Joomla.tableOrdering('{$orderingField}','asc','');return false;"
+   class="hasPopover"
+   title="{$orderingLabel}"
+   data-content="{$title}"
+   data-placement="top"
+>
+    <span class="{$icon}"></span>
+</a>
+
+HTML;
+	}
+
 
 	/**
 	 * Creates an order-up action icon.
