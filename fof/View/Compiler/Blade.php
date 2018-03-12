@@ -937,6 +937,19 @@ class Blade implements CompilerInterface
 	}
 
 	/**
+	 * Compile the `searchfilter($localField, $searchField = null, $placeholder = null, array $attributes = [])` statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 *
+	 * @since 3.3.0
+	 */
+	protected function compileSearchfilter($expression)
+	{
+		return "<?php echo \FOF30\Utils\FEFHelper\BrowseView::searchFilter{$expression} ?>";
+	}
+
+	/**
 	 * Compile the media statements into valid PHP.
 	 *
 	 * @param  string  $expression

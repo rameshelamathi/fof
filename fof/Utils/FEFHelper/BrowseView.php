@@ -11,6 +11,7 @@ defined('_JEXEC') or die;
 
 use FOF30\Container\Container;
 use FOF30\Model\DataModel;
+use FOF30\Utils\ArrayHelper;
 use FOF30\Utils\SelectOptions;
 use FOF30\View\View;
 use JHtml;
@@ -121,6 +122,42 @@ abstract class BrowseView
 		], $params);
 
 		return self::modelSelect($localField, $modelName, $model->getState($localField), $params);
+	}
+
+	/**
+	 * Display a text filter (search box)
+	 *
+	 * @param   string $localField  The name of the model field. Used when getting the filter state.
+	 * @param   string $searchField The INPUT element's name. Default: "filter_$localField".
+	 * @param   string $placeholder The JText language key for the placeholder. Default: extrapolate from $localField.
+	 * @param   array  $attributes  HTML attributes for the INPUT element.
+	 *
+	 * @return  string
+	 *
+	 * @since   3.3.0
+	 */
+	public static function searchFilter($localField, $searchField = null, $placeholder = null, array $attributes = [])
+	{
+		/** @var DataModel $model */
+		$view                      = self::getViewFromBacktrace();
+		$model                     = $view->getModel();
+		$searchField               = empty($searchField) ? $localField : $searchField;
+		$placeholder               = empty($placeholder) ? self::fieldLabelKey($localField) : $placeholder;
+		$attributes['type']        = isset($attributes['type']) ? $attributes['type'] : 'text';
+		$attributes['name']        = $searchField;
+		$attributes['id']          = !isset($attributes['id']) ? "filter_$localField" : $attributes['id'];
+		$attributes['onchange']    = !isset($attributes['onchange']) ? 'document.adminForm.submit()' : null;
+		$attributes['placeholder'] = !isset($attributes['placeholder']) ? $view->escape(JText::_($placeholder)) : $attributes['placeholder'];
+		$attributes['title']       = isset($attributes['title']) ? $attributes['title'] : $attributes['placeholder'];
+		$attributes['value']       = $view->escape($model->getState($localField));
+
+		// Remove null attributes and collapse into a string
+		$attributes = array_filter($attributes, function ($v) {
+			return !is_null($v);
+		});
+		$attributes = ArrayHelper::toString($attributes);
+
+		return "<input $attributes />";
 	}
 
 	/**
