@@ -352,6 +352,35 @@ class SelectOptions
 		return $options;
 	}
 
+	/**
+	 * Options for a Published field
+	 *
+	 * Params:
+	 * - none           Placeholder for no selection (empty key). Default: null.
+	 *
+	 * @param $params
+	 *
+	 * @return array
+	 */
+	private static function boolean(array $params = [])
+	{
+		$config = array_merge([
+			'none'        => '',
+		], $params);
+
+		$options = array();
+
+		if (!empty($config['none']))
+		{
+			$options[] = JHtml::_('select.option', '', JText::_($config['none']));
+		}
+
+		$options[] = JHtml::_('select.option', '1', JText::_('JYES'));
+		$options[] = JHtml::_('select.option', '0', JText::_('JNO'));
+
+		return $options;
+	}
+
 
 	/**
 	 * Translate a component name
