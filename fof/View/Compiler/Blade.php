@@ -884,7 +884,7 @@ class Blade implements CompilerInterface
 	}
 
 	/**
-	 * Compile the `modelfilter($localField, [$modelTitleField, $modelName])` statements into valid PHP.
+	 * Compile the `modelfilter($localField, [$modelTitleField, $modelName, $placeholder, $params])` statements into valid PHP.
 	 *
 	 * @param  string  $expression
 	 * @return string
@@ -893,23 +893,7 @@ class Blade implements CompilerInterface
 	 */
 	protected function compileModelfilter($expression)
 	{
-		$expression = trim($expression, '()');
-		$parts      = explode(',', $expression, 3);
-
-		$localField      = trim($parts[0], '\'"');
-		$modelTitleField = isset($parts[1]) ? trim($parts[1], '\'" ') : 'title';
-		$modelName       = isset($parts[2]) ? trim($parts[2], '\'" ') : null;
-
-		if (empty($modelName))
-		{
-			$modelName = "\$this->getModel()->getForeignModelNameFor('$localField')";
-		}
-		else
-		{
-			$modelName = "'$modelName'";
-		}
-
-		return "<?php echo \FOF30\Utils\FEFHelper\BrowseView::modelSelect('$localField', $modelName, \$this->getModel()->getState('$localField'), ['value_field' => '$modelTitleField']) ?>";
+		return "<?php echo \FOF30\Utils\FEFHelper\BrowseView::modelFilter{$expression} ?>";
 	}
 
 	/**
