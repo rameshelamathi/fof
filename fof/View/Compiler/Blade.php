@@ -913,7 +913,7 @@ class Blade implements CompilerInterface
 	}
 
 	/**
-	 * Compile the `selectfilter($localField, $options [, $placeholder])` statements into valid PHP.
+	 * Compile the `selectfilter($localField, $options [, $placeholder, $params])` statements into valid PHP.
 	 *
 	 * @param  string  $expression
 	 * @return string
@@ -922,18 +922,7 @@ class Blade implements CompilerInterface
 	 */
 	protected function compileSelectfilter($expression)
 	{
-		$expression = trim(substr($expression, 1, -1));
-		$parts      = explode(',', $expression);
-
-		$localField  = $parts[0];
-		$optionsSpec = $parts[1];
-		$placeholder = isset($parts[2]) ? $parts[2] : null;
-		$params      = var_export([
-			'fof.autosubmit' => true,
-			'none'           => $placeholder,
-		], true);
-
-		return "<?php echo \FOF30\Utils\FEFHelper\BrowseView::genericSelect($localField, $optionsSpec, \$this->getModel()->getState($localField), $params) ?>";
+		return "<?php echo \FOF30\Utils\FEFHelper\BrowseView::selectFilter{$expression} ?>";
 	}
 
 	/**
