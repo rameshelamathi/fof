@@ -276,6 +276,11 @@ abstract class BrowseView
 			$params['cache'] = true;
 		}
 
+		if (!isset($params['none_as_zero']))
+		{
+			$params['none_as_zero'] = true;
+		}
+
 		$options = self::getOptionsFromModel($modelName, $params, $modelState, $options);
 
 		return self::getOptionName($value, $options);
@@ -616,6 +621,7 @@ abstract class BrowseView
 	 * value_field      The model field used for the OPTION's displayed value. You must provide it.
 	 * apply_access     Should I apply Joomla ACLs to the model? Default: FALSE.
 	 * none             Placeholder for no selection. Default: NULL (no placeholder).
+	 * none_as_zero     When true, the 'none' placeholder applies to values '' **AND** '0' (empty string and zero)
 	 * translate        Should I pass the values through JText? Default: TRUE.
 	 * with             Array of relation names for eager loading.
 	 * cache            Cache the results for faster reuse
@@ -656,6 +662,7 @@ abstract class BrowseView
 			'value_field'  => 'title',
 			'apply_access' => false,
 			'none'         => null,
+			'none_as_zero' => false,
 			'translate'    => true,
 			'with'         => [],
 		];
@@ -699,6 +706,11 @@ abstract class BrowseView
 		if (!empty($params['none']))
 		{
 			$options[] = JHtml::_('FEFHelper.select.option', null, JText::_($params['none']));
+
+			if ($params['none_as_zero'])
+			{
+				$options[] = JHtml::_('FEFHelper.select.option', 0, JText::_($params['none']));
+			}
 		}
 
 
