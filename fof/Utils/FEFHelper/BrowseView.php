@@ -13,6 +13,7 @@ use FOF30\Container\Container;
 use FOF30\Model\DataModel;
 use FOF30\Utils\ArrayHelper;
 use FOF30\Utils\SelectOptions;
+use FOF30\View\DataView\DataViewInterface;
 use FOF30\View\View;
 use JHtml;
 use JText;
@@ -50,13 +51,16 @@ abstract class BrowseView
 
 		try
 		{
-			$inflector   = $view->getContainer()->inflector;
-			$viewName    = $inflector->singularize($view->getName());
-			$altViewName = $inflector->pluralize($view->getName());
+			$inflector     = $view->getContainer()->inflector;
+			$viewName      = $inflector->singularize($view->getName());
+			$altViewName   = $inflector->pluralize($view->getName());
+			$componentName = $view->getContainer()->componentName;
 
 			$keys = [
-				strtoupper($view->getContainer()->componentName . '_' . $viewName . '_FIELD_' . $fieldName),
-				strtoupper($view->getContainer()->componentName . '_' . $altViewName . '_FIELD_' . $fieldName),
+				strtoupper($componentName . '_' . $viewName . '_FIELD_' . $fieldName),
+				strtoupper($componentName . '_' . $altViewName . '_FIELD_' . $fieldName),
+				strtoupper($componentName . '_' . $viewName . '_' . $fieldName),
+				strtoupper($componentName . '_' . $altViewName . '_' . $fieldName),
 			];
 
 			foreach ($keys as $key)
@@ -67,7 +71,7 @@ abstract class BrowseView
 				}
 			}
 
-			return $key;
+			return $keys[0];
 		}
 		catch (\Exception $e)
 		{
@@ -85,6 +89,27 @@ abstract class BrowseView
 	public static function fieldLabel($fieldName)
 	{
 		return JText::_(self::fieldLabelKey($fieldName));
+	}
+
+	/**
+	 * Return a table field header which sorts the table by that field upon clicking
+	 *
+	 * @param   string       $field    The name of the field
+	 * @param   string|null  $langKey  (optional) The language key for the header to be displayed
+	 *
+	 * @return  mixed
+	 */
+	public static function sortgrid($field, $langKey = null)
+	{
+		/** @var DataViewInterface $view */
+		$view = self::getViewFromBacktrace();
+
+		if (is_null($langKey))
+		{
+			$langKey = self::fieldLabelKey($field);
+		}
+
+		return JHtml::_('FEFHelper.browse.sort', $langKey, $field, $view->getLists()->order_Dir, $view->getLists()->order, $view->getTask());
 	}
 
 	/**

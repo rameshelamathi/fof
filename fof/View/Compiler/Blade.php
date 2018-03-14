@@ -855,19 +855,7 @@ class Blade implements CompilerInterface
 	 */
 	protected function compileSortgrid($expression)
 	{
-		$expression = trim($expression, '()');
-		$parts = explode(',', $expression, 2);
-
-		$field = $parts[0];
-		$langKey = (count($parts) == 1) ? '' : $parts[1];
-
-		if (empty($langKey))
-		{
-			$nakedField = trim(trim($field), '\'"');
-			$langKey = "\$this->getContainer()->componentName . '_' . \$this->getName() . '_FIELD_$nakedField'";
-		}
-
-		return "<?php echo \\JHtml::_('FEFHelper.browse.sort', $langKey, $field, \$this->getLists()->order_Dir, \$this->getLists()->order, \$this->getTask()); ?>";
+		return "<?php echo FOF30\Utils\FEFHelper\BrowseView::sortGrid{$expression} ?>";
 	}
 
 	/**
