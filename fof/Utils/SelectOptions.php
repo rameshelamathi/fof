@@ -281,6 +281,20 @@ class SelectOptions
 			$client = 'site';
 		}
 
+		// Make sure the languages are sorted base on locale instead of random sorting
+		$options = \JLanguageHelper::createLanguageList(null, constant('JPATH_' . strtoupper($client)), true, true);
+
+		if (count($options) > 1)
+		{
+			usort(
+				$options,
+				function ($a, $b)
+				{
+					return strcmp($a['value'], $b['value']);
+				}
+			);
+		}
+
 		$none = isset($params['none']) ? $params['none'] : '*';
 
 		if (!empty($none))
