@@ -19,6 +19,8 @@ defined('_JEXEC') or die;
  *
  * Renderer options
  * linkbar_style        Style for linkbars: joomla3|classic. Default: joomla3
+ * load_fef             Load FEF CSS and JS? Set to false if you are loading it outside the renderer. Default: true
+ * fef_reset            Should I reset the CSS styling for basic HTML elements inside the FEF container? Default: true
  * custom_css           Comma-separated list of custom CSS files to load _after_ the main FEF CSS file, e.g.
  *                      media://com_foo/css/bar.min.css,media://com_foo/css/baz.min.css
  *
@@ -51,7 +53,13 @@ class FEF extends Joomla3
 	 */
 	public function preRender($view, $task)
 	{
-		\AkeebaFEFHelper::load();
+		$useReset = $this->getOption('fef_reset', true);
+		$useFEF = $this->getOption('load_fef', true);
+
+		if ($useFEF)
+		{
+			\AkeebaFEFHelper::load($useReset);
+		}
 
 		$this->loadCustomCss();
 

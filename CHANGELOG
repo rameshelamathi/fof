@@ -5,6 +5,7 @@ FOF 3.3.0
 + Blade: `@sortgrid($field [, $langKey])` implements Joomla sortable titles for browse view table headers
 + Blade: `@fieldtitle($field)` returns the translated COM_YourComponent_YourView_FIELD_YourField string
 + SelectOptions helper for getting JHtml option arrays for Joomla core information, such as access levels
++ Additional options for the FEF renderer
 # [MEDIUM] DataModel constructor forcibly applies access level filtering when the model is doing asset tracking
 
 FOF 3.2.1
