@@ -1,6 +1,7 @@
 FOF 3.3.1
 ================================================================================
 # [HIGH] Scaffolding does not work on PHP 7.2 (see changelog for version 3.1.4 for related issue)
+# [LOW] FEF-based components have the wrong padding in the backend due to extra classes being added to the container
 
 FOF 3.3.0
 ================================================================================
