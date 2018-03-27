@@ -1,3 +1,7 @@
+FOF 3.3.1
+================================================================================
+# [HIGH] Scaffolding does not work on PHP 7.2 (see changelog for version 3.1.4 for related issue)
+
 FOF 3.3.0
 ================================================================================
 + JHtml helpers for browse and edit views to help us convert from XML forms to FEF
