@@ -21,6 +21,14 @@ class Blade implements CompilerInterface
 	protected $isCacheable = true;
 
 	/**
+	 * The extension of the template files supported by this compiler
+	 *
+	 * @var    string
+	 * @since  3.3.1
+	 */
+	protected $fileExtension = 'blade.php';
+
+	/**
 	 * All of the registered compiler extensions.
 	 *
 	 * @var array
@@ -1044,6 +1052,18 @@ class Blade implements CompilerInterface
 	public function getEscapedContentTags()
 	{
 		return $this->getTags(true);
+	}
+
+	/**
+	 * Returns the file extension supported by this compiler
+	 *
+	 * @return  string
+	 *
+	 * @since   3.3.1
+	 */
+	public function getFileExtension()
+	{
+		return $this->fileExtension;
 	}
 
 	/**
