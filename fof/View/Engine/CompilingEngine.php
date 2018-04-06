@@ -93,6 +93,7 @@ abstract class CompilingEngine extends AbstractEngine implements EngineInterface
 		{
 			$id = $this->getIdentifier($path);
 			$streamPath = 'fof://' . $this->view->getContainer()->componentName . '/compiled_templates/' . $id . '.php';
+			file_put_contents($streamPath, $content);
 
 			return array(
 				'type'    => 'path',
