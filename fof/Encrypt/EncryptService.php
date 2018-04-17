@@ -65,6 +65,8 @@ class EncryptService
 	 */
 	public function __construct(Container $c)
 	{
+		$this->initialize();
+
 		$this->container = $c;
 	}
 
@@ -79,8 +81,6 @@ class EncryptService
 	 */
 	public function encrypt($data)
 	{
-		$this->initialize();
-
 		if (!is_object($this->aes))
 		{
 			return $data;
@@ -108,8 +108,6 @@ class EncryptService
 		}
 
 		$data = substr($data, 12);
-
-		$this->initialize();
 
 		if (!is_object($this->aes))
 		{
