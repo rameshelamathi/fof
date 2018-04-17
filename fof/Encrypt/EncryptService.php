@@ -65,9 +65,8 @@ class EncryptService
 	 */
 	public function __construct(Container $c)
 	{
-		$this->initialize();
-
 		$this->container = $c;
+		$this->initialize();
 	}
 
 	/**
