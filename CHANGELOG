@@ -1,6 +1,7 @@
 FOF 3.3.2
 ================================================================================
 + Encryption service in the container
++ PHP Generator support in DataModel for easily iterating very large datasets under PHP 5.5 or later
 
 FOF 3.3.1
 ================================================================================
