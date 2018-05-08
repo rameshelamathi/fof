@@ -7,6 +7,7 @@
 
 namespace FOF30\Date;
 
+use DateInterval;
 use DateTime;
 use JDatabaseDriver;
 
@@ -68,13 +69,15 @@ class DateDecorator extends Date
 		throw new \InvalidArgumentException("JDate object does not have a $name method");
 	}
 
-	public function sub(\DateInterval $interval)
+	public function sub($interval)
 	{
+		// Note to self: ignore phpStorm; we must NOT use a typehint for $interval
 		return $this->decorated->sub($interval);
 	}
 
-	public function add(\DateInterval $interval)
+	public function add($interval)
 	{
+		// Note to self: ignore phpStorm; we must NOT use a typehint for $interval
 		return $this->decorated->sub($interval);
 	}
 
