@@ -1,5 +1,6 @@
 FOF 3.3.4
 ================================================================================
+# [HIGH] Saving or cancelling the edit of an item with an 'access' field leaked the item's access as a filter value in the Browse view
 # [MEDIUM] DataController's defaultsForAdd didn't do anything
 
 FOF 3.3.3
