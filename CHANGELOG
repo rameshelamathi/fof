@@ -1,3 +1,7 @@
+FOF 3.3.4
+================================================================================
+# [MEDIUM] DataController's defaultsForAdd didn't do anything
+
 FOF 3.3.3
 ================================================================================
 # [HIGH] DateDecorator did not work properly with add(), sub() and modify()
