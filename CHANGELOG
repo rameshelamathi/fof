@@ -2,6 +2,7 @@ FOF 3.3.4
 ================================================================================
 # [HIGH] Saving or cancelling the edit of an item with an 'access' field leaked the item's access as a filter value in the Browse view
 # [MEDIUM] DataController's defaultsForAdd didn't do anything
+# [HIGH] DateDecorator::add actually subtracted the time period
 
 FOF 3.3.3
 ================================================================================
