@@ -1,3 +1,7 @@
+FOF 3.3.5
+================================================================================
+! The mere existence getGenerator method causes a fatal error in DataModel on PHP 5.3 and 5.4. Pulled out into a Trait.
+
 FOF 3.3.4
 ================================================================================
 # [HIGH] Saving or cancelling the edit of an item with an 'access' field leaked the item's access as a filter value in the Browse view
