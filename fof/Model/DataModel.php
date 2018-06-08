@@ -385,7 +385,7 @@ class DataModel extends Model implements \JTableInterface
 		{
 			$this->$access_field = (int) $this->container->platform->getConfig()->get('access');
 		}
-		/**/
+		**/
 
 		$assetKey = $this->container->componentName . '.' . strtolower($container->inflector->singularize($this->getName()));
 		$this->setAssetKey($assetKey);
