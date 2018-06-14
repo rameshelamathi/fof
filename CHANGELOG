@@ -1,3 +1,7 @@
+FOF 3.3.6
+================================================================================
+(placholder)
+
 FOF 3.3.5
 ================================================================================
 ! The mere existence getGenerator method causes a fatal error in DataModel on PHP 5.3 and 5.4. Pulled out into a Trait.
