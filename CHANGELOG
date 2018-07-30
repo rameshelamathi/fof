@@ -1,6 +1,7 @@
 FOF 3.3.6
 ================================================================================
 + DynamicGroups helper
+# [LOW] Warning from the Ip helper under CLI or when REMOTE_ADDR is not defined by the server
 
 FOF 3.3.5
 ================================================================================
