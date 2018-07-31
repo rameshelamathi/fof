@@ -183,5 +183,11 @@ class DynamicGroups
 		$refProperty->setAccessible(true);
 		$refProperty->setValue($user, array());
 		$refProperty->setAccessible(false);
+
+		// Clear the authenticated actions cache. I haven't seen it used anywhere but it's there, so...
+		$refProperty   = $reflectedUser->getProperty('_authActions');
+		$refProperty->setAccessible(true);
+		$refProperty->setValue($user, array());
+		$refProperty->setAccessible(false);
 	}
 }
