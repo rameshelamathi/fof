@@ -7,7 +7,6 @@
 
 namespace FOF30\Utils;
 use FOF30\Container\Container;
-use FOF30\Platform\Joomla\Platform;
 
 /**
  * Dynamic user to user group assignment.
@@ -69,7 +68,7 @@ class DynamicGroups
 		/**
 		 * Now we can get a Reflection object into Joomla's Access helper class and manipulate its groupsByUser cache.
 		 */
-		$className       = class_exists('Joomla\\CMS\\Access\\Access') ? 'Joomla\\CMS\\Access\\Access' : 'JAccess';
+		$className = class_exists('Joomla\\CMS\\Access\\Access') ? 'Joomla\\CMS\\Access\\Access' : 'JAccess';
 
 		try
 		{
@@ -83,7 +82,7 @@ class DynamicGroups
 			return;
 		}
 
-		$groupsByUser    = $reflectedAccess->getProperty('groupsByUser');
+		$groupsByUser = $reflectedAccess->getProperty('groupsByUser');
 		$groupsByUser->setAccessible(true);
 		$rawGroupsByUser = $groupsByUser->getValue();
 
@@ -93,8 +92,8 @@ class DynamicGroups
 		 * $rawGroupsByUser (JAccess::$groupsByUser) stored the group ownership as userID:recursive e.g. 0:1 for the
 		 * default user, recursive. We need to deal with four keys: 0:1, 0:0, myID:1 and myID:0
 		 */
-		$user      = $container->platform->getUser();
-		$keys      = ['0:1', '0:0', $user->id . ':1', $user->id . ':0'];
+		$user = $container->platform->getUser();
+		$keys = ['0:1', '0:0', $user->id . ':1', $user->id . ':0'];
 
 		foreach ($keys as $key)
 		{
@@ -172,7 +171,15 @@ class DynamicGroups
 
 		$user          = $container->platform->getUser();
 		$reflectedUser = new \ReflectionObject($user);
+
+		// Clear the user group cache
 		$refProperty   = $reflectedUser->getProperty('_authGroups');
+		$refProperty->setAccessible(true);
+		$refProperty->setValue($user, array());
+		$refProperty->setAccessible(false);
+
+		// Clear the view access level cache
+		$refProperty   = $reflectedUser->getProperty('_authLevels');
 		$refProperty->setAccessible(true);
 		$refProperty->setValue($user, array());
 		$refProperty->setAccessible(false);
