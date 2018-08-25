@@ -1,6 +1,7 @@
 FOF 3.3.6
 ================================================================================
 + DynamicGroups helper
++ gh-616 CLI application abstraction
 ~ Work around LiteSpeed sending compressed output under HTTP/2 when no Accept-Encoding is specified in the request
 # [LOW] Warning from the Ip helper under CLI or when REMOTE_ADDR is not defined by the server
 
