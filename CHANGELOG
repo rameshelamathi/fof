@@ -1,5 +1,6 @@
 FOF 3.3.7
 ================================================================================
+# [MEDIUM] Defend against Joomla! returning null values for pagination parameters, causing an exception
 # [LOW] Warning from the Ip helper under CLI or when REMOTE_ADDR is not defined by the server (part 2)
 # [LOW] Untranslated string in the Sort By drop-downs
 
