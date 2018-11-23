@@ -258,6 +258,11 @@ class Curl extends AbstractAdapter implements DownloadInterface
 			return $strlen;
 		}
 
+		if (strpos($data, ':') === false)
+		{
+			return $strlen;
+		}
+
 		list($header, $value) = explode(': ', trim($data), 2);
 
 		$this->headers[$header] = $value;

@@ -1,3 +1,7 @@
+FOF 3.3.8
+================================================================================
+# [LOW] Notice thrown from the cURL download adapter when there are empty header lines or lines without a colon
+
 FOF 3.3.7
 ================================================================================
 # [MEDIUM] Defend against Joomla! returning null values for pagination parameters, causing an exception
