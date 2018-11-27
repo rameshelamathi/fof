@@ -1,3 +1,7 @@
+FOF 3.3.9
+================================================================================
+# [HIGH] Download: Some cURL versions return lowercase headers, making redirection detection impossible
+
 FOF 3.3.8
 ================================================================================
 # [LOW] Notice thrown from the cURL download adapter when there are empty header lines or lines without a colon

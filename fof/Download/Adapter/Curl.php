@@ -145,9 +145,9 @@ class Curl extends AbstractAdapter implements DownloadInterface
 		{
 			$error = JText::sprintf('LIB_FOF_DOWNLOAD_ERR_CURL_ERROR', $errno, $errmsg);
 		}
-		elseif (($http_status >= 300) && ($http_status <= 399) && isset($this->headers['Location']) && !empty($this->headers['Location']))
+		elseif (($http_status >= 300) && ($http_status <= 399) && isset($this->headers['location']) && !empty($this->headers['location']))
 		{
-			return $this->downloadAndReturn($this->headers['Location'], $from, $to, $params);
+			return $this->downloadAndReturn($this->headers['location'], $from, $to, $params);
 		}
 		elseif ($http_status > 399)
 		{
@@ -202,17 +202,17 @@ class Curl extends AbstractAdapter implements DownloadInterface
 			$status = "unknown";
 			$redirection = null;
 
-			if (preg_match( "/^HTTP\/1\.[01] (\d\d\d)/", $data, $matches))
+			if (preg_match( "/^HTTP\/1\.[01] (\d\d\d)/i", $data, $matches))
 			{
 				$status = (int)$matches[1];
 			}
 
-			if (preg_match( "/Content-Length: (\d+)/", $data, $matches))
+			if (preg_match( "/Content-Length: (\d+)/i", $data, $matches))
 			{
 				$content_length = (int)$matches[1];
 			}
 
-			if (preg_match( "/Location: (.*)/", $data, $matches))
+			if (preg_match( "/Location: (.*)/i", $data, $matches))
 			{
 				$redirection = (int)$matches[1];
 			}
@@ -265,7 +265,7 @@ class Curl extends AbstractAdapter implements DownloadInterface
 
 		list($header, $value) = explode(': ', trim($data), 2);
 
-		$this->headers[$header] = $value;
+		$this->headers[strtolower($header)] = $value;
 
 		return $strlen;
 	}
