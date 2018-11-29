@@ -894,6 +894,54 @@ class Platform extends BasePlatform
 		\JLog::add($message, \JLog::DEBUG, 'fof');
 	}
 
+	public function logUserAction($title, $logText, $extension)
+	{
+		static $joomlaModelAdded = false;
+
+		// User Actions Log is available only under Joomla 3.9+
+		if (version_compare(JVERSION, '3.9', 'lt'))
+		{
+			return;
+		}
+
+		// Do not perform logging if we're under CLI. Even if we _could_ have a logged user in CLI, ActionlogsModelActionlog
+		// model always uses JFactory to fetch the current user, fetching data from the session. This means that under the CLI
+		// (where there is no session) such session is started, causing warnings because usually output was already started before
+		if ($this->isCli())
+		{
+			return;
+		}
+
+		// Include required Joomla Model
+		if (!$joomlaModelAdded)
+		{
+			\JModelLegacy::addIncludePath(JPATH_ROOT . '/administrator/components/com_actionlogs/models', 'ActionlogsModel');
+			$joomlaModelAdded = true;
+		}
+
+		// Usually we should always have a user, but let's protect us with some sane defaults
+		$username = 'Guest';
+		$userLink = '#';
+
+		$user = $this->getUser();
+
+		if (!$user->guest)
+		{
+			$username = $user->username;
+			$userLink = 'index.php?option=com_users&task=user.edit&id=' . $user->id;
+		}
+
+		$message = array(
+			'title'    	  => $title,
+			'username' 	  => $username,
+			'accountlink' => $userLink
+		);
+
+		/** @var \ActionlogsModelActionlog $model **/
+		$model = \JModelLegacy::getInstance('Actionlog', 'ActionlogsModel');
+		$model->addLog(array($message), $logText, $extension, $user->id);
+	}
+
 	/**
 	 * Returns the root URI for the request.
 	 *

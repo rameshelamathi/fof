@@ -369,6 +369,17 @@ interface PlatformInterface
 	public function logDebug($message);
 
 	/**
+	 * Adds a message
+	 *
+	 * @param	string	$title
+	 * @param	string	$logText
+	 * @param	string	$extension
+	 *
+	 * @return void
+	 */
+	public function logUserAction($title, $logText, $extension);
+
+	/**
 	 * Returns the root URI for the request.
 	 *
 	 * @param   boolean  $pathonly  If false, prepend the scheme, host and port information. Default is false.

@@ -348,6 +348,11 @@ abstract class Platform implements PlatformInterface
 		// The default implementation does nothing. Override this in your platform classes.
 	}
 
+	public function logUserAction($title, $logText, $extension)
+	{
+		// The default implementation does nothing. Override this in your platform classes.
+	}
+
 	/**
 	 * Returns the version number string of the platform, e.g. "4.5.6". If
 	 * implementation integrates with a CMS or a versioned foundation (e.g.
