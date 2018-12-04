@@ -919,27 +919,30 @@ class Platform extends BasePlatform
 			$joomlaModelAdded = true;
 		}
 
-		// Usually we should always have a user, but let's protect us with some sane defaults
-		$username = 'Guest';
-		$userLink = '#';
-
 		$user = $this->getUser();
 
-		if (!$user->guest)
+		// No log for guest users
+		if ($user->guest)
 		{
-			$username = $user->username;
-			$userLink = 'index.php?option=com_users&task=user.edit&id=' . $user->id;
+			return;
 		}
 
 		$message = array(
 			'title'    	  => $title,
-			'username' 	  => $username,
-			'accountlink' => $userLink
+			'username' 	  => $user->username,
+			'accountlink' => 'index.php?option=com_users&task=user.edit&id=' . $user->id
 		);
 
 		/** @var \ActionlogsModelActionlog $model **/
-		$model = \JModelLegacy::getInstance('Actionlog', 'ActionlogsModel');
-		$model->addLog(array($message), $logText, $extension, $user->id);
+		try
+		{
+			$model = \JModelLegacy::getInstance('Actionlog', 'ActionlogsModel');
+			$model->addLog(array($message), $logText, $extension, $user->id);
+		}
+		catch (\Exception $e)
+		{
+			// Ignore any error
+		}
 	}
 
 	/**
