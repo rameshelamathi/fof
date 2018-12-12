@@ -440,13 +440,33 @@ class Ip
 
 				if (self::$useFirstIpInChain)
 				{
-					return $ip;
+					return self::cleanIP($ip);
 				}
 			}
 		}
-		else
+
+		return self::cleanIP($ip);
+	}
+
+	protected static function cleanIP($ip)
+	{
+		$ip = trim($ip);
+
+		/**
+		 * Work around IPv6/IPv4 address embedding.
+		 *
+		 * IPv4 addresses may be embedded in an IPv6 address. This is always 80 zeroes, 16 ones and the IPv4 address.
+		 * In IPv6 notations this is 0:0:0:0:0:FFFF:192.168.1.1, or ::FFFF:192.168.1.1
+		 *
+		 * @see http://www.tcpipguide.com/free/t_IPv6IPv4AddressEmbedding-2.htm
+		 */
+		if ((strpos($ip, '::') === 0) && (strstr($ip, '.') !== false))
 		{
-			$ip = trim($ip);
+			$ip = substr($ip, strrpos($ip, ':') + 1);
+		}
+		elseif ((strpos(strtoupper($ip), ':FFFF:') !== false) && (strstr($ip, '.') !== false))
+		{
+			$ip = substr($ip, strrpos($ip, ':') + 1);
 		}
 
 		return $ip;

@@ -4,7 +4,7 @@ class IpDataprovider
 {
 	public static function getDetectAndCleanIP()
 	{
-		$data[] = array(
+		$data['Single IPv4, using the first one'] = array(
 			// test
 			array(
 				'fakeIP'   => '127.0.0.1',
@@ -17,7 +17,7 @@ class IpDataprovider
 			)
 		);
 
-		$data[] = array(
+		$data['Single IPv6, using the first one'] = array(
 			// test
 			array(
 				'fakeIP'   => '0:0:0:0:0:ffff:d1ad:35a7',
@@ -30,7 +30,7 @@ class IpDataprovider
 			)
 		);
 
-		$data[] = array(
+		$data['IPv4 and IPv6, using the first one'] = array(
 			// test
 			array(
 				'fakeIP'   => '127.0.0.1,0:0:0:0:0:ffff:d1ad:35a7',
@@ -43,7 +43,7 @@ class IpDataprovider
 			)
 		);
 
-		$data[] = array(
+		$data['IPv4 and IPv6, using the last one'] = array(
 			// test
 			array(
 				'fakeIP'   => '127.0.0.1,0:0:0:0:0:ffff:d1ad:35a7',
@@ -56,7 +56,7 @@ class IpDataprovider
 			)
 		);
 
-		$data[] = array(
+		$data['Two IPv4, using the first one'] = array(
 			// test
 			array(
 				'fakeIP'   => '127.0.0.1,1.1.1.1',
@@ -69,7 +69,7 @@ class IpDataprovider
 			)
 		);
 
-		$data[] = array(
+		$data['Two IPv4, using the last one'] = array(
 			// test
 			array(
 				'fakeIP'   => '127.0.0.1,1.1.1.1',
@@ -82,7 +82,7 @@ class IpDataprovider
 			)
 		);
 
-		$data[] = array(
+		$data['Three IPv4, using the first one'] = array(
 			// test
 			array(
 				'fakeIP'   => '127.0.0.1,1.1.1.1,2.2.2.2',
@@ -95,7 +95,7 @@ class IpDataprovider
 			)
 		);
 
-		$data[] = array(
+		$data['Three IPv4, using the last one'] = array(
 			// test
 			array(
 				'fakeIP'   => '127.0.0.1,1.1.1.1,2.2.2.2',
@@ -108,7 +108,7 @@ class IpDataprovider
 			)
 		);
 
-		$data[] = array(
+		$data['Malformed IPs (1)'] = array(
 			// test
 			array(
 				'fakeIP'   => '127.0.0.1, 1.1.1.1, 2.2.2.2',
@@ -121,7 +121,7 @@ class IpDataprovider
 			)
 		);
 
-		$data[] = array(
+		$data['Malformed IPs (2)'] = array(
 			// test
 			array(
 				'fakeIP'   => '127.0.0.1,  1.1.1.1,  2.2.2.2',
@@ -134,7 +134,7 @@ class IpDataprovider
 			)
 		);
 
-		$data[] = array(
+		$data['Malformed IPs (3)'] = array(
 			// test
 			array(
 				'fakeIP'   => '127.0.0.1 1.1.1.1 2.2.2.2',
@@ -147,7 +147,7 @@ class IpDataprovider
 			)
 		);
 
-		$data[] = array(
+		$data['Malformed IPs (4)'] = array(
 			// test
 			array(
 				'fakeIP'   => '127.0.0.1  1.1.1.1  2.2.2.2',
@@ -157,6 +157,32 @@ class IpDataprovider
 			array(
 				'case'   => 'Malformed IPs (4)',
 				'result' => '127.0.0.1'
+			)
+		);
+
+		$data['IPv4 wrapped in IPv6, compressed zeroes'] = array(
+			// test
+			array(
+				'fakeIP'   => '::ffff:192.168.1.2',
+				'useFirst' => true
+			),
+			// check
+			array(
+				'case'   => 'IPv4 wrapped in IPv6, compressed zeroes',
+				'result' => '192.168.1.2'
+			)
+		);
+
+		$data['IPv4 wrapped in IPv6, expanded zeroes'] = array(
+			// test
+			array(
+				'fakeIP'   => '0:0:0:0:0:ffff:192.168.1.2',
+				'useFirst' => true
+			),
+			// check
+			array(
+				'case'   => 'IPv4 wrapped in IPv6, expanded zeroes',
+				'result' => '192.168.1.2'
 			)
 		);
 
