@@ -7,17 +7,12 @@
 
 defined('_JEXEC') or die();
 
-// Do not declare the class if it's already defined. We have to put this check otherwise while updating
-// multiple components at once will result in a fatal error since the class lib_fof30InstallerScript
-// is already declared
-if (defined('AKEEBA_INSTALLING_FOF_I_HAVE_ALREADY_LOADED_THE_SCRIPT'))
+if (class_exists('file_fof30InstallerScript', false))
 {
 	return;
 }
 
-define('AKEEBA_INSTALLING_FOF_I_HAVE_ALREADY_LOADED_THE_SCRIPT', 1);
-
-class lib_fof30InstallerScript
+class file_fof30InstallerScript
 {
 	/**
 	 * The minimum PHP version required to install this extension
@@ -124,10 +119,12 @@ class lib_fof30InstallerScript
 	 * or updating your component. This is the last chance you've got to perform any additional installations, clean-up,
 	 * database updates and similar housekeeping functions.
 	 *
-	 * @param   string                   $type   install, update or discover_update
-	 * @param   JInstallerAdapterLibrary $parent Parent object
+	 * @param   string                    $type    install, update or discover_update
+	 * @param   JInstallerAdapterLibrary  $parent  Parent object
+	 *
+	 * @throws  Exception
 	 */
-	public function postflight($type, JInstallerAdapterLibrary $parent)
+	public function postflight($type, $parent)
 	{
 		if ($type == 'update')
 		{
@@ -532,9 +529,4 @@ class lib_fof30InstallerScript
 
 		$this->recursiveConditionalCopy($source, $target);
 	}
-}
-
-class fof30InstallerScript extends lib_fof30InstallerScript
-{
-	// Because Joomla! 3.9 is where logic came to die.
 }
