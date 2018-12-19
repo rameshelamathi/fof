@@ -171,7 +171,12 @@ class FOFTestInstall extends JApplicationCli
 						$priority = 'OTHER';
 						break;
 				}
+
+				$burp = @ob_get_clean();
 				echo "[ $priority :: {$entry->message} ]\n";
+				flush();
+				@ob_start();
+				echo $burp;
 			},
 		], JLog::ALL, ['jerror']);
 	}
@@ -198,6 +203,7 @@ class FOFTestInstall extends JApplicationCli
 		passthru($myCommand);
 
 		// Install the dev version
+		define('AKEEBA_PACKAGE_INSTALLING', 1);
 		$installResult = $tmpInstaller->install($installVersionPath);
 
 		// Dump the installed version's version.txt file

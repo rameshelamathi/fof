@@ -106,6 +106,11 @@ class file_fof30InstallerScript
 		{
 			$msg = "<p>You have a newer version of FOF installed. If you want to downgrade please uninstall FOF and install the older version.</p>";
 
+			if (defined('AKEEBA_PACKAGE_INSTALLING'))
+			{
+				$msg = "<p>Your site has a newer version of FOF 3 than the one bundled with this package. Please note that <strong>you can safely ignore the “Custom install routine failure” message</strong> below. It is not a real error; it is an expected message which is always printed by Joomla! in this case and which cannot be suppressed.</p>";
+			}
+
 			JLog::add($msg, JLog::WARNING, 'jerror');
 
 			return false;
