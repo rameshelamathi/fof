@@ -152,6 +152,28 @@ class FOFTestInstall extends JApplicationCli
 
 		// Set the current directory.
 		$this->set('cwd', getcwd());
+
+		JLog::addLogger([
+			'logger'   => 'callback',
+			'callback' => function (\Joomla\CMS\Log\LogEntry $entry) {
+				switch ($entry->priority)
+				{
+					case JLog::ERROR:
+						$priority = 'ERROR';
+						break;
+					case JLog::WARNING:
+						$priority = 'WARNING';
+						break;
+					case JLog::NOTICE:
+						$priority = 'NOTICE';
+						break;
+					default:
+						$priority = 'OTHER';
+						break;
+				}
+				echo "[ $priority :: {$entry->message} ]\n";
+			},
+		], JLog::ALL, ['jerror']);
 	}
 
 

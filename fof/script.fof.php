@@ -119,8 +119,8 @@ class file_fof30InstallerScript
 	 * or updating your component. This is the last chance you've got to perform any additional installations, clean-up,
 	 * database updates and similar housekeeping functions.
 	 *
-	 * @param   string                    $type    install, update or discover_update
-	 * @param   JInstallerAdapterLibrary  $parent  Parent object
+	 * @param   string                 $type    install, update or discover_update
+	 * @param   JInstallerAdapterFile  $parent  Parent object
 	 *
 	 * @throws  Exception
 	 */
@@ -175,11 +175,11 @@ class file_fof30InstallerScript
 	/**
 	 * Runs on uninstallation
 	 *
-	 * @param   JInstallerAdapterLibrary $parent The parent object
+	 * @param   JInstallerAdapterFile $parent The parent object
 	 *
 	 * @throws  RuntimeException  If the uninstallation is not allowed
 	 */
-	public function uninstall(JInstallerAdapterLibrary $parent)
+	public function uninstall($parent)
 	{
 		// Check dependencies on FOF
 		$dependencyCount = count($this->getDependencies('fof30'));
@@ -198,11 +198,11 @@ class file_fof30InstallerScript
 	 * Is this package an update to the currently installed FOF? If not (we're a downgrade) we will return false
 	 * and prevent the installation from going on.
 	 *
-	 * @param   JInstallerAdapterLibrary $parent The parent object
+	 * @param   JInstallerAdapterFile $parent The parent object
 	 *
 	 * @return  array  The installation status
 	 */
-	protected function amIAnUpdate(JInstallerAdapterLibrary $parent)
+	protected function amIAnUpdate($parent)
 	{
 		/** @var JInstaller $grandpa */
 		$grandpa = $parent->getParent();
@@ -237,7 +237,7 @@ class file_fof30InstallerScript
 			);
 		}
 
-		$rawData               = @file_get_contents($source . '/version.txt');
+		$rawData               = @file_get_contents($source . '/fof/version.txt');
 		$rawData               = ($rawData === false) ? "0.0.0\n2011-01-01\n" : $rawData;
 		$info                  = explode("\n", $rawData);
 		$fofVersion['package'] = array(
