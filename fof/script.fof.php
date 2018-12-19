@@ -533,3 +533,8 @@ class lib_fof30InstallerScript
 		$this->recursiveConditionalCopy($source, $target);
 	}
 }
+
+class fof30InstallerScript extends lib_fof30InstallerScript
+{
+	// Because Joomla! 3.9 is where logic came to die.
+}
