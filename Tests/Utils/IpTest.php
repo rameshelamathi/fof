@@ -36,3 +36,4 @@ class IpTest extends FOFTestCase
 		$this->assertEquals($check['result'], $result, $msg);
 	}
 }
+

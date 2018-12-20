@@ -20,20 +20,20 @@ class IpDataprovider
 		$data['Single IPv6, using the first one'] = array(
 			// test
 			array(
-				'fakeIP'   => '0:0:0:0:0:ffff:d1ad:35a7',
+				'fakeIP'   => '2607:f0d0:1002:0051:0000:0000:0000:0004',
 				'useFirst' => true
 			),
 			// check
 			array(
 				'case'   => 'Single IPv6, using the first one',
-				'result' => '0:0:0:0:0:ffff:d1ad:35a7'
+				'result' => '2607:F0D0:1002:0051:0000:0000:0000:0004'
 			)
 		);
 
 		$data['IPv4 and IPv6, using the first one'] = array(
 			// test
 			array(
-				'fakeIP'   => '127.0.0.1,0:0:0:0:0:ffff:d1ad:35a7',
+				'fakeIP'   => '127.0.0.1,2607:f0d0:1002:0051:0000:0000:0000:0004',
 				'useFirst' => true
 			),
 			// check
@@ -46,13 +46,26 @@ class IpDataprovider
 		$data['IPv4 and IPv6, using the last one'] = array(
 			// test
 			array(
-				'fakeIP'   => '127.0.0.1,0:0:0:0:0:ffff:d1ad:35a7',
+				'fakeIP'   => '127.0.0.1,2607:f0d0:1002:0051:0000:0000:0000:0004',
 				'useFirst' => false
 			),
 			// check
 			array(
 				'case'   => 'IPv4 and IPv6, using the last one',
-				'result' => '0:0:0:0:0:ffff:d1ad:35a7'
+				'result' => '2607:F0D0:1002:0051:0000:0000:0000:0004'
+			)
+		);
+
+		$data['IPv6 through proxy (SHOULD NEVER HAPPEN)'] = array(
+			// test
+			array(
+				'fakeIP'   => 'dead:beef:bad0:0bad:0000:0000:0000:0001,2607:f0d0:1002:0051:0000:0000:0000:0004',
+				'useFirst' => true
+			),
+			// check
+			array(
+				'case'   => 'IPv4 and IPv6, using the last one',
+				'result' => 'DEAD:BEEF:BAD0:0BAD:0000:0000:0000:0001'
 			)
 		);
 
@@ -183,6 +196,45 @@ class IpDataprovider
 			array(
 				'case'   => 'IPv4 wrapped in IPv6, expanded zeroes',
 				'result' => '192.168.1.2'
+			)
+		);
+
+		$data['IPv4 wrapped in IPv6, all hex, collapsed zeroes'] = array(
+			// test
+			array(
+				'fakeIP'   => '::FFFF:C0A8:0101',
+				'useFirst' => true
+			),
+			// check
+			array(
+				'case'   => 'IPv4 wrapped in IPv6, all hex, collapsed zeroes',
+				'result' => '192.168.1.1'
+			)
+		);
+
+		$data['IPv4 wrapped in IPv6, all hex, expanded zeroes'] = array(
+			// test
+			array(
+				'fakeIP'   => '0:0:0:0:0:FFFF:C0A8:0101',
+				'useFirst' => true
+			),
+			// check
+			array(
+				'case'   => 'IPv4 wrapped in IPv6, all hex, expanded zeroes',
+				'result' => '192.168.1.1'
+			)
+		);
+
+		$data['IPv4 wrapped in IPv6, through proxy, IPv4 returned'] = array(
+			// test
+			array(
+				'fakeIP'   => '0:0:0:0:0:FFFF:C0A8:0101,2607:f0d0:1002:0051:0000:0000:0000:0004',
+				'useFirst' => true
+			),
+			// check
+			array(
+				'case'   => 'IPv4 wrapped in IPv6, through proxy, IPv4 returned',
+				'result' => '192.168.1.1'
 			)
 		);
 
