@@ -7,15 +7,12 @@
 
 defined('_JEXEC') or die();
 
-// Do not declare the class if it's already defined. We have to put this check otherwise while updating
-// multiple components at once will result in a fatal error since the class lib_fof30InstallerScript
-// is already declared
-if (class_exists('lib_fof30InstallerScript', false))
+if (class_exists('file_fof30InstallerScript', false))
 {
 	return;
 }
 
-class lib_fof30InstallerScript
+class file_fof30InstallerScript
 {
 	/**
 	 * The minimum PHP version required to install this extension
@@ -109,6 +106,11 @@ class lib_fof30InstallerScript
 		{
 			$msg = "<p>You have a newer version of FOF installed. If you want to downgrade please uninstall FOF and install the older version.</p>";
 
+			if (defined('AKEEBA_PACKAGE_INSTALLING'))
+			{
+				$msg = "<p>Your site has a newer version of FOF 3 than the one bundled with this package. Please note that <strong>you can safely ignore the “Custom install routine failure” message</strong> below. It is not a real error; it is an expected message which is always printed by Joomla! in this case and which cannot be suppressed.</p>";
+			}
+
 			JLog::add($msg, JLog::WARNING, 'jerror');
 
 			return false;
@@ -122,10 +124,12 @@ class lib_fof30InstallerScript
 	 * or updating your component. This is the last chance you've got to perform any additional installations, clean-up,
 	 * database updates and similar housekeeping functions.
 	 *
-	 * @param   string                   $type   install, update or discover_update
-	 * @param   JInstallerAdapterLibrary $parent Parent object
+	 * @param   string                 $type    install, update or discover_update
+	 * @param   JInstallerAdapterFile  $parent  Parent object
+	 *
+	 * @throws  Exception
 	 */
-	public function postflight($type, JInstallerAdapterLibrary $parent)
+	public function postflight($type, $parent)
 	{
 		if ($type == 'update')
 		{
@@ -171,16 +175,32 @@ class lib_fof30InstallerScript
 		// Clear the FOF cache
 		$fakeController = \FOF30\Container\Container::getInstance('com_FOOBAR');
 		$fakeController->platform->clearCache();
+
+		// Clear op-code caches
+		$this->clearOpcodeCaches();
+
+		// Get the extension ID of the FOF library package
+		$libID = $this->getOldFOF3LibraryExtensionID();
+
+		// If I have an obsolete FOF library package...
+		if (!empty($libID))
+		{
+			// Remove the FOF library package update site
+			$this->removeUpdateSiteFor($libID);
+
+			// Remove the FOF library package extension record
+			$this->removeExtension($libID);
+		}
 	}
 
 	/**
 	 * Runs on uninstallation
 	 *
-	 * @param   JInstallerAdapterLibrary $parent The parent object
+	 * @param   JInstallerAdapterFile $parent The parent object
 	 *
 	 * @throws  RuntimeException  If the uninstallation is not allowed
 	 */
-	public function uninstall(JInstallerAdapterLibrary $parent)
+	public function uninstall($parent)
 	{
 		// Check dependencies on FOF
 		$dependencyCount = count($this->getDependencies('fof30'));
@@ -199,11 +219,11 @@ class lib_fof30InstallerScript
 	 * Is this package an update to the currently installed FOF? If not (we're a downgrade) we will return false
 	 * and prevent the installation from going on.
 	 *
-	 * @param   JInstallerAdapterLibrary $parent The parent object
+	 * @param   JInstallerAdapterFile $parent The parent object
 	 *
 	 * @return  array  The installation status
 	 */
-	protected function amIAnUpdate(JInstallerAdapterLibrary $parent)
+	protected function amIAnUpdate($parent)
 	{
 		/** @var JInstaller $grandpa */
 		$grandpa = $parent->getParent();
@@ -238,7 +258,7 @@ class lib_fof30InstallerScript
 			);
 		}
 
-		$rawData               = @file_get_contents($source . '/version.txt');
+		$rawData               = @file_get_contents($source . '/fof/version.txt');
 		$rawData               = ($rawData === false) ? "0.0.0\n2011-01-01\n" : $rawData;
 		$info                  = explode("\n", $rawData);
 		$fofVersion['package'] = array(
@@ -529,5 +549,130 @@ class lib_fof30InstallerScript
 		$target = JPATH_LIBRARIES . '/' . $this->libraryFolder;
 
 		$this->recursiveConditionalCopy($source, $target);
+	}
+
+	/**
+	 * Clear PHP opcode caches
+	 *
+	 * @return  void
+	 */
+	protected function clearOpcodeCaches()
+	{
+		// Always reset the OPcache if it's enabled. Otherwise there's a good chance the server will not know we are
+		// replacing .php scripts. This is a major concern since PHP 5.5 included and enabled OPcache by default.
+		if (function_exists('opcache_reset'))
+		{
+			opcache_reset();
+		}
+		// Also do that for APC cache
+		elseif (function_exists('apc_clear_cache'))
+		{
+			@apc_clear_cache();
+		}
+	}
+
+	/**
+	 * Return the extension ID of the old FOF 3 "library" type extension.
+	 *
+	 * @return  int|null
+	 */
+	protected function getOldFOF3LibraryExtensionID()
+	{
+		$db = JFactory::getDbo();
+
+		// If there are multiple #__extensions record, keep one of them
+		$query = $db->getQuery(true);
+		$query->select('extension_id')
+			->from('#__extensions')
+			->where($db->qn('type') . ' = ' . $db->q('library'))
+			->where($db->qn('element') . ' = ' . $db->q('lib_fof30'));
+		$db->setQuery($query);
+
+		try
+		{
+			return $db->loadResult();
+		}
+		catch (Exception $exc)
+		{
+			return null;
+		}
+	}
+
+	/**
+	 * Remove the update site for the provided extension ID
+	 *
+	 * @param   int  $id  The extension ID
+	 */
+	protected function removeUpdateSiteFor($id)
+	{
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true)
+			->select($db->qn('update_site_id'))
+			->from($db->qn('#__update_sites_extensions'))
+			->where($db->qn('extension_id') . ' = ' . $db->q($id));
+
+		try
+		{
+			$siteId = $db->setQuery($query)->loadResult();
+		}
+		catch (Exception $e)
+		{
+			return;
+		}
+
+		if (empty($siteId))
+		{
+			return;
+		}
+
+		$query = $db->getQuery(true)
+			->delete($db->qn('#__update_sites'))
+			->where($db->qn('update_site_id') . ' = ' . $db->q($siteId));
+
+		try
+		{
+			$db->setQuery($query)->execute();
+		}
+		catch (Exception $e)
+		{
+			return;
+		}
+
+		$query = $db->getQuery(true)
+			->delete($db->qn('#__update_sites_extensions'))
+			->where($db->qn('update_site_id') . ' = ' . $db->q($siteId));
+
+		try
+		{
+			$db->setQuery($query)->execute();
+		}
+		catch (Exception $e)
+		{
+			return;
+		}
+	}
+
+	protected function removeExtension($id)
+	{
+		/** @var Joomla\CMS\Table\Extension $extension */
+		$extension = JTable::getInstance('Extension');
+		$extension->load($id);
+
+		$keyName = $extension->getKeyName();
+		$loadedID = $extension->get($keyName, 0);
+
+		if ($loadedID != $id)
+		{
+			return;
+		}
+
+		try
+		{
+			$extension->delete($id);
+		}
+		catch (Exception $e)
+		{
+			return;
+		}
 	}
 }

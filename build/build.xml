@@ -32,7 +32,7 @@
 		depends="new-release,setup-properties">
 
 		<!-- Generate XML file for FOF -->
-		<copy file="./templates/lib_fof30.xml" tofile="${dirs.root}/lib_fof30.xml" overwrite="true">
+		<copy file="templates/file_fof30.xml" tofile="${dirs.root}/file_fof30.xml" overwrite="true">
 			<filterchain>
 				<replacetokens begintoken="##" endtoken="##">
 					<token key="DATE" value="${build.date}" />
@@ -40,7 +40,7 @@
 				</replacetokens>
 			</filterchain>
 		</copy>
-		<copy file="${dirs.root}/lib_fof30.xml" tofile="${dirs.library}/lib_fof30.xml" overwrite="true" />
+		<copy file="${dirs.root}/file_fof30.xml" tofile="${dirs.library}/file_fof30.xml" overwrite="true" />
 
 		<!-- Generate version.txt file for FOF -->
 		<copy file="./templates/version.txt" tofile="${dirs.library}/version.txt" overwrite="true">
@@ -76,14 +76,14 @@
 		</zipme>
 		<zipme basedir="${dirs.root}" destfile="${dirs.release}/lib_fof30-${version}.zip" includeemptydirs="true">
 			<fileset dir="${dirs.root}">
-				<include name="lib_fof30.xml" />
+				<include name="file_fof30.xml" />
 			</fileset>
 		</zipme>
 
 		<!-- Clean up -->
 		<delete>
 			<fileset dir="${dirs.root}">
-				<include name="lib_fof30.xml" />
+				<include name="file_fof30.xml" />
 			</fileset>
 		</delete>
 	</target>
