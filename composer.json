@@ -4,7 +4,8 @@
 	"description": "FOF (Framework on Framework) is a Rapid Application Development framework for Joomla!",
 	"require": {
 		"php": "~5.3.10||>=5.4,<5.5||>=5.5",
-      "ext-curl": "*"
+      "ext-curl": "*",
+      "ext-simplexml": "*"
     },
 	"keywords": ["framework","joomla","mvc","rad"],
 	"homepage": "https://github.com/akeeba/fof",
