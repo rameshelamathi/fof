@@ -1,5 +1,6 @@
-FOF 3.3.10
+FOF 3.4.0
 ================================================================================
+~ Changed package format to "files" due to Joomla failing to prevent downgrades on "library" packages
 # [HIGH] IP helper returns the IPv4-embedded-in-IPv6 address (::ffff:192.168.0.1 or 0:0:0:0:0:fff:192.168.0.1) instead of the unwrapped IPv4 address, making IP matching impossible.
 
 FOF 3.3.9
