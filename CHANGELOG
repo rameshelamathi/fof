@@ -1,3 +1,7 @@
+FOF 3.4.1
+================================================================================
+# [HIGH] TransparentAuthentication fails on PHP 7.3.0 (backport from FOF 4 branch)
+
 FOF 3.4.0
 ================================================================================
 + Support for FEF Dark Mode in the FEF renderer class. Requires FEF 1.0.7 or later.
