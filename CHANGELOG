@@ -1,6 +1,7 @@
 FOF 3.4.1
 ================================================================================
 + Blade compiler can fall back to slower, less safe compilation when the PHP Tokenizer extension is disabled
++ Blade: extend() takes an optional argument (tag) to make it easier identifying already setup custom Blade compilers
 + loadAnyTemplate can optionally skip template overrides (useful for Blade template overrides which need to include the original file)
 # [HIGH] TransparentAuthentication fails on PHP 7.3.0 (backport from FOF 4 branch)
 

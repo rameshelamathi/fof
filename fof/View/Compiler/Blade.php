@@ -1001,14 +1001,63 @@ class Blade implements CompilerInterface
 	}
 
 	/**
-	 * Register a custom Blade compiler.
+	 * Register a custom Blade compiler. Using a tag or not changes the behavior of this method when you try to redefine
+	 * an existing custom Blade compiler.
+	 *
+	 * If you use a tag which already exists the old compiler is replaced by the new one you are defining.
+	 *
+	 * If you do not use a tag, the new compiler you are defining will always be added to the bottom of the list. That
+	 * is to say, if another compiler would be matching the same function name (e.g. `@foobar`) it would get compiled by
+	 * the first compiler, the one already set, not the one you are defining now. You are suggested to always use a tag
+	 * for this reason.
+	 *
+	 * Finally, note that custom Blade compilers are compiled last. This means that you cannot override a core Blade
+	 * compiler with a custom one. If you need to do that you need to create a new Compiler class -- probably extending
+	 * this one -- and override the protected compiler methods. Remember to also create a custom Container and override
+	 * its 'blade' key with a callable which returns an object of your custom class.
 	 *
 	 * @param  callable  $compiler
+	 * @param  string    $tag       Optional. Give the callable a tag you can look for with hasExtensionByName
+	 *
 	 * @return void
 	 */
-	public function extend($compiler)
+	public function extend($compiler, $tag = null)
 	{
+		if (!is_null($tag))
+		{
+			$this->extensions[$tag] = $compiler;
+
+			return;
+		}
+
 		$this->extensions[] = $compiler;
+	}
+
+	/**
+	 * Look if a custom Blade compiler exists given its optional tag name.
+	 *
+	 * @param   string  $tag
+	 *
+	 * @return  bool
+	 */
+	public function hasExtension($tag)
+	{
+		return array_key_exists($tag, $this->extensions);
+	}
+
+	/**
+	 * Remove a custom BLade compiler given its optional tag name
+	 *
+	 * @param   string  $tag
+	 */
+	public function removeExtension($tag)
+	{
+		if (!$this->hasExtension($tag))
+		{
+			return;
+		}
+
+		unset ($this->extensions[$tag]);
 	}
 
 	/**
