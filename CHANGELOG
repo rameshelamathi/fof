@@ -1,3 +1,7 @@
+FOF 3.4.2
+================================================================================
+~ Improve site / admin detection by using isClient (J3.2+ syntax) instead of isAdmin
+
 FOF 3.4.1
 ================================================================================
 + Blade compiler can fall back to slower, less safe compilation when the PHP Tokenizer extension is disabled
