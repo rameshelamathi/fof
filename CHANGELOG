@@ -2,6 +2,7 @@ FOF 3.4.2
 ================================================================================
 ~ Improve site / admin detection by using isClient (J3.2+ syntax) instead of isAdmin
 # [HIGH] The Akeeba common tables SQL is wrong, causing restoration errors on some UTF8MB4-enabled sites.
+# [LOW] LayoutFile throws notices under PHP 7.3
 
 FOF 3.4.1
 ================================================================================
