@@ -24,13 +24,6 @@ defined('_JEXEC') or die;
  */
 class DataController extends Controller
 {
-	/**
-	 * The tasks for which caching should be enabled by default
-	 *
-	 * @var  array
-	 */
-	protected $cacheableTasks = array('browse', 'read');
-
     /**
      * Variables that should be taken in account while working with the cache. You can set them in Controller constructor
      * or inside onBefore* methods
@@ -131,6 +124,10 @@ class DataController extends Controller
 		elseif ($this->container->platform->isBackend())
 		{
 			$this->cacheableTasks = [];
+		}
+		else
+		{
+			$this->cacheableTasks = ['browse', 'read'];
 		}
 
 		if (isset($config['taskPrivileges']) && is_array($config['taskPrivileges']))

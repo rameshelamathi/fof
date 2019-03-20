@@ -1,6 +1,7 @@
 FOF 3.4.3
 ================================================================================
 ~ Allow backend views to be cacheable
+~ Allow per-user caching
 # [HIGH] Saving the component parameters did not clean Joomla's system cache
 
 FOF 3.4.2
