@@ -128,6 +128,10 @@ class DataController extends Controller
 
 			$this->cacheableTasks = $config['cacheableTasks'];
 		}
+		elseif ($this->container->platform->isBackend())
+		{
+			$this->cacheableTasks = [];
+		}
 
 		if (isset($config['taskPrivileges']) && is_array($config['taskPrivileges']))
 		{
