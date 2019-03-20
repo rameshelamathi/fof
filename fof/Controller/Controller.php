@@ -472,12 +472,10 @@ class Controller
 
 		$conf = $this->container->platform->getConfig();
 
-		if ($this->container->platform->isFrontend() && $cachable && ($viewType != 'feed') && ($conf->get('caching') >= 1))
+		if ($cachable && ($viewType != 'feed') && ($conf->get('caching') >= 1))
 		{
 			// Get a JCache object
 			$option = $this->input->get('option', 'com_foobar', 'cmd');
-			/** @var \JCacheControllerView $cache */
-			$cache = \JFactory::getCache($option, 'view');
 
 			// Set up a cache ID based on component, view, task and user group assignment
 			$user = $this->container->platform->getUser();
@@ -505,7 +503,7 @@ class Controller
 					'id'			=> 'INT',
 				);
 			}
-
+			
 			if (is_array($urlparams))
 			{
 				/** @var \JApplicationCms $app */
@@ -538,7 +536,17 @@ class Controller
 			$cacheId = md5(serialize(array(\JCache::makeId(), $view->getName(), $this->doTask, $groups, $importantParameters)));
 
 			// Get the cached view or cache the current view
-			$cache->get($view, 'display', $cacheId);
+			try
+			{
+				/** @var \JCacheControllerView $cache */
+				$cache = \JFactory::getCache($option, 'view');
+				$cache->get($view, 'display', $cacheId);
+			}
+			catch (\JCacheException $e)
+			{
+				// Display without caching
+				$view->display($tpl);
+			}
 		}
 		else
 		{
