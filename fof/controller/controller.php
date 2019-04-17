@@ -1295,7 +1295,7 @@ class F0FController extends F0FUtilsObject
 
 		// Set the layout to form, if it's not set in the URL
 
-		if (is_null($this->layout))
+		if (empty($this->layout))
 		{
 			$this->layout = 'form';
 		}
