@@ -1,3 +1,7 @@
+FOF 3.4.4
+================================================================================
++ User action logs with multiple text entries are now allowed
+
 FOF 3.4.3
 ================================================================================
 + Allow backend views to be cacheable
