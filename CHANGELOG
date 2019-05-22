@@ -1,6 +1,8 @@
 FOF 3.4.4
 ================================================================================
 + User action logs with multiple text entries are now allowed
++ In some cases, under CloudFlare, the real IP is only inside the X-CF-Connecting-Ip header, not X-Forwarded-For
++ Blade templates can now be debugged with phpStorm
 
 FOF 3.4.3
 ================================================================================
