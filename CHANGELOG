@@ -1,3 +1,7 @@
+FOF 3.4.5
+================================================================================
+# [HIGH] IP filtering with CIDR or netmask notation may not work for certain IP address blocks
+
 FOF 3.4.4
 ================================================================================
 + User action logs with multiple text entries are now allowed

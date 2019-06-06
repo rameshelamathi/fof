@@ -583,18 +583,18 @@ class Ip
 	{
 		if (strlen($inet) == 4)
 		{
-			$unpacked = unpack('A4', $inet);
+			$unpacked = unpack('C4', $inet);
 		}
 		else
 		{
-			$unpacked = unpack('A16', $inet);
+			$unpacked = unpack('C16', $inet);
 		}
-		$unpacked = str_split($unpacked[1]);
+
 		$binaryip = '';
 
-		foreach ($unpacked as $char)
+		foreach ($unpacked as $byte)
 		{
-			$binaryip .= str_pad(decbin(ord($char)), 8, '0', STR_PAD_LEFT);
+			$binaryip .= str_pad(decbin($byte), 8, '0', STR_PAD_LEFT);
 		}
 
 		return $binaryip;
@@ -610,15 +610,15 @@ class Ip
 	 */
 	protected static function checkIPv6CIDR($ip, $cidrnet)
 	{
-		$ip = inet_pton($ip);
-		$binaryip=self::inet_to_bits($ip);
+		$ip       = inet_pton($ip);
+		$binaryip = self::inet_to_bits($ip);
 
-		list($net,$maskbits)=explode('/',$cidrnet);
-		$net=inet_pton($net);
-		$binarynet=self::inet_to_bits($net);
+		list($net, $maskbits) = explode('/', $cidrnet);
+		$net       = inet_pton($net);
+		$binarynet = self::inet_to_bits($net);
 
-		$ip_net_bits=substr($binaryip,0,$maskbits);
-		$net_bits   =substr($binarynet,0,$maskbits);
+		$ip_net_bits = substr($binaryip, 0, $maskbits);
+		$net_bits    = substr($binarynet, 0, $maskbits);
 
 		return $ip_net_bits === $net_bits;
 	}
