@@ -42,6 +42,18 @@ class Ip
 	protected static $useFirstIpInChain = true;
 
 	/**
+	 * List of headers we should check to know if the user is behind a proxy. PLEASE NOTE: ORDER MATTERS!
+	 *
+	 * @var array
+	 */
+	protected static $proxyHeaders = [
+		'HTTP_CF_CONNECTING_IP',        // CloudFlare
+		'HTTP_X_FORWARDED_FOR',         // Standard for transparent proxy (e.g. NginX)
+		'HTTP_X_SUCURI_CLIENTIP',       // Sucuri firewall uses its own header
+		'HTTP_CLIENT_IP',               // Non-transparent proxy
+	];
+
+	/**
 	 * Set the $useFirstIpInChain flag. See above.
 	 *
 	 * @param   bool  $value
