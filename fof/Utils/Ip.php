@@ -50,7 +50,6 @@ class Ip
 		'HTTP_CF_CONNECTING_IP',        // CloudFlare
 		'HTTP_X_FORWARDED_FOR',         // Standard for transparent proxy (e.g. NginX)
 		'HTTP_X_SUCURI_CLIENTIP',       // Sucuri firewall uses its own header
-		'HTTP_CLIENT_IP',               // Non-transparent proxy
 	];
 
 	/**
@@ -508,28 +507,17 @@ class Ip
 		// Normally the $_SERVER superglobal is set
 		if (isset($_SERVER))
 		{
-			// Are we under CloudFlare?
-			if (self::$allowIpOverrides && array_key_exists('HTTP_CF_CONNECTING_IP', $_SERVER))
+			// Do we have IP overrides enabled?
+			if (static::$allowIpOverrides)
 			{
-				return $_SERVER['HTTP_CF_CONNECTING_IP'];
-			}
-
-			// Do we have an x-forwarded-for HTTP header (e.g. NginX)?
-			if (self::$allowIpOverrides && array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER))
-			{
-				return $_SERVER['HTTP_X_FORWARDED_FOR'];
-			}
-
-			// Are we using Sucuri firewall? They use a custom HTTP header
-			if (self::$allowIpOverrides && array_key_exists('HTTP_X_SUCURI_CLIENTIP', $_SERVER))
-			{
-				return $_SERVER['HTTP_X_SUCURI_CLIENTIP'];
-			}
-
-			// Do we have a client-ip header (e.g. non-transparent proxy)?
-			if (self::$allowIpOverrides && array_key_exists('HTTP_CLIENT_IP', $_SERVER))
-			{
-				return $_SERVER['HTTP_CLIENT_IP'];
+				// If so, check for every proxy header
+				foreach (static::$proxyHeaders as $header)
+				{
+					if (array_key_exists($header, $_SERVER))
+					{
+						return $_SERVER[$header];
+					}
+				}
 			}
 
 			// CLI applications
@@ -550,28 +538,17 @@ class Ip
 			return '';
 		}
 
-		// Are we under CloudFlare?
-		if (self::$allowIpOverrides && getenv('HTTP_CF_CONNECTING_IP'))
+		// Do we have IP overrides enabled?
+		if (static::$allowIpOverrides)
 		{
-			return getenv('HTTP_CF_CONNECTING_IP');
-		}
-
-		// Do we have an x-forwarded-for HTTP header?
-		if (self::$allowIpOverrides && getenv('HTTP_X_FORWARDED_FOR'))
-		{
-			return getenv('HTTP_X_FORWARDED_FOR');
-		}
-
-		// Are we using Sucuri firewall? They use a custom HTTP header
-		if (self::$allowIpOverrides && getenv('HTTP_X_SUCURI_CLIENTIP'))
-		{
-			return getenv('HTTP_X_SUCURI_CLIENTIP');
-		}
-
-		// Do we have a client-ip header?
-		if (self::$allowIpOverrides && getenv('HTTP_CLIENT_IP'))
-		{
-			return getenv('HTTP_CLIENT_IP');
+			// If so, check for every proxy header
+			foreach (static::$proxyHeaders as $header)
+			{
+				if (getenv($header))
+				{
+					return getenv($header);
+				}
+			}
 		}
 
 		// Normal, non-proxied server or server behind a transparent proxy
