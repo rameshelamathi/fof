@@ -63,6 +63,16 @@ class Ip
 	}
 
 	/**
+	 * Getter for the list of proxy headers we can check
+	 *
+	 * @return array
+	 */
+	public static function getProxyHeaders()
+	{
+		return static::$proxyHeaders;
+	}
+
+	/**
 	 * Get the current visitor's IP address
 	 *
 	 * @return string
