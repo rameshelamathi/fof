@@ -5,7 +5,8 @@
 	"require": {
 		"php": "~5.3.10||>=5.4,<5.5||>=5.5",
       "ext-curl": "*",
-      "ext-simplexml": "*"
+      "ext-simplexml": "*",
+      "ext-json": "*"
     },
 	"keywords": ["framework","joomla","mvc","rad"],
 	"homepage": "https://github.com/akeeba/fof",
