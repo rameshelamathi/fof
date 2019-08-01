@@ -1,3 +1,7 @@
+FOF 3.4.6
+================================================================================
+# [LOW] Notices from legacy code to call events in Dispatcher, Controller, Model, View and event dispatcher
+
 FOF 3.4.5
 ================================================================================
 + Allow FEF Dark Mode to preload the files without applying the class
