@@ -1051,7 +1051,7 @@ class Controller
 		// If there is an object method for this event, call it
 		if (method_exists($this, $event))
 		{
-			$result = call_user_func_array([$this, $event], $arguments);
+			$result = fof3_call_user_func_array([$this, $event], $arguments);
 		}
 		// If there is no handler method perform a simple ACL check
 		elseif (substr($event, 0, 8) == 'onBefore')

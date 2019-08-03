@@ -534,7 +534,7 @@ class Model
 		// If there is an object method for this event, call it
 		if (method_exists($this, $event))
 		{
-			call_user_func_array([$this, $event], $arguments);
+			fof3_call_user_func_array([$this, $event], $arguments);
 		}
 
 		// All other event handlers live outside this object, therefore they need to be passed a reference to this

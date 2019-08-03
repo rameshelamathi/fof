@@ -532,3 +532,62 @@ if ( ! function_exists('with'))
 		return $object;
 	}
 }
+
+
+if (!function_exists('fof3_call_user_func_array'))
+{
+	/**
+	 * Calls a callable and returns its result. Unlike call_user_func_array the $params array can safely include
+	 * pass-by-reference variables as long as there are AT MOST 8 parameters in the callable. With 9 or more parameters
+	 * we fall back to a regular call_user_func_array function call.
+	 *
+	 * @param   callable  $callable  The callable to execute
+	 * @param   array     $params    The parameters to pass to the callable
+	 *
+	 * @return  mixed  The callable's result. May just as well be void.
+	 */
+	function fof3_call_user_func_array(callable $callable, array $params = [])
+	{
+		switch (count($params))
+		{
+			case 0:
+				return $callable();
+				break;
+
+			case 1:
+				return $callable($params[0]);
+				break;
+
+			case 2:
+				return $callable($params[0], $params[1]);
+				break;
+
+			case 3:
+				return $callable($params[0], $params[1], $params[2]);
+				break;
+
+			case 4:
+				return $callable($params[0], $params[1], $params[2], $params[3]);
+				break;
+
+			case 5:
+				return $callable($params[0], $params[1], $params[2], $params[3], $params[4]);
+				break;
+
+			case 6:
+				return $callable($params[0], $params[1], $params[2], $params[3], $params[4], $params[5]);
+				break;
+
+			case 7:
+				return $callable($params[0], $params[1], $params[2], $params[3], $params[4], $params[5], $params[6]);
+				break;
+
+			case 8:
+				return $callable($params[0], $params[1], $params[2], $params[3], $params[4], $params[5], $params[6], $params[7]);
+				break;
+
+			default:
+				return call_user_func($callable, $params);
+		}
+	}
+}
