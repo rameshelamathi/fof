@@ -1,3 +1,7 @@
+FOF 3.4.6
+================================================================================
+# [LOW] FEFHelperSelect::booleanlist would not automatically style the radio list for switch display
+
 FOF 3.4.5
 ================================================================================
 + Allow FEF Dark Mode to preload the files without applying the class
