@@ -1,5 +1,6 @@
 FOF 3.4.6
 ================================================================================
+~ Work towards future PHP 7.4 support
 # [LOW] FEFHelperSelect::booleanlist would not automatically style the radio list for switch display
 
 FOF 3.4.5
