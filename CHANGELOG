@@ -4,6 +4,7 @@ FOF 3.4.6
 ~ Updated Assertions mixin
 ~ Work towards future PHP 7.4 support
 # [LOW] FEFHelperSelect::booleanlist would not automatically style the radio list for switch display
+# [LOW] Behaviour.Rules would fail when binding a DataModel
 
 FOF 3.4.5
 ================================================================================
