@@ -5,9 +5,6 @@
  * @license     GNU GPL version 2 or later
  */
 
-use FOF30\Encrypt\Aes;
-use FOF30\Utils\Phpfunc;
-
 defined('_JEXEC') or die;
 
 if (!defined('FOF30_INCLUDED') && !@include_once(JPATH_LIBRARIES . '/fof30/include.php'))
@@ -19,19 +16,14 @@ class JFormFieldFofencryptedtoken extends JFormFieldText
 {
 	protected function getInput()
 	{
-		$this->value = $this->decrypt($this->value);
+		$this->value = $this->getTokenForDisplay($this->value);
 
 		return parent::getInput();
 	}
 
-	private function decrypt($value)
+	private function getTokenForDisplay($token)
 	{
-		if (empty($value) || substr($value, 0, 12) !== '###AES128###')
-		{
-			return $value;
-		}
-
-		$token = substr($value, 12);
+		$algo = $this->getAttribute('algo', 'sha256');
 
 		try
 		{
@@ -43,11 +35,11 @@ class JFormFieldFofencryptedtoken extends JFormFieldText
 			$siteSecret = $jConfig->get('secret');
 		}
 
-		$phpFunc  = new Phpfunc();
-		$aes      = new Aes($siteSecret, 128, 'cbc', $phpFunc);
-		$rawToken = $aes->decryptString($token, true);
-		$rawToken = trim($rawToken);
+		$rawToken  = base64_decode($token);
+		$tokenHash = hash_hmac($algo, $rawToken, $siteSecret);
+		$userId    = $this->form->getData()->get('id');
+		$message   = "$algo:$userId:$tokenHash";
 
-		return base64_encode($rawToken);
+		return base64_encode($message);
 	}
 }

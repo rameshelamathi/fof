@@ -57,6 +57,13 @@ class PlgUserFoftoken extends JPlugin
 	private $tokenLength = 32;
 
 	/**
+	 * Allowed HMAC algorithms for the token
+	 *
+	 * @var  array
+	 */
+	private $allowedAlgos = ['sha1', 'sha256', 'sha512'];
+
+	/**
 	 * Inject the FOF token management panel's data into the User Profile.
 	 *
 	 * This method is called whenever Joomla is preparing the data for an XML form for display.
@@ -370,21 +377,40 @@ class PlgUserFoftoken extends JPlugin
 		}
 
 		/**
-		 * Convert the token into the format used to store it in the database.
-		 *
-		 * The base64 encoded token is first converted to raw bytes. Then it's encrypted with the site's secret to
-		 * generate the same string format we use to store the token in the database.
+		 * First, we need to decode the token and make sure it contains all of the fields we expect (algorithm, user_id,
+		 * HMAC of the token calculated against the site's secret).
 		 */
 		$filter = InputFilter::getInstance();
-		$token  = $filter->clean($credentials['fofToken'], 'BASE64');
+		$tokenString  = $filter->clean($credentials['fofToken'], 'BASE64');
+		$authString = @base64_decode($tokenString);
 
-		if (empty($token))
+		if (empty($authString) || (strpos($authString, ':') === false))
 		{
 			return $response;
 		}
 
-		$rawToken = base64_decode($token);
+		$parts = explode(':', $authString, 3);
 
+		if (count($parts) != 3)
+		{
+			return $response;
+		}
+
+		list($algo, $userId, $tokenHMAC) = $parts;
+
+		/**
+		 * Verify the HMAC algorithm described in the token is allowed
+		 */
+		$allowedAlgo = in_array($algo, $this->allowedAlgos);
+
+		/**
+		 * Make sure the user ID is an integer
+		 */
+		$userId = (int) $userId;
+
+		/**
+		 * Calculate the reference token data HMAC
+		 */
 		try
 		{
 			$siteSecret = JFactory::getApplication()->get('secret');
@@ -395,44 +421,42 @@ class PlgUserFoftoken extends JPlugin
 			$siteSecret = $jConfig->get('secret');
 		}
 
-		$phpFunc     = new Phpfunc();
-		$aes         = new Aes($siteSecret, 128, 'cbc', $phpFunc);
-		$searchToken = '###AES128###' . $aes->encryptString($rawToken, true);
+		$referenceTokenData = $this->getTokenValueForUserId($userId);
+		$referenceTokenData = empty($referenceTokenData) ? '' : $referenceTokenData;
+		$referenceTokenData = base64_decode($referenceTokenData);
+		$referenceHMAC      = hash_hmac($algo, $referenceTokenData, $siteSecret);
 
-		// Search the foftoken.token user profile fields for a match
-		$db             = JFactory::getDbo();
-		$userIdSubquery = $db->getQuery(true)
-			->select($db->qn('user_id'))
-			->from($db->qn('#__user_profiles'))
-			->where($db->qn('profile_key') . ' = ' . $db->q($this->profileKeyPrefix . '.token'))
-			->where($db->qn('profile_value') . ' = ' . $db->q($searchToken));
-		$dataQuery      = $db->getQuery(true)
-			->select($db->qn([
-				'user_id', 'profile_key', 'profile_value',
-			]))
-			->from($db->qn('#__user_profiles'))
-			->where($db->qn('user_id') . ' IN(' . (string) $userIdSubquery . ')')
-			->where($db->qn('profile_key') . ' LIKE ' . $db->q($this->profileKeyPrefix . '.%', false))
-			->order($db->qn('ordering'));
+		// Is the token enabled?
+		$enabled = $this->getTokenEnabledForUserId($userId);
 
-		$data = $db->setQuery($dataQuery)->loadAssocList();
+		// Do the tokens match? Use a timing safe string comparison to prevent timing attacks.
+		$hashesMatch = $this->timingSafeEquals($referenceHMAC, $tokenHMAC);
 
-		// DO NOT OPTIMIZE. We need to consume approx. the same time for missing and disabled keys.
-		$enabledKey = $this->profileKeyPrefix . '.enabled';
-		$enabled    = array_key_exists($enabledKey, $data) ? (bool) ($data[$enabledKey]) : false;
+		/**
+		 * Can we log in?
+		 *
+		 * DO NOT concatenate in a single line. Due to boolean short-circuit evaluation it might make timing attacks
+		 * possible. Using separate lines of code forces PHP to evaluate each one of them in more or less constant time.
+		 */
+		// We need non-empty reference token data (the user must have configured a token)
+		$canLogin = !empty($referenceTokenData);
+		// The token must be enabled
+		$canLogin = $enabled && $canLogin;
+		// The token hash must be calculated with an allowed algorithm
+		$canLogin = $allowedAlgo && $canLogin;
+		// The token HMAC hash coming into the request and our reference must match.
+		$canLogin = $hashesMatch && $canLogin;
 
-		if (!$enabled)
+		/**
+		 * DO NOT try to be smart and do an early return when either of the individual conditions are not met. There's a
+		 * reason we only return after checking all three conditions: it prevents timing attacks.
+		 */
+		if (!$canLogin)
 		{
 			return $response;
 		}
 
-		$userId = $data[0]['user_id'];
-
-		if ($userId <= 0)
-		{
-			return $response;
-		}
-
+		// Get the actual user record
 		$user = JFactory::getUser($userId);
 
 		// Disallow login for blocked, inactive or password reset required users
@@ -456,43 +480,19 @@ class PlgUserFoftoken extends JPlugin
 	}
 
 	/**
-	 * Creates a new, encrypted token
-	 *
-	 * @param   int  $byteLength
-	 *
-	 * @return  string
-	 */
-	private function getNewToken($byteLength = 32)
-	{
-		// The site secret is used to encrypt the generated token
-		try
-		{
-			$siteSecret = JFactory::getApplication()->get('secret');
-		}
-		catch (Exception $e)
-		{
-			$jConfig    = JFactory::getConfig();
-			$siteSecret = $jConfig->get('secret');
-		}
-
-		$phpFunc = new Phpfunc();
-		$randVal = new Randval($phpFunc);
-		$aes     = new Aes($siteSecret, 128, 'cbc', $phpFunc);
-
-		return '###AES128###' . $aes->encryptString($randVal->generate($byteLength), true);
-	}
-
-	/**
 	 * Returns an array with the default profile field values.
 	 *
-	 * This is used when loading / saving the form data of a user without a token and when a new user is being created.
+	 * This is used when saving the form data of a user (new or existing) without a token already set.
 	 *
 	 * @return  array
 	 */
 	private function getDefaultProfileFieldValues()
 	{
+		$phpFunc = new Phpfunc();
+		$randVal = new Randval($phpFunc);
+
 		return [
-			'token'   => $this->getNewToken($this->tokenLength),
+			'token'   => base64_encode($randVal->generate($this->tokenLength)),
 			'enabled' => true,
 		];
 	}
@@ -521,5 +521,73 @@ class PlgUserFoftoken extends JPlugin
 		{
 			return null;
 		}
+	}
+
+	/**
+	 * Is the token enabled for a given user ID? If the user does not exist or has no token it returns false.
+	 *
+	 * @param   int  $userId
+	 *
+	 * @return  bool
+	 */
+	private function getTokenEnabledForUserId($userId)
+	{
+		try
+		{
+			$db    = JFactory::getDbo();
+			$query = $db->getQuery(true)
+				->select($db->qn('profile_value'))
+				->from($db->qn('#__user_profiles'))
+				->where($db->qn('profile_key') . ' = ' . $db->q($this->profileKeyPrefix . '.enabled'))
+				->where($db->qn('user_id') . ' = ' . $db->q($userId));
+
+			$value = $db->setQuery($query)->loadResult();
+
+			return $value == 1;
+		}
+		catch (Exception $e)
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * Time safe string comparison.
+	 *
+	 * If available, it will use hash_equals(). Otherwise it will use a pure PHP implementation by Anthony
+	 * Ferrara.
+	 *
+	 * @see https://www.php.net/manual/en/function.hash-equals.php
+	 * @see https://blog.ircmaxell.com/2014/11/its-all-about-time.html
+	 *
+	 * @param   string  $knownString
+	 * @param   string  $userString
+	 *
+	 * @return  bool
+	 */
+	private function timingSafeEquals($knownString, $userString)
+	{
+		if (function_exists('hash_equals'))
+		{
+			return hash_equals($knownString, $userString);
+		}
+
+		$safeLen = strlen($knownString);
+		$userLen = strlen($userString);
+
+		if ($userLen != $safeLen)
+		{
+			return false;
+		}
+
+		$result = 0;
+
+		for ($i = 0; $i < $userLen; $i++)
+		{
+			$result |= (ord($knownString[$i]) ^ ord($userString[$i]));
+		}
+
+		// They are only identical strings if $result is exactly 0...
+		return $result === 0;
 	}
 }

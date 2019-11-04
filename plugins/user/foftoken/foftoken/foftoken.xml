@@ -13,6 +13,7 @@
         >
             <field name="token" type="fofencryptedtoken"
                    default="" size="30"
+                   algo="sha1"
                    label="PLG_USER_FOFTOKEN_TOKEN_LABEL"
                    description="PLG_USER_FOFTOKEN_TOKEN_DESC"
                    disabled="true"
