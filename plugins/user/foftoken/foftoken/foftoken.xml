@@ -27,6 +27,14 @@
                 <option value="1">JYes</option>
             </field>
 
+            <field name="reset" type="radio" default="0"
+                   label="PLG_USER_FOFTOKEN_RESET_LABEL"
+                   description="PLG_USER_FOFTOKEN_RESET_DESC"
+                   class="switcher btn-group">
+                <option value="0">JNo</option>
+                <option value="1">JYes</option>
+            </field>
+
         </fieldset>
     </fields>
 </form>

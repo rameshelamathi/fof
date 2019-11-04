@@ -207,6 +207,17 @@ class PlgUserFoftoken extends JPlugin
 			$data[$this->profileKeyPrefix] = [];
 		}
 
+		if (isset($data[$this->profileKeyPrefix]['reset']))
+		{
+			$reset = $data[$this->profileKeyPrefix]['reset'] == 1;
+			unset($data[$this->profileKeyPrefix]['reset']);
+
+			if ($reset)
+			{
+				$noToken = true;
+			}
+		}
+
 		// We may have a token already saved. Let's check, shall we?
 		if (!$noToken)
 		{
