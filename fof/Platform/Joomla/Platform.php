@@ -805,6 +805,40 @@ class Platform extends BasePlatform
 		$authenticate = \JAuthentication::getInstance();
 		$response = $authenticate->authenticate($authInfo, $options);
 
+		// Use our own authentication handler, onFOFUserAuthenticate, as a fallback
+		if ($response->status != \JAuthentication::STATUS_SUCCESS)
+		{
+			$this->container->platform->importPlugin('user');
+			$this->container->platform->importPlugin('fof');
+			$pluginResults = $this->container->platform->runPlugins('onFOFUserAuthenticate', [$authInfo, $options]);
+
+			/**
+			 * Loop through all plugin results until we find a successful login. On failure we fall back to Joomla's
+			 * previous authentication response.
+			 */
+			foreach ($pluginResults as $result)
+			{
+				if (empty($result))
+				{
+					continue;
+				}
+
+				if (!is_object($result) || !($result instanceof \JAuthenticationResponse))
+				{
+					continue;
+				}
+
+				if ($result->status != \JAuthentication::STATUS_SUCCESS)
+				{
+					continue;
+				}
+
+				$response = $result;
+
+				break;
+			}
+		}
+
 		// User failed to authenticate: maybe he enabled two factor authentication?
 		// Let's try again "manually", skipping the check vs two factor auth
 		// Due the big mess with encryption algorithms and libraries, we are doing this extra check only
@@ -813,7 +847,7 @@ class Platform extends BasePlatform
 		{
 			$db = JFactory::getDbo();
 			$query = $db->getQuery(true)
-				->select('id, password')
+				->select($db->qn(['id', 'password']))
 				->from('#__users')
 				->where('username=' . $db->quote($authInfo['username']));
 			$result = $db->setQuery($query)->loadObject();

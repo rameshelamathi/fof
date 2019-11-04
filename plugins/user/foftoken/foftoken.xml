@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ @package   FOF
+  ~ @copyright Copyright (c)2010-2019 Nicholas K. Dionysopoulos / Akeeba Ltd
+  ~ @license   GNU GPL version 2 or later
+  -->
+
+<extension version="3.8" type="plugin" group="user" method="upgrade">
+	<name>plg_user_foftoken</name>
+	<author>Nicholas K. Dionysopoulos / AkeebaBackup.com</author>
+	<creationDate>2019-11-04</creationDate>
+	<copyright>Copyright (c)2010-2019 Nicholas K. Dionysopoulos / Akeeba Ltd</copyright>
+	<license>GNU GPL version 2 or later; see LICENSE.txt</license>
+	<authorEmail>nicholas@akeebabackup.com</authorEmail>
+	<authorUrl>www.akeebabackup.com</authorUrl>
+	<version>0.0.0</version>
+	<description>PLG_USER_FOFTOKEN_XML_DESCRIPTION</description>
+
+	<files>
+		<filename plugin="foftoken">foftoken.php</filename>
+		<filename>.htaccess</filename>
+		<filename>web.config</filename>
+		<folder>fields</folder>
+		<folder>foftoken</folder>
+	</files>
+
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.plg_user_foftoken.ini</language>
+		<language tag="en-GB">en-GB/en-GB.plg_user_foftoken.sys.ini</language>
+	</languages>
+
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<!-- TODO -->
+			</fieldset>
+		</fields>
+	</config>
+
+	<scriptfile>script.php</scriptfile>
+
+</extension>
