@@ -11,7 +11,7 @@
                   label="PLG_USER_FOFTOKEN_GROUP_LABEL"
                   description="PLG_USER_FOFTOKEN_GROUP_DESC"
         >
-            <field name="frontend_secret_word" type="fofencryptedtoken"
+            <field name="token" type="fofencryptedtoken"
                    default="" size="30"
                    label="PLG_USER_FOFTOKEN_TOKEN_LABEL"
                    description="PLG_USER_FOFTOKEN_TOKEN_DESC"

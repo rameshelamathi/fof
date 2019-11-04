@@ -141,7 +141,7 @@ class PlgUserFoftoken extends JPlugin
 	 *
 	 * @throws   Exception  When $form is not a valid form object
 	 */
-	public function onContentPrepareForm($form, &$data)
+	public function onContentPrepareForm($form, $data)
 	{
 		if (!($form instanceof JForm))
 		{
@@ -155,6 +155,7 @@ class PlgUserFoftoken extends JPlugin
 		}
 
 		// Add the registration fields to the form.
+		$this->loadLanguage();
 		JForm::addFormPath(dirname(__FILE__) . '/foftoken');
 		$form->loadFile('foftoken', false);
 
@@ -190,13 +191,31 @@ class PlgUserFoftoken extends JPlugin
 			return false;
 		}
 
-		if ($isNew || !isset($data[$this->profileKeyPrefix]) || empty($data[$this->profileKeyPrefix]['token']))
-		{
-			if (!isset($data[$this->profileKeyPrefix]))
-			{
-				$data[$this->profileKeyPrefix] = [];
-			}
+		$noToken = false;
 
+		// No FOF token data. Set the $noToken flag which results in a new token being generated.
+		if (!isset($data[$this->profileKeyPrefix]))
+		{
+			$noToken                       = true;
+			$data[$this->profileKeyPrefix] = [];
+		}
+
+		// We may have a token already saved. Let's check, shall we?
+		if (!$noToken)
+		{
+			$noToken       = true;
+			$existingToken = $this->getTokenValueForUserId($userId);
+
+			if (!empty($existingToken))
+			{
+				$noToken                                = false;
+				$data[$this->profileKeyPrefix]['token'] = $existingToken;
+			}
+		}
+
+		// If there is no token or this is a new user generate a new token.
+		if ($noToken || $isNew)
+		{
 			if (isset($data[$this->profileKeyPrefix]['token']) && empty($data[$this->profileKeyPrefix]['token']))
 			{
 				unset($data[$this->profileKeyPrefix]['token']);
@@ -206,6 +225,7 @@ class PlgUserFoftoken extends JPlugin
 			$data[$this->profileKeyPrefix] = array_merge($default, $data[$this->profileKeyPrefix]);
 		}
 
+		// Remove existing FOF Token user profile values
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true)
 			->delete($db->qn('#__user_profiles'))
@@ -214,12 +234,13 @@ class PlgUserFoftoken extends JPlugin
 
 		$db->setQuery($query)->execute();
 
+		// Save the new FOF Token user profile values
 		$order = 1;
 		$query = $db->getQuery(true)
 			->insert($db->qn('#__user_profiles'))
 			->columns([$db->qn('user_id'), $db->qn('profile_key'), $db->qn('profile_value'), $db->qn('ordering')]);
 
-		foreach ($data['ats'] as $k => $v)
+		foreach ($data[$this->profileKeyPrefix] as $k => $v)
 		{
 			$query->values($userId . ', ' . $db->quote($this->profileKeyPrefix . '.' . $k) . ', ' . $db->quote($v) . ', ' . $order++);
 		}
@@ -336,6 +357,7 @@ class PlgUserFoftoken extends JPlugin
 	public function onFOFUserAuthenticate(array $credentials, array $options)
 	{
 		// Default response: failure
+		$this->loadLanguage();
 		$response                = new AuthenticationResponse();
 		$response->type          = 'foftoken';
 		$response->status        = Authentication::STATUS_FAILURE;
@@ -473,5 +495,31 @@ class PlgUserFoftoken extends JPlugin
 			'token'   => $this->getNewToken($this->tokenLength),
 			'enabled' => true,
 		];
+	}
+
+	/**
+	 * Retrieve the existing, encrypted token for the given user ID.
+	 *
+	 * @param   int  $userId
+	 *
+	 * @return  string|null
+	 */
+	private function getTokenValueForUserId($userId)
+	{
+		try
+		{
+			$db    = JFactory::getDbo();
+			$query = $db->getQuery(true)
+				->select($db->qn('profile_value'))
+				->from($db->qn('#__user_profiles'))
+				->where($db->qn('profile_key') . ' = ' . $db->q($this->profileKeyPrefix . '.token'))
+				->where($db->qn('user_id') . ' = ' . $db->q($userId));
+
+			return $db->setQuery($query)->loadResult();
+		}
+		catch (Exception $e)
+		{
+			return null;
+		}
 	}
 }

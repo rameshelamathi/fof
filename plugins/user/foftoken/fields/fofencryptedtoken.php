@@ -31,7 +31,7 @@ class JFormFieldFofencryptedtoken extends JFormFieldText
 			return $value;
 		}
 
-		$token = substr($value, 7);
+		$token = substr($value, 12);
 
 		try
 		{
