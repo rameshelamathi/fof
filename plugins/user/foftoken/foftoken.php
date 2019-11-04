@@ -8,7 +8,6 @@
 defined('_JEXEC') or die;
 
 use FOF30\Container\Container;
-use FOF30\Encrypt\Aes;
 use FOF30\Encrypt\Randval;
 use FOF30\Utils\ArrayHelper;
 use FOF30\Utils\Phpfunc;
@@ -102,6 +101,11 @@ class PlgUserFoftoken extends JPlugin
 			return true;
 		}
 
+		if (!$this->isInAllowedUserGroup($userId))
+		{
+			return true;
+		}
+
 		// Oh, cool, Joomla has already loaded the profile data for us.
 		if (isset($data->profile))
 		{
@@ -157,6 +161,14 @@ class PlgUserFoftoken extends JPlugin
 
 		// Check we are manipulating a valid form.
 		if (!in_array($form->getName(), $this->allowedContexts))
+		{
+			return true;
+		}
+
+		// Check if the user belongs to an allowed user group
+		$userId = (is_object($data) && isset($data->id)) ? $data->id : 0;
+
+		if (!empty($userId) && !$this->isInAllowedUserGroup($userId))
 		{
 			return true;
 		}
@@ -251,6 +263,12 @@ class PlgUserFoftoken extends JPlugin
 			->where($db->qn('profile_key') . ' LIKE ' . $db->q($this->profileKeyPrefix . '.%', false));
 
 		$db->setQuery($query)->execute();
+
+		// If the user is not in the allowed user group don't save any new token information.
+		if (!$this->isInAllowedUserGroup($data['id']))
+		{
+			return true;
+		}
 
 		// Save the new FOF Token user profile values
 		$order = 1;
@@ -391,9 +409,9 @@ class PlgUserFoftoken extends JPlugin
 		 * First, we need to decode the token and make sure it contains all of the fields we expect (algorithm, user_id,
 		 * HMAC of the token calculated against the site's secret).
 		 */
-		$filter = InputFilter::getInstance();
-		$tokenString  = $filter->clean($credentials['fofToken'], 'BASE64');
-		$authString = @base64_decode($tokenString);
+		$filter      = InputFilter::getInstance();
+		$tokenString = $filter->clean($credentials['fofToken'], 'BASE64');
+		$authString  = @base64_decode($tokenString);
 
 		if (empty($authString) || (strpos($authString, ':') === false))
 		{
@@ -444,6 +462,11 @@ class PlgUserFoftoken extends JPlugin
 		$hashesMatch = $this->timingSafeEquals($referenceHMAC, $tokenHMAC);
 
 		/**
+		 * Is the user in the allowed user groups?
+		 */
+		$inAllowedUserGroups = $this->isInAllowedUserGroup($userId);
+
+		/**
 		 * Can we log in?
 		 *
 		 * DO NOT concatenate in a single line. Due to boolean short-circuit evaluation it might make timing attacks
@@ -457,6 +480,8 @@ class PlgUserFoftoken extends JPlugin
 		$canLogin = $allowedAlgo && $canLogin;
 		// The token HMAC hash coming into the request and our reference must match.
 		$canLogin = $hashesMatch && $canLogin;
+		// The user must belong in the allowed user groups
+		$canLogin = $inAllowedUserGroups && $canLogin;
 
 		/**
 		 * DO NOT try to be smart and do an early return when either of the individual conditions are not met. There's a
@@ -600,5 +625,62 @@ class PlgUserFoftoken extends JPlugin
 
 		// They are only identical strings if $result is exactly 0...
 		return $result === 0;
+	}
+
+	/**
+	 * Get the configured user groups which are allowed to have access to tokens.
+	 *
+	 * @return  array
+	 */
+	private function getAllowedUserGroups()
+	{
+		$userGroups = $this->params->get('allowedUserGroups', [8]);
+
+		if (empty($userGroups))
+		{
+			return [];
+		}
+
+		if (!is_array($userGroups))
+		{
+			$userGroups = [$userGroups];
+		}
+
+		return $userGroups;
+	}
+
+	/**
+	 * Is the user with the given ID in the allowed User Groups with access to tokens?
+	 *
+	 * @param   int  $userId
+	 *
+	 * @return  bool
+	 */
+	private function isInAllowedUserGroup($userId)
+	{
+		$allowedUserGroups = $this->getAllowedUserGroups();
+
+		$user = JFactory::getUser($userId);
+
+		if ($user->id != $userId)
+		{
+			return false;
+		}
+
+		if ($user->guest)
+		{
+			return false;
+		}
+
+		// No specifically allowed user groups: allow ALL user groups.
+		if (empty($allowedUserGroups))
+		{
+			return true;
+		}
+
+		$groups       = $user->getAuthorisedGroups();
+		$intersection = array_intersect($groups, $allowedUserGroups);
+
+		return !empty($intersection);
 	}
 }

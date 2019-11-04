@@ -32,7 +32,15 @@
 	<config>
 		<fields name="params">
 			<fieldset name="basic">
-				<!-- TODO -->
+				<field name="allowedUserGroups" type="UserGroupList"
+					   checksuperusergroup="1"
+					   default="8"
+					   multiple="1"
+					   label="PLG_USER_FOFTOKEN_ALLOWEDUSERGROUPS_LABEL"
+					   description="PLG_USER_FOFTOKEN_ALLOWEDUSERGROUPS_DESC"
+				>
+				</field>
+
 			</fieldset>
 		</fields>
 	</config>
