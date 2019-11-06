@@ -16,7 +16,7 @@
                    algo="sha1"
                    label="PLG_USER_FOFTOKEN_TOKEN_LABEL"
                    description="PLG_USER_FOFTOKEN_TOKEN_DESC"
-                   disabled="true"
+                   readonly="true"
                    class="input-xxlarge"/>
 
             <field name="enabled" type="radio" default="1"
