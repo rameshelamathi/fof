@@ -60,7 +60,7 @@ class PlgUserFoftoken extends JPlugin
 	 *
 	 * @var  array
 	 */
-	private $allowedAlgos = ['sha1', 'sha256', 'sha512'];
+	private $allowedAlgos = ['sha256', 'sha512'];
 
 	/**
 	 * Inject the FOF token management panel's data into the User Profile.
