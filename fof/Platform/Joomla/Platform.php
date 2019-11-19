@@ -21,6 +21,7 @@ use JAuthenticationResponse;
 use JCache;
 use JFactory;
 use Joomla\Registry\Registry;
+use JSession;
 use JUri;
 
 defined('_JEXEC') or die;
@@ -49,8 +50,8 @@ class Platform extends BasePlatform
 	protected static $isAdmin = null;
 
 	/**
-	 * A fake session storage for CLI apps. Since CLI applications cannot have a session we are using a Registry object
-	 * we manage internally.
+	 * A fake session storage for CLI apps. This is only used for legacy CLI applications which are not using the FOF
+	 * Base CLI script.
 	 *
 	 * @var   Registry
 	 */
@@ -1197,7 +1198,7 @@ class Platform extends BasePlatform
 	 */
 	public function setSessionVar($name, $value = null, $namespace = 'default')
 	{
-		if ($this->isCli())
+		if ($this->isCli() && !class_exists('FOFApplicationCLI'))
 		{
 			self::$fakeSession->set("$namespace.$name", $value);
 
@@ -1218,7 +1219,7 @@ class Platform extends BasePlatform
 	 */
 	public function getSessionVar($name, $default = null, $namespace = 'default')
 	{
-		if ($this->isCli())
+		if ($this->isCli() && !class_exists('FOFApplicationCLI'))
 		{
 			return self::$fakeSession->get("$namespace.$name", $default);
 		}
@@ -1281,7 +1282,7 @@ class Platform extends BasePlatform
 		// Web application, go through the regular Joomla! API.
 		if ($formToken)
 		{
-			return \JSession::getFormToken($forceNew);
+			return JSession::getFormToken($forceNew);
 		}
 
 		return $this->container->session->getToken($forceNew);
