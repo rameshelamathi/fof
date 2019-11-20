@@ -10,6 +10,8 @@
 use FOF30\Cli\Traits\CGIModeAware;
 use FOF30\Cli\Traits\CustomOptionsAware;
 use FOF30\Cli\Traits\JoomlaConfigAware;
+use FOF30\Cli\Traits\MemStatsAware;
+use FOF30\Cli\Traits\TimeAgoAware;
 use FOF30\Utils\CliSessionHandler;
 use Joomla\CMS\Application\CliApplication;
 use Joomla\CMS\Input\Cli;
@@ -43,7 +45,7 @@ if (version_compare("$joomlaMajorVersion.$joomlaMinorVersion", '3.8', 'lt'))
  */
 abstract class FOFCliApplicationJoomla3 extends CliApplication
 {
-	use CGIModeAware, JoomlaConfigAware, CustomOptionsAware;
+	use CGIModeAware, CustomOptionsAware, JoomlaConfigAware, MemStatsAware, TimeAgoAware;
 
 	private $allowedToClose = false;
 

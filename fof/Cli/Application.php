@@ -17,6 +17,8 @@
  * Your CLI script must begin with the following boilerplate code:
  *
  * // Boilerplate -- START
+ * define('_JEXEC', 1);
+ *
  * foreach ([__DIR__, getcwd()] as $curdir)
  * {
  *   if (file_exists($curdir . '/defines.php'))
