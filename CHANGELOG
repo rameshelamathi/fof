@@ -2,6 +2,7 @@ FOF 3.5.1
 ================================================================================
 - Removed Magic Quotes GPC handling since we no longer support PHP 5.3 or earlier
 ~ FEF Renderer throws deprecated notice in PHP 7.4
+~ PHP 7.4 warning when AJAX reordering is not available
 
 FOF 3.5.0
 ================================================================================
