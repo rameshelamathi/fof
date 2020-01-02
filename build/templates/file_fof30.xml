@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
+  ~ @package   FOF
+  ~ @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+  ~ @license   GNU General Public License version 2, or later
+  -->
+
+<!--
 A legitimate question among developers reading this file may be why we are using a "files" extension type instead of the
 "library" type which, on the face of it, seems more appropriate.
 
