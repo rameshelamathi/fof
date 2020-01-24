@@ -521,7 +521,7 @@ class Template
 
 				$ret = [
 					'normal'    => 'plugins/' . $pluginType . '/' . $pluginName . '/tmpl/' . $viewTemplate,
-					'alternate' => $this->container->platform->getTemplateOverridePath('auto:/' . $pluginSystemName . '/' . $viewTemplate, false),
+					'alternate' => $this->container->platform->getTemplateOverridePath($pluginSystemName . '/' . $viewTemplate, false),
 				];
 
 				break;
@@ -537,7 +537,7 @@ class Template
 
 				$ret = [
 					'normal'    => $basePath . 'modules/' . $moduleSystemName . '/tmpl/' . $viewTemplate,
-					'alternate' => $this->container->platform->getTemplateOverridePath('auto:/' . $moduleSystemName . '/' . $viewTemplate, false),
+					'alternate' => $this->container->platform->getTemplateOverridePath($moduleSystemName . '/' . $viewTemplate, false),
 				];
 
 				break;

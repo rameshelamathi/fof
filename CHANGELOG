@@ -1,3 +1,7 @@
+FOF 3.5.2
+================================================================================
+# [HIGH] Template overrides for module and plugin view templates would not work
+
 FOF 3.5.1
 ================================================================================
 - Removed Magic Quotes GPC handling since we no longer support PHP 5.3 or earlier
