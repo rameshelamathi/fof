@@ -1,6 +1,7 @@
 FOF 3.5.2
 ================================================================================
 # [HIGH] Template overrides for module and plugin view templates would not work
+# [HIGH] View templates were always loaded from this side of the application, ignoring 'site:' and 'admin:' prefixes
 
 FOF 3.5.1
 ================================================================================
