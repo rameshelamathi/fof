@@ -83,10 +83,17 @@ abstract class CompilingEngine extends AbstractEngine implements EngineInterface
 		$content = "<?php /* $path */ ?>\n";
 		$content .= $this->compile($path, $forceParams);
 		$cachePath = $this->putToCache($path, $content);
+		$isPHPFile = substr($path, -4) == '.php';
 
 		// If we could cache it, return the cached file's path
 		if ($cachePath !== false)
 		{
+			// Bust the opcode cache for .php files
+			if ($isPHPFile)
+			{
+				$this->bustOpCache($path);
+			}
+
 			return array(
 				'type'    => 'path',
 				'content' => $cachePath,
@@ -101,6 +108,12 @@ abstract class CompilingEngine extends AbstractEngine implements EngineInterface
 			$id = $this->getIdentifier($path);
 			$streamPath = 'fof://' . $this->view->getContainer()->componentName . '/compiled_templates/' . $id . '.php';
 			file_put_contents($streamPath, $content);
+
+			// Bust the opcode cache for .php files
+			if ($isPHPFile)
+			{
+				$this->bustOpCache($path);
+			}
 
 			return array(
 				'type'    => 'path',
@@ -254,5 +267,41 @@ abstract class CompilingEngine extends AbstractEngine implements EngineInterface
 		$precompiledRelativePath = implode(DIRECTORY_SEPARATOR, $pathParts);
 
 		return $componentPath . DIRECTORY_SEPARATOR . 'PrecompiledTemplates' . DIRECTORY_SEPARATOR . $precompiledRelativePath;
+	}
+
+	/**
+	 * Bust the opcode cache for a given .php file
+	 *
+	 * This method can address opcode caching with:
+	 * - Zend OPcache
+	 * - Alternative PHP Cache (now defunct)
+	 * - Windows Cache Extension for PHP (versions lower than 2.0.0)
+	 * - XCache (now defunct)
+	 *
+	 * @param   string  $path  The file to bus the cache for
+	 *
+	 * @return  void
+	 */
+	private function bustOpCache($path)
+	{
+		if (function_exists('opcache_invalidate'))
+		{
+			opcache_invalidate($path);
+		}
+
+		if (function_exists('apc_compile_file'))
+		{
+			apc_compile_file($path);
+		}
+
+		if (function_exists('wincache_refresh_if_changed'))
+		{
+			wincache_refresh_if_changed([$path]);
+		}
+
+		if (function_exists('xcache_asm'))
+		{
+			xcache_asm($path);
+		}
 	}
 }
