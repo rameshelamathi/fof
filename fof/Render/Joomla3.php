@@ -215,7 +215,7 @@ class Joomla3 extends AkeebaStrapper
 	 */
 	protected function openPageWrapper($classes)
 	{
-		echo '<div id="akeeba-renderjoomla" class="' . implode($classes, ' ') . "\">\n";
+		echo '<div id="akeeba-renderjoomla" class="' . implode(" ", $classes) . "\">\n";
 	}
 
 	/**
