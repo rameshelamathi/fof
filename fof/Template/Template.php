@@ -114,8 +114,16 @@ class Template
 	 * * $defer false, $async false. (default) The script is loaded and executed immediately. When it finishes
 	 *   loading the browser continues parsing the rest of the page.
 	 *
-	 * When you are using $defer = true there is no guarantee about the load order of the scripts. Whichever
+	 * When you are using $async = true there is no guarantee about the load order of the scripts. Whichever
 	 * script loads first will be executed first. The order they appear on the page is completely irrelevant.
+	 *
+	 * If you set both async and defer to true it's the same as setting only async to true. That is to say, scripts will
+	 * be loaded and executed in an order that is NOT guaranteed. Only set async for completely standalone scripts.
+	 *
+	 * If you are using defer you should pass script options using $this->container->platform->addScriptOptions(). This
+	 * will add the script options as a JSON document in the document head. You can retrieve these options client-side
+	 * with Joomla.getOptions() as long as the Joomla core JS has already been loaded, i.e. your deferred script is
+	 * added AFTER Joomla's core code.
 	 *
 	 * @param   string   $uri      A path definition understood by parsePath, e.g. media://com_example/js/foo.js
 	 * @param   boolean  $defer    Adds the defer attribute, see above
@@ -136,6 +144,12 @@ class Template
 
 		$url      = $this->container->template->parsePath($uri);
 		$document = $this->container->platform->getDocument();
+
+		// Setting both defer and async is nonsense. Only async makes sense in this case.
+		if ($defer && $async)
+		{
+			$defer = false;
+		}
 
 		// Joomla! 3.7+ uses a single method for everything
 		if (version_compare(JVERSION, '3.6.999', 'ge'))
@@ -199,6 +213,8 @@ class Template
 	 * @since 2.0
 	 *
 	 * @return  mixed  True = successfully included generated CSS, False = the alternate CSS file was used, null = the source file does not exist
+	 *
+	 * @deprecated 4.0
 	 */
 	public function addLESS($path, $altPath = null, $returnPath = false, $version = null, $type = 'text/css', $media = null, $attribs = array())
 	{
