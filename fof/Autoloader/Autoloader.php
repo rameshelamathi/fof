@@ -244,6 +244,16 @@ class Autoloader
 			$class = substr($class, 1);
 		}
 
+		// FEFHelper lookup
+		if (substr($class, 0, 9) == 'FEFHelper')
+		{
+
+			if (file_exists($file = realpath(__DIR__ . '/..') . '/Utils/FEFHelper/' . strtolower(substr($class, 9)) . '.php'))
+			{
+				return $file;
+			}
+		}
+
 		// PSR-4 lookup
 		$logicalPath = strtr($class, '\\', DIRECTORY_SEPARATOR) . '.php';
 
