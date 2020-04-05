@@ -282,7 +282,7 @@ abstract class RenderBase implements RenderInterface
 	/**
 	 * Loads the custom CSS files defined in the custom_css renderer option.
 	 */
-	private function loadCustomCss()
+	protected function loadCustomCss()
 	{
 		$custom_css_raw = $this->getOption('custom_css', '');
 		$custom_css_raw = trim($custom_css_raw);

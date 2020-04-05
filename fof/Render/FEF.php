@@ -154,34 +154,4 @@ HTML;
 HTML;
 
 	}
-
-	/**
-	 * Loads the custom CSS files defined in the custom_css renderer option.
-	 */
-	private function loadCustomCss()
-	{
-		$custom_css_raw = $this->getOption('custom_css', '');
-		$custom_css_raw = trim($custom_css_raw);
-
-		if (empty($custom_css_raw))
-		{
-			return;
-		}
-
-		$files        = explode(',', $custom_css_raw);
-		$mediaVersion = $this->container->mediaVersion;
-
-		foreach ($files as $file)
-		{
-			$file = trim($file);
-
-			if (empty($file))
-			{
-				continue;
-			}
-
-			$this->container->template->addCSS($file, $mediaVersion);
-		}
-	}
-
 }

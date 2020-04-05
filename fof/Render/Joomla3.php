@@ -100,7 +100,7 @@ class Joomla3 extends AkeebaStrapper
 			$this->renderLinkbar($view, $task);
 		}
 
-		parent::preRender($view, $task);
+		$this->loadCustomCss();
 	}
 
 	/**
