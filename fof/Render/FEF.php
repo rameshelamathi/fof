@@ -76,8 +76,6 @@ class FEF extends Joomla3
 			}
 		}
 
-		$this->loadCustomCss();
-
 		parent::preRender($view, $task);
 	}
 

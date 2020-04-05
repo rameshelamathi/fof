@@ -1,3 +1,7 @@
+FOF 3.5.3
+================================================================================
+~ The custom_css option now applies to all renderers
+
 FOF 3.5.2
 ================================================================================
 + Blade: bust OPcode cache when writing a compiled template file [gh-687]
