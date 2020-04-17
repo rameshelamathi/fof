@@ -37,6 +37,14 @@ class ContainerBase extends Container
 	 */
 	function __set($name, $value)
 	{
+		// Special backwards compatible handling for the mediaVersion service
+		if ($name == 'mediaVersion')
+		{
+			$this[$name]->setMediaVersion($value);
+
+			return;
+		}
+
 		$this->offsetSet($name, $value);
 	}
 }

@@ -128,6 +128,11 @@ class Input extends \JInput
 		return $this->data;
 	}
 
+	public function setData(array $data)
+	{
+		$this->data = $data;
+	}
+
 	/**
 	 * Magic method to get filtered input data.
 	 *
