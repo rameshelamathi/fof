@@ -1,6 +1,7 @@
 FOF 3.5.3
 ================================================================================
 ~ The custom_css option now applies to all renderers
+~ Optimized the way the default media query is determined
 
 FOF 3.5.2
 ================================================================================

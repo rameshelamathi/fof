@@ -85,6 +85,13 @@ class Container extends ContainerBase
 	protected static $instances = array();
 
 	/**
+	 * Cached the version and date of FOF-powered components
+	 *
+	 * @var   array
+	 */
+	protected static $componentVersionCache = [];
+
+	/**
 	 * The container SHOULD NEVER be serialised. If this happens, it means that any of the installed version is doing
 	 * something REALLY BAD, so let's die and inform the user of what it's going on.
 	 */
@@ -278,6 +285,10 @@ END;
 		if (!empty($mediaVersion))
 		{
 			$values['mediaVersion'] = $mediaVersion;
+		}
+		else
+		{
+			$values['mediaVersion'] = self::getDefaultMediaVersion($component, $tmpContainer->db);
 		}
 
 		unset($appConfig);
@@ -680,7 +691,7 @@ END;
 		// Media version string
 		if (!isset($this['mediaVersion']))
 		{
-			$this['mediaVersion'] = $this->getDefaultMediaVersion();
+			$this['mediaVersion'] = '';
 		}
 
 		// Encryption / cryptography service
@@ -772,43 +783,10 @@ END;
 	 *
 	 * @return  string
 	 */
-	protected function getDefaultMediaVersion()
+	protected static function getDefaultMediaVersion($component, $db)
 	{
 		// Initialise
-		$version = '0.0.0';
-		$date = '0000-00-00';
-		$secret = '';
-
-		// Get the version and date of the component from the manifest cache
-		try
-		{
-			$db = $this->db;
-			$query = $db->getQuery(true)
-	            ->select(array(
-		            $db->qn('manifest_cache')
-	            ))->from($db->qn('#__extensions'))
-	            ->where($db->qn('type') . ' = ' . $db->q('component'))
-	            ->where($db->qn('name') . ' = ' . $db->q($this->componentName));
-
-			$db->setQuery($query);
-
-			$json = $db->loadResult();
-
-			if (class_exists('JRegistry'))
-			{
-				$params = new \JRegistry($json);
-			}
-			else
-			{
-				$params = new Registry($json);
-			}
-
-			$version = $params->get('version', $version);
-			$date = $params->get('creationDate', $date);
-		}
-		catch (\Exception $e)
-		{
-		}
+		list ($version, $date) = self::getComponentDateTime($component, $db);
 
 		// Get the site's secret
 		try
@@ -826,5 +804,49 @@ END;
 
 		// Generate the version string
 		return md5($version . $date . $secret);
+	}
+
+	protected static function getComponentDateTime($component, $db)
+	{
+		if (array_key_exists($component, self::$componentVersionCache))
+		{
+			return self::$componentVersionCache[$component];
+		}
+
+		$version = '0.0.0';
+		$date    = date('Y-m-d H:i:s');
+
+		try
+		{
+			$query = $db->getQuery(true)
+				->select([
+					$db->qn('manifest_cache'),
+				])->from($db->qn('#__extensions'))
+				->where($db->qn('type') . ' = ' . $db->q('component'))
+				->where($db->qn('name') . ' = ' . $db->q($component));
+
+			$db->setQuery($query);
+
+			$json = $db->loadResult();
+
+			if (class_exists('JRegistry'))
+			{
+				$params = new \JRegistry($json);
+			}
+			else
+			{
+				$params = new Registry($json);
+			}
+
+			$version = $params->get('version', $version);
+			$date    = $params->get('creationDate', $date);
+		}
+		catch (\Exception $e)
+		{
+		}
+
+		self::$componentVersionCache[$component] = [$version, $date];
+
+		return self::$componentVersionCache[$component];
 	}
 }
