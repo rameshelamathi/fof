@@ -70,7 +70,7 @@ class Template
 		if (version_compare(JVERSION, '3.6.999', 'ge'))
 		{
 			$options = [
-				'version' => $version,
+				'version' => is_null($version) ? null : ((string) $version),
 			];
 
 			$attribs['type'] = $type;
@@ -101,7 +101,7 @@ class Template
 			return;
 		}
 
-		$document->addStyleSheetVersion($url, $version, $type, $media, $attribs);
+		$document->addStyleSheetVersion($url, (string) $version, $type, $media, $attribs);
 	}
 
 	/**
@@ -155,7 +155,7 @@ class Template
 		if (version_compare(JVERSION, '3.6.999', 'ge'))
 		{
 			$options = [
-				'version' => $version,
+				'version' => is_null($version) ? null : ((string) $version),
 			];
 
 			$attribs['defer'] = $defer;
@@ -187,7 +187,7 @@ class Template
 			return;
 		}
 
-		$document->addScriptVersion($url, $version, $type, $defer, $async);
+		$document->addScriptVersion($url, (string) $version, $type, $defer, $async);
 	}
 
 	/**
