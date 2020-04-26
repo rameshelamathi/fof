@@ -1,3 +1,7 @@
+FOF 3.5.4
+================================================================================
+# [HIGH] DateDecorator fails to call correctly certain DateTime methods, including getTimezone() and diff(), returning invalid results
+
 FOF 3.5.3
 ================================================================================
 ~ The custom_css option now applies to all renderers
