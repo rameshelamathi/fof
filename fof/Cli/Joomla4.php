@@ -13,6 +13,7 @@ use FOF30\Cli\Traits\JoomlaConfigAware;
 use FOF30\Cli\Traits\MemStatsAware;
 use FOF30\Cli\Traits\TimeAgoAware;
 use Joomla\CMS\Application\CliApplication;
+use Joomla\CMS\Application\ExtensionNamespaceMapper;
 use Joomla\CMS\Factory;
 use Joomla\Event\Dispatcher;
 use Joomla\Registry\Registry;
@@ -70,6 +71,8 @@ elseif (@file_exists($cmsImportFilePathOld))
  */
 abstract class FOFCliApplicationJoomla4 extends CliApplication
 {
+	use ExtensionNamespaceMapper;
+
 	use CGIModeAware, CustomOptionsAware, JoomlaConfigAware, MemStatsAware, TimeAgoAware;
 
 	private $allowedToClose = false;
@@ -98,6 +101,9 @@ abstract class FOFCliApplicationJoomla4 extends CliApplication
 	{
 		// Some servers only provide a CGI executable. While not ideal for running CLI applications we can make do.
 		$this->detectAndWorkAroundCGIMode();
+
+		// We need to tell Joomla to register its default namespace conventions
+		$this->createExtensionNamespaceMap();
 
 		// Initialize custom options handling which is a bit more straightforward than Input\Cli.
 		$this->initialiseCustomOptions();
