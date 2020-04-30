@@ -1,5 +1,6 @@
 FOF 3.5.4
 ================================================================================
+~ Update the CLI application for Joomla 4 Beta 1
 # [HIGH] DateDecorator fails to call correctly certain DateTime methods, including getTimezone() and diff(), returning invalid results
 
 FOF 3.5.3
