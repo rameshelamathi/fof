@@ -23,6 +23,7 @@ use Joomla\CMS\Document\HtmlDocument;
 use Joomla\CMS\Factory as JFactory;
 use Joomla\CMS\Session\Session as JSession;
 use Joomla\CMS\Uri\Uri as JUri;
+use Joomla\CMS\User\User;
 use Joomla\Registry\Registry;
 
 defined('_JEXEC') or die;
@@ -879,35 +880,49 @@ class Platform extends BasePlatform
 	 * @param   string|array  $title      A title, or an array of additional fields to add to the log entry
 	 * @param   string        $logText    The translation key to the log text
 	 * @param   string        $extension  The name of the extension logging this entry
+	 * @param   User|null     $user       The user the action is being logged for
 	 *
 	 * @return  void
 	 */
-	public function logUserAction($title, $logText, $extension)
+	public function logUserAction($title, $logText, $extension, $user = null)
 	{
 		static $joomlaModelAdded = false;
 
-		// User Actions Log is available only under Joomla 3.9+
-		if (version_compare(JVERSION, '3.9', 'lt'))
+		// Find out which Joomla version I am running under
+		$isJoomla4 = version_compare(JVERSION, '3.999.999', 'gt');
+		$isJoomla3 = !$isJoomla4 && version_compare(JVERSION, '3.9.0', 'ge');
+
+		// I need Joomla! 3.9 or later
+		if (!$isJoomla4 && !$isJoomla3)
 		{
 			return;
 		}
 
-		// Do not perform logging if we're under CLI. Even if we _could_ have a logged user in CLI, ActionlogsModelActionlog
-		// model always uses JFactory to fetch the current user, fetching data from the session. This means that under the CLI
-		// (where there is no session) such session is started, causing warnings because usually output was already started before
-		if ($this->isCli())
+		/**
+		 * Do not perform user actions logging under CLI and Joomla 3.
+		 *
+		 * In Joomla 3 the ActionlogsModelActionlog always goes through JFactory to get the current user. However, this
+		 * goes through the session which is normally not initialized under CLI – that's why we needed to come up with
+		 * our own CLI implementation to begin with.
+		 *
+		 * Joomla 4 doesn't have that problem. J4 CLI scripts use a CLI-aware session service provider.
+		 */
+		if ($isJoomla3 && $this->isCli())
 		{
 			return;
 		}
 
-		// Include required Joomla Model
-		if (!$joomlaModelAdded)
+		// Include required Joomla Model. Only applicable on Joomla 3.
+		if ($isJoomla3  && !$joomlaModelAdded)
 		{
 			\JModelLegacy::addIncludePath(JPATH_ROOT . '/administrator/components/com_actionlogs/models', 'ActionlogsModel');
 			$joomlaModelAdded = true;
 		}
 
-		$user = $this->getUser();
+		if (is_null($user))
+		{
+			$user = $this->getUser();
+		}
 
 		// No log for guest users
 		if ($user->guest)
@@ -928,15 +943,40 @@ class Platform extends BasePlatform
 			$message = array_merge($message, $title);
 		}
 
-		/** @var \ActionlogsModelActionlog $model * */
+		if (version_compare(JVERSION, '3.999.999', 'le'))
+		{
+			/** @var \ActionlogsModelActionlog $model * */
+			try
+			{
+				$model = \JModelLegacy::getInstance('Actionlog', 'ActionlogsModel');
+			}
+			catch (\Exception $e)
+			{
+				return;
+			}
+		}
+		else
+		{
+			try
+			{
+				/** @var \Joomla\CMS\MVC\Factory\MVCFactoryInterface $factory */
+				$factory = JFactory::getApplication()->bootComponent('com_actionlogs')->getMVCFactory();
+				/** @var \Joomla\Component\Actionlogs\Administrator\Model\ActionlogModel $model */
+				$model = $factory->createModel('Actionlog', 'Administrator');
+			}
+			catch (Exception $e)
+			{
+				return;
+			}
+		}
+
 		try
 		{
-			$model = \JModelLegacy::getInstance('Actionlog', 'ActionlogsModel');
 			$model->addLog([$message], $logText, $extension, $user->id);
 		}
-		catch (\Exception $e)
+		catch (Exception $e)
 		{
-			// Ignore any error
+			return;
 		}
 	}
 
