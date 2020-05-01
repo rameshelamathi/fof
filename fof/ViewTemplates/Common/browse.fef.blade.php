@@ -122,7 +122,7 @@ $ajaxOrderingSupport = $this->hasAjaxOrderingSupport();
         @yield('browse-table-footer')
         </tfoot>
         <tbody
-                @if($ajaxOrderingSupport['saveOrder'])
+                @if(($ajaxOrderingSupport !== false) && $ajaxOrderingSupport['saveOrder'])
                 class="js-draggable"
                 data-url="{{ $ajaxOrderingSupport['saveOrderURL'] }}"
                 data-direction="{{ strtolower($this->getModel()->getState('filter_order_Dir', null, 'cmd')) }}"
