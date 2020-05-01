@@ -1,6 +1,7 @@
 FOF 3.5.4
 ================================================================================
 + Draggable reordering support in Joomla 4
++ Common Blade templates (backported from FOF 4)
 ~ Update the CLI application for Joomla 4 Beta 1
 ~ Apply Joomla version suffixes to all view templates, not just forms
 # [HIGH] DateDecorator fails to call correctly certain DateTime methods, including getTimezone() and diff(), returning invalid results

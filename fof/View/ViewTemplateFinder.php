@@ -309,18 +309,51 @@ class ViewTemplateFinder
 			array_unshift($paths, str_replace($parts['template'], $layoutTemplate, $apath));
 		}
 
-		$filesystem = $this->container->filesystem;
+		// Get the Joomla! version template suffixes
+		$jVersionSuffixes = array_merge($this->container->platform->getTemplateSuffixes(), ['']);
+		// Get the renderer name suffixes
+		$rendererNameSuffixes = [
+			'.' . $this->container->renderer->getInformation()->name,
+			''
+		];
 
-		$cmsVersionPrefixes = array_merge($this->container->platform->getTemplateSuffixes(), ['']);
+		$filesystem = $this->container->filesystem;
 
 		foreach ($this->extensions as $extension)
 		{
-			foreach ($cmsVersionPrefixes as $prefix)
+			foreach ($jVersionSuffixes as $JVersionSuffix)
 			{
-				$filenameToFind = $parts['template'] . $prefix . $extension;
-				$fileName       = $filesystem->pathFind($paths, $filenameToFind);
+				foreach ($rendererNameSuffixes as $rendererNameSuffix)
+				{
+					$filenameToFind = $parts['template'] . $JVersionSuffix . $rendererNameSuffix . $extension;
 
-				if ($fileName)
+					$fileName = $filesystem->pathFind($paths, $filenameToFind);
+
+					if (!is_null($fileName))
+					{
+						return $fileName;
+					}
+				}
+			}
+		}
+
+		/**
+		 * If no view template was found for the component fall back to FOF's core Blade templates -- located in
+		 * <libdir>/ViewTemplates/<viewName>/<templateName> -- and their template overrides.
+		 */
+		$paths = [];
+		$paths[] = $this->container->platform->getTemplateOverridePath('lib_fof30') . '/' . $parts['view'];
+		$paths[] = realpath(__DIR__ . '/..') . '/ViewTemplates/' . $parts['view'];
+
+		foreach ($jVersionSuffixes as $JVersionSuffix)
+		{
+			foreach ($rendererNameSuffixes as $rendererNameSuffix)
+			{
+				$filenameToFind = $parts['template'] . $JVersionSuffix . $rendererNameSuffix . '.blade.php';
+
+				$fileName = $filesystem->pathFind($paths, $filenameToFind);
+
+				if (!is_null($fileName))
 				{
 					return $fileName;
 				}
