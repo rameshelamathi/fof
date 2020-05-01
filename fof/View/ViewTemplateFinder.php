@@ -309,18 +309,21 @@ class ViewTemplateFinder
 			array_unshift($paths, str_replace($parts['template'], $layoutTemplate, $apath));
 		}
 
-
 		$filesystem = $this->container->filesystem;
+
+		$cmsVersionPrefixes = array_merge($this->container->platform->getTemplateSuffixes(), ['']);
 
 		foreach ($this->extensions as $extension)
 		{
-			$filenameToFind = $parts['template'] . $extension;
-
-			$fileName = $filesystem->pathFind($paths, $filenameToFind);
-
-			if ($fileName)
+			foreach ($cmsVersionPrefixes as $prefix)
 			{
-				return $fileName;
+				$filenameToFind = $parts['template'] . $prefix . $extension;
+				$fileName       = $filesystem->pathFind($paths, $filenameToFind);
+
+				if ($fileName)
+				{
+					return $fileName;
+				}
 			}
 		}
 
