@@ -75,7 +75,7 @@ abstract class FEFHelperBrowse
 			}
 
 			$html[] = '<a class="akeeba-btn--' . $btnColor . '--mini ' . ($active_class === 'publish' ? ' active' : '') . ($tip ? ' hasTooltip' : '') . '"';
-			$html[] = ' href="javascript:void(0);" onclick="return listItemTask(\'' . $checkbox . $i . '\',\'' . $prefix . $task . '\')"';
+			$html[] = ' href="javascript:void(0);" onclick="return Joomla.listItemTask(\'' . $checkbox . $i . '\',\'' . $prefix . $task . '\')"';
 			$html[] = $tip ? ' title="' . $title . '"' : '';
 			$html[] = '>';
 			$html[] = '<span class="akion-' . $active_class . '" aria-hidden="true"></span>&ensp;';
