@@ -6,6 +6,7 @@ FOF 3.5.4
 ~ Apply Joomla version suffixes to all view templates, not just forms
 # [HIGH] DateDecorator fails to call correctly certain DateTime methods, including getTimezone() and diff(), returning invalid results
 # [HIGH] Input in Joomla 4 always returns stale data, ignoring changes made by routing
+# [HIGH] Raw filtering in Input class broken in Joomla 4
 # [MEDIUM] Publish / unpublish icon doesn't work under Joomla 4
 # [MEDIUM] Action Log plugins don't work under Joomla 4
 

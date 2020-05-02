@@ -186,7 +186,14 @@ class Input extends \JInput
 		elseif ($mask & 4)
 		{
 			// If the allow HTML flag is set, apply a safe HTML filter to the variable
-			$safeHtmlFilter = \JFilterInput::getInstance(null, null, 1, 1);
+			if (version_compare(JVERSION, '3.999.999', 'le'))
+			{
+				$safeHtmlFilter = \JFilterInput::getInstance(null, null, 1, 1);
+			}
+			else
+			{
+				$safeHtmlFilter = \JFilterInput::getInstance([], [], \JFilterInput::TAGS_BLACKLIST, \JFilterInput::ATTR_BLACKLIST);
+			}
 			$var = $safeHtmlFilter->clean($var, $type);
 		}
 		else
