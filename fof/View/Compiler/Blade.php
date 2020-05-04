@@ -546,7 +546,7 @@ class Blade implements CompilerInterface
 	 */
 	protected function compileLang($expression)
 	{
-		return "<?php echo \\JText::_$expression; ?>";
+		return "<?php echo \\Joomla\\CMS\\Language\\Text::_$expression; ?>";
 	}
 
 	/**
@@ -557,7 +557,7 @@ class Blade implements CompilerInterface
 	 */
 	protected function compileSprintf($expression)
 	{
-		return "<?php echo \\JText::sprintf$expression; ?>";
+		return "<?php echo \\Joomla\\CMS\\Language\\Text::sprintf$expression; ?>";
 	}
 
 	/**
@@ -572,7 +572,7 @@ class Blade implements CompilerInterface
 	 */
 	protected function compilePlural($expression)
 	{
-		return "<?php echo \\JText::plural$expression; ?>";
+		return "<?php echo \\Joomla\\CMS\\Language\\Text::plural$expression; ?>";
 	}
 
 	/**
@@ -892,7 +892,7 @@ class Blade implements CompilerInterface
 	 */
 	protected function compileJhtml($expression)
 	{
-		return "<?php echo \\JHtml::_{$expression}; ?>";
+		return "<?php echo \\Joomla\\CMS\\HTML\\HTMLHelper::_{$expression}; ?>";
 	}
 
 	/**
@@ -905,7 +905,7 @@ class Blade implements CompilerInterface
 	 */
 	protected function compileSortgrid($expression)
 	{
-		return "<?php echo FOF30\Utils\FEFHelper\BrowseView::sortGrid{$expression} ?>";
+		return "<?php echo \\FOF30\\Utils\\FEFHelper\\BrowseView::sortGrid{$expression} ?>";
 	}
 
 	/**
@@ -918,7 +918,7 @@ class Blade implements CompilerInterface
 	 */
 	protected function compileFieldtitle($expression)
 	{
-		return "<?php echo FOF30\Utils\FEFHelper\BrowseView::fieldLabel{$expression} ?>";
+		return "<?php echo \\FOF30\\Utils\\FEFHelper\\BrowseView::fieldLabel{$expression} ?>";
 	}
 
 	/**
@@ -931,7 +931,7 @@ class Blade implements CompilerInterface
 	 */
 	protected function compileModelfilter($expression)
 	{
-		return "<?php echo \FOF30\Utils\FEFHelper\BrowseView::modelFilter{$expression} ?>";
+		return "<?php echo \\FOF30\\Utils\\FEFHelper\\BrowseView::modelFilter{$expression} ?>";
 	}
 
 	/**
@@ -944,7 +944,7 @@ class Blade implements CompilerInterface
 	 */
 	protected function compileSelectfilter($expression)
 	{
-		return "<?php echo \FOF30\Utils\FEFHelper\BrowseView::selectFilter{$expression} ?>";
+		return "<?php echo \\FOF30\\Utils\\FEFHelper\\BrowseView::selectFilter{$expression} ?>";
 	}
 
 	/**
@@ -957,7 +957,7 @@ class Blade implements CompilerInterface
 	 */
 	protected function compileSearchfilter($expression)
 	{
-		return "<?php echo \FOF30\Utils\FEFHelper\BrowseView::searchFilter{$expression} ?>";
+		return "<?php echo \\FOF30\\Utils\\FEFHelper\\BrowseView::searchFilter{$expression} ?>";
 	}
 
 	/**
@@ -1001,7 +1001,7 @@ class Blade implements CompilerInterface
 	 */
 	protected function compileEditor($expression)
 	{
-		return '<?php echo JEditor::getInstance($this->container->platform->getConfig()->get(\'editor\', \'tinymce\'))'.
+		return '<?php echo \\Joomla\\CMS\\Editor\\Editor::getInstance($this->container->platform->getConfig()->get(\'editor\', \'tinymce\'))'.
 		       '->display' . $expression . '; ?>';
 	}
 

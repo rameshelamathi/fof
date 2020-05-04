@@ -32,7 +32,7 @@ software which does not support your PHP and/or Joomla! versions is to deliver o
 is nonsensical, it is 100% architecturally wrong BUT it is also the only way we can apply pre-installation checks which
 fail gracefully instead of causing your site to crash and burn.
 -->
-<extension type="file" version="3.7" method="upgrade">
+<extension type="file" version="3.8" method="upgrade">
     <name>file_fof30</name>
 	<description>
 		<![CDATA[
