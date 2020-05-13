@@ -25,7 +25,7 @@
 	</target>
 
 	<target name="git" description="Makes only the library package"
-		depends="new-release,setup-properties,library-package">
+		depends="new-release,setup-properties,library-package,package-plugin">
 	</target>
 	
 	<!--
@@ -94,6 +94,14 @@
 		</delete>
 	</target>
 
+	<target name="package-plugin" description="FOF Token plugin">
+		<zipme basedir="${dirs.root}/plugins/user/foftoken" destfile="${dirs.release}/plg_user_foftoken-${version}.zip" includeemptydirs="true">
+			<fileset dir="${dirs.root}/plugins/user/foftoken">
+				<include name="**" />
+			</fileset>
+		</zipme>
+	</target>
+
 	<!--
 	====================================================================================================
 	Tasks - Project management
@@ -106,6 +114,15 @@
 	site        Absolute filesystem path to the Joomla! installation
 	-->
 	<target name="relink" description="Project relinker">
+		<!-- Initialize the site variable if it's not set -->
+		<if>
+			<equals arg1="${site}" arg2="" />
+			<then>
+				<property name="site" value="${build.relink_site}" override="true" />
+			</then>
+		</if>
+
+		<!-- FOF library and language files -->
 		<link target="${dirs.root}/fof"
 			  link="${site}/libraries/fof30"
 			  type="symlink" />
@@ -115,6 +132,9 @@
 		<link target="${dirs.root}/fof/language/en-GB/en-GB.lib_fof30.ini"
 			  link="${site}/administrator/language/en-GB/en-GB.lib_fof30.ini"
 			  type="symlink" />
+
+		<!-- User plugin -->
+		<relinksite site="${site}" repository="${dirs.root}" />
 	</target>
 
 </project>
