@@ -12,6 +12,16 @@ use FOF30\Controller\Exception\CannotGetName;
 use FOF30\Controller\Exception\TaskNotFound;
 use FOF30\Model\Model;
 use FOF30\View\View;
+use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Cache\Cache;
+use Joomla\CMS\Cache\Controller\ViewController;
+use Joomla\CMS\Cache\Exception\CacheExceptionInterface;
+use Joomla\CMS\Document\Document;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Log\Log;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Language\Text;
 
 defined('_JEXEC') or die;
 
@@ -382,7 +392,7 @@ class Controller
 
 		if (!isset($this->taskMap[$task]) && !isset($this->taskMap['__default']))
 		{
-			throw new TaskNotFound(\JText::sprintf('JLIB_APPLICATION_ERROR_TASK_NOT_FOUND', $task), 404);
+			throw new TaskNotFound(Text::sprintf('JLIB_APPLICATION_ERROR_TASK_NOT_FOUND', $task), 404);
 		}
 
 		$result = $this->triggerEvent('onBeforeExecute', array(&$task));
@@ -454,7 +464,7 @@ class Controller
 	{
 		$document = $this->container->platform->getDocument();
 
-		if ($document instanceof \JDocument)
+		if ($document instanceof Document)
 		{
 			$viewType = $document->getType();
 		}
@@ -532,8 +542,8 @@ class Controller
 			
 			if (is_array($urlparams))
 			{
-				/** @var \JApplicationCms $app */
-				$app = \JFactory::getApplication();
+				/** @var CMSApplication $app */
+				$app = Factory::getApplication();
 
 				$registeredurlparams = null;
 
@@ -559,16 +569,16 @@ class Controller
 			}
 
 			// Create the cache ID after setting the registered URL params, as they are used to generate the ID
-			$cacheId = md5(serialize(array(\JCache::makeId(), $view->getName(), $this->doTask, $groups, $userId, $importantParameters)));
+			$cacheId = md5(serialize(array(Cache::makeId(), $view->getName(), $this->doTask, $groups, $userId, $importantParameters)));
 
 			// Get the cached view or cache the current view
 			try
 			{
-				/** @var \JCacheControllerView $cache */
-				$cache = \JFactory::getCache($option, 'view');
+				/** @var ViewController $cache */
+				$cache = Factory::getCache($option, 'view');
 				$cache->get($view, 'display', $cacheId);
 			}
-			catch (\JCacheException $e)
+			catch (CacheExceptionInterface $e)
 			{
 				// Display without caching
 				$view->display($tpl);
@@ -759,7 +769,7 @@ class Controller
 
 			if (!preg_match('/(.*)\\\\Controller\\\\(.*)/i', get_class($this), $r))
 			{
-				throw new CannotGetName(\JText::_('LIB_FOF_CONTROLLER_ERR_GET_NAME'), 500);
+				throw new CannotGetName(Text::_('LIB_FOF_CONTROLLER_ERR_GET_NAME'), 500);
 			}
 
 			$this->name = $r[2];
@@ -897,7 +907,30 @@ class Controller
 
 			if ($auto)
 			{
-				$url = \JRoute::_($url, false);
+				$url = Route::_($url, false);
+			}
+
+			/**
+			 * Joomla 4 does not add the base URI to redirections.
+			 *
+			 * This means that all bare redirects, e.g. to 'index.php?option=com_example', no longer work correctly.
+			 *
+			 * In the frontend, if your site is located in a subdirectory e.g. /foobar you get redirected to
+			 * /index.php?option=com_example instead of /foobar/index.php?option=com_example
+			 *
+			 * In the backend, you're redirected to /index.php?option=com_example instead of the expected
+			 * /administrator/index.php?option=com_example which breaks your application since the backend redirects to
+			 * the frontend.
+			 *
+			 * This is an undocumented b/c break in Joomla 4. It even breaks some of the core components...
+			 *
+			 * The following code detects bare redirect URLs and adds the base URI path if auto-routing has been
+			 * disabled, automatically fixing the observed issue. It only does that on Joomla 4 since adding the base
+			 * URI on Joomla 3 can cause redirection problems.
+			 */
+			if (!$auto && version_compare(JVERSION, '3.999.999', 'gt'))
+			{
+				$url = Uri::base() . $url;
 			}
 		}
 
@@ -990,9 +1023,9 @@ class Controller
 		{
 			$view = $this->input->getCmd('view');
 			$task = $this->input->getCmd('task');
-			\JLog::add(
+			Log::add(
 				"FOF: You are using a legacy session token in (view, task)=($view, $task). Support for legacy tokens will go away. Use form tokens instead.",
-				\JLog::WARNING,
+				Log::WARNING,
 				'deprecated'
 			);
 		}
@@ -1007,9 +1040,9 @@ class Controller
 			{
 				$view = $this->input->getCmd('view');
 				$task = $this->input->getCmd('task');
-				\JLog::add(
+				Log::add(
 					"FOF: You are using the insecure _token form variable in (view, task)=($view, $task). Support for it will go away. Submit a variable with the token as the name and a value of 1 instead.",
-					\JLog::WARNING,
+					Log::WARNING,
 					'deprecated'
 				);
 
@@ -1020,7 +1053,7 @@ class Controller
 
 		if (!$hasToken)
 		{
-			$platform->raiseError(403, \JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
+			$platform->raiseError(403, Text::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
 
 			return false;
 		}
