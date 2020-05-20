@@ -12,11 +12,7 @@ use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use FOF30\Utils\StringHelper;
 use JFormFieldCheckboxes;
-use Joomla\CMS\Form\FormHelper;
-
-defined('_JEXEC') or die;
-
-FormHelper::loadFieldClass('checkboxes');
+use Joomla\CMS\Form\FormHelper;FormHelper::loadFieldClass('checkboxes');
 
 /**
  * Form Field class for FOF

@@ -14,11 +14,7 @@ use FOF30\Model\DataModel;
 use Joomla\CMS\Document\JsonDocument as JDocumentJSON;
 use Joomla\CMS\Pagination\Pagination;
 use Joomla\CMS\Router\Route;
-use Joomla\CMS\Uri\Uri;
-
-defined('_JEXEC') or die;
-
-class Json extends Raw implements DataViewInterface
+use Joomla\CMS\Uri\Uri;class Json extends Raw implements DataViewInterface
 {
 	/**
 	 * When set to true we'll add hypermedia to the output, implementing the

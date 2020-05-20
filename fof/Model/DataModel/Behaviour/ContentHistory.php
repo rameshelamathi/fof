@@ -10,11 +10,7 @@ namespace FOF30\Model\DataModel\Behaviour;
 use FOF30\Event\Observer;
 use FOF30\Model\DataModel;
 use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Helper\ContentHistoryHelper;
-
-defined('_JEXEC') or die;
-
-/**
+use Joomla\CMS\Helper\ContentHistoryHelper;/**
  * FOF model behavior class to add Joomla! content history support
  *
  * @since    2.1

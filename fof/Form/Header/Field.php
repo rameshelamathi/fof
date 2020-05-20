@@ -8,11 +8,7 @@
 namespace FOF30\Form\Header;
 
 use Joomla\CMS\HTML\HTMLHelper;
-use Joomla\CMS\Language\Text;
-
-defined('_JEXEC') or die;
-
-/**
+use Joomla\CMS\Language\Text;/**
  * Generic field header, without any filters
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4

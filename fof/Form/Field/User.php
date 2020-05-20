@@ -13,11 +13,7 @@ use FOF30\Model\DataModel;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Field\UserField;
 use Joomla\CMS\Form\FormHelper;
-use Joomla\CMS\Uri\Uri;
-
-defined('_JEXEC') or die;
-
-FormHelper::loadFieldClass('user');
+use Joomla\CMS\Uri\Uri;FormHelper::loadFieldClass('user');
 
 /**
  * Form Field class for the FOF framework

@@ -8,11 +8,7 @@
 namespace FOF30\Encrypt;
 
 // Protect from unauthorized access
-use FOF30\Utils\Phpfunc;
-
-defined('_JEXEC') or die();
-
-/**
+use FOF30\Utils\Phpfunc;/**
  * Generates cryptographically-secure random values.
  */
 class Randval implements RandvalInterface

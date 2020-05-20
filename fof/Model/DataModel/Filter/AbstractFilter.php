@@ -8,11 +8,7 @@
 namespace FOF30\Model\DataModel\Filter;
 
 use FOF30\Model\DataModel\Filter\Exception\InvalidFieldObject;
-use FOF30\Model\DataModel\Filter\Exception\NoDatabaseObject;
-
-defined('_JEXEC') or die;
-
-abstract class AbstractFilter
+use FOF30\Model\DataModel\Filter\Exception\NoDatabaseObject;abstract class AbstractFilter
 {
 	protected $db = null;
 

@@ -17,11 +17,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Pagination\Pagination;
 use Joomla\Registry\Registry;
-use stdClass;
-
-defined('_JEXEC') or die;
-
-/**
+use stdClass;/**
  * View for a raw data-driven view
  */
 class Raw extends View implements DataViewInterface

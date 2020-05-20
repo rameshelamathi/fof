@@ -8,11 +8,7 @@
 namespace FOF30\Model\DataModel\Relation;
 
 use FOF30\Model\DataModel;
-use FOF30\Model\DataModel\Collection;
-
-defined('_JEXEC') or die;
-
-/**
+use FOF30\Model\DataModel\Collection;/**
  * HasOne (straight 1-to-1) relation: this model is a parent which has exactly one child in the foreign table
  *
  * For example, parentModel is Users and foreignModel is Phones. Each uses has exactly one Phone.

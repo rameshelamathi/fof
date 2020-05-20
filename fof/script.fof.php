@@ -14,11 +14,7 @@ use Joomla\CMS\Installer\Adapter\ComponentAdapter;
 use Joomla\CMS\Installer\Adapter\FileAdapter;
 use Joomla\CMS\Installer\Installer;
 use Joomla\CMS\Log\Log;
-use Joomla\CMS\Table\Table;
-
-defined('_JEXEC') or die();
-
-if (class_exists('file_fof30InstallerScript', false))
+use Joomla\CMS\Table\Table;if (class_exists('file_fof30InstallerScript', false))
 {
 	return;
 }

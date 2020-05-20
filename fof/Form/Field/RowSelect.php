@@ -5,11 +5,7 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Form\Field;
-
-defined('_JEXEC') or die;
-
-/**
+namespace FOF30\Form\Field;/**
  * Form Field class for FOF
  * Alias to RowSelect (common typo)
  *

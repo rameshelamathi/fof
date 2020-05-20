@@ -7,11 +7,7 @@
 
 namespace FOF30\Factory\Magic;
 
-use FOF30\Dispatcher\Dispatcher;
-
-defined('_JEXEC') or die;
-
-/**
+use FOF30\Dispatcher\Dispatcher;/**
  * Creates a TransparentAuthentication object instance based on the information provided by the fof.xml configuration file
  */
 class TransparentAuthenticationFactory extends BaseFactory

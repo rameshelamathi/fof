@@ -7,11 +7,7 @@
 
 namespace FOF30\Factory\Scaffolding\Layout;
 
-use FOF30\Model\DataModel;
-
-defined('_JEXEC') or die;
-
-/**
+use FOF30\Model\DataModel;/**
  * Interface ErectorInterface
  * @package FOF30\Factory\Scaffolding\Layout
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4

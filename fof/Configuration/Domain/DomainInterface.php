@@ -7,11 +7,7 @@
 
 namespace FOF30\Configuration\Domain;
 
-use SimpleXMLElement;
-
-defined('_JEXEC') or die;
-
-/**
+use SimpleXMLElement;/**
  * The Interface of a FOF configuration domain class. The methods are used to parse and
  * provision sensible information to consumers. The Configuration class acts as an
  * adapter to the domain classes.

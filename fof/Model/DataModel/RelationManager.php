@@ -8,11 +8,7 @@
 namespace FOF30\Model\DataModel;
 
 use FOF30\Inflector\Inflector;
-use FOF30\Model\DataModel;
-
-defined('_JEXEC') or die;
-
-class RelationManager
+use FOF30\Model\DataModel;class RelationManager
 {
 	/** @var DataModel The data model we are attached to */
 	protected $parentModel = null;

@@ -9,11 +9,7 @@ namespace FOF30\Model\DataModel\Exception;
 
 use Exception;
 use Joomla\CMS\Language\Text;
-use RuntimeException;
-
-defined('_JEXEC') or die;
-
-class TreeMethodOnlyAllowedInRoot extends RuntimeException
+use RuntimeException;class TreeMethodOnlyAllowedInRoot extends RuntimeException
 {
 	public function __construct($method = '', $code = 500, Exception $previous = null)
 	{

@@ -5,11 +5,7 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Model\Mixin;
-
-defined('_JEXEC') or die;
-
-/**
+namespace FOF30\Model\Mixin;/**
  * Trait for PHP 5.5 Generators
  */
 trait Generators

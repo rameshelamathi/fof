@@ -5,11 +5,7 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Factory\Scaffolding\Layout;
-
-defined('_JEXEC') or die;
-
-/**
+namespace FOF30\Factory\Scaffolding\Layout;/**
  * Erects a scaffolding XML for read views
  *
  * @package FOF30\Factory\Scaffolding

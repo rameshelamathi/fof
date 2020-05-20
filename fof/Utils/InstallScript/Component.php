@@ -21,11 +21,7 @@ use Joomla\CMS\Log\Log;
 use Joomla\CMS\Table\Menu;
 use Joomla\CMS\Table\Table;
 use SimpleXMLElement;
-use stdClass;
-
-defined('_JEXEC') or die;
-
-JLoader::import('joomla.filesystem.folder');
+use stdClass;JLoader::import('joomla.filesystem.folder');
 JLoader::import('joomla.filesystem.file');
 JLoader::import('joomla.installer.installer');
 JLoader::import('joomla.utilities.date');

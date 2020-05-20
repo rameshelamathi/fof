@@ -8,10 +8,6 @@
 namespace FOF30\Factory\Exception;
 
 use Exception;
-use RuntimeException;
-
-defined('_JEXEC') or die;
-
-class FormLoadGeneric extends RuntimeException
+use RuntimeException;class FormLoadGeneric extends RuntimeException
 {
 }

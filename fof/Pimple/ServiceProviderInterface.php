@@ -23,11 +23,7 @@
  * THE SOFTWARE.
  */
 
-namespace FOF30\Pimple;
-
-defined('_JEXEC') or die;
-
-/**
+namespace FOF30\Pimple;/**
  * Pimple service provider interface.
  *
  * @author  Fabien Potencier

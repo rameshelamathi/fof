@@ -9,11 +9,7 @@ namespace FOF30\Model\DataModel\Behaviour;
 
 use FOF30\Event\Observer;
 use FOF30\Model\DataModel;
-use JDatabaseQuery;
-
-defined('_JEXEC') or die;
-
-/**
+use JDatabaseQuery;/**
  * FOF model behavior class to filter access to items owned by the currently logged in user only
  *
  * @since    2.1

@@ -7,11 +7,7 @@
 
 namespace FOF30\Configuration\Domain;
 
-use SimpleXMLElement;
-
-defined('_JEXEC') or die;
-
-/**
+use SimpleXMLElement;/**
  * Configuration parser for the view-specific settings
  *
  * @since    2.1

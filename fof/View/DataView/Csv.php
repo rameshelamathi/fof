@@ -11,11 +11,7 @@ use Exception;
 use FOF30\Container\Container;
 use FOF30\Model\DataModel;
 use FOF30\View\Exception\AccessForbidden;
-use Joomla\CMS\Document\Document;
-
-defined('_JEXEC') or die;
-
-class Csv extends Html implements DataViewInterface
+use Joomla\CMS\Document\Document;class Csv extends Html implements DataViewInterface
 {
 	/**
 	 *  Should I produce a CSV header row.

@@ -11,11 +11,7 @@ use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use JFormFieldSessionHandler;
-use Joomla\CMS\Form\FormHelper;
-
-defined('_JEXEC') or die;
-
-FormHelper::loadFieldClass('sessionhandler');
+use Joomla\CMS\Form\FormHelper;FormHelper::loadFieldClass('sessionhandler');
 
 /**
  * Form Field class for FOF

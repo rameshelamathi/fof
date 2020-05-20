@@ -14,11 +14,7 @@ use FOF30\Form\Form;
 use FOF30\Model\Model;
 use FOF30\Toolbar\Toolbar;
 use FOF30\TransparentAuthentication\TransparentAuthentication;
-use FOF30\View\View;
-
-defined('_JEXEC') or die;
-
-/**
+use FOF30\View\View;/**
  * Interface for the MVC object factory
  */
 interface FactoryInterface

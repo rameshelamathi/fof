@@ -9,11 +9,7 @@ namespace FOF30\Form\Exception;
 
 use Exception;
 use Joomla\CMS\Language\Text;
-use LogicException;
-
-defined('_JEXEC') or die;
-
-/**
+use LogicException;/**
  * Class GetStaticNotAllowed
  * @package    FOF30\Form\Exception
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4

@@ -5,11 +5,7 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Utils\FEFHelper;
-
-defined('_JEXEC') or die;
-
-use FOF30\View\DataView\DataViewInterface;
+namespace FOF30\Utils\FEFHelper;use FOF30\View\DataView\DataViewInterface;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Pagination\Pagination;
 

@@ -9,11 +9,7 @@ namespace FOF30\Model\DataModel\Exception;
 
 use Exception;
 use Joomla\CMS\Language\Text;
-use UnexpectedValueException;
-
-defined('_JEXEC') or die;
-
-class NoContentType extends UnexpectedValueException
+use UnexpectedValueException;class NoContentType extends UnexpectedValueException
 {
 	public function __construct($className, $code = 500, Exception $previous = null)
 	{

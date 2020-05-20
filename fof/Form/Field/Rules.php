@@ -14,11 +14,7 @@ use JFormFieldRules;
 use Joomla\CMS\Access\Access;
 use Joomla\CMS\Form\FormHelper;
 use Joomla\CMS\HTML\HTMLHelper;
-use SimpleXMLElement;
-
-defined('_JEXEC') or die;
-
-FormHelper::loadFieldClass('rules');
+use SimpleXMLElement;FormHelper::loadFieldClass('rules');
 
 /**
  * Form Field class for FOF

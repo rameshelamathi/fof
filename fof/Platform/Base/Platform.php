@@ -12,11 +12,7 @@ use FOF30\Container\Container;
 use FOF30\Input\Input;
 use FOF30\Platform\PlatformInterface;
 use Joomla\CMS\Document\Document;
-use Joomla\CMS\User\User;
-
-defined('_JEXEC') or die;
-
-/**
+use Joomla\CMS\User\User;/**
  * Abstract implementation of the Platform integration
  *
  * @package FOF30\Platform\Base

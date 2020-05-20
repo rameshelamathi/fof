@@ -13,11 +13,7 @@ use JLoader;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
 use ReflectionObject;
-use SimpleXMLElement;
-
-defined('_JEXEC') or die;
-
-/**
+use SimpleXMLElement;/**
  * Scaffolding Builder
  *
  * Creates an automatic XML form definition to render a view based on the database fields you've got in the model. This

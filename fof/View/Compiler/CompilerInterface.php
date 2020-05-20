@@ -5,11 +5,7 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\View\Compiler;
-
-defined('_JEXEC') or die;
-
-interface CompilerInterface
+namespace FOF30\View\Compiler;interface CompilerInterface
 {
 	/**
 	 * Are the results of this compiler engine cacheable? If the engine makes use of the forcedParams it must return

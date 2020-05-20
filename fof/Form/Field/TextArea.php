@@ -11,11 +11,7 @@ use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use JFormFieldTextarea;
-use Joomla\CMS\Form\FormHelper;
-
-defined('_JEXEC') or die;
-
-FormHelper::loadFieldClass('textarea');
+use Joomla\CMS\Form\FormHelper;FormHelper::loadFieldClass('textarea');
 
 /**
  * Form Field class for the FOF framework

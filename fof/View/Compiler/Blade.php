@@ -8,11 +8,7 @@
 namespace FOF30\View\Compiler;
 
 use FOF30\Container\Container;
-use FOF30\Utils\Phpfunc;
-
-defined('_JEXEC') or die;
-
-class Blade implements CompilerInterface
+use FOF30\Utils\Phpfunc;class Blade implements CompilerInterface
 {
 	/**
 	 * Are the results of this engine cacheable?

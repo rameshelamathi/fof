@@ -14,11 +14,7 @@ use FOF30\View\DataView\Raw as DataViewRaw;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Pagination\Pagination;
-
-defined('_JEXEC') or die;
-
-/**
+use Joomla\CMS\Pagination\Pagination;/**
  * Custom JHtml (HTMLHelper) class. Offers browse view controls compatible with Akeeba Frontend
  * Framework (FEF).
  *

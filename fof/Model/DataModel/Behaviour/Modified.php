@@ -9,11 +9,7 @@ namespace FOF30\Model\DataModel\Behaviour;
 
 use FOF30\Event\Observer;
 use FOF30\Model\DataModel;
-use JDatabaseQuery;
-
-defined('_JEXEC') or die;
-
-/**
+use JDatabaseQuery;/**
  * FOF model behavior class to updated the modified_by and modified_on fields on newly created records.
  *
  * This behaviour is added to DataModel by default. If you want to remove it you need to do

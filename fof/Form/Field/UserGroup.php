@@ -13,11 +13,7 @@ use FOF30\Model\DataModel;
 use JFormFieldUsergroup;
 use Joomla\CMS\Form\FormHelper;
 use Joomla\CMS\HTML\HTMLHelper;
-use stdClass;
-
-defined('_JEXEC') or die;
-
-FormHelper::loadFieldClass('usergroup');
+use stdClass;FormHelper::loadFieldClass('usergroup');
 
 /**
  * Form Field class for FOF

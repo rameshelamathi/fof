@@ -13,11 +13,7 @@ use FOF30\Model\DataModel;
 use Joomla\Registry\Registry;
 use LogicException;
 use SimpleXMLElement;
-use stdClass;
-
-defined('_JEXEC') or die;
-
-/**
+use stdClass;/**
  * Base class for other render classes
  */
 abstract class RenderBase implements RenderInterface

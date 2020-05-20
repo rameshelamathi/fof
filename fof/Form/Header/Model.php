@@ -11,11 +11,7 @@ use FOF30\Container\Container;
 use FOF30\Model\DataModel;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
-use SimpleXMLElement;
-
-defined('_JEXEC') or die;
-
-if (!class_exists('JFormFieldSql'))
+use SimpleXMLElement;if (!class_exists('JFormFieldSql'))
 {
 	require_once JPATH_LIBRARIES . '/joomla/form/fields/sql.php';
 }

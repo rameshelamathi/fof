@@ -11,11 +11,7 @@ use Exception;
 use FOF30\Render\RenderInterface;
 use Joomla\CMS\Application\SiteApplication;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
-
-defined('_JEXEC') or die;
-
-class Html extends Raw implements DataViewInterface
+use Joomla\CMS\Language\Text;class Html extends Raw implements DataViewInterface
 {
 	/** @var bool Should I set the page title in the front-end of the site? */
 	public $setFrontendPageTitle = false;

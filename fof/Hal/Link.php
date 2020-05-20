@@ -7,11 +7,7 @@
 
 namespace FOF30\Hal;
 
-use FOF30\Hal\Exception\InvalidLinkFormat;
-
-defined('_JEXEC') or die;
-
-/**
+use FOF30\Hal\Exception\InvalidLinkFormat;/**
  * Implementation of the Hypertext Application Language link in PHP.
  *
  * @see http://stateless.co/hal_specification.html

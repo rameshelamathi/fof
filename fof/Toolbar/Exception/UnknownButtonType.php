@@ -9,11 +9,7 @@ namespace FOF30\Toolbar\Exception;
 
 use Exception;
 use InvalidArgumentException;
-use Joomla\CMS\Language\Text;
-
-defined('_JEXEC') or die;
-
-class UnknownButtonType extends InvalidArgumentException
+use Joomla\CMS\Language\Text;class UnknownButtonType extends InvalidArgumentException
 {
 	public function __construct($buttonType, $code = 500, Exception $previous = null)
 	{

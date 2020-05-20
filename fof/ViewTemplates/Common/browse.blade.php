@@ -42,11 +42,7 @@
  *      not be removed.
  *
  * Do not override any other section. The overridden sections should be closed with -at-override instead of -at-stop.
- */
-
-defined('_JEXEC') or die();
-
-/** @var  FOF30\View\DataView\Html  $this */
+ *//** @var  FOF30\View\DataView\Html  $this */
 
 $ajaxOrderingSupport = $this->hasAjaxOrderingSupport();
 ?>

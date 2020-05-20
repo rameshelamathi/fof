@@ -9,11 +9,7 @@ namespace FOF30\Model\DataModel\Exception;
 
 use Exception;
 use Joomla\CMS\Language\Text;
-use LogicException;
-
-defined('_JEXEC') or die;
-
-class TreeUnsupportedMethod extends LogicException
+use LogicException;class TreeUnsupportedMethod extends LogicException
 {
 	public function __construct($method = '', $code = 500, Exception $previous = null)
 	{

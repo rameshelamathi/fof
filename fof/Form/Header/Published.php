@@ -7,11 +7,7 @@
 
 namespace FOF30\Form\Header;
 
-use Joomla\CMS\HTML\HTMLHelper;
-
-defined('_JEXEC') or die;
-
-/**
+use Joomla\CMS\HTML\HTMLHelper;/**
  * Field header for Published (enabled) columns
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4

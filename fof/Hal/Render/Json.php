@@ -9,11 +9,7 @@ namespace FOF30\Hal\Render;
 
 use FOF30\Hal\Document;
 use FOF30\Hal\Link;
-use FOF30\Model\DataModel;
-
-defined('_JEXEC') or die;
-
-/**
+use FOF30\Model\DataModel;/**
  * Implements the HAL over JSON renderer
  *
  * @see http://stateless.co/hal_specification.html

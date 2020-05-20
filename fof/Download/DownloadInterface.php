@@ -7,11 +7,7 @@
 
 namespace FOF30\Download;
 
-use FOF30\Download\Exception\DownloadError;
-
-defined('_JEXEC') or die;
-
-/**
+use FOF30\Download\Exception\DownloadError;/**
  * Interface DownloadInterface
  *
  * @codeCoverageIgnore

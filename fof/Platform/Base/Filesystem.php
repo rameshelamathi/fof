@@ -8,11 +8,7 @@
 namespace FOF30\Platform\Base;
 
 use FOF30\Container\Container;
-use FOF30\Platform\FilesystemInterface;
-
-defined('_JEXEC') or die;
-
-abstract class Filesystem implements FilesystemInterface
+use FOF30\Platform\FilesystemInterface;abstract class Filesystem implements FilesystemInterface
 {
 	/** @var  Container  The component container */
 	protected $container = null;

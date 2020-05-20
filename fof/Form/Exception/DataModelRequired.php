@@ -9,11 +9,7 @@ namespace FOF30\Form\Exception;
 
 use Exception;
 use Joomla\CMS\Language\Text;
-use RuntimeException;
-
-defined('_JEXEC') or die;
-
-/**
+use RuntimeException;/**
  * Class DataModelRequired
  * @package    FOF30\Form\Exception
  *

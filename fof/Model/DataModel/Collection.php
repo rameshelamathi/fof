@@ -8,11 +8,7 @@
 namespace FOF30\Model\DataModel;
 
 use FOF30\Model\DataModel;
-use FOF30\Utils\Collection as BaseCollection;
-
-defined('_JEXEC') or die;
-
-/**
+use FOF30\Utils\Collection as BaseCollection;/**
  * A collection of data models. You can enumerate it like an array, use it everywhere a collection is expected (e.g. a
  * foreach loop) and even implements a countable interface. You can also batch-apply DataModel methods on it thanks to
  * its magic __call() method, hence the type-hinting below.

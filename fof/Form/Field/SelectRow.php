@@ -15,11 +15,7 @@ use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use Joomla\CMS\Form\FormField;
 use Joomla\CMS\HTML\HTMLHelper;
-use LogicException;
-
-defined('_JEXEC') or die;
-
-/**
+use LogicException;/**
  * Form Field class for FOF
  * Renders the checkbox in browse views which allows you to select rows
  *

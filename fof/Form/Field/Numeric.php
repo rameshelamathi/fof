@@ -7,11 +7,7 @@
 
 namespace FOF30\Form\Field;
 
-use Joomla\CMS\Form\FormHelper;
-
-defined('_JEXEC') or die;
-
-FormHelper::loadFieldClass('number');
+use Joomla\CMS\Form\FormHelper;FormHelper::loadFieldClass('number');
 
 /**
  * Backwards compatibility field. DO NOT USE IN PHP 7.2 AND LATER.

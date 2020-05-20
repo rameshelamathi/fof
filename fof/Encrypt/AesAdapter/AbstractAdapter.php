@@ -7,10 +7,7 @@
 
 namespace FOF30\Encrypt\AesAdapter;
 
-// Protect from unauthorized access
-defined('_JEXEC') or die();
-
-/**
+// Protect from unauthorized access/**
  * Abstract AES encryption class
  */
 abstract class AbstractAdapter

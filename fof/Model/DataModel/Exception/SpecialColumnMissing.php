@@ -5,11 +5,7 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Model\DataModel\Exception;
-
-defined('_JEXEC') or die;
-
-class SpecialColumnMissing extends BaseException
+namespace FOF30\Model\DataModel\Exception;class SpecialColumnMissing extends BaseException
 {
 
 }

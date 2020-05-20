@@ -8,11 +8,7 @@
 namespace FOF30\Download\Adapter;
 
 use FOF30\Download\DownloadInterface;
-use FOF30\Download\Exception\DownloadError;
-
-defined('_JEXEC') or die;
-
-abstract class AbstractAdapter implements DownloadInterface
+use FOF30\Download\Exception\DownloadError;abstract class AbstractAdapter implements DownloadInterface
 {
 	/**
 	 * Load order priority

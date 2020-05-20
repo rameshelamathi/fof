@@ -15,11 +15,7 @@ use FOF30\Utils\StringHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\FormHelper;
 use Joomla\CMS\HTML\HTMLHelper;
-use SimpleXMLElement;
-
-defined('_JEXEC') or die;
-
-FormHelper::loadFieldClass('list');
+use SimpleXMLElement;FormHelper::loadFieldClass('list');
 
 /**
  * Form Field class for FOF

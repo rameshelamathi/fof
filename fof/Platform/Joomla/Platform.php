@@ -38,11 +38,7 @@ use Joomla\CMS\User\User;
 use Joomla\CMS\User\UserHelper;
 use Joomla\CMS\Version;
 use Joomla\Component\Actionlogs\Administrator\Model\ActionlogModel;
-use Joomla\Registry\Registry;
-
-defined('_JEXEC') or die;
-
-/**
+use Joomla\Registry\Registry;/**
  * Part of the FOF Platform Abstraction Layer.
  *
  * This implements the platform class for Joomla! 3

@@ -21,11 +21,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
-use Joomla\CMS\Language\Text;
-
-defined('_JEXEC') or die;
-
-/**
+use Joomla\CMS\Language\Text;/**
  * Class Controller
  *
  * A generic MVC controller implementation

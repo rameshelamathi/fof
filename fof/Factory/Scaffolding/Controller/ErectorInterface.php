@@ -7,11 +7,7 @@
 
 namespace FOF30\Factory\Scaffolding\Controller;
 
-use FOF30\Controller\DataController;
-
-defined('_JEXEC') or die;
-
-/**
+use FOF30\Controller\DataController;/**
  * Interface ErectorInterface
  * @package FOF30\Factory\Scaffolding\Controller
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4

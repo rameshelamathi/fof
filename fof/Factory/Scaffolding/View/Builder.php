@@ -8,11 +8,7 @@
 namespace FOF30\Factory\Scaffolding\View;
 
 use FOF30\Container\Container;
-use FOF30\Factory\Magic\ViewFactory;
-
-defined('_JEXEC') or die;
-
-/**
+use FOF30\Factory\Magic\ViewFactory;/**
  * Scaffolding Builder
  *
  * @package FOF30\Factory\Scaffolding

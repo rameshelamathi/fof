@@ -5,11 +5,7 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Hal;
-
-defined('_JEXEC') or die;
-
-/**
+namespace FOF30\Hal;/**
  * Implementation of the Hypertext Application Language links in PHP. This is
  * actually a collection of links.
  *

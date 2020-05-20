@@ -7,11 +7,7 @@
 
 namespace FOF30\Layout;
 
-use FOF30\Container\Container;
-
-defined('_JEXEC') or die;
-
-class LayoutHelper
+use FOF30\Container\Container;class LayoutHelper
 {
 	/**
 	 * A default base path that will be used if none is provided when calling the render method.

@@ -12,11 +12,7 @@ use FOF30\Container\Container;
 use FOF30\Model\Model;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Updater\Updater;
-use SimpleXMLElement;
-
-defined('_JEXEC') or die;
-
-/**
+use SimpleXMLElement;/**
  * A helper Model to interact with Joomla!'s extensions update feature
  */
 class Update extends Model

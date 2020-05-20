@@ -5,11 +5,7 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Hal\Render;
-
-defined('_JEXEC') or die;
-
-/**
+namespace FOF30\Hal\Render;/**
  * Interface for HAL document renderers
  *
  * @see http://stateless.co/hal_specification.html

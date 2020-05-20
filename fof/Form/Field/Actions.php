@@ -17,11 +17,7 @@ use JFormFieldList;
 use Joomla\CMS\Form\FormHelper;
 use Joomla\CMS\HTML\HTMLHelper;
 use LogicException;
-use SimpleXMLElement;
-
-defined('_JEXEC') or die;
-
-FormHelper::loadFieldClass('list');
+use SimpleXMLElement;FormHelper::loadFieldClass('list');
 
 /**
  * Form Field class for FOF

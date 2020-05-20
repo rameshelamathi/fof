@@ -9,11 +9,7 @@ namespace FOF30\Model\DataModel\Behaviour;
 
 use FOF30\Event\Observer;
 use FOF30\Model\DataModel;
-use JDatabaseQuery;
-
-defined('_JEXEC') or die;
-
-/**
+use JDatabaseQuery;/**
  * FOF model behavior class to let the Filters behaviour know that zero value is a valid filter value
  *
  * @since    2.1

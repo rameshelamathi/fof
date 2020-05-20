@@ -9,11 +9,7 @@ namespace FOF30\View\DataView;
 
 use FOF30\Form\Form as FormObject;
 use FOF30\Model\DataModel;
-use FOF30\Render\RenderInterface;
-
-defined('_JEXEC') or die;
-
-/**
+use FOF30\Render\RenderInterface;/**
  * Class Form
  * @package FOF30\View\DataView
  *

@@ -28,11 +28,7 @@ use FOF30\Model\Model;
 use FOF30\Toolbar\Toolbar;
 use FOF30\TransparentAuthentication\TransparentAuthentication;
 use FOF30\View\View;
-use FOF30\View\ViewTemplateFinder;
-
-defined('_JEXEC') or die;
-
-/**
+use FOF30\View\ViewTemplateFinder;/**
  * MVC object factory. This implements the basic functionality, i.e. creating MVC objects only if the classes exist in
  * the same component section (front-end, back-end) you are currently running in. The Dispatcher and Toolbar will be
  * created from default objects if specialised classes are not found in your application.

@@ -5,11 +5,7 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Model\DataModel\Filter;
-
-defined('_JEXEC') or die;
-
-class Date extends Text
+namespace FOF30\Model\DataModel\Filter;class Date extends Text
 {
 	/**
 	 * Returns the default search method for this field.

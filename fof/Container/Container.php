@@ -5,11 +5,7 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Container;
-
-defined('_JEXEC') or die;
-
-use FOF30\Autoloader\Autoloader;
+namespace FOF30\Container;use FOF30\Autoloader\Autoloader;
 use FOF30\Encrypt\EncryptService;
 use FOF30\Factory\FactoryInterface;
 use FOF30\Inflector\Inflector;

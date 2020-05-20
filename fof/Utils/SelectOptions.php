@@ -14,11 +14,7 @@ use Joomla\CMS\Helper\UserGroupsHelper;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\LanguageHelper;
 use Joomla\CMS\Language\Text;
-use stdClass;
-
-defined('_JEXEC') or die;
-
-/**
+use stdClass;/**
  * Returns arrays of JHtml select options for Joomla-specific information such as access levels.
  */
 class SelectOptions

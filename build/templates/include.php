@@ -5,7 +5,7 @@
  * @license   GNU General Public License version 2, or later
  */
 
-// Do not put the JEXEC or die check on this file (necessary omission for testing)
+defined('_JEXEC') or die;
 
 if (!class_exists('FOF30\\Autoloader\\Autoloader'))
 {

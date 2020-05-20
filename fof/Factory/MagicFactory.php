@@ -18,11 +18,7 @@ use FOF30\Factory\Magic\TransparentAuthenticationFactory;
 use FOF30\Model\Model;
 use FOF30\Toolbar\Toolbar;
 use FOF30\TransparentAuthentication\TransparentAuthentication;
-use FOF30\View\View;
-
-defined('_JEXEC') or die;
-
-/**
+use FOF30\View\View;/**
  * Magic MVC object factory. This factory will "magically" create MVC objects even if the respective classes do not
  * exist, based on information in your fof.xml file.
  *

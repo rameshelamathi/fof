@@ -8,11 +8,7 @@
 namespace FOF30\Hal;
 
 use FOF30\Hal\Exception\InvalidRenderFormat;
-use FOF30\Hal\Render\RenderInterface;
-
-defined('_JEXEC') or die;
-
-/**
+use FOF30\Hal\Render\RenderInterface;/**
  * Implementation of the Hypertext Application Language document in PHP. It can
  * be used to provide hypermedia in a web service context.
  *

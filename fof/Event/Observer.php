@@ -5,11 +5,7 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Event;
-
-defined('_JEXEC') or die;
-
-class Observer
+namespace FOF30\Event;class Observer
 {
 	/** @var   Observable  The object to observe */
 	protected $subject = null;

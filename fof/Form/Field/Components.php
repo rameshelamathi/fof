@@ -12,11 +12,7 @@ use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use JFormFieldList;
 use Joomla\CMS\Form\FormHelper;
-use stdClass;
-
-defined('_JEXEC') or die;
-
-FormHelper::loadFieldClass('list');
+use stdClass;FormHelper::loadFieldClass('list');
 
 /**
  * Form Field class for FOF

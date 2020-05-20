@@ -14,11 +14,7 @@ use Joomla\CMS\Application\SiteApplication;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Registry\Registry;
-use PlgSystemLanguageFilter;
-
-defined('_JEXEC') or die;
-
-/**
+use PlgSystemLanguageFilter;/**
  * FOF model behavior class to filter front-end access to items
  * based on the language.
  *

@@ -8,11 +8,7 @@
 namespace FOF30\Factory\Scaffolding\Model;
 
 use FOF30\Model\DataModel;
-use FOF30\Utils\ModelTypeHints;
-
-defined('_JEXEC') or die;
-
-/**
+use FOF30\Utils\ModelTypeHints;/**
  * @package FOF30\Factory\Scaffolding
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4

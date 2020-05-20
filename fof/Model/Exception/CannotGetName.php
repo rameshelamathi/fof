@@ -9,11 +9,7 @@ namespace FOF30\Model\Exception;
 
 use Exception;
 use Joomla\CMS\Language\Text;
-use RuntimeException;
-
-defined('_JEXEC') or die;
-
-/**
+use RuntimeException;/**
  * Exception thrown when we can't get a Controller's name
  */
 class CannotGetName extends RuntimeException

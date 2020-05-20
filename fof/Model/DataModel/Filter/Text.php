@@ -7,11 +7,7 @@
 
 namespace FOF30\Model\DataModel\Filter;
 
-use JDatabaseDriver;
-
-defined('_JEXEC') or die;
-
-class Text extends AbstractFilter
+use JDatabaseDriver;class Text extends AbstractFilter
 {
 	/**
 	 * Constructor

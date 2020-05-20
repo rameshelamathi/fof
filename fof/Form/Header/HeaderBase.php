@@ -10,11 +10,7 @@ namespace FOF30\Form\Header;
 use FOF30\Form\Form;
 use FOF30\Form\HeaderInterface;
 use Joomla\CMS\Language\Text;
-use SimpleXMLElement;
-
-defined('_JEXEC') or die;
-
-/**
+use SimpleXMLElement;/**
  * A base class for HeaderInterface fields, used to define the filters and the
  * elements of the header row in repeatable (browse) views
  *

@@ -12,11 +12,7 @@ use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use JFormFieldAccessLevel;
 use Joomla\CMS\Form\FormHelper;
-use Joomla\CMS\HTML\HTMLHelper;
-
-defined('_JEXEC') or die;
-
-FormHelper::loadFieldClass('accesslevel');
+use Joomla\CMS\HTML\HTMLHelper;FormHelper::loadFieldClass('accesslevel');
 
 /**
  * Form Field class for FOF

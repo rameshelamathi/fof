@@ -9,11 +9,7 @@ namespace FOF30\Utils;
 
 use Exception;
 use Joomla\CMS\Factory;
-use SimpleXMLElement;
-
-defined('_JEXEC') or die;
-
-/**
+use SimpleXMLElement;/**
  * Retrieve the version of a component from the cached XML manifest or, if it's not present, the version recorded in the
  * database.
  */

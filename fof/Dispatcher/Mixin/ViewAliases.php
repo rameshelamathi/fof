@@ -9,11 +9,7 @@ namespace FOF30\Dispatcher\Mixin;
 
 // Protect from unauthorized access
 
-use Joomla\CMS\Uri\Uri;
-
-defined('_JEXEC') or die();
-
-/**
+use Joomla\CMS\Uri\Uri;/**
  * Lets you create view aliases. When you access a view alias the real view is loaded instead. You can optionally have
  * an HTTPS 301 redirection for GET requests to URLs that use the view name alias.
  *

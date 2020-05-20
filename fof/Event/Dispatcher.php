@@ -7,11 +7,7 @@
 
 namespace FOF30\Event;
 
-use FOF30\Container\Container;
-
-defined('_JEXEC') or die;
-
-class Dispatcher implements Observable
+use FOF30\Container\Container;class Dispatcher implements Observable
 {
 	/** @var   Container  The container this event dispatcher is attached to */
 	protected $container = null;

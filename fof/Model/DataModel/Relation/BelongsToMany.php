@@ -8,11 +8,7 @@
 namespace FOF30\Model\DataModel\Relation;
 
 use FOF30\Model\DataModel;
-use FOF30\Model\DataModel\Relation;
-
-defined('_JEXEC') or die;
-
-/**
+use FOF30\Model\DataModel\Relation;/**
  * BelongsToMany (many-to-many) relation: one or more records of this model are related to one or more records in the
  * foreign model.
  *

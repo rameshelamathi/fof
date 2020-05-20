@@ -5,11 +5,7 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Controller;
-
-defined('_JEXEC') or die;
-
-use FOF30\Container\Container;
+namespace FOF30\Controller;use FOF30\Container\Container;
 use FOF30\Controller\Exception\ItemNotFound;
 use FOF30\Controller\Exception\LockedRecord;
 use FOF30\Controller\Exception\NotADataModel;

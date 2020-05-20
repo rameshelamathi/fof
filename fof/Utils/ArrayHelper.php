@@ -5,11 +5,7 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Utils;
-
-defined('_JEXEC') or die;
-
-/**
+namespace FOF30\Utils;/**
  * ArrayHelper is an array utility class for doing all sorts of odds and ends with arrays.
  *
  * Copied from Joomla Framework to avoid class name issues between Joomla! versions 3 and 4. sortObjects is not included

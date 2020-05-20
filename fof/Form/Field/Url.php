@@ -12,11 +12,7 @@ use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use JFormFieldUrl;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Form\FormHelper;
-
-defined('_JEXEC') or die;
-
-FormHelper::loadFieldClass('url');
+use Joomla\CMS\Form\FormHelper;FormHelper::loadFieldClass('url');
 
 /**
  * Form Field class for the FOF framework

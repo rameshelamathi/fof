@@ -5,11 +5,7 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Model\DataModel\Filter;
-
-defined('_JEXEC') or die;
-
-class Relation extends Number
+namespace FOF30\Model\DataModel\Filter;class Relation extends Number
 {
 	/** @var \JDatabaseQuery The COUNT subquery to filter by */
 	protected $subQuery = null;

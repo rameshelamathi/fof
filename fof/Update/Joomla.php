@@ -5,11 +5,7 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Update;
-
-defined('_JEXEC') or die;
-
-class Joomla extends Extension
+namespace FOF30\Update;class Joomla extends Extension
 {
 	/**
 	 * The source for LTS updates

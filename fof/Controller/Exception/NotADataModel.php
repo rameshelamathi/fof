@@ -5,11 +5,7 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Controller\Exception;
-
-defined('_JEXEC') or die;
-
-/**
+namespace FOF30\Controller\Exception;/**
  * Exception thrown when the provided Model is not a DataModel
  */
 class NotADataModel extends \InvalidArgumentException {}

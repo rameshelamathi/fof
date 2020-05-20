@@ -7,11 +7,7 @@
 
 namespace FOF30\Platform;
 
-use FOF30\Container\Container;
-
-defined('_JEXEC') or die;
-
-interface FilesystemInterface
+use FOF30\Container\Container;interface FilesystemInterface
 {
 	/**
 	 * Public constructor.

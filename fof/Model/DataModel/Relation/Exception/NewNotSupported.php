@@ -5,10 +5,6 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Model\DataModel\Relation\Exception;
-
-defined('_JEXEC') or die;
-
-class NewNotSupported extends \Exception
+namespace FOF30\Model\DataModel\Relation\Exception;class NewNotSupported extends \Exception
 {
 }

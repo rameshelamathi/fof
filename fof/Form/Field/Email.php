@@ -13,11 +13,7 @@ use FOF30\Model\DataModel;
 use FOF30\Utils\StringHelper;
 use JFormFieldEMail;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Form\FormHelper;
-
-defined('_JEXEC') or die;
-
-FormHelper::loadFieldClass('email');
+use Joomla\CMS\Form\FormHelper;FormHelper::loadFieldClass('email');
 
 /**
  * Form Field class for the FOF framework

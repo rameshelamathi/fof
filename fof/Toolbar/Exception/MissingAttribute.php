@@ -9,11 +9,7 @@ namespace FOF30\Toolbar\Exception;
 
 use Exception;
 use InvalidArgumentException;
-use Joomla\CMS\Language\Text;
-
-defined('_JEXEC') or die;
-
-class MissingAttribute extends InvalidArgumentException
+use Joomla\CMS\Language\Text;class MissingAttribute extends InvalidArgumentException
 {
 	public function __construct($missingArgument, $buttonType, $code = 500, Exception $previous = null)
 	{

@@ -9,11 +9,7 @@ namespace FOF30\TransparentAuthentication;
 
 use FOF30\Container\Container;
 use FOF30\Encrypt\Aes;
-use FOF30\Encrypt\Totp;
-
-defined('_JEXEC') or die;
-
-/**
+use FOF30\Encrypt\Totp;/**
  * Retrieves the values for transparent authentication from the request
  */
 class TransparentAuthentication

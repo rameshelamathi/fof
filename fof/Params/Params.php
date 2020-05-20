@@ -8,11 +8,7 @@
 namespace FOF30\Params;
 
 use FOF30\Container\Container;
-use FOF30\Utils\CacheCleaner;
-
-defined('_JEXEC') or die;
-
-/**
+use FOF30\Utils\CacheCleaner;/**
  * A helper class to quickly get the component parameters
  */
 class Params

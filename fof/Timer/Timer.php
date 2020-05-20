@@ -5,11 +5,7 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Timer;
-
-defined('_JEXEC') or die;
-
-/**
+namespace FOF30\Timer;/**
  * Timeout prevention timer
  */
 class Timer

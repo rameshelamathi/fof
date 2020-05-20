@@ -15,11 +15,7 @@ use Joomla\CMS\Form\Field\TagField;
 use Joomla\CMS\Form\FormHelper;
 use Joomla\CMS\Router\Route;
 use TagsHelperRoute;
-use const JPATH_SITE;
-
-defined('_JEXEC') or die;
-
-FormHelper::loadFieldClass('tag');
+use const JPATH_SITE;FormHelper::loadFieldClass('tag');
 
 /**
  * Form Field class for FOF

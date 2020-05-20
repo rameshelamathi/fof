@@ -21,11 +21,7 @@ use Joomla\Registry\Registry;
 use JString;
 use ReflectionClass;
 use SimpleXMLElement;
-use UnexpectedValueException;
-
-defined('_JEXEC') or die;
-
-/**
+use UnexpectedValueException;/**
  * Form is an extension to JForm which support not only edit views but also
  * browse (record list) and read (single record display) views based on XML
  * forms.

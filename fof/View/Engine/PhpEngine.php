@@ -5,11 +5,7 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\View\Engine;
-
-defined('_JEXEC') or die;
-
-/**
+namespace FOF30\View\Engine;/**
  * View engine for plain PHP template files (no translation).
  */
 class PhpEngine extends AbstractEngine implements EngineInterface

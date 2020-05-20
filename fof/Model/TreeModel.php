@@ -21,11 +21,7 @@ use FOF30\Model\DataModel\Exception\TreeUnsupportedMethod;
 use JDatabaseQuery;
 use Joomla\CMS\Application\ApplicationHelper;
 use RuntimeException;
-use UnexpectedValueException;
-
-defined('_JEXEC') or die;
-
-/**
+use UnexpectedValueException;/**
  * A DataModel which implements nested trees
  *
  * @property int    $lft  Left value (for nested set implementation)

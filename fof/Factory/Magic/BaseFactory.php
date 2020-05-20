@@ -7,11 +7,7 @@
 
 namespace FOF30\Factory\Magic;
 
-use FOF30\Container\Container;
-
-defined('_JEXEC') or die;
-
-abstract class BaseFactory
+use FOF30\Container\Container;abstract class BaseFactory
 {
 	/**
 	 * @var   Container|null  The container where this factory belongs to

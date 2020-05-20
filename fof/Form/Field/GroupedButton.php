@@ -12,11 +12,7 @@ use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use JFormFieldText;
 use Joomla\CMS\Form\FormHelper;
-use SimpleXMLElement;
-
-defined('_JEXEC') or die;
-
-FormHelper::loadFieldClass('text');
+use SimpleXMLElement;FormHelper::loadFieldClass('text');
 
 /**
  * Form Field class for FOF

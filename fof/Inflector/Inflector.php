@@ -5,11 +5,7 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Inflector;
-
-defined('_JEXEC') or die;
-
-/**
+namespace FOF30\Inflector;/**
  * An Inflector to pluralize and singularize English nouns.
  */
 class Inflector

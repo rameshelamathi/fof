@@ -17,11 +17,7 @@ use FOF30\View\Exception\CannotGetName;
 use FOF30\View\Exception\EmptyStack;
 use FOF30\View\Exception\ModelNotFound;
 use FOF30\View\Exception\UnrecognisedExtension;
-use Joomla\CMS\Language\Text;
-
-defined('_JEXEC') or die;
-
-/**
+use Joomla\CMS\Language\Text;/**
  * Class View
  *
  * A generic MVC view implementation

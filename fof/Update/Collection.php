@@ -10,11 +10,7 @@ namespace FOF30\Update;
 use FOF30\Container\Container;
 use FOF30\Download\Download;
 use Exception;
-use SimpleXMLElement;
-
-defined('_JEXEC') or die;
-
-class Collection
+use SimpleXMLElement;class Collection
 {
 	/**
 	 * Reads a "collection" XML update source and returns the complete tree of categories

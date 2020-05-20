@@ -8,11 +8,7 @@
 namespace FOF30\Model\DataModel;
 
 use FOF30\Container\Container;
-use FOF30\Model\DataModel;
-
-defined('_JEXEC') or die;
-
-abstract class Relation
+use FOF30\Model\DataModel;abstract class Relation
 {
 	/** @var   DataModel  The data model we are attached to */
 	protected $parentModel = null;

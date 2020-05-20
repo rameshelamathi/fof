@@ -5,11 +5,7 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Less\Formatter;
-
-defined('_JEXEC') or die;
-
-/**
+namespace FOF30\Less\Formatter;/**
  * This class is taken verbatim from:
  *
  * lessphp v0.3.9

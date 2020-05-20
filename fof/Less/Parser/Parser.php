@@ -8,11 +8,7 @@
 namespace FOF30\Less\Parser;
 
 use FOF30\Less\Less;
-use Exception;
-
-defined('_JEXEC') or die;
-
-/**
+use Exception;/**
  * This class is taken verbatim from:
  *
  * lessphp v0.3.9

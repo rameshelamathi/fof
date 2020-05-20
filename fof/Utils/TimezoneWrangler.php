@@ -12,11 +12,7 @@ use DateTimeZone;
 use Exception;
 use FOF30\Container\Container;
 use FOF30\Date\Date;
-use Joomla\CMS\User\User;
-
-defined('_JEXEC') or die;
-
-/**
+use Joomla\CMS\User\User;/**
  * A helper class to wrangle timezones, as used by Joomla!.
  *
  * @package  FOF30\Utils

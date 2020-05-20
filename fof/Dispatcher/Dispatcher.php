@@ -11,11 +11,7 @@ use Exception;
 use FOF30\Container\Container;
 use FOF30\Controller\Controller;
 use FOF30\Dispatcher\Exception\AccessForbidden;
-use FOF30\TransparentAuthentication\TransparentAuthentication;
-
-defined('_JEXEC') or die;
-
-/**
+use FOF30\TransparentAuthentication\TransparentAuthentication;/**
  * A generic MVC dispatcher
  *
  * @property-read  \FOF30\Input\Input  $input  The input object (magic __get returns the Input from the Container)

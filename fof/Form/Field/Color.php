@@ -11,14 +11,7 @@ use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use JFormFieldColor;
-use Joomla\CMS\Form\FormHelper;
-
-
-// no direct access
-defined('_JEXEC') or die('Restricted access');
-
-
-FormHelper::loadFieldClass('color');
+use Joomla\CMS\Form\FormHelper;FormHelper::loadFieldClass('color');
 
 /**
  * Form Field class for the FOF framework
@@ -142,6 +135,5 @@ class Color extends JFormFieldColor implements FieldInterface
 		// Return the joomla native control
 		return $this->getInput();
 	}
-
 
 }

@@ -10,11 +10,7 @@ namespace FOF30\Update;
 use FOF30\Container\Container;
 use FOF30\Download\Download;
 use Exception;
-use SimpleXMLElement;
-
-defined('_JEXEC') or die;
-
-/**
+use SimpleXMLElement;/**
  * A helper class to read and parse "extension" update XML files over the web
  */
 class Extension

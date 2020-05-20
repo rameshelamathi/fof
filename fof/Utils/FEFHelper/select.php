@@ -7,11 +7,7 @@
 
 use FOF30\Utils\ArrayHelper;
 use Joomla\CMS\HTML\HTMLHelper;
-use Joomla\CMS\Language\Text;
-
-defined('_JEXEC') or die;
-
-/**
+use Joomla\CMS\Language\Text;/**
  * Custom JHtml (HTMLHelper) class. Offers selects compatible with Akeeba Frontend Framework (FEF)
  *
  * Call these methods as JHtml::_('FEFHelper.select.methodName', $parameter1, $parameter2, ...)

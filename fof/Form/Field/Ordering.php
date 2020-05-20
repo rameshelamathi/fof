@@ -15,11 +15,7 @@ use FOF30\Model\DataModel;
 use JDatabaseQuery;
 use Joomla\CMS\Form\FormField;
 use Joomla\CMS\HTML\HTMLHelper;
-use LogicException;
-
-defined('_JEXEC') or die;
-
-/**
+use LogicException;/**
  * Form Field class for FOF
  * Renders the row ordering interface checkbox in browse views
  *

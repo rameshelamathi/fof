@@ -7,11 +7,7 @@
 
 namespace FOF30\Encrypt;
 
-use InvalidArgumentException;
-
-defined('_JEXEC') or die;
-
-/**
+use InvalidArgumentException;/**
  * Base32 encoding class, used by the TOTP
  */
 class Base32

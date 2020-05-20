@@ -7,11 +7,7 @@
 
 namespace FOF30\Configuration;
 
-use FOF30\Container\Container;
-
-defined('_JEXEC') or die;
-
-/**
+use FOF30\Container\Container;/**
  * Reads and parses the fof.xml file in the back-end of a FOF-powered component,
  * provisioning the data to the rest of the FOF framework
  *

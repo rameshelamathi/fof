@@ -11,11 +11,7 @@ use Exception;
 use FOF30\Less\Parser\Parser;
 use JLoader;
 use Joomla\CMS\Filesystem\File;
-use stdClass;
-
-defined('_JEXEC') or die;
-
-JLoader::import('joomla.filesystem.file');
+use stdClass;JLoader::import('joomla.filesystem.file');
 
 /**
  * This class is taken near verbatim (changes marked with **FOF** comment markers) from:

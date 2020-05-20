@@ -11,11 +11,7 @@ use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Utils\StringHelper;
 use Joomla\CMS\Form\FormHelper;
-use Joomla\CMS\Language\Text;
-
-defined('_JEXEC') or die;
-
-FormHelper::loadFieldClass('text');
+use Joomla\CMS\Language\Text;FormHelper::loadFieldClass('text');
 
 /**
  * Form Field class for the FOF framework

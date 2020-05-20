@@ -8,11 +8,7 @@
 namespace FOF30\Render;
 
 use AkeebaFEFHelper;
-use FOF30\Container\Container;
-
-defined('_JEXEC') or die;
-
-/**
+use FOF30\Container\Container;/**
  * Renderer class for use with Akeeba FEF
  *
  * Renderer options

@@ -16,11 +16,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
-use stdClass;
-
-defined('_JEXEC') or die;
-
-/**
+use stdClass;/**
  * A utility class to load view templates, media files and modules.
  *
  * @since    1.0

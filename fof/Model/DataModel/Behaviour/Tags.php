@@ -12,11 +12,7 @@ use FOF30\Event\Observable;
 use FOF30\Event\Observer;
 use FOF30\Model\DataModel;
 use Joomla\CMS\Helper\TagsHelper;
-use stdClass;
-
-defined('_JEXEC') or die;
-
-/**
+use stdClass;/**
  * FOF model behavior class to add Joomla! Tags support
  *
  * @since    2.1

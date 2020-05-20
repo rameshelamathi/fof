@@ -14,11 +14,7 @@ use JLoader;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Filesystem\Path;
-use UnexpectedValueException;
-
-defined('_JEXEC') or die;
-
-/**
+use UnexpectedValueException;/**
  * Abstraction for Joomla! filesystem API
  */
 class Filesystem extends BaseFilesystem

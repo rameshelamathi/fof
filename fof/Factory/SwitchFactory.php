@@ -19,11 +19,7 @@ use FOF30\Factory\Exception\ViewNotFound;
 use FOF30\Model\Model;
 use FOF30\Toolbar\Toolbar;
 use FOF30\TransparentAuthentication\TransparentAuthentication;
-use FOF30\View\View;
-
-defined('_JEXEC') or die;
-
-/**
+use FOF30\View\View;/**
  * MVC object factory. This implements the advanced functionality, i.e. creating MVC objects only if the classes exist
  * in any component section (front-end, back-end). For example, if you're in the front-end and a Model class doesn't
  * exist there but does exist in the back-end then the back-end class will be returned.

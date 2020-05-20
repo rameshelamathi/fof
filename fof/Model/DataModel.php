@@ -41,11 +41,7 @@ use Joomla\CMS\Table\Table;
 use Joomla\CMS\Table\TableInterface;
 use Joomla\CMS\UCM\UCMContent;
 use RuntimeException;
-use UnexpectedValueException;
-
-defined('_JEXEC') or die;
-
-/**
+use UnexpectedValueException;/**
  * Data-aware model, implementing a convenient ORM
  *
  * Type hinting -- start

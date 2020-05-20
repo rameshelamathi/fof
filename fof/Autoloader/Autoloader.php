@@ -7,7 +7,6 @@
 
 namespace FOF30\Autoloader;
 
-// Do not put the JEXEC or die check on this file (necessary omission for testing)
 use InvalidArgumentException;
 
 /**

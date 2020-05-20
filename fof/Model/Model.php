@@ -12,11 +12,7 @@ use FOF30\Input\Input;
 use FOF30\Model\Exception\CannotGetName;
 use Joomla\CMS\Filter\InputFilter;
 use RuntimeException;
-use stdClass;
-
-defined('_JEXEC') or die;
-
-/**
+use stdClass;/**
  * Class Model
  *
  * A generic MVC model implementation

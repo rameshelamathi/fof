@@ -12,11 +12,7 @@ use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use Joomla\CMS\Form\Field\MediaField;
 use Joomla\CMS\Form\FormHelper;
-use Joomla\CMS\HTML\HTMLHelper;
-
-defined('_JEXEC') or die;
-
-FormHelper::loadFieldClass('media');
+use Joomla\CMS\HTML\HTMLHelper;FormHelper::loadFieldClass('media');
 
 /**
  * Form Field class for the FOF framework

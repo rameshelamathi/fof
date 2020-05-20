@@ -11,11 +11,7 @@ use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use JFormFieldNumber;
-use Joomla\CMS\Form\FormHelper;
-
-defined('_JEXEC') or die;
-
-FormHelper::loadFieldClass('number');
+use Joomla\CMS\Form\FormHelper;FormHelper::loadFieldClass('number');
 
 /**
  * Form Field class for the FOF framework

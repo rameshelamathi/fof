@@ -10,11 +10,7 @@ namespace FOF30\Encrypt;
 use FOF30\Encrypt\AesAdapter\AdapterInterface;
 use FOF30\Encrypt\AesAdapter\Mcrypt;
 use FOF30\Encrypt\AesAdapter\OpenSSL;
-use FOF30\Utils\Phpfunc;
-
-defined('_JEXEC') or die;
-
-/**
+use FOF30\Utils\Phpfunc;/**
  * A simple abstraction to AES encryption
  *
  * Usage:

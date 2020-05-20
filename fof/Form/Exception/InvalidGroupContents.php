@@ -9,11 +9,7 @@ namespace FOF30\Form\Exception;
 
 use Exception;
 use InvalidArgumentException;
-use Joomla\CMS\Language\Text;
-
-defined('_JEXEC') or die;
-
-/**
+use Joomla\CMS\Language\Text;/**
  * Class InvalidGroupContents
  * @package    FOF30\Form\Exception
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4

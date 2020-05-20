@@ -7,11 +7,7 @@
 
 namespace FOF30\View\Engine;
 
-use FOF30\View\View;
-
-defined('_JEXEC') or die;
-
-interface EngineInterface
+use FOF30\View\View;interface EngineInterface
 {
 	/**
 	 * Public constructor

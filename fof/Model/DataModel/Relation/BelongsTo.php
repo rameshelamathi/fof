@@ -7,11 +7,7 @@
 
 namespace FOF30\Model\DataModel\Relation;
 
-use FOF30\Model\DataModel;
-
-defined('_JEXEC') or die;
-
-/**
+use FOF30\Model\DataModel;/**
  * BelongsTo (reverse 1-to-1 or 1-to-many) relation: this model is a child which belongs to the foreign table
  *
  * For example, parentModel is Articles and foreignModel is Users. Each article belongs to one user. One user can have

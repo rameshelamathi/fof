@@ -5,11 +5,7 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Form\Header;
-
-defined('_JEXEC') or die;
-
-/**
+namespace FOF30\Form\Header;/**
  * Row selection checkbox. Alias to RowSelect (common typo)
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4

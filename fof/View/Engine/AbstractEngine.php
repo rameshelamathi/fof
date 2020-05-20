@@ -7,11 +7,7 @@
 
 namespace FOF30\View\Engine;
 
-use FOF30\View\View;
-
-defined('_JEXEC') or die;
-
-abstract class AbstractEngine implements EngineInterface
+use FOF30\View\View;abstract class AbstractEngine implements EngineInterface
 {
 	/** @var   View  The view we belong to */
 	protected $view = null;

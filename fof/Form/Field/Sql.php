@@ -11,11 +11,7 @@ use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use JFormFieldSql;
-use Joomla\CMS\Form\FormHelper;
-
-defined('_JEXEC') or die;
-
-FormHelper::loadFieldClass('sql');
+use Joomla\CMS\Form\FormHelper;FormHelper::loadFieldClass('sql');
 
 /**
  * Form Field class for FOF

@@ -9,11 +9,7 @@ namespace FOF30\Download\Adapter;
 
 use FOF30\Download\DownloadInterface;
 use FOF30\Download\Exception\DownloadError;
-use Joomla\CMS\Language\Text;
-
-defined('_JEXEC') or die;
-
-/**
+use Joomla\CMS\Language\Text;/**
  * A download adapter using URL fopen() wrappers
  */
 class Fopen extends AbstractAdapter implements DownloadInterface

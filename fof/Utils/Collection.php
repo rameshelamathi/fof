@@ -13,11 +13,7 @@ use CachingIterator;
 use Closure;
 use Countable;
 use IteratorAggregate;
-use JsonSerializable;
-
-defined('_JEXEC') or die;
-
-class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
+use JsonSerializable;class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
 {
 	/**
 	 * The items contained in the collection.

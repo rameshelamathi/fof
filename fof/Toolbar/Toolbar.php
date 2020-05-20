@@ -21,11 +21,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\Utilities\ArrayHelper;
 use JToolbarHelper;
-use stdClass;
-
-defined('_JEXEC') or die;
-
-/**
+use stdClass;/**
  * The Toolbar class renders the back-end component title area and the back-
  * and front-end toolbars.
  *

@@ -9,11 +9,7 @@ namespace FOF30\Encrypt\AesAdapter;
 
 // Protect from unauthorized access
 use FOF30\Encrypt\Randval;
-use FOF30\Utils\Phpfunc;
-
-defined('_JEXEC') or die();
-
-class Mcrypt extends AbstractAdapter implements AdapterInterface
+use FOF30\Utils\Phpfunc;class Mcrypt extends AbstractAdapter implements AdapterInterface
 {
 	protected $cipherType = MCRYPT_RIJNDAEL_128;
 

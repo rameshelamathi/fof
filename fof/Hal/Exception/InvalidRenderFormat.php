@@ -9,11 +9,7 @@ namespace FOF30\Hal\Exception;
 
 use Exception;
 use Joomla\CMS\Language\Text;
-use RuntimeException;
-
-defined('_JEXEC') or die;
-
-class InvalidRenderFormat extends RuntimeException
+use RuntimeException;class InvalidRenderFormat extends RuntimeException
 {
 	public function __construct($format, $code = 500, Exception $previous = null)
 	{

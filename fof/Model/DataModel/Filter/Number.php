@@ -5,11 +5,7 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Model\DataModel\Filter;
-
-defined('_JEXEC') or die;
-
-class Number extends AbstractFilter
+namespace FOF30\Model\DataModel\Filter;class Number extends AbstractFilter
 {
 	/**
 	 * The partial match is mapped to an exact match

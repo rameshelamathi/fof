@@ -8,11 +8,7 @@
 namespace FOF30\Factory\Magic;
 
 use FOF30\Factory\Exception\ViewNotFound;
-use FOF30\View\DataView\DataViewInterface;
-
-defined('_JEXEC') or die;
-
-/**
+use FOF30\View\DataView\DataViewInterface;/**
  * Creates a DataModel/TreeModel object instance based on the information provided by the fof.xml configuration file
  */
 class ViewFactory extends BaseFactory

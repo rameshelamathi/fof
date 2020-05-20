@@ -6,11 +6,7 @@
  */
 
 use Joomla\CMS\Editor\Editor;
-use Joomla\CMS\Factory;
-
-defined('_JEXEC') or die;
-
-/**
+use Joomla\CMS\Factory;/**
  * Custom JHtml (HTMLHelper) class. Offers edit (form) view controls compatible with Akeeba Frontend
  * Framework (FEF).
  *

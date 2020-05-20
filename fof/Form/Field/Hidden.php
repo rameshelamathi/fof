@@ -11,11 +11,7 @@ use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use JFormFieldHidden;
-use Joomla\CMS\Form\FormHelper;
-
-defined('_JEXEC') or die;
-
-FormHelper::loadFieldClass('hidden');
+use Joomla\CMS\Form\FormHelper;FormHelper::loadFieldClass('hidden');
 
 /**
  * Form Field class for the FOF framework

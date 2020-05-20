@@ -11,11 +11,7 @@ use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use JFormFieldCacheHandler;
-use Joomla\CMS\Form\FormHelper;
-
-defined('_JEXEC') or die;
-
-FormHelper::loadFieldClass('cachehandler');
+use Joomla\CMS\Form\FormHelper;FormHelper::loadFieldClass('cachehandler');
 
 /**
  * Form Field class for FOF

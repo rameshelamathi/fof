@@ -17,11 +17,7 @@ use JFormFieldCalendar;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\FormHelper;
 use Joomla\CMS\HTML\HTMLHelper;
-use SimpleXMLElement;
-
-defined('_JEXEC') or die;
-
-FormHelper::loadFieldClass('calendar');
+use SimpleXMLElement;FormHelper::loadFieldClass('calendar');
 
 /**
  * Form Field class for the FOF framework

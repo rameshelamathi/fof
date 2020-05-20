@@ -18,11 +18,7 @@ use Joomla\CMS\Form\FormHelper;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\Utilities\ArrayHelper;
 use SimpleXMLElement;
-use stdClass;
-
-defined('_JEXEC') or die;
-
-FormHelper::loadFieldClass('list');
+use stdClass;FormHelper::loadFieldClass('list');
 
 /**
  * Form Field class for FOF

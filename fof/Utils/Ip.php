@@ -5,11 +5,7 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Utils;
-
-defined('_JEXEC') or die;
-
-/**
+namespace FOF30\Utils;/**
  * IP address helper
  *
  * Makes sure that we get the real IP of the user

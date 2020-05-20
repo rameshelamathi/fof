@@ -5,11 +5,7 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Encrypt;
-
-defined('_JEXEC') or die;
-
-class Totp
+namespace FOF30\Encrypt;class Totp
 {
 	/**
 	 * @var int The length of the resulting passcode (default: 6 digits)

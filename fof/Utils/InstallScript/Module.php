@@ -12,11 +12,7 @@ use FOF30\Database\Installer;
 use JLoader;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Installer\Adapter\ComponentAdapter;
-use Joomla\CMS\Log\Log;
-
-defined('_JEXEC') or die;
-
-JLoader::import('joomla.filesystem.folder');
+use Joomla\CMS\Log\Log;JLoader::import('joomla.filesystem.folder');
 JLoader::import('joomla.filesystem.file');
 JLoader::import('joomla.installer.installer');
 JLoader::import('joomla.utilities.date');

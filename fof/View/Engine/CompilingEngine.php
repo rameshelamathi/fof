@@ -11,11 +11,7 @@ use FOF30\Utils\Buffer;
 use FOF30\View\Compiler\CompilerInterface;
 use FOF30\View\Exception\PossiblySuhosin;
 use JLoader;
-use Joomla\CMS\Filesystem\File;
-
-defined('_JEXEC') or die;
-
-/**
+use Joomla\CMS\Filesystem\File;/**
  * View engine for compiling PHP template files.
  */
 abstract class CompilingEngine extends AbstractEngine implements EngineInterface
