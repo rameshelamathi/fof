@@ -79,7 +79,7 @@ class Curl extends AbstractAdapter implements DownloadInterface
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 		curl_setopt($ch, CURLOPT_SSLVERSION, 0);
-		curl_setopt($ch, CURLOPT_CAINFO, __DIR__ . '/cacert.pem');
+		curl_setopt($ch, CURLOPT_CAINFO, JPATH_LIBRARIES . '/src/Http/Transport/cacert.pem');
 		curl_setopt($ch, CURLOPT_HEADERFUNCTION, [$this, 'reponseHeaderCallback']);
 
 		if (!(empty($from) && empty($to)))
@@ -192,7 +192,7 @@ class Curl extends AbstractAdapter implements DownloadInterface
 		curl_setopt($ch, CURLOPT_HEADER, true);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		@curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-		curl_setopt($ch, CURLOPT_CAINFO, __DIR__ . '/cacert.pem');
+		curl_setopt($ch, CURLOPT_CAINFO, JPATH_LIBRARIES . '/src/Http/Transport/cacert.pem');
 
 		$data = curl_exec($ch);
 		curl_close($ch);
