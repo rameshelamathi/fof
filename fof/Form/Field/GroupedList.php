@@ -11,10 +11,12 @@ use FOF30\Form\Exception\InvalidGroupContents;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
+use JFormFieldGroupedList;
+use Joomla\CMS\Form\FormHelper;
 
 defined('_JEXEC') or die;
 
-\JFormHelper::loadFieldClass('groupedlist');
+FormHelper::loadFieldClass('groupedlist');
 
 /**
  * Form Field class for FOF
@@ -22,18 +24,28 @@ defined('_JEXEC') or die;
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
-class GroupedList extends \JFormFieldGroupedList implements FieldInterface
+class GroupedList extends JFormFieldGroupedList implements FieldInterface
 {
+	/**
+	 * A monotonically increasing number, denoting the row number in a repeatable view
+	 *
+	 * @var  int
+	 */
+	public $rowid;
+	/**
+	 * The item being rendered in a repeatable form field
+	 *
+	 * @var  DataModel
+	 */
+	public $item;
 	/**
 	 * @var  string  Static field output
 	 */
 	protected $static;
-
 	/**
 	 * @var  string  Repeatable field output
 	 */
 	protected $repeatable;
-
 	/**
 	 * The Form object of the form attached to the form field.
 	 *
@@ -42,18 +54,62 @@ class GroupedList extends \JFormFieldGroupedList implements FieldInterface
 	protected $form;
 
 	/**
-	 * A monotonically increasing number, denoting the row number in a repeatable view
+	 * Gets the active option's label given an array of JHtml options
 	 *
-	 * @var  int
+	 * @param   array   $data      The JHtml options to parse
+	 * @param   mixed   $selected  The currently selected value
+	 * @param   string  $groupKey  Group name
+	 * @param   string  $optKey    Key name
+	 * @param   string  $optText   Value name
+	 *
+	 * @return  mixed   The label of the currently selected option
 	 */
-	public $rowid;
+	public static function getOptionName($data, $selected = null, $groupKey = 'items', $optKey = 'value', $optText = 'text')
+	{
+		if ($groupKey)
+		{
+		} // Keeps phpStorm from freaking out
 
-	/**
-	 * The item being rendered in a repeatable form field
-	 *
-	 * @var  DataModel
-	 */
-	public $item;
+		$ret = null;
+
+		foreach ($data as $dataKey => $group)
+		{
+			$noGroup = true;
+
+			if (is_array($group) || is_object($group))
+			{
+				$label = $dataKey;
+
+				// If the key is a string, most likely is the title of group
+				if (is_string($dataKey))
+				{
+					$noGroup = false;
+				}
+			}
+			else
+			{
+				throw new InvalidGroupContents(get_called_class());
+			}
+
+			if ($noGroup)
+			{
+				$label = '';
+			}
+
+			$match = GenericList::getOptionName($group, $selected, $optKey, $optText, false);
+
+			if (!is_null($match))
+			{
+				$ret = [
+					'group' => $label,
+					'item'  => $match,
+				];
+				break;
+			}
+		}
+
+		return $ret;
+	}
 
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
@@ -95,9 +151,9 @@ class GroupedList extends \JFormFieldGroupedList implements FieldInterface
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
-	 * @return  string  The field HTML
 	 */
 	public function getStatic()
 	{
@@ -106,9 +162,9 @@ class GroupedList extends \JFormFieldGroupedList implements FieldInterface
 			return $this->getInput();
 		}
 
-		$options = array(
-			'id' => $this->id
-		);
+		$options = [
+			'id' => $this->id,
+		];
 
 		return $this->getFieldContents($options);
 	}
@@ -117,9 +173,9 @@ class GroupedList extends \JFormFieldGroupedList implements FieldInterface
 	 * Get the rendering of this field type for a repeatable (grid) display,
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
-	 * @return  string  The field HTML
 	 */
 	public function getRepeatable()
 	{
@@ -128,9 +184,9 @@ class GroupedList extends \JFormFieldGroupedList implements FieldInterface
 			return $this->getInput();
 		}
 
-		$options = array(
-			'class' => $this->id
-		);
+		$options = [
+			'class' => $this->id,
+		];
 
 		return $this->getFieldContents($options);
 	}
@@ -138,11 +194,11 @@ class GroupedList extends \JFormFieldGroupedList implements FieldInterface
 	/**
 	 * Method to get the field input markup.
 	 *
-	 * @param   array   $fieldOptions  Options to be passed into the field
+	 * @param   array  $fieldOptions  Options to be passed into the field
 	 *
 	 * @return  string  The field HTML
 	 */
-	public function getFieldContents(array $fieldOptions = array())
+	public function getFieldContents(array $fieldOptions = [])
 	{
 		$id    = isset($fieldOptions['id']) ? $fieldOptions['id'] : null;
 		$class = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
@@ -151,10 +207,10 @@ class GroupedList extends \JFormFieldGroupedList implements FieldInterface
 
 		if (is_null($selected))
 		{
-			$selected = array(
-				'group'	 => '',
-				'item'	 => ''
-			);
+			$selected = [
+				'group' => '',
+				'item'  => '',
+			];
 		}
 
 		return '<span ' . ($id ? 'id="' . $id . '-group" ' : '') . 'class="fof-groupedlist-group' . $class . '">' .
@@ -163,61 +219,5 @@ class GroupedList extends \JFormFieldGroupedList implements FieldInterface
 			'<span ' . ($id ? 'id="' . $id . '-item" ' : '') . 'class="fof-groupedlist-item' . $class . '">' .
 			htmlspecialchars($selected['item'], ENT_COMPAT, 'UTF-8') .
 			'</span>';
-	}
-
-	/**
-	 * Gets the active option's label given an array of JHtml options
-	 *
-	 * @param   array   $data      The JHtml options to parse
-	 * @param   mixed   $selected  The currently selected value
-	 * @param   string  $groupKey  Group name
-	 * @param   string  $optKey    Key name
-	 * @param   string  $optText   Value name
-	 *
-	 * @return  mixed   The label of the currently selected option
-	 */
-	public static function getOptionName($data, $selected = null, $groupKey = 'items', $optKey = 'value', $optText = 'text')
-	{
-		if ($groupKey) {}; // Keeps phpStorm from freaking out
-
-		$ret     = null;
-
-		foreach ($data as $dataKey => $group)
-		{
-            $noGroup = true;
-
-            if (is_array($group) || is_object($group))
-			{
-				$label = $dataKey;
-
-                // If the key is a string, most likely is the title of group
-                if(is_string($dataKey))
-                {
-                    $noGroup = false;
-                }
-			}
-			else
-			{
-				throw new InvalidGroupContents(get_called_class());
-			}
-
-			if ($noGroup)
-			{
-				$label = '';
-			}
-
-			$match = GenericList::getOptionName($group, $selected, $optKey, $optText, false);
-
-			if (!is_null($match))
-			{
-				$ret = array(
-					'group'	 => $label,
-					'item'	 => $match
-				);
-				break;
-			}
-		}
-
-		return $ret;
 	}
 }

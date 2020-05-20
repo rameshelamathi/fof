@@ -7,8 +7,8 @@
 
 namespace FOF30\Form\Header;
 
-use JHtml;
-use JText;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
 
 defined('_JEXEC') or die;
 
@@ -36,13 +36,13 @@ class Ordering extends Field
 		}
 		else
 		{
-			$dnd = in_array(strtolower($dnd), array('1', 'true', 'yes', 'on', 'enabled'), true);
+			$dnd = in_array(strtolower($dnd), ['1', 'true', 'yes', 'on', 'enabled'], true);
 		}
 
 		if (!$sortable)
 		{
 			// Non sortable?! I'm not sure why you'd want that, but if you insist...
-			return JText::_('JGRID_HEADING_ORDERING');
+			return Text::_('JGRID_HEADING_ORDERING');
 		}
 
 		$iconClass = isset($this->element['iconClass']) ? (string) $this->element['iconClass'] : 'icon-menu-2';
@@ -52,7 +52,7 @@ class Ordering extends Field
 		$model = $this->form->getModel();
 
 		// Drag'n'drop ordering support WITH a save order button
-		$html = JHtml::_(
+		$html = HTMLHelper::_(
 			'grid.sort',
 			'<i class="' . $iconClass . '"></i>',
 			'ordering',
@@ -79,7 +79,7 @@ class Ordering extends Field
 		if ($ordering && (!$joomla35IsBroken || !$dnd))
 		{
 			$html .= '<a href="javascript:saveorder(' . (count($model->get()) - 1) . ', \'saveorder\')" ' .
-				'rel="tooltip" class="save-order ' . $class . '" title="' . JText::_('JLIB_HTML_SAVE_ORDER') . '">'
+				'rel="tooltip" class="save-order ' . $class . '" title="' . Text::_('JLIB_HTML_SAVE_ORDER') . '">'
 				. '<span class="icon-ok"></span></a>';
 		}
 

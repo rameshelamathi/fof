@@ -9,6 +9,7 @@ namespace FOF30\Form\Header;
 
 use FOF30\Form\Form;
 use FOF30\Form\HeaderInterface;
+use Joomla\CMS\Language\Text;
 use SimpleXMLElement;
 
 defined('_JEXEC') or die;
@@ -17,8 +18,8 @@ defined('_JEXEC') or die;
  * A base class for HeaderInterface fields, used to define the filters and the
  * elements of the header row in repeatable (browse) views
  *
- * @package  FrameworkOnFramework
- * @since    2.0
+ * @package    FrameworkOnFramework
+ * @since      2.0
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
@@ -293,10 +294,11 @@ abstract class HeaderBase
 	/**
 	 * Method to attach a Form object to the field.
 	 *
-	 * @param   SimpleXMLElement  $element  The SimpleXMLElement object representing the <field /> tag for the form field object.
-	 * @param   string            $group    The field name group control value. This acts as as an array container for the field.
-	 *                                      For example if the field has name="foo" and the group value is set to "bar" then the
-	 *                                      full field name would end up being "bar[foo]".
+	 * @param   SimpleXMLElement  $element  The SimpleXMLElement object representing the <field /> tag for the form
+	 *                                      field object.
+	 * @param   string            $group    The field name group control value. This acts as as an array container for
+	 *                                      the field. For example if the field has name="foo" and the group value is
+	 *                                      set to "bar" then the full field name would end up being "bar[foo]".
 	 *
 	 * @return  boolean  True on success.
 	 *
@@ -311,24 +313,24 @@ abstract class HeaderBase
 		}
 
 		// Reset the internal fields
-		$this->label = null;
-		$this->header = null;
-		$this->filter = null;
-		$this->buttons = null;
-		$this->options = null;
-		$this->value = null;
-		$this->filterSource = null;
+		$this->label           = null;
+		$this->header          = null;
+		$this->filter          = null;
+		$this->buttons         = null;
+		$this->options         = null;
+		$this->value           = null;
+		$this->filterSource    = null;
 		$this->filterFieldName = null;
 
 		// Set the XML element object.
 		$this->element = $element;
 
 		// Get some important attributes from the form field element.
-		$id = (string) $element['id'];
-		$name = (string) $element['name'];
-		$filterSource = (string) $element['filter_source'];
+		$id              = (string) $element['id'];
+		$name            = (string) $element['name'];
+		$filterSource    = (string) $element['filter_source'];
 		$filterFieldName = (string) $element['searchfieldname'];
-		$tdwidth = (string) $element['tdwidth'];
+		$tdwidth         = (string) $element['tdwidth'];
 
 		// Set the field description text.
 		$this->description = (string) $element['description'];
@@ -340,18 +342,18 @@ abstract class HeaderBase
 		$this->tdwidth = $tdwidth;
 
 		// Set the field name and id.
-		$this->fieldname = $this->getFieldName($name);
-		$this->name = $this->getName($this->fieldname);
-		$this->id = $this->getId($id, $this->fieldname);
-		$this->filterSource = $this->getFilterSource($filterSource);
+		$this->fieldname       = $this->getFieldName($name);
+		$this->name            = $this->getName($this->fieldname);
+		$this->id              = $this->getId($id, $this->fieldname);
+		$this->filterSource    = $this->getFilterSource($filterSource);
 		$this->filterFieldName = $this->getFilterFieldName($filterFieldName);
 
 		// Set the field default value.
 		$this->value = $this->getValue();
 
 		// Setup the onlyFilter property
-		$onlyFilter = $this->element['onlyFilter'] ? (string) $this->element['onlyFilter'] : false;
-		$this->onlyFilter = in_array($onlyFilter, array('yes', 'on', '1', 'true'));
+		$onlyFilter       = $this->element['onlyFilter'] ? (string) $this->element['onlyFilter'] : false;
+		$this->onlyFilter = in_array($onlyFilter, ['yes', 'on', '1', 'true']);
 
 		return true;
 	}
@@ -483,15 +485,15 @@ abstract class HeaderBase
 
 		if (empty($title))
 		{
-			$viewObject = $this->form->getView();
-			$viewName = $viewObject->getName();
+			$viewObject    = $this->form->getView();
+			$viewName      = $viewObject->getName();
 			$componentName = $viewObject->getContainer()->componentName;
 
-			$title = $componentName . '_' .
+			$title  = $componentName . '_' .
 				$this->form->getModel()->getContainer()->inflector->pluralize($viewName) . '_FIELD_' .
 				(string) $this->element['name'];
-			$title = strtoupper($title);
-			$result = \JText::_($title);
+			$title  = strtoupper($title);
+			$result = Text::_($title);
 
 			if ($result === $title)
 			{
@@ -625,6 +627,6 @@ abstract class HeaderBase
 	 */
 	protected function getOptions()
 	{
-		return array();
+		return [];
 	}
 }

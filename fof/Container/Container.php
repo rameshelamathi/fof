@@ -7,10 +7,13 @@
 
 namespace FOF30\Container;
 
+defined('_JEXEC') or die;
+
 use FOF30\Autoloader\Autoloader;
 use FOF30\Encrypt\EncryptService;
 use FOF30\Factory\FactoryInterface;
 use FOF30\Inflector\Inflector;
+use FOF30\Input\Input as FOFInput;
 use FOF30\Params\Params;
 use FOF30\Platform\Joomla\Filesystem as JoomlaFilesystem;
 use FOF30\Render\RenderInterface;
@@ -19,9 +22,8 @@ use FOF30\TransparentAuthentication\TransparentAuthentication as TransparentAuth
 use FOF30\Utils\MediaVersion;
 use FOF30\View\Compiler\Blade;
 use Joomla\CMS\Factory;
-use JSession;
-
-defined('_JEXEC') or die;
+use Joomla\CMS\Input\Input as CMSInput;
+use Joomla\CMS\Session\Session;
 
 /**
  * Dependency injection container for FOF-powered components.
@@ -73,7 +75,7 @@ defined('_JEXEC') or die;
  * @property-read  \FOF30\Inflector\Inflector          $inflector          The English word inflector (pluralise /
  *                 singularise words etc)
  * @property-read  \FOF30\Params\Params                $params             The component's params
- * @property-read  \FOF30\Input\Input                  $input              The input object
+ * @property-read  FOFInput                            $input              The input object
  * @property-read  \FOF30\Platform\PlatformInterface   $platform           The platform abstraction layer object
  * @property-read  \FOF30\Render\RenderInterface       $renderer           The view renderer
  * @property-read  JSession                            $session            Joomla! session storage
@@ -419,8 +421,8 @@ class Container extends ContainerBase
 		// Input Access service
 		if (isset($this['input']) &&
 			(!(is_object($this['input'])) ||
-				!($this['input'] instanceof \FOF30\Input\Input) ||
-				!($this['input'] instanceof \JInput))
+				!($this['input'] instanceof FOFInput) ||
+				!($this['input'] instanceof CMSInput))
 		)
 		{
 			if (empty($this['input']))
@@ -433,7 +435,7 @@ class Container extends ContainerBase
 			unset($this['input']);
 
 			$this['input'] = function (Container $c) {
-				$input = new \FOF30\Input\Input($c['rawInputData']);
+				$input = new FOFInput($c['rawInputData']);
 				unset($c['rawInputData']);
 
 				return $input;
@@ -443,7 +445,7 @@ class Container extends ContainerBase
 		if (!isset($this['input']))
 		{
 			$this['input'] = function () {
-				return new \FOF30\Input\Input();
+				return new FOFInput();
 			};
 		}
 
@@ -453,7 +455,7 @@ class Container extends ContainerBase
 			$this['session'] = function (Container $c) {
 				if (version_compare(JVERSION, '3.999.999', 'le'))
 				{
-					return \JFactory::getSession();
+					return Factory::getSession();
 				}
 
 				return Factory::getApplication()->getSession();

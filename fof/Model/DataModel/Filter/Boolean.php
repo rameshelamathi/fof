@@ -22,4 +22,4 @@ class Boolean extends Number
 	{
 		return is_null($value) || ($value === '');
 	}
-} 
+}

@@ -10,11 +10,13 @@ namespace FOF30\Form\Field;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
-use JText;
+use JFormFieldUrl;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Form\FormHelper;
 
 defined('_JEXEC') or die;
 
-\JFormHelper::loadFieldClass('url');
+FormHelper::loadFieldClass('url');
 
 /**
  * Form Field class for the FOF framework
@@ -22,38 +24,34 @@ defined('_JEXEC') or die;
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
-class Url extends \JFormFieldUrl implements FieldInterface
+class Url extends JFormFieldUrl implements FieldInterface
 {
-	/**
-	 * @var  string  Static field output
-	 */
-	protected $static;
-
-	/**
-	 * @var  string  Repeatable field output
-	 */
-	protected $repeatable;
-
-	/**
-	 * The Form object of the form attached to the form field.
-	 *
-	 * @var    Form
-	 */
-	protected $form;
-
 	/**
 	 * A monotonically increasing number, denoting the row number in a repeatable view
 	 *
 	 * @var  int
 	 */
 	public $rowid;
-
 	/**
 	 * The item being rendered in a repeatable form field
 	 *
 	 * @var  DataModel
 	 */
 	public $item;
+	/**
+	 * @var  string  Static field output
+	 */
+	protected $static;
+	/**
+	 * @var  string  Repeatable field output
+	 */
+	protected $repeatable;
+	/**
+	 * The Form object of the form attached to the form field.
+	 *
+	 * @var    Form
+	 */
+	protected $form;
 
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
@@ -95,9 +93,9 @@ class Url extends \JFormFieldUrl implements FieldInterface
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
-	 * @return  string  The field HTML
 	 */
 	public function getStatic()
 	{
@@ -106,9 +104,9 @@ class Url extends \JFormFieldUrl implements FieldInterface
 			return $this->getInput();
 		}
 
-		$options = array(
-			'id' => $this->id
-		);
+		$options = [
+			'id' => $this->id,
+		];
 
 		return $this->getFieldContents($options);
 	}
@@ -117,9 +115,9 @@ class Url extends \JFormFieldUrl implements FieldInterface
 	 * Get the rendering of this field type for a repeatable (grid) display,
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
-	 * @return  string  The field HTML
 	 */
 	public function getRepeatable()
 	{
@@ -128,9 +126,9 @@ class Url extends \JFormFieldUrl implements FieldInterface
 			return $this->getInput();
 		}
 
-		$options = array(
-			'class' => $this->id
-		);
+		$options = [
+			'class' => $this->id,
+		];
 
 		return $this->getFieldContents($options);
 	}
@@ -138,11 +136,11 @@ class Url extends \JFormFieldUrl implements FieldInterface
 	/**
 	 * Method to get the field input markup.
 	 *
-	 * @param   array   $fieldOptions  Options to be passed into the field
+	 * @param   array  $fieldOptions  Options to be passed into the field
 	 *
 	 * @return  string  The field HTML
 	 */
-	public function getFieldContents(array $fieldOptions = array())
+	public function getFieldContents(array $fieldOptions = [])
 	{
 		$id    = isset($fieldOptions['id']) ? 'id="' . $fieldOptions['id'] . '" ' : '';
 		$class = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
@@ -153,7 +151,7 @@ class Url extends \JFormFieldUrl implements FieldInterface
 
 		if (!empty($empty_replacement) && empty($this->value))
 		{
-			$this->value = JText::_($empty_replacement);
+			$this->value = \Joomla\CMS\Language\Text::_($empty_replacement);
 		}
 
 		$value = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
@@ -187,41 +185,41 @@ class Url extends \JFormFieldUrl implements FieldInterface
 	 *
 	 * @return  string         Text with tags replace
 	 */
-    protected function parseFieldTags($text)
-    {
-        $ret = $text;
+	protected function parseFieldTags($text)
+	{
+		$ret = $text;
 
-        // Replace [ITEM:ID] in the URL with the item's key value (usually:
-        // the auto-incrementing numeric ID)
-        if (is_null($this->item))
-        {
-            $this->item = $this->form->getModel();
-        }
+		// Replace [ITEM:ID] in the URL with the item's key value (usually:
+		// the auto-incrementing numeric ID)
+		if (is_null($this->item))
+		{
+			$this->item = $this->form->getModel();
+		}
 
-        $replace  = $this->item->getId();
-        $ret = str_replace('[ITEM:ID]', $replace, $ret);
+		$replace = $this->item->getId();
+		$ret     = str_replace('[ITEM:ID]', $replace, $ret);
 
-        // Replace the [ITEMID] in the URL with the current Itemid parameter
-        $ret = str_replace('[ITEMID]', $this->form->getContainer()->input->getInt('Itemid', 0), $ret);
+		// Replace the [ITEMID] in the URL with the current Itemid parameter
+		$ret = str_replace('[ITEMID]', $this->form->getContainer()->input->getInt('Itemid', 0), $ret);
 
-        // Replace the [TOKEN] in the URL with the Joomla! form token
-        $ret = str_replace('[TOKEN]', \JFactory::getSession()->getFormToken(), $ret);
+		// Replace the [TOKEN] in the URL with the Joomla! form token
+		$ret = str_replace('[TOKEN]', Factory::getSession()->getFormToken(), $ret);
 
-        // Replace other field variables in the URL
-        $data = $this->item->getData();
+		// Replace other field variables in the URL
+		$data = $this->item->getData();
 
-        foreach ($data as $field => $value)
-        {
-            // Skip non-processable values
-            if(is_array($value) || is_object($value))
-            {
-                continue;
-            }
+		foreach ($data as $field => $value)
+		{
+			// Skip non-processable values
+			if (is_array($value) || is_object($value))
+			{
+				continue;
+			}
 
-            $search = '[ITEM:' . strtoupper($field) . ']';
-            $ret    = str_replace($search, $value, $ret);
-        }
+			$search = '[ITEM:' . strtoupper($field) . ']';
+			$ret    = str_replace($search, $value, $ret);
+		}
 
-        return $ret;
-    }
+		return $ret;
+	}
 }

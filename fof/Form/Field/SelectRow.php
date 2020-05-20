@@ -13,7 +13,9 @@ use FOF30\Form\Exception\GetStaticNotAllowed;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
-use JHtml;
+use Joomla\CMS\Form\FormField;
+use Joomla\CMS\HTML\HTMLHelper;
+use LogicException;
 
 defined('_JEXEC') or die;
 
@@ -23,38 +25,34 @@ defined('_JEXEC') or die;
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
-class SelectRow extends \JFormField implements FieldInterface
+class SelectRow extends FormField implements FieldInterface
 {
-	/**
-	 * @var  string  Static field output
-	 */
-	protected $static;
-
-	/**
-	 * @var  string  Repeatable field output
-	 */
-	protected $repeatable;
-
-	/**
-	 * The Form object of the form attached to the form field.
-	 *
-	 * @var    Form
-	 */
-	protected $form;
-
 	/**
 	 * A monotonically increasing number, denoting the row number in a repeatable view
 	 *
 	 * @var  int
 	 */
 	public $rowid;
-
 	/**
 	 * The item being rendered in a repeatable form field
 	 *
 	 * @var  DataModel
 	 */
 	public $item;
+	/**
+	 * @var  string  Static field output
+	 */
+	protected $static;
+	/**
+	 * @var  string  Repeatable field output
+	 */
+	protected $repeatable;
+	/**
+	 * The Form object of the form attached to the form field.
+	 *
+	 * @var    Form
+	 */
+	protected $form;
 
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
@@ -93,28 +91,14 @@ class SelectRow extends \JFormField implements FieldInterface
 	}
 
 	/**
-	 * Method to get the field input markup for this field type.
-	 *
-	 * @since 2.0
-	 *
-	 * @return  string  The field input markup.
-	 *
-	 * @throws  GetInputNotAllowed
-	 */
-	protected function getInput()
-	{
-		throw new GetInputNotAllowed(__CLASS__);
-	}
-
-	/**
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
 	 *
-	 * @since 2.0
-	 *
 	 * @return  string  The field HTML
 	 *
-	 * @throws  \LogicException
+	 * @throws  LogicException
+	 * @since 2.0
+	 *
 	 */
 	public function getStatic()
 	{
@@ -125,11 +109,11 @@ class SelectRow extends \JFormField implements FieldInterface
 	 * Get the rendering of this field type for a repeatable (grid) display,
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
-	 * @since 2.0
-	 *
 	 * @return  string  The field HTML
 	 *
 	 * @throws  DataModelRequired
+	 * @since 2.0
+	 *
 	 */
 	public function getRepeatable()
 	{
@@ -138,8 +122,8 @@ class SelectRow extends \JFormField implements FieldInterface
 
 		if (isset($this->element['checkout']))
 		{
-			$checkoutSupportValue = (string)$this->element['checkout'];
-			$checkoutSupport = in_array(strtolower($checkoutSupportValue), array('yes', 'true', 'on', 1));
+			$checkoutSupportValue = (string) $this->element['checkout'];
+			$checkoutSupport      = in_array(strtolower($checkoutSupportValue), ['yes', 'true', 'on', 1]);
 		}
 
 		if (!($this->item instanceof DataModel))
@@ -148,12 +132,12 @@ class SelectRow extends \JFormField implements FieldInterface
 		}
 
 		// Is this record checked out?
-		$userId = $this->form->getContainer()->platform->getUser()->get('id', 0);
+		$userId      = $this->form->getContainer()->platform->getUser()->get('id', 0);
 		$checked_out = false;
 
 		if ($checkoutSupport)
 		{
-			$checked_out     = $this->item->isLocked($userId);
+			$checked_out = $this->item->isLocked($userId);
 		}
 
 		// Get the key id for this record
@@ -161,6 +145,20 @@ class SelectRow extends \JFormField implements FieldInterface
 		$key_id    = $this->item->$key_field;
 
 		// Get the HTML
-		return JHtml::_('grid.id', $this->rowid, $key_id, $checked_out);
+		return HTMLHelper::_('grid.id', $this->rowid, $key_id, $checked_out);
+	}
+
+	/**
+	 * Method to get the field input markup for this field type.
+	 *
+	 * @return  string  The field input markup.
+	 *
+	 * @throws  GetInputNotAllowed
+	 * @since 2.0
+	 *
+	 */
+	protected function getInput()
+	{
+		throw new GetInputNotAllowed(__CLASS__);
 	}
 }

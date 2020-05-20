@@ -7,12 +7,12 @@
 
 namespace FOF30\Form\Field;
 
-use JHtml;
-use JText;
+use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\HTML\HTMLHelper;
 
 defined('_JEXEC') or die;
 
-\JFormHelper::loadFieldClass('imagelist');
+FormHelper::loadFieldClass('imagelist');
 
 /**
  * Form Field class for the FOF framework
@@ -25,11 +25,11 @@ class Images extends ImageList
 	/**
 	 * Method to get the field input markup.
 	 *
-	 * @param   array   $fieldOptions  Options to be passed into the field
+	 * @param   array  $fieldOptions  Options to be passed into the field
 	 *
 	 * @return  string  The field HTML
 	 */
-	public function getFieldContents(array $fieldOptions = array())
+	public function getFieldContents(array $fieldOptions = [])
 	{
 		$id    = isset($fieldOptions['id']) ? 'id="' . $fieldOptions['id'] . '" ' : '';
 		$class = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
@@ -39,12 +39,12 @@ class Images extends ImageList
 			$this->value = (array) $this->value;
 		}
 
-		$html = '<span ' . ($id ? $id : '') . 'class="'. $class . '">';
+		$html = '<span ' . ($id ? $id : '') . 'class="' . $class . '">';
 
 		foreach ($this->value as $image)
 		{
-			$imgattr = array();
-            $alt     = null;
+			$imgattr = [];
+			$alt     = null;
 
 			if ($class)
 			{
@@ -78,28 +78,28 @@ class Images extends ImageList
 
 			if ($this->element['alt'])
 			{
-				$alt = JText::_((string) $this->element['alt']);
+				$alt = \Joomla\CMS\Language\Text::_((string) $this->element['alt']);
 			}
 
 			if ($this->element['title'])
 			{
-				$imgattr['title'] = JText::_((string) $this->element['title']);
+				$imgattr['title'] = \Joomla\CMS\Language\Text::_((string) $this->element['title']);
 			}
 
 			$path = (string) $this->element['directory'];
 			$path = trim($path, '/' . DIRECTORY_SEPARATOR);
 
-            $platform = $this->form->getContainer()->platform;
-            $baseDirs = $platform->getPlatformBaseDirs();
+			$platform = $this->form->getContainer()->platform;
+			$baseDirs = $platform->getPlatformBaseDirs();
 
 			if ($image && file_exists($baseDirs['root'] . '/' . $path . '/' . $image))
 			{
-				$src   = $platform->URIroot() . '/' . $path . '/' . $image;
-                $html .= JHtml::image($src, $alt, $imgattr);
+				$src  = $platform->URIroot() . '/' . $path . '/' . $image;
+				$html .= HTMLHelper::image($src, $alt, $imgattr);
 			}
 			else
 			{
-                // JHtml::image returns weird stuff when an empty path is provided, so let's be safe than sorry and return empty
+				// JHtml::image returns weird stuff when an empty path is provided, so let's be safe than sorry and return empty
 				$html .= '';
 			}
 		}

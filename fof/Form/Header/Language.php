@@ -7,6 +7,8 @@
 
 namespace FOF30\Form\Header;
 
+use Joomla\CMS\Language\LanguageHelper;
+
 defined('_JEXEC') or die;
 
 /**
@@ -35,7 +37,7 @@ class Language extends Selectable
 
 		// Merge any additional options in the XML definition.
 		$options = array_merge(
-			parent::getOptions(), \JLanguageHelper::createLanguageList($this->value, constant('JPATH_' . strtoupper($client)), true, true)
+			parent::getOptions(), LanguageHelper::createLanguageList($this->value, constant('JPATH_' . strtoupper($client)), true, true)
 		);
 
 		return $options;

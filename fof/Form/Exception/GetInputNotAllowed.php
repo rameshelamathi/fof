@@ -8,6 +8,8 @@
 namespace FOF30\Form\Exception;
 
 use Exception;
+use Joomla\CMS\Language\Text;
+use LogicException;
 
 defined('_JEXEC') or die;
 
@@ -16,11 +18,11 @@ defined('_JEXEC') or die;
  * @package    FOF30\Form\Exception
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
-class GetInputNotAllowed extends \LogicException
+class GetInputNotAllowed extends LogicException
 {
 	public function __construct($className, $code = 0, Exception $previous = null)
 	{
-		$message = \JText::sprintf('LIB_FOF_FORM_ERR_GETINPUT_NOT_ALLOWED', $className);
+		$message = Text::sprintf('LIB_FOF_FORM_ERR_GETINPUT_NOT_ALLOWED', $className);
 
 		parent::__construct($message, $code, $previous);
 	}

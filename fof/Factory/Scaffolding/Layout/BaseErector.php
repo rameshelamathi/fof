@@ -8,12 +8,15 @@
 namespace FOF30\Factory\Scaffolding\Layout;
 
 use FOF30\Model\DataModel;
+use Joomla\CMS\Language\Text;
+use LogicException;
+use SimpleXMLElement;
 
 defined('_JEXEC') or die;
 
 /**
  * Class BaseErector
- * @package FOF30\Factory\Scaffolding\Layout
+ * @package    FOF30\Factory\Scaffolding\Layout
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
 class BaseErector implements ErectorInterface
@@ -21,14 +24,14 @@ class BaseErector implements ErectorInterface
 	/**
 	 * The Builder which called us
 	 *
-	 * @var \FOF30\Factory\Scaffolding\Layout\Builder
+	 * @var Builder
 	 */
 	protected $builder = null;
 
 	/**
 	 * The Model attached to the view we're building
 	 *
-	 * @var \FOF30\Model\DataModel
+	 * @var DataModel
 	 */
 	protected $model = null;
 
@@ -42,7 +45,7 @@ class BaseErector implements ErectorInterface
 	/**
 	 * The XML document we're constructing
 	 *
-	 * @var  \SimpleXMLElement
+	 * @var  SimpleXMLElement
 	 */
 	protected $xml;
 
@@ -58,79 +61,22 @@ class BaseErector implements ErectorInterface
 	 *
 	 * @var array
 	 */
-	private $strings = array();
+	private $strings = [];
 
 	/**
 	 * Construct the erector object
 	 *
-	 * @param   \FOF30\Factory\Scaffolding\Layout\Builder $parent   The parent builder
-	 * @param   \FOF30\Model\DataModel             $model    The model we're erecting a scaffold against
-	 * @param   string                             $viewName The view name for this model
+	 * @param   Builder    $parent    The parent builder
+	 * @param   DataModel  $model     The model we're erecting a scaffold against
+	 * @param   string     $viewName  The view name for this model
 	 */
 	public function __construct(Builder $parent, DataModel $model, $viewName)
 	{
-		$this->builder = $parent;
-		$this->model = $model;
+		$this->builder  = $parent;
+		$this->model    = $model;
 		$this->viewName = $viewName;
 
-		$this->xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><form></form>');
-	}
-
-	/**
-	 * Erects a scaffold. It then uses the parent's setXml and setStrings to assign the erected scaffold and the
-	 * additional language strings to the parent which will decide what to do with that.
-	 *
-	 * @return  void
-	 *
-	 * @throws  \LogicException  Because it's not implemented
-	 */
-	public function build()
-	{
-		throw new \LogicException('You need to implement build() in your Erector class');
-	}
-
-	/**
-	 * Returns the common language key prefix, something like "COM_EXAMPLE_MYVIEW_"
-	 *
-	 * @return string
-	 */
-	protected function getLangKeyPrefix()
-	{
-		if (empty($this->langKeyPrefix))
-		{
-			$prefix = $key = $this->builder->getContainer()->componentName . '_'
-				. $this->viewName . '_';
-			$this->langKeyPrefix = strtoupper($prefix);
-		}
-
-		return $this->langKeyPrefix;
-	}
-
-	/**
-	 * Returns the language definition for a field. The hashed array has two keys, label and desc, each one containing
-	 * the language definition for the label and description of the field. Each definition has the keys key and value
-	 * with the language key and actual language string.
-	 *
-	 * @param   string  $fieldName
-	 *
-	 * @return array
-	 */
-	protected function getFieldLabel($fieldName)
-	{
-		$fieldNameForKey = strtoupper($fieldName);
-
-		$definition = array(
-			'label' => array(
-				'key' => $this->getLangKeyPrefix() . $fieldNameForKey . '_LABEL',
-				'value' => ucfirst($fieldName),
-			),
-			'desc' => array(
-				'key' => $this->getLangKeyPrefix() . $fieldNameForKey . '_DESC',
-				'value' => 'Description for ' . ucfirst($fieldName),
-			)
-		);
-
-		return $definition;
+		$this->xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><form></form>');
 	}
 
 	/**
@@ -155,7 +101,7 @@ class BaseErector implements ErectorInterface
 
 		list($type, $parameters) = explode('(', $type);
 
-		$detectedType = null;
+		$detectedType       = null;
 		$detectedParameters = null;
 
 		$type = strtolower($type);
@@ -206,11 +152,13 @@ class BaseErector implements ErectorInterface
 				break;
 
 			case 'enum':
-				$detectedType = 'GenericList';
-				$parameters = trim($parameters, "\t\n\r\0\x0B )");
+				$detectedType       = 'GenericList';
+				$parameters         = trim($parameters, "\t\n\r\0\x0B )");
 				$detectedParameters = explode(',', $parameters);
-				$detectedParameters = array_map(function ($x) { return trim($x, "'\n\r\t\0\x0B"); }, $detectedParameters);
-				$temp = array();
+				$detectedParameters = array_map(function ($x) {
+					return trim($x, "'\n\r\t\0\x0B");
+				}, $detectedParameters);
+				$temp               = [];
 				foreach ($detectedParameters as $v)
 				{
 					$temp[$v] = $v;
@@ -222,7 +170,7 @@ class BaseErector implements ErectorInterface
 		// Sometimes we have character types followed by a space and some cruft. Let's handle them.
 		if (is_null($detectedType) && !empty($type))
 		{
-			list ($type, ) = explode(' ', $type);
+			list ($type,) = explode(' ', $type);
 
 			switch (trim($type))
 			{
@@ -266,7 +214,64 @@ class BaseErector implements ErectorInterface
 			$detectedType = 'Text';
 		}
 
-		return array('type' => $detectedType, 'params' => $detectedParameters);
+		return ['type' => $detectedType, 'params' => $detectedParameters];
+	}
+
+	/**
+	 * Erects a scaffold. It then uses the parent's setXml and setStrings to assign the erected scaffold and the
+	 * additional language strings to the parent which will decide what to do with that.
+	 *
+	 * @return  void
+	 *
+	 * @throws  LogicException  Because it's not implemented
+	 */
+	public function build()
+	{
+		throw new LogicException('You need to implement build() in your Erector class');
+	}
+
+	/**
+	 * Returns the common language key prefix, something like "COM_EXAMPLE_MYVIEW_"
+	 *
+	 * @return string
+	 */
+	protected function getLangKeyPrefix()
+	{
+		if (empty($this->langKeyPrefix))
+		{
+			$prefix              = $key = $this->builder->getContainer()->componentName . '_'
+				. $this->viewName . '_';
+			$this->langKeyPrefix = strtoupper($prefix);
+		}
+
+		return $this->langKeyPrefix;
+	}
+
+	/**
+	 * Returns the language definition for a field. The hashed array has two keys, label and desc, each one containing
+	 * the language definition for the label and description of the field. Each definition has the keys key and value
+	 * with the language key and actual language string.
+	 *
+	 * @param   string  $fieldName
+	 *
+	 * @return array
+	 */
+	protected function getFieldLabel($fieldName)
+	{
+		$fieldNameForKey = strtoupper($fieldName);
+
+		$definition = [
+			'label' => [
+				'key'   => $this->getLangKeyPrefix() . $fieldNameForKey . '_LABEL',
+				'value' => ucfirst($fieldName),
+			],
+			'desc'  => [
+				'key'   => $this->getLangKeyPrefix() . $fieldNameForKey . '_DESC',
+				'value' => 'Description for ' . ucfirst($fieldName),
+			],
+		];
+
+		return $definition;
 	}
 
 	/**
@@ -277,7 +282,7 @@ class BaseErector implements ErectorInterface
 	 */
 	protected function addString($key, $value)
 	{
-		if (\JText::_($key) != $key)
+		if (Text::_($key) != $key)
 		{
 			return;
 		}

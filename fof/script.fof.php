@@ -5,6 +5,17 @@
  * @license   GNU General Public License version 2, or later
  */
 
+use FOF30\Container\Container;
+use Joomla\CMS\Date\Date;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\Installer\Adapter\ComponentAdapter;
+use Joomla\CMS\Installer\Adapter\FileAdapter;
+use Joomla\CMS\Installer\Installer;
+use Joomla\CMS\Log\Log;
+use Joomla\CMS\Table\Table;
+
 defined('_JEXEC') or die();
 
 if (class_exists('file_fof30InstallerScript', false))
@@ -46,8 +57,8 @@ class file_fof30InstallerScript
 	 * Joomla! pre-flight event. This runs before Joomla! installs or updates the component. This is our last chance to
 	 * tell Joomla! if it should abort the installation.
 	 *
-	 * @param   string     $type   Installation type (install, update, discover_install)
-	 * @param   JInstaller $parent Parent object
+	 * @param   string                           $type    Installation type (install, update, discover_install)
+	 * @param   Installer  $parent  Parent object
 	 *
 	 * @return  boolean  True to let the installation proceed, false to halt the installation
 	 */
@@ -73,7 +84,7 @@ class file_fof30InstallerScript
 			{
 				$msg = "<p>You need PHP $this->minimumPHPVersion or later to install this package but you are currently using PHP  $version</p>";
 
-				JLog::add($msg, JLog::WARNING, 'jerror');
+				Log::add($msg, Log::WARNING, 'jerror');
 
 				return false;
 			}
@@ -85,7 +96,7 @@ class file_fof30InstallerScript
 			$jVersion = JVERSION;
 			$msg      = "<p>You need Joomla! $this->minimumJoomlaVersion or later to install this package but you only have $jVersion installed.</p>";
 
-			JLog::add($msg, JLog::WARNING, 'jerror');
+			Log::add($msg, Log::WARNING, 'jerror');
 
 			return false;
 		}
@@ -96,7 +107,7 @@ class file_fof30InstallerScript
 			$jVersion = JVERSION;
 			$msg      = "<p>You need Joomla! $this->maximumJoomlaVersion or earlier to install this package but you have $jVersion installed</p>";
 
-			JLog::add($msg, JLog::WARNING, 'jerror');
+			Log::add($msg, Log::WARNING, 'jerror');
 
 			return false;
 		}
@@ -111,7 +122,7 @@ class file_fof30InstallerScript
 				$msg = "<p>Your site has a newer version of FOF 3 than the one bundled with this package. Please note that <strong>you can safely ignore the “Custom install routine failure” message</strong> below. It is not a real error; it is an expected message which is always printed by Joomla! in this case and which cannot be suppressed.</p>";
 			}
 
-			JLog::add($msg, JLog::WARNING, 'jerror');
+			Log::add($msg, Log::WARNING, 'jerror');
 
 			return false;
 		}
@@ -124,8 +135,8 @@ class file_fof30InstallerScript
 	 * or updating your component. This is the last chance you've got to perform any additional installations, clean-up,
 	 * database updates and similar housekeeping functions.
 	 *
-	 * @param   string                 $type    install, update or discover_update
-	 * @param   JInstallerAdapterFile  $parent  Parent object
+	 * @param   string                                     $type    install, update or discover_update
+	 * @param   FileAdapter  $parent  Parent object
 	 *
 	 * @throws  Exception
 	 */
@@ -144,9 +155,9 @@ class file_fof30InstallerScript
 		}
 
 		// Install or update database
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 
-		/** @var JInstaller $grandpa */
+		/** @var Installer $grandpa */
 		$grandpa   = $parent->getParent();
 		$src       = $grandpa->getPath('source');
 		$sqlSource = $src . '/fof/sql';
@@ -161,7 +172,7 @@ class file_fof30InstallerScript
 			$dbInstaller = new FOF30\Database\Installer($db, $sqlSource);
 			$dbInstaller->updateSchema();
 		}
-		catch (\Exception $e)
+		catch (Exception $e)
 		{
 			if (!$canFail)
 			{
@@ -173,7 +184,7 @@ class file_fof30InstallerScript
 		$dbInstaller->nukeCache();
 
 		// Clear the FOF cache
-		$fakeController = \FOF30\Container\Container::getInstance('com_FOOBAR');
+		$fakeController = Container::getInstance('com_FOOBAR');
 		$fakeController->platform->clearCache();
 
 		// Clear op-code caches
@@ -185,7 +196,7 @@ class file_fof30InstallerScript
 			JPATH_ROOT . '/administrator/manifests/libraries/lib_fof30.xml',
 		];
 
-		array_walk($files, function($file) {
+		array_walk($files, function ($file) {
 			if (!file_exists($file) || !is_file($file))
 			{
 				return;
@@ -193,7 +204,7 @@ class file_fof30InstallerScript
 
 			if (!@unlink($file))
 			{
-				JFile::delete($file);
+				File::delete($file);
 			}
 		});
 
@@ -214,7 +225,7 @@ class file_fof30InstallerScript
 	/**
 	 * Runs on uninstallation
 	 *
-	 * @param   JInstallerAdapterFile $parent The parent object
+	 * @param   FileAdapter  $parent  The parent object
 	 *
 	 * @throws  RuntimeException  If the uninstallation is not allowed
 	 */
@@ -227,7 +238,7 @@ class file_fof30InstallerScript
 		{
 			$msg = "<p>You have $dependencyCount extension(s) depending on this version of FOF. The package cannot be uninstalled unless these extensions are uninstalled first.</p>";
 
-			JLog::add($msg, JLog::WARNING, 'jerror');
+			Log::add($msg, Log::WARNING, 'jerror');
 
 			throw new RuntimeException($msg, 500);
 		}
@@ -237,13 +248,13 @@ class file_fof30InstallerScript
 	 * Is this package an update to the currently installed FOF? If not (we're a downgrade) we will return false
 	 * and prevent the installation from going on.
 	 *
-	 * @param   JInstallerAdapterFile $parent The parent object
+	 * @param   FileAdapter  $parent  The parent object
 	 *
 	 * @return  array  The installation status
 	 */
 	protected function amIAnUpdate($parent)
 	{
-		/** @var JInstaller $grandpa */
+		/** @var Installer $grandpa */
 		$grandpa = $parent->getParent();
 
 		$source = $grandpa->getPath('source');
@@ -251,38 +262,38 @@ class file_fof30InstallerScript
 		$target = JPATH_LIBRARIES . '/fof30';
 
 		// If FOF is not really installed (someone removed the directory instead of uninstalling?) I have to install it.
-		if (!JFolder::exists($target))
+		if (!Folder::exists($target))
 		{
 			return true;
 		}
 
-		$fofVersion = array();
+		$fofVersion = [];
 
-		if (JFile::exists($target . '/version.txt'))
+		if (File::exists($target . '/version.txt'))
 		{
 			$rawData                 = @file_get_contents($target . '/version.txt');
 			$rawData                 = ($rawData === false) ? "0.0.0\n2011-01-01\n" : $rawData;
 			$info                    = explode("\n", $rawData);
-			$fofVersion['installed'] = array(
+			$fofVersion['installed'] = [
 				'version' => trim($info[0]),
-				'date'    => new JDate(trim($info[1])),
-			);
+				'date'    => new Date(trim($info[1])),
+			];
 		}
 		else
 		{
-			$fofVersion['installed'] = array(
+			$fofVersion['installed'] = [
 				'version' => '0.0',
-				'date'    => new JDate('2011-01-01'),
-			);
+				'date'    => new Date('2011-01-01'),
+			];
 		}
 
 		$rawData               = @file_get_contents($source . '/fof/version.txt');
 		$rawData               = ($rawData === false) ? "0.0.0\n2011-01-01\n" : $rawData;
 		$info                  = explode("\n", $rawData);
-		$fofVersion['package'] = array(
+		$fofVersion['package'] = [
 			'version' => trim($info[0]),
-			'date'    => new JDate(trim($info[1])),
-		);
+			'date'    => new Date(trim($info[1])),
+		];
 
 		$haveToInstallFOF = $fofVersion['package']['date']->toUNIX() >= $fofVersion['installed']['date']->toUNIX();
 
@@ -309,13 +320,13 @@ class file_fof30InstallerScript
 	/**
 	 * Get the dependencies for a package from the #__akeeba_common table
 	 *
-	 * @param   string $package The package
+	 * @param   string  $package  The package
 	 *
 	 * @return  array  The dependencies
 	 */
 	protected function getDependencies($package)
 	{
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 
 		$query = $db->getQuery(true)
 			->select($db->qn('value'))
@@ -329,12 +340,12 @@ class file_fof30InstallerScript
 
 			if (empty($dependencies))
 			{
-				$dependencies = array();
+				$dependencies = [];
 			}
 		}
 		catch (Exception $e)
 		{
-			$dependencies = array();
+			$dependencies = [];
 		}
 
 		return $dependencies;
@@ -343,12 +354,12 @@ class file_fof30InstallerScript
 	/**
 	 * Sets the dependencies for a package into the #__akeeba_common table
 	 *
-	 * @param   string $package      The package
-	 * @param   array  $dependencies The dependencies list
+	 * @param   string  $package       The package
+	 * @param   array   $dependencies  The dependencies list
 	 */
 	protected function setDependencies($package, array $dependencies)
 	{
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 
 		$query = $db->getQuery(true)
 			->delete('#__akeeba_common')
@@ -363,10 +374,10 @@ class file_fof30InstallerScript
 			// Do nothing if the old key wasn't found
 		}
 
-		$object = (object) array(
+		$object = (object) [
 			'key'   => $package,
 			'value' => json_encode($dependencies),
-		);
+		];
 
 		try
 		{
@@ -381,8 +392,8 @@ class file_fof30InstallerScript
 	/**
 	 * Adds a package dependency to #__akeeba_common
 	 *
-	 * @param   string $package    The package
-	 * @param   string $dependency The dependency to add
+	 * @param   string  $package     The package
+	 * @param   string  $dependency  The dependency to add
 	 */
 	protected function addDependency($package, $dependency)
 	{
@@ -399,8 +410,8 @@ class file_fof30InstallerScript
 	/**
 	 * Removes a package dependency from #__akeeba_common
 	 *
-	 * @param   string $package    The package
-	 * @param   string $dependency The dependency to remove
+	 * @param   string  $package     The package
+	 * @param   string  $dependency  The dependency to remove
 	 */
 	protected function removeDependency($package, $dependency)
 	{
@@ -418,8 +429,8 @@ class file_fof30InstallerScript
 	/**
 	 * Do I have a dependency for a package in #__akeeba_common
 	 *
-	 * @param   string $package    The package
-	 * @param   string $dependency The dependency to check for
+	 * @param   string  $package     The package
+	 * @param   string  $dependency  The dependency to check for
 	 *
 	 * @return bool
 	 */
@@ -433,8 +444,8 @@ class file_fof30InstallerScript
 	/**
 	 * Recursively copy a bunch of files, but only if the source and target file have a different size.
 	 *
-	 * @param   string $source Path to copy FROM
-	 * @param   string $dest   Path to copy TO
+	 * @param   string  $source  Path to copy FROM
+	 * @param   string  $dest    Path to copy TO
 	 *
 	 * @return  void
 	 */
@@ -450,7 +461,7 @@ class file_fof30InstallerScript
 		{
 			if (!@mkdir($dest, 0755))
 			{
-				JFolder::create($dest, 0755);
+				Folder::create($dest, 0755);
 			}
 		}
 
@@ -514,7 +525,7 @@ class file_fof30InstallerScript
 
 			if (!@copy($sourcePath, $targetPath))
 			{
-				if (!JFile::copy($sourcePath, $targetPath))
+				if (!File::copy($sourcePath, $targetPath))
 				{
 					$this->log(__CLASS__ . ": Cannot copy $sourcePath to $targetPath");
 				}
@@ -525,9 +536,9 @@ class file_fof30InstallerScript
 	/**
 	 * Try to log a warning / error with Joomla
 	 *
-	 * @param   string $message  The message to write to the log
-	 * @param   bool   $error    Is this an error? If not, it's a warning. (default: false)
-	 * @param   string $category Log category, default jerror
+	 * @param   string  $message   The message to write to the log
+	 * @param   bool    $error     Is this an error? If not, it's a warning. (default: false)
+	 * @param   string  $category  Log category, default jerror
 	 *
 	 * @return  void
 	 */
@@ -539,11 +550,11 @@ class file_fof30InstallerScript
 			return;
 		}
 
-		$priority = $error ? JLog::ERROR : JLog::WARNING;
+		$priority = $error ? Log::ERROR : Log::WARNING;
 
 		try
 		{
-			JLog::add($message, $priority, $category);
+			Log::add($message, $priority, $category);
 		}
 		catch (Exception $e)
 		{
@@ -559,7 +570,7 @@ class file_fof30InstallerScript
 	 * added / modified files and folders you have. We are trying to work around it by retrying the copy operation
 	 * ourselves WITHOUT going through the manifest, based entirely on the conventions we follow.
 	 *
-	 * @param   \JInstallerAdapterComponent $parent
+	 * @param   ComponentAdapter  $parent
 	 */
 	protected function bugfixFilesNotCopiedOnUpdate($parent)
 	{
@@ -596,7 +607,7 @@ class file_fof30InstallerScript
 	 */
 	protected function getOldFOF3LibraryExtensionID()
 	{
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 
 		// If there are multiple #__extensions record, keep one of them
 		$query = $db->getQuery(true);
@@ -623,7 +634,7 @@ class file_fof30InstallerScript
 	 */
 	protected function removeUpdateSiteFor($id)
 	{
-		$db = JFactory::getDbo();
+		$db    = Factory::getDbo();
 		$query = $db->getQuery(true)
 			->select($db->qn('update_site_id'))
 			->from($db->qn('#__update_sites_extensions'))
@@ -673,10 +684,10 @@ class file_fof30InstallerScript
 	protected function removeExtension($id)
 	{
 		/** @var Joomla\CMS\Table\Extension $extension */
-		$extension = JTable::getInstance('Extension');
+		$extension = Table::getInstance('Extension');
 		$extension->load($id);
 
-		$keyName = $extension->getKeyName();
+		$keyName  = $extension->getKeyName();
 		$loadedID = $extension->get($keyName, 0);
 
 		if ($loadedID != $id)

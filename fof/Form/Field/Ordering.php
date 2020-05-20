@@ -12,8 +12,10 @@ use FOF30\Form\Exception\GetStaticNotAllowed;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
-use JHtml;
-use JText;
+use JDatabaseQuery;
+use Joomla\CMS\Form\FormField;
+use Joomla\CMS\HTML\HTMLHelper;
+use LogicException;
 
 defined('_JEXEC') or die;
 
@@ -23,38 +25,34 @@ defined('_JEXEC') or die;
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
-class Ordering extends \JFormField implements FieldInterface
+class Ordering extends FormField implements FieldInterface
 {
-	/**
-	 * @var  string  Static field output
-	 */
-	protected $static;
-
-	/**
-	 * @var  string  Repeatable field output
-	 */
-	protected $repeatable;
-
-	/**
-	 * The Form object of the form attached to the form field.
-	 *
-	 * @var    Form
-	 */
-	protected $form;
-
 	/**
 	 * A monotonically increasing number, denoting the row number in a repeatable view
 	 *
 	 * @var  int
 	 */
 	public $rowid;
-
 	/**
 	 * The item being rendered in a repeatable form field
 	 *
 	 * @var  DataModel
 	 */
 	public $item;
+	/**
+	 * @var  string  Static field output
+	 */
+	protected $static;
+	/**
+	 * @var  string  Repeatable field output
+	 */
+	protected $repeatable;
+	/**
+	 * The Form object of the form attached to the form field.
+	 *
+	 * @var    Form
+	 */
+	protected $form;
 
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
@@ -93,56 +91,14 @@ class Ordering extends \JFormField implements FieldInterface
 	}
 
 	/**
-	 * Method to get the field input markup for this field type.
-	 *
-	 * @since 2.0
-	 *
-	 * @return  string  The field input markup.
-	 */
-	protected function getInput()
-	{
-		$html = array();
-		$attr = '';
-
-		// Initialize some field attributes.
-		$attr .= !empty($this->class) ? ' class="' . $this->class . '"' : '';
-		$attr .= $this->disabled ? ' disabled' : '';
-		$attr .= !empty($this->size) ? ' size="' . $this->size . '"' : '';
-
-		// Initialize JavaScript field attributes.
-		$attr .= !empty($this->onchange) ? ' onchange="' . $this->onchange . '"' : '';
-
-		$this->item = $this->form->getModel();
-
-		$keyfield = $this->item->getKeyName();
-		$itemId   = $this->item->$keyfield;
-
-		$query = $this->getQuery();
-
-		// Create a read-only list (no name) with a hidden input to store the value.
-		if ($this->readonly)
-		{
-			$html[] = JHtml::_('list.ordering', '', $query, trim($attr), $this->value, $itemId ? 0 : 1);
-			$html[] = '<input type="hidden" name="' . $this->name . '" value="' . $this->value . '"/>';
-		}
-		else
-		{
-			// Create a regular list.
-			$html[] = JHtml::_('list.ordering', $this->name, $query, trim($attr), $this->value, $itemId ? 0 : 1);
-		}
-
-		return implode($html);
-	}
-
-	/**
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
 	 *
-	 * @since 2.0
-	 *
 	 * @return  string  The field HTML
 	 *
-	 * @throws  \LogicException
+	 * @throws  LogicException
+	 * @since 2.0
+	 *
 	 */
 	public function getStatic()
 	{
@@ -153,11 +109,11 @@ class Ordering extends \JFormField implements FieldInterface
 	 * Get the rendering of this field type for a repeatable (grid) display,
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
-	 * @since 2.0
-	 *
 	 * @return  string  The field HTML
 	 *
 	 * @throws  DataModelRequired
+	 * @since 2.0
+	 *
 	 */
 	public function getRepeatable()
 	{
@@ -168,7 +124,7 @@ class Ordering extends \JFormField implements FieldInterface
 
 		$class = isset($this->class) ? $this->class : 'input-mini';
 		$icon  = isset($this->element['icon']) ? $this->element['icon'] : 'icon-menu';
-		$dnd = isset($this->element['dragndrop']) ? (string) $this->element['dragndrop'] : 'notbroken';
+		$dnd   = isset($this->element['dragndrop']) ? (string) $this->element['dragndrop'] : 'notbroken';
 
 		if (strtolower($dnd) == 'notbroken')
 		{
@@ -176,7 +132,7 @@ class Ordering extends \JFormField implements FieldInterface
 		}
 		else
 		{
-			$dnd = in_array(strtolower($dnd), array('1', 'true', 'yes', 'on', 'enabled'), true);
+			$dnd = in_array(strtolower($dnd), ['1', 'true', 'yes', 'on', 'enabled'], true);
 		}
 
 		$html = '';
@@ -189,13 +145,13 @@ class Ordering extends \JFormField implements FieldInterface
 		{
 			// Ye olde Joomla! 2.5 method
 			$disabled = $ordering ? '' : 'disabled="disabled"';
-			$html .= '<span>';
-			$html .= $view->getPagination()->orderUpIcon($this->rowid, true, 'orderup', 'Move Up', $ordering);
-			$html .= '</span><span>';
-			$html .= $view->getPagination()->orderDownIcon($this->rowid, $view->getPagination()->total, true, 'orderdown', 'Move Down', $ordering);
-			$html .= '</span>';
-			$html .= '<input type="text" name="order[]" size="5" value="' . $this->value . '" ' . $disabled;
-			$html .= 'class="text-area-order" style="text-align: center" />';
+			$html     .= '<span>';
+			$html     .= $view->getPagination()->orderUpIcon($this->rowid, true, 'orderup', 'Move Up', $ordering);
+			$html     .= '</span><span>';
+			$html     .= $view->getPagination()->orderDownIcon($this->rowid, $view->getPagination()->total, true, 'orderdown', 'Move Down', $ordering);
+			$html     .= '</span>';
+			$html     .= '<input type="text" name="order[]" size="5" value="' . $this->value . '" ' . $disabled;
+			$html     .= 'class="text-area-order" style="text-align: center" />';
 		}
 		else
 		{
@@ -203,13 +159,13 @@ class Ordering extends \JFormField implements FieldInterface
 			if ($view->getPerms()->editstate)
 			{
 				$disableClassName = '';
-				$disabledLabel = '';
+				$disabledLabel    = '';
 
 				$hasAjaxOrderingSupport = $view->hasAjaxOrderingSupport();
 
 				if (!is_array($hasAjaxOrderingSupport) || !$hasAjaxOrderingSupport['saveOrder'])
 				{
-					$disabledLabel = JText::_('JORDERINGDISABLED');
+					$disabledLabel    = \Joomla\CMS\Language\Text::_('JORDERINGDISABLED');
 					$disableClassName = 'inactive tip-top';
 				}
 
@@ -235,7 +191,7 @@ class Ordering extends \JFormField implements FieldInterface
 					 * wasted 2 hours of his time to track down your mistake, fix it and explain why your actions
 					 * resulted in a b/c break. You have to be kidding me!
 					 */
-					$joomla35IsBroken = version_compare(JVERSION, '3.5.0', 'ge') ? 'style="display: none"': '';
+					$joomla35IsBroken = version_compare(JVERSION, '3.5.0', 'ge') ? 'style="display: none"' : '';
 
 					// When the developer has disabled Drag and Drop we will show the field regardless
 					$joomla35IsBroken = $dnd ? $joomla35IsBroken : '';
@@ -257,22 +213,64 @@ class Ordering extends \JFormField implements FieldInterface
 	}
 
 	/**
+	 * Method to get the field input markup for this field type.
+	 *
+	 * @return  string  The field input markup.
+	 * @since 2.0
+	 *
+	 */
+	protected function getInput()
+	{
+		$html = [];
+		$attr = '';
+
+		// Initialize some field attributes.
+		$attr .= !empty($this->class) ? ' class="' . $this->class . '"' : '';
+		$attr .= $this->disabled ? ' disabled' : '';
+		$attr .= !empty($this->size) ? ' size="' . $this->size . '"' : '';
+
+		// Initialize JavaScript field attributes.
+		$attr .= !empty($this->onchange) ? ' onchange="' . $this->onchange . '"' : '';
+
+		$this->item = $this->form->getModel();
+
+		$keyfield = $this->item->getKeyName();
+		$itemId   = $this->item->$keyfield;
+
+		$query = $this->getQuery();
+
+		// Create a read-only list (no name) with a hidden input to store the value.
+		if ($this->readonly)
+		{
+			$html[] = HTMLHelper::_('list.ordering', '', $query, trim($attr), $this->value, $itemId ? 0 : 1);
+			$html[] = '<input type="hidden" name="' . $this->name . '" value="' . $this->value . '"/>';
+		}
+		else
+		{
+			// Create a regular list.
+			$html[] = HTMLHelper::_('list.ordering', $this->name, $query, trim($attr), $this->value, $itemId ? 0 : 1);
+		}
+
+		return implode($html);
+	}
+
+	/**
 	 * Builds the query for the ordering list.
 	 *
+	 * @return JDatabaseQuery  The query for the ordering form field
 	 * @since 2.3.2
 	 *
-	 * @return \JDatabaseQuery  The query for the ordering form field
 	 */
 	protected function getQuery()
 	{
 		$ordering = $this->name;
 		$title    = $this->element['ordertitle'] ? (string) $this->element['ordertitle'] : $this->item->getFieldAlias('title');
 
-		$db = $this->form->getContainer()->platform->getDbo();
+		$db    = $this->form->getContainer()->platform->getDbo();
 		$query = $db->getQuery(true);
-		$query->select(array($db->quoteName($ordering, 'value'), $db->quoteName($title, 'text')))
-				->from($db->quoteName($this->item->getTableName()))
-				->order($ordering);
+		$query->select([$db->quoteName($ordering, 'value'), $db->quoteName($title, 'text')])
+			->from($db->quoteName($this->item->getTableName()))
+			->order($ordering);
 
 		return $query;
 	}

@@ -7,7 +7,12 @@
 
 namespace FOF30\Factory\Scaffolding\Layout;
 
+use DOMDocument;
 use FOF30\Container\Container;
+use JLoader;
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
+use ReflectionObject;
 use SimpleXMLElement;
 
 defined('_JEXEC') or die;
@@ -19,13 +24,13 @@ defined('_JEXEC') or die;
  * is not designed for production; it's designed to give you a way to quickly add some test data to your component
  * and get started really fast with FOF development.
  *
- * @package FOF30\Factory\Scaffolding
+ * @package    FOF30\Factory\Scaffolding
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
 class Builder
 {
-	/** @var  \FOF30\Container\Container  The container we belong to */
+	/** @var  Container  The container we belong to */
 	protected $container = null;
 
 	/** @var  bool  Should I save the scaffolding results? */
@@ -35,12 +40,12 @@ class Builder
 	protected $xml;
 
 	/** @var  array  Language string definitions we need to add to the component's language file */
-	protected $strings = array();
+	protected $strings = [];
 
 	/**
 	 * Create the scaffolding builder instance
 	 *
-	 * @param \FOF30\Container\Container $c
+	 * @param   Container  $c
 	 */
 	public function __construct(Container $c)
 	{
@@ -60,8 +65,8 @@ class Builder
 	public function make($requestedFilename, $viewName)
 	{
 		// Initialise
-		$this->xml = null;
-		$this->strings = array();
+		$this->xml     = null;
+		$this->strings = [];
 
 		// The requested filename should be in the format "form.SOMETHING.xml"
 		if (substr($requestedFilename, 0, 5) !== 'form.')
@@ -73,7 +78,7 @@ class Builder
 		$formType = substr($requestedFilename, 5);
 
 		// Make sure the requested form type is supported by this builder
-		if (!in_array($formType, array('default', 'form', 'item')))
+		if (!in_array($formType, ['default', 'form', 'item']))
 		{
 			return null;
 		}
@@ -136,6 +141,16 @@ class Builder
 	}
 
 	/**
+	 * Gets the container this builder belongs to
+	 *
+	 * @return Container
+	 */
+	public function getContainer()
+	{
+		return $this->container;
+	}
+
+	/**
 	 * Load the strings array in Joomla!'s JLanguage object
 	 */
 	protected function applyStrings()
@@ -148,7 +163,7 @@ class Builder
 
 		// Get a temporary filename
 		$baseDirs = $this->container->platform->getPlatformBaseDirs();
-		$tempDir = $baseDirs['tmp'];
+		$tempDir  = $baseDirs['tmp'];
 		$filename = tempnam($tempDir, 'fof');
 
 		if ($filename === false)
@@ -160,24 +175,14 @@ class Builder
 		$this->saveStrings($filename);
 
 		// Load the temporary file
-		$lang = $this->container->platform->getLanguage();
-		$langReflection = new \ReflectionObject($lang);
+		$lang               = $this->container->platform->getLanguage();
+		$langReflection     = new ReflectionObject($lang);
 		$loadLangReflection = $langReflection->getMethod('loadLanguage');
 		$loadLangReflection->setAccessible(true);
 		$loadLangReflection->invoke($lang, $filename, $this->container->componentName);
 
 		// Delete temporary filename
 		@unlink($filename);
-	}
-
-	/**
-	 * Gets the container this builder belongs to
-	 *
-	 * @return Container
-	 */
-	public function getContainer()
-	{
-		return $this->container;
 	}
 
 	/**
@@ -205,25 +210,25 @@ class Builder
 
 			if (!@$createdDirectory)
 			{
-				\JLoader::import('joomla.filesystem.folder');
-				\JFolder::create($directory, 0755);
+				JLoader::import('joomla.filesystem.folder');
+				Folder::create($directory, 0755);
 			}
 		}
 
 		$xml = $this->xml->asXML();
 
-		$domDocument = new \DOMDocument('1.0');
+		$domDocument = new DOMDocument('1.0');
 		$domDocument->loadXML($xml);
 		$domDocument->preserveWhiteSpace = false;
-		$domDocument->formatOutput = true;
-		$xml = $domDocument->saveXML();
+		$domDocument->formatOutput       = true;
+		$xml                             = $domDocument->saveXML();
 
 		$saveResult = @file_put_contents($targetFilename . '.xml', $xml);
 
 		if ($saveResult === false)
 		{
-			\JLoader::import('joomla.filesystem.file');
-			\JFile::write($targetFilename, $xml);
+			JLoader::import('joomla.filesystem.file');
+			File::write($targetFilename, $xml);
 		}
 	}
 
@@ -237,7 +242,7 @@ class Builder
 		// If no filename is defined, get the component's language definition filename
 		if (empty($targetFilename))
 		{
-			$jLang = $this->container->platform->getLanguage();
+			$jLang    = $this->container->platform->getLanguage();
 			$basePath = $this->container->platform->isBackend() ? JPATH_ADMINISTRATOR : JPATH_SITE;
 
 			$lang = $jLang->setLanguage('en-GB');
@@ -249,13 +254,13 @@ class Builder
 		}
 
 		// Try to load the existing language file
-		$strings = array();
+		$strings = [];
 
 		if (@file_exists($targetFilename))
 		{
 			$contents = file_get_contents($targetFilename);
 			$contents = str_replace('_QQ_', '"\""', $contents);
-			$strings = @parse_ini_string($contents);
+			$strings  = @parse_ini_string($contents);
 		}
 
 		$strings = array_merge($strings, $this->strings);
@@ -273,8 +278,8 @@ class Builder
 
 		if ($saveResult === false)
 		{
-			\JLoader::import('joomla.filesystem.file');
-			\JFile::write($targetFilename, $iniFile);
+			JLoader::import('joomla.filesystem.file');
+			File::write($targetFilename, $iniFile);
 		}
 	}
 }

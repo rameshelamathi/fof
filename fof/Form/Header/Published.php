@@ -7,7 +7,7 @@
 
 namespace FOF30\Form\Header;
 
-use JHtml;
+use Joomla\CMS\HTML\HTMLHelper;
 
 defined('_JEXEC') or die;
 
@@ -25,13 +25,13 @@ class Published extends Selectable
 	 */
 	protected function getOptions()
 	{
-		$config = array(
-			'published'		 => 1,
-			'unpublished'	 => 1,
-			'archived'		 => 0,
-			'trash'			 => 0,
-			'all'			 => 0,
-		);
+		$config = [
+			'published'   => 1,
+			'unpublished' => 1,
+			'archived'    => 0,
+			'trash'       => 0,
+			'all'         => 0,
+		];
 
 		if ($this->element['show_published'] == 'false')
 		{
@@ -58,7 +58,7 @@ class Published extends Selectable
 			$config['all'] = 1;
 		}
 
-		$options = JHtml::_('jgrid.publishedOptions', $config);
+		$options = HTMLHelper::_('jgrid.publishedOptions', $config);
 
 		reset($options);
 

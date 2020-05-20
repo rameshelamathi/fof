@@ -11,12 +11,13 @@ use FOF30\Form\Exception\DataModelRequired;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
-use JHtml;
-use JText;
+use JFormFieldList;
+use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\HTML\HTMLHelper;
 
 defined('_JEXEC') or die;
 
-\JFormHelper::loadFieldClass('list');
+FormHelper::loadFieldClass('list');
 
 /**
  * Form Field class for FOF
@@ -24,38 +25,34 @@ defined('_JEXEC') or die;
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
-class Published extends \JFormFieldList implements FieldInterface
+class Published extends JFormFieldList implements FieldInterface
 {
-	/**
-	 * @var  string  Static field output
-	 */
-	protected $static;
-
-	/**
-	 * @var  string  Repeatable field output
-	 */
-	protected $repeatable;
-
-	/**
-	 * The Form object of the form attached to the form field.
-	 *
-	 * @var    Form
-	 */
-	protected $form;
-
 	/**
 	 * A monotonically increasing number, denoting the row number in a repeatable view
 	 *
 	 * @var  int
 	 */
 	public $rowid;
-
 	/**
 	 * The item being rendered in a repeatable form field
 	 *
 	 * @var  DataModel
 	 */
 	public $item;
+	/**
+	 * @var  string  Static field output
+	 */
+	protected $static;
+	/**
+	 * @var  string  Repeatable field output
+	 */
+	protected $repeatable;
+	/**
+	 * The Form object of the form attached to the form field.
+	 *
+	 * @var    Form
+	 */
+	protected $form;
 
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
@@ -94,100 +91,12 @@ class Published extends \JFormFieldList implements FieldInterface
 	}
 
 	/**
-	 * Method to get the field options.
-	 *
-	 * @since 2.0
-	 *
-	 * @return  array  The field option objects.
-	 */
-	protected function getOptions()
-	{
-		$options = parent::getOptions();
-
-		if (!empty($options))
-		{
-			return $options;
-		}
-
-		// If no custom options were defined let's figure out which ones of the
-		// defaults we shall use...
-
-		$config = array(
-			'published'		 => 1,
-			'unpublished'	 => 1,
-			'archived'		 => 0,
-			'trash'			 => 0,
-			'all'			 => 0,
-		);
-
-		$configMap = array(
-			'show_published'	=> array('published', 1),
-			'show_unpublished'	=> array('unpublished', 1),
-			'show_archived'		=> array('archived', 0),
-			'show_trash'		=> array('trash', 0),
-			'show_all'			=> array('all', 0),
-		);
-
-		foreach ($configMap as $attribute => $preferences)
-		{
-			list($configKey, $default) = $preferences;
-
-			switch (strtolower($this->element[$attribute]))
-			{
-				case 'true':
-				case '1':
-				case 'yes':
-					$config[$configKey] = true;
-				break;
-
-				case 'false':
-				case '0':
-				case 'no':
-					$config[$configKey] = false;
-				break;
-
-				default:
-					$config[$configKey] = $default;
-			}
-		}
-
-		$stack = array();
-
-		if ($config['published'])
-		{
-			$stack[] = JHtml::_('select.option', '1', JText::_('JPUBLISHED'));
-		}
-
-		if ($config['unpublished'])
-		{
-			$stack[] = JHtml::_('select.option', '0', JText::_('JUNPUBLISHED'));
-		}
-
-		if ($config['archived'])
-		{
-			$stack[] = JHtml::_('select.option', '2', JText::_('JARCHIVED'));
-		}
-
-		if ($config['trash'])
-		{
-			$stack[] = JHtml::_('select.option', '-2', JText::_('JTRASHED'));
-		}
-
-		if ($config['all'])
-		{
-			$stack[] = JHtml::_('select.option', '*', JText::_('JALL'));
-		}
-
-		return $stack;
-	}
-
-	/**
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
-	 * @return  string  The field HTML
 	 */
 	public function getStatic()
 	{
@@ -202,11 +111,11 @@ class Published extends \JFormFieldList implements FieldInterface
 	 * Get the rendering of this field type for a repeatable (grid) display,
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
-	 * @since 2.0
-	 *
 	 * @return  string  The field HTML
 	 *
 	 * @throws  DataModelRequired
+	 * @since 2.0
+	 *
 	 */
 	public function getRepeatable()
 	{
@@ -227,6 +136,94 @@ class Published extends \JFormFieldList implements FieldInterface
 
 		// @todo Enforce ACL checks to determine if the field should be enabled or not
 		// Get the HTML
-		return JHTML::_('jgrid.published', $this->value, $this->rowid, $prefix, $enabled, $checkbox, $publish_up, $publish_down);
+		return HTMLHelper::_('jgrid.published', $this->value, $this->rowid, $prefix, $enabled, $checkbox, $publish_up, $publish_down);
+	}
+
+	/**
+	 * Method to get the field options.
+	 *
+	 * @return  array  The field option objects.
+	 * @since 2.0
+	 *
+	 */
+	protected function getOptions()
+	{
+		$options = parent::getOptions();
+
+		if (!empty($options))
+		{
+			return $options;
+		}
+
+		// If no custom options were defined let's figure out which ones of the
+		// defaults we shall use...
+
+		$config = [
+			'published'   => 1,
+			'unpublished' => 1,
+			'archived'    => 0,
+			'trash'       => 0,
+			'all'         => 0,
+		];
+
+		$configMap = [
+			'show_published'   => ['published', 1],
+			'show_unpublished' => ['unpublished', 1],
+			'show_archived'    => ['archived', 0],
+			'show_trash'       => ['trash', 0],
+			'show_all'         => ['all', 0],
+		];
+
+		foreach ($configMap as $attribute => $preferences)
+		{
+			list($configKey, $default) = $preferences;
+
+			switch (strtolower($this->element[$attribute]))
+			{
+				case 'true':
+				case '1':
+				case 'yes':
+					$config[$configKey] = true;
+					break;
+
+				case 'false':
+				case '0':
+				case 'no':
+					$config[$configKey] = false;
+					break;
+
+				default:
+					$config[$configKey] = $default;
+			}
+		}
+
+		$stack = [];
+
+		if ($config['published'])
+		{
+			$stack[] = HTMLHelper::_('select.option', '1', \Joomla\CMS\Language\Text::_('JPUBLISHED'));
+		}
+
+		if ($config['unpublished'])
+		{
+			$stack[] = HTMLHelper::_('select.option', '0', \Joomla\CMS\Language\Text::_('JUNPUBLISHED'));
+		}
+
+		if ($config['archived'])
+		{
+			$stack[] = HTMLHelper::_('select.option', '2', \Joomla\CMS\Language\Text::_('JARCHIVED'));
+		}
+
+		if ($config['trash'])
+		{
+			$stack[] = HTMLHelper::_('select.option', '-2', \Joomla\CMS\Language\Text::_('JTRASHED'));
+		}
+
+		if ($config['all'])
+		{
+			$stack[] = HTMLHelper::_('select.option', '*', \Joomla\CMS\Language\Text::_('JALL'));
+		}
+
+		return $stack;
 	}
 }

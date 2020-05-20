@@ -8,8 +8,8 @@
 namespace FOF30\Dispatcher\Mixin;
 
 // Protect from unauthorized access
-use JFactory;
-use JUri;
+
+use Joomla\CMS\Uri\Uri;
 
 defined('_JEXEC') or die();
 
@@ -66,7 +66,7 @@ trait ViewAliases
 			return;
 		}
 
-		$this->view = $this->viewNameAliases[ $this->view ];
+		$this->view = $this->viewNameAliases[$this->view];
 		$this->container->input->set('view', $this->view);
 
 		// Perform HTTP 301 Moved permanently redirection on GET requests if requested to do so
@@ -74,7 +74,7 @@ trait ViewAliases
 			&& (strtoupper($_SERVER['REQUEST_METHOD']) == 'GET')
 		)
 		{
-			$url = JUri::getInstance();
+			$url = Uri::getInstance();
 			$url->setVar('view', $this->view);
 
 			$this->container->platform->redirect($url, 301);

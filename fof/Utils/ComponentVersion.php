@@ -8,7 +8,7 @@
 namespace FOF30\Utils;
 
 use Exception;
-use JFactory;
+use Joomla\CMS\Factory;
 use SimpleXMLElement;
 
 defined('_JEXEC') or die;
@@ -26,7 +26,7 @@ abstract class ComponentVersion
 	 *
 	 * @since 3.1.5
 	 */
-	private static $version = array();
+	private static $version = [];
 
 	/**
 	 * Get a component's version. The XML manifest on disk will be tried first. If it's not there or does not have a
@@ -74,8 +74,8 @@ abstract class ComponentVersion
 	 */
 	private static function getVersionFromDatabase($component)
 	{
-		$db      = JFactory::getDbo();
-		$query   = $db->getQuery(true)
+		$db    = Factory::getDbo();
+		$query = $db->getQuery(true)
 			->select($db->qn('manifest_cache'))
 			->from($db->qn('#__extensions'))
 			->where($db->qn('element') . ' = ' . $db->q($component))
@@ -123,7 +123,7 @@ abstract class ComponentVersion
 	private static function getVersionFromManifest($component)
 	{
 		$bareComponent = str_replace('com_', '', $component);
-		$file = JPATH_ADMINISTRATOR . '/components/' . $component . '/' . $bareComponent . '.xml';
+		$file          = JPATH_ADMINISTRATOR . '/components/' . $component . '/' . $bareComponent . '.xml';
 
 		if (!is_file($file) || !is_readable($file))
 		{
@@ -153,6 +153,6 @@ abstract class ComponentVersion
 			return null;
 		}
 
-		return (string)($versionNode[0]);
+		return (string) ($versionNode[0]);
 	}
 }

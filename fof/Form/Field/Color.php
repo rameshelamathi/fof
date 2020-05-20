@@ -10,13 +10,15 @@ namespace FOF30\Form\Field;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
+use JFormFieldColor;
+use Joomla\CMS\Form\FormHelper;
 
 
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
 
-\JFormHelper::loadFieldClass('color');
+FormHelper::loadFieldClass('color');
 
 /**
  * Form Field class for the FOF framework
@@ -24,55 +26,52 @@ defined('_JEXEC') or die('Restricted access');
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
-class Color extends \JFormFieldColor implements FieldInterface
+class Color extends JFormFieldColor implements FieldInterface
 {
 	/**
-	* The Form object of the form attached to the form field.
-	*
-	* @var Form
-	*/
-	protected $form;
-
-	/**
-	* The item being rendered in a repeatable form field.
-	*
-	* @var DataModel
-	*/
+	 * The item being rendered in a repeatable form field.
+	 *
+	 * @var DataModel
+	 */
 	public $item;
-
 	/**
-	* Repeatable field output.
-	*
-	* @var string
-	*/
-	protected $repeatable;
-
-	/**
-	* A monotonically increasing number, denoting the row number in a repeatable view.
-	*
-	* @var int
-	*/
+	 * A monotonically increasing number, denoting the row number in a repeatable view.
+	 *
+	 * @var int
+	 */
 	public $rowid;
-
 	/**
-	* Static field output.
-	*
-	* @var string
-	*/
+	 * The Form object of the form attached to the form field.
+	 *
+	 * @var Form
+	 */
+	protected $form;
+	/**
+	 * Repeatable field output.
+	 *
+	 * @var string
+	 */
+	protected $repeatable;
+	/**
+	 * Static field output.
+	 *
+	 * @var string
+	 */
 	protected $static;
 
 	/**
-	* Method to get certain otherwise inaccessible properties from the form field
-	* object.
-	*
-	* @access	public
-	* @param	string	$name	The property name for which to the the value.
-	*
-	*
-	* @since	2.0
-	*
-	* @return	mixed	The property value or null.
-	*/
+	 * Method to get certain otherwise inaccessible properties from the form field
+	 * object.
+	 *
+	 * @access    public
+	 *
+	 * @param   string  $name  The property name for which to the the value.
+	 *
+	 *
+	 * @return    mixed    The property value or null.
+	 * @since     2.0
+	 *
+	 */
 	public function __get($name)
 	{
 		switch ($name)
@@ -101,16 +100,16 @@ class Color extends \JFormFieldColor implements FieldInterface
 	}
 
 	/**
-	* Get the rendering of this field type for a repeatable (grid) display, e.g.
-	* in a view listing many item (typically a "browse" task)
-	*
-	* @access	public
-	*
-	*
-	* @since	2.0
-	*
-	* @return	string	The field HTML
-	*/
+	 * Get the rendering of this field type for a repeatable (grid) display, e.g.
+	 * in a view listing many item (typically a "browse" task)
+	 *
+	 * @access    public
+	 *
+	 *
+	 * @return    string    The field HTML
+	 * @since     2.0
+	 *
+	 */
 	public function getRepeatable()
 	{
 		if (isset($this->element['legacy']))
@@ -118,7 +117,7 @@ class Color extends \JFormFieldColor implements FieldInterface
 			return $this->getInput();
 		}
 
-		$class = $this->class ? $this->class : '';
+		$class    = $this->class ? $this->class : '';
 		$hexColor = '#' . ltrim($this->value, '#');
 
 		return '<div class="' . $this->id . ' ' . $class
@@ -128,16 +127,16 @@ class Color extends \JFormFieldColor implements FieldInterface
 	}
 
 	/**
-	* Get the rendering of this field type for static display, e.g. in a single
-	* item view (typically a "read" task).
-	*
-	* @access	public
-	*
-	*
-	* @since	2.0
-	*
-	* @return	string	The field HTML
-	*/
+	 * Get the rendering of this field type for static display, e.g. in a single
+	 * item view (typically a "read" task).
+	 *
+	 * @access    public
+	 *
+	 *
+	 * @return    string    The field HTML
+	 * @since     2.0
+	 *
+	 */
 	public function getStatic()
 	{
 		// Return the joomla native control

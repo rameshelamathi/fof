@@ -8,20 +8,20 @@
 namespace FOF30\Factory\Exception;
 
 use Exception;
-use RuntimeException;
+use Joomla\CMS\Language\Text;
 
 defined('_JEXEC') or die;
 
 class FormLoadData extends FormLoadGeneric
 {
-	public function __construct( $message = "", $code = 500, Exception $previous = null )
+	public function __construct($message = "", $code = 500, Exception $previous = null)
 	{
 		if (empty($message))
 		{
-			$message = \JText::_('LIB_FOF_FORM_ERR_COULD_NOT_LOAD_FROM_DATA');
+			$message = Text::_('LIB_FOF_FORM_ERR_COULD_NOT_LOAD_FROM_DATA');
 		}
 
-		parent::__construct( $message, $code, $previous );
+		parent::__construct($message, $code, $previous);
 	}
 
 }

@@ -7,9 +7,16 @@
 
 namespace FOF30\Template;
 
+use Exception;
 use FOF30\Container\Container;
 use FOF30\Less\Less;
-use JDocument;
+use Joomla\CMS\Document\Document;
+use Joomla\CMS\Helper\ModuleHelper;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Uri\Uri;
+use stdClass;
 
 defined('_JEXEC') or die;
 
@@ -50,7 +57,7 @@ class Template
 	 *
 	 * @return  void
 	 */
-	public function addCSS($uri, $version = null, $type = 'text/css', $media = null, $attribs = array())
+	public function addCSS($uri, $version = null, $type = 'text/css', $media = null, $attribs = [])
 	{
 		if ($this->container->platform->isCli())
 		{
@@ -196,7 +203,7 @@ class Template
 	 * written to the media/lib_fof/compiled directory of your site. If the file
 	 * cannot be written we will use the $altPath, if specified
 	 *
-	 * @param   string $path          A path definition understood by parsePath pointing to the source LESS file,
+	 * @param   string   $path        A path definition understood by parsePath pointing to the source LESS file,
 	 *                                e.g. media://com_example/less/foo.less
 	 * @param   string   $altPath     A path definition understood by parsePath pointing to a precompiled CSS file,
 	 *                                used when we can't write the generated file to the output directory,
@@ -208,15 +215,16 @@ class Template
 	 * @param   string   $media       Media target definition of the style sheet, e.g. "screen"
 	 * @param   array    $attribs     Array of attributes
 	 *
-	 * @see self::parsePath
+	 * @return  mixed  True = successfully included generated CSS, False = the alternate CSS file was used, null = the
+	 *                 source file does not exist
 	 *
-	 * @since 2.0
+	 * @see        self::parsePath
 	 *
-	 * @return  mixed  True = successfully included generated CSS, False = the alternate CSS file was used, null = the source file does not exist
+	 * @since      2.0
 	 *
 	 * @deprecated 4.0
 	 */
-	public function addLESS($path, $altPath = null, $returnPath = false, $version = null, $type = 'text/css', $media = null, $attribs = array())
+	public function addLESS($path, $altPath = null, $returnPath = false, $version = null, $type = 'text/css', $media = null, $attribs = [])
 	{
 		// Does the cache directory exists and is writeable
 		static $sanityCheck = null;
@@ -269,7 +277,7 @@ class Template
 		$cachedPath = $platformDirs['media'] . '/lib_fof/compiled/' . $id . '.css';
 
 		// Get the LESS compiler
-		$lessCompiler = new Less;
+		$lessCompiler                = new Less;
 		$lessCompiler->formatterName = 'compressed';
 
 		// Should I add an alternative import path?
@@ -277,17 +285,17 @@ class Template
 
 		if (isset($altFiles['alternate']))
 		{
-			$currentLocation = realpath(dirname($localFile));
-			$normalLocation = realpath(dirname($altFiles['normal']));
+			$currentLocation   = realpath(dirname($localFile));
+			$normalLocation    = realpath(dirname($altFiles['normal']));
 			$alternateLocation = realpath(dirname($altFiles['alternate']));
 
 			if ($currentLocation == $normalLocation)
 			{
-				$lessCompiler->importDir = array($alternateLocation, $currentLocation);
+				$lessCompiler->importDir = [$alternateLocation, $currentLocation];
 			}
 			else
 			{
-				$lessCompiler->importDir = array($currentLocation, $normalLocation);
+				$lessCompiler->importDir = [$currentLocation, $normalLocation];
 			}
 		}
 
@@ -369,13 +377,13 @@ class Template
 	 *
 	 * @param   string     $text   Header text
 	 * @param   string     $field  Field used for sorting
-	 * @param   \stdClass  $list   Object holding the direction and the ordering field
+	 * @param   stdClass  $list   Object holding the direction and the ordering field
 	 *
 	 * @return  string  HTML code for sorting
 	 */
 	public function sefSort($text, $field, $list)
 	{
-		$sort = \JHTML::_('grid.sort', \JText::_(strtoupper($text)) . '&nbsp;', $field, $list->order_Dir, $list->order);
+		$sort = HTMLHelper::_('grid.sort', Text::_(strtoupper($text)) . '&nbsp;', $field, $list->order_Dir, $list->order);
 
 		return str_replace('href="#"', 'href="javascript:void(0);"', $sort);
 	}
@@ -396,18 +404,19 @@ class Template
 	 * implementing features of your component as plugins and they need to provide HTML output, e.g. some of the
 	 * integration plugins we use in Akeeba Subscriptions.
 	 *
-	 * The valid protocols are ( @see self::getAltPaths ):
-	 * media://		The media directory or a media override
-	 * plugin://	Given as plugin://pluginType/pluginName/template, e.g. plugin://system/example/something
-	 * admin://		Path relative to administrator directory (no overrides)
-	 * site://		Path relative to site's root (no overrides)
-	 * auto://      Automatically guess if it should be site:// or admin://
-	 * module://	The module directory or a template override (must be module://moduleName/templateName)
+	 * The valid protocols are ( @param   string  $path  Fancy path
 	 *
-	 * @param   string   $path       Fancy path
 	 * @param   boolean  $localFile  When true, it returns the local path, not the URL
 	 *
 	 * @return  string  Parsed path
+	 * @see self::getAltPaths ):
+	 *      media://        The media directory or a media override
+	 *      plugin://    Given as plugin://pluginType/pluginName/template, e.g. plugin://system/example/something
+	 *      admin://        Path relative to administrator directory (no overrides)
+	 *      site://        Path relative to site's root (no overrides)
+	 *      auto://      Automatically guess if it should be site:// or admin://
+	 *      module://    The module directory or a template override (must be module://moduleName/templateName)
+	 *
 	 */
 	public function parsePath($path, $localFile = false)
 	{
@@ -482,12 +491,12 @@ class Template
 	 * );
 	 *
 	 * The valid protocols are:
-	 * media://		The media directory or a media override
-	 * admin://		Path relative to administrator directory (no alternate)
-	 * site://		Path relative to site's root (no alternate)
+	 * media://        The media directory or a media override
+	 * admin://        Path relative to administrator directory (no alternate)
+	 * site://        Path relative to site's root (no alternate)
 	 * auto://      Automatically guess if it should be site:// or admin://
-	 * plugin://	The plugin directory or a template override (must be plugin://pluginType/pluginName/templateName)
-	 * module://	The module directory or a template override (must be module://moduleName/templateName)
+	 * plugin://    The plugin directory or a template override (must be plugin://pluginType/pluginName/templateName)
+	 * module://    The module directory or a template override (must be module://moduleName/templateName)
 	 *
 	 * @param   string  $path  Fancy path
 	 *
@@ -621,7 +630,7 @@ class Template
 	{
 		$document = $this->container->platform->getDocument();
 
-		if (!($document instanceof JDocument))
+		if (!($document instanceof Document))
 		{
 			return '';
 		}
@@ -635,16 +644,16 @@ class Template
 		{
 			$renderer = $document->loadRenderer('module');
 		}
-		catch (\Exception $exc)
+		catch (Exception $exc)
 		{
 			return '';
 		}
 
-		$params = array('style' => $style);
+		$params = ['style' => $style];
 
 		$contents = '';
 
-		foreach (\JModuleHelper::getModules($position) as $mod)
+		foreach (ModuleHelper::getModules($position) as $mod)
 		{
 			$contents .= $renderer->render($mod, $params);
 		}
@@ -664,7 +673,7 @@ class Template
 	{
 		$document = $this->container->platform->getDocument();
 
-		if (!($document instanceof JDocument))
+		if (!($document instanceof Document))
 		{
 			return '';
 		}
@@ -678,14 +687,14 @@ class Template
 		{
 			$renderer = $document->loadRenderer('module');
 		}
-		catch (\Exception $exc)
+		catch (Exception $exc)
 		{
 			return '';
 		}
 
-		$params = array('style' => $style);
+		$params = ['style' => $style];
 
-		$mod = \JModuleHelper::getModule($moduleName);
+		$mod = ModuleHelper::getModule($moduleName);
 
 		if (empty($mod))
 		{
@@ -725,8 +734,8 @@ class Template
 		if (is_null($merge))
 		{
 			$hasOption = (strpos($route, 'option=') !== false);
-			$hasView  = (strpos($route, 'view=') !== false);
-			$hasTask  = (strpos($route, 'task=') !== false);
+			$hasView   = (strpos($route, 'view=') !== false);
+			$hasTask   = (strpos($route, 'task=') !== false);
 
 			$merge = !($hasOption && ($hasView || $hasTask));
 		}
@@ -740,8 +749,8 @@ class Template
 			}
 			elseif (substr($route, 0, 1) == '&')
 			{
-				$url = \JURI::getInstance();
-				$vars = array();
+				$url  = Uri::getInstance();
+				$vars = [];
 				parse_str($route, $vars);
 
 				$url->setQuery(array_merge($url->getQuery(true), $vars));
@@ -750,7 +759,7 @@ class Template
 			}
 			else
 			{
-				$url = \JURI::getInstance();
+				$url   = Uri::getInstance();
 				$props = $url->getQuery(true);
 
 				// Strip 'index.php?'
@@ -760,9 +769,9 @@ class Template
 				}
 
 				// Parse route
-				$parts = array();
+				$parts = [];
 				parse_str($route, $parts);
-				$result = array();
+				$result = [];
 
 				// Check to see if there is component information in the route if not add it
 
@@ -805,6 +814,6 @@ class Template
 			$result = $route;
 		}
 
-		return \JRoute::_($result);
+		return Route::_($result);
 	}
 }

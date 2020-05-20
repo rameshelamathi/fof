@@ -7,8 +7,8 @@
 
 namespace FOF30\Form\Header;
 
-use JHtml;
-use JText;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
 
 defined('_JEXEC') or die;
 
@@ -34,14 +34,14 @@ class Field extends HeaderBase
 		{
 			$view = $this->form->getView();
 
-			return JHTML::_('grid.sort', $label, $this->name,
+			return HTMLHelper::_('grid.sort', $label, $this->name,
 				$view->getLists()->order_Dir, $view->getLists()->order,
 				$this->form->getModel()->task
 			);
 		}
 		else
 		{
-			return JText::_($label);
+			return Text::_($label);
 		}
 	}
 }

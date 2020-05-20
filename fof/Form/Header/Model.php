@@ -9,8 +9,9 @@ namespace FOF30\Form\Header;
 
 use FOF30\Container\Container;
 use FOF30\Model\DataModel;
-use JHtml;
-use JText;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
+use SimpleXMLElement;
 
 defined('_JEXEC') or die;
 
@@ -34,17 +35,17 @@ class Model extends Selectable
 	 */
 	protected function getOptions()
 	{
-		$options = array();
+		$options = [];
 
 		// Initialize some field attributes.
-		$key = $this->element['key_field'] ? (string) $this->element['key_field'] : 'value';
-		$value = $this->element['value_field'] ? (string) $this->element['value_field'] : (string) $this->element['name'];
-		$applyAccess = $this->element['apply_access'] ? (string) $this->element['apply_access'] : 'false';
-		$modelName = (string) $this->element['model'];
+		$key             = $this->element['key_field'] ? (string) $this->element['key_field'] : 'value';
+		$value           = $this->element['value_field'] ? (string) $this->element['value_field'] : (string) $this->element['name'];
+		$applyAccess     = $this->element['apply_access'] ? (string) $this->element['apply_access'] : 'false';
+		$modelName       = (string) $this->element['model'];
 		$nonePlaceholder = (string) $this->element['none'];
-		$translate = empty($this->element['translate']) ? 'true' : (string) $this->element['translate'];
-		$translate = in_array(strtolower($translate), array('true','yes','1','on')) ? true : false;
-		$with = $this->element['with'] ? (string) $this->element['with'] : null;
+		$translate       = empty($this->element['translate']) ? 'true' : (string) $this->element['translate'];
+		$translate       = in_array(strtolower($translate), ['true', 'yes', '1', 'on']) ? true : false;
+		$with            = $this->element['with'] ? (string) $this->element['with'] : null;
 
 		if (!is_null($with))
 		{
@@ -55,16 +56,16 @@ class Model extends Selectable
 
 		if (!empty($nonePlaceholder))
 		{
-			$options[] = JHtml::_('select.option', null, JText::_($nonePlaceholder));
+			$options[] = HTMLHelper::_('select.option', null, Text::_($nonePlaceholder));
 		}
 
 		// Process field atrtibutes
 		$applyAccess = strtolower($applyAccess);
-		$applyAccess = in_array($applyAccess, array('yes', 'on', 'true', '1'));
+		$applyAccess = in_array($applyAccess, ['yes', 'on', 'true', '1']);
 
 		// Explode model name into component name and prefix
 		$componentName = $this->form->getContainer()->componentName;
-		$mName = $modelName;
+		$mName         = $modelName;
 
 		if (strpos($modelName, '.') !== false)
 		{
@@ -93,7 +94,7 @@ class Model extends Selectable
 		}
 
 		// Process state variables
-		/** @var \SimpleXMLElement $stateoption */
+		/** @var SimpleXMLElement $stateoption */
 		foreach ($this->element->children() as $stateoption)
 		{
 			// Only add <option /> elements.
@@ -102,7 +103,7 @@ class Model extends Selectable
 				continue;
 			}
 
-			$stateKey = (string) $stateoption['key'];
+			$stateKey   = (string) $stateoption['key'];
 			$stateValue = (string) $stateoption;
 
 			$model->setState($stateKey, $stateValue);
@@ -118,11 +119,11 @@ class Model extends Selectable
 			{
 				if ($translate == true)
 				{
-					$options[] = JHtml::_('select.option', $item->$key, JText::_($item->$value));
+					$options[] = HTMLHelper::_('select.option', $item->$key, Text::_($item->$value));
 				}
 				else
 				{
-					$options[] = JHtml::_('select.option', $item->$key, $item->$value);
+					$options[] = HTMLHelper::_('select.option', $item->$key, $item->$value);
 				}
 			}
 		}

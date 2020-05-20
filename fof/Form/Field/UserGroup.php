@@ -10,12 +10,14 @@ namespace FOF30\Form\Field;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
-use JHtml;
-use JText;
+use JFormFieldUsergroup;
+use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\HTML\HTMLHelper;
+use stdClass;
 
 defined('_JEXEC') or die;
 
-\JFormHelper::loadFieldClass('usergroup');
+FormHelper::loadFieldClass('usergroup');
 
 /**
  * Form Field class for FOF
@@ -23,38 +25,34 @@ defined('_JEXEC') or die;
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
-class UserGroup extends \JFormFieldUsergroup implements FieldInterface
+class UserGroup extends JFormFieldUsergroup implements FieldInterface
 {
-	/**
-	 * @var  string  Static field output
-	 */
-	protected $static;
-
-	/**
-	 * @var  string  Repeatable field output
-	 */
-	protected $repeatable;
-
-	/**
-	 * The Form object of the form attached to the form field.
-	 *
-	 * @var    Form
-	 */
-	protected $form;
-
 	/**
 	 * A monotonically increasing number, denoting the row number in a repeatable view
 	 *
 	 * @var  int
 	 */
 	public $rowid;
-
 	/**
 	 * The item being rendered in a repeatable form field
 	 *
 	 * @var  DataModel
 	 */
 	public $item;
+	/**
+	 * @var  string  Static field output
+	 */
+	protected $static;
+	/**
+	 * @var  string  Repeatable field output
+	 */
+	protected $repeatable;
+	/**
+	 * The Form object of the form attached to the form field.
+	 *
+	 * @var    Form
+	 */
+	protected $form;
 
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
@@ -96,9 +94,9 @@ class UserGroup extends \JFormFieldUsergroup implements FieldInterface
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
-	 * @return  string  The field HTML
 	 */
 	public function getStatic()
 	{
@@ -111,13 +109,13 @@ class UserGroup extends \JFormFieldUsergroup implements FieldInterface
 
 		$params = $this->getOptions();
 
-		$db = $this->form->getContainer()->platform->getDbo();
+		$db    = $this->form->getContainer()->platform->getDbo();
 		$query = $db->getQuery(true)
-				->select('a.id AS value, a.title AS text')
-				->from('#__usergroups AS a')
-				->group('a.id, a.title')
-				->order('a.id ASC')
-				->order($db->qn('title') . ' ASC');
+			->select('a.id AS value, a.title AS text')
+			->from('#__usergroups AS a')
+			->group('a.id, a.title')
+			->order('a.id ASC')
+			->order($db->qn('title') . ' ASC');
 
 		// Get the options.
 		$options = $db->setQuery($query)->loadObjectList();
@@ -131,7 +129,7 @@ class UserGroup extends \JFormFieldUsergroup implements FieldInterface
 		// If all levels is allowed, push it into the array.
 		elseif ($params)
 		{
-			array_unshift($options, JHtml::_('select.option', '', JText::_('JOPTION_ACCESS_SHOW_ALL_LEVELS')));
+			array_unshift($options, HTMLHelper::_('select.option', '', \Joomla\CMS\Language\Text::_('JOPTION_ACCESS_SHOW_ALL_LEVELS')));
 		}
 
 		return '<span id="' . $this->id . '" ' . $class . '>' .
@@ -143,9 +141,9 @@ class UserGroup extends \JFormFieldUsergroup implements FieldInterface
 	 * Get the rendering of this field type for a repeatable (grid) display,
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
-	 * @return  string  The field HTML
 	 */
 	public function getRepeatable()
 	{
@@ -156,13 +154,13 @@ class UserGroup extends \JFormFieldUsergroup implements FieldInterface
 
 		$class = $this->class ? $this->class : '';
 
-		$db = $this->form->getContainer()->platform->getDbo();
+		$db    = $this->form->getContainer()->platform->getDbo();
 		$query = $db->getQuery(true)
-				->select('a.id AS value, a.title AS text')
-				->from('#__usergroups AS a')
-				->group('a.id, a.title')
-				->order('a.id ASC')
-				->order($db->qn('title') . ' ASC');
+			->select('a.id AS value, a.title AS text')
+			->from('#__usergroups AS a')
+			->group('a.id, a.title')
+			->order('a.id ASC')
+			->order($db->qn('title') . ' ASC');
 
 		// Get the options.
 		$options = $db->setQuery($query)->loadObjectList();
@@ -177,11 +175,11 @@ class UserGroup extends \JFormFieldUsergroup implements FieldInterface
 	 *
 	 * Adapted from JHtmlAccess::usergroup
 	 *
-	 * @return  \stdClass[]
+	 * @return  stdClass[]
 	 */
 	protected function getOptions()
 	{
-		$db = $this->form->getContainer()->platform->getDbo();
+		$db    = $this->form->getContainer()->platform->getDbo();
 		$query = $db->getQuery(true)
 			->select('a.id AS value, a.title AS text, COUNT(DISTINCT b.id) AS level')
 			->from($db->quoteName('#__usergroups') . ' AS a')

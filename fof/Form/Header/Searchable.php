@@ -7,7 +7,7 @@
 
 namespace FOF30\Form\Header;
 
-use JText;
+use Joomla\CMS\Language\Text;
 
 defined('_JEXEC') or die;
 
@@ -31,7 +31,7 @@ class Searchable extends Field
 		$filterclass = $this->element['filterclass'] ? ' class="' . (string) $this->element['filterclass'] . '"' : '';
 		$placeholder = $this->element['placeholder'] ? $this->element['placeholder'] : $this->getLabel();
 		$name        = $this->element['searchfieldname'] ? $this->element['searchfieldname'] : $this->name;
-		$placeholder = ' placeholder="' . JText::_($placeholder) . '"';
+		$placeholder = ' placeholder="' . Text::_($placeholder) . '"';
 
 		if ($this->element['searchfieldname'])
 		{
@@ -64,9 +64,9 @@ class Searchable extends Field
 	 */
 	protected function getButtons()
 	{
-		$buttonclass = $this->element['buttonclass'] ? (string) $this->element['buttonclass'] : 'btn hasTip hasTooltip';
+		$buttonclass  = $this->element['buttonclass'] ? (string) $this->element['buttonclass'] : 'btn hasTip hasTooltip';
 		$buttonsState = strtolower($this->element['buttons']);
-		$show_buttons = !in_array($buttonsState, array('no', 'false', '0'));
+		$show_buttons = !in_array($buttonsState, ['no', 'false', '0']);
 
 		if (!$show_buttons)
 		{
@@ -75,10 +75,10 @@ class Searchable extends Field
 
 		$html = '';
 
-		$html .= '<button class="' . $buttonclass . '" onclick="this.form.submit();" title="' . JText::_('JSEARCH_FILTER') . '" >' . "\n";
+		$html .= '<button class="' . $buttonclass . '" onclick="this.form.submit();" title="' . Text::_('JSEARCH_FILTER') . '" >' . "\n";
 		$html .= '<i class="icon-search"></i>';
 		$html .= '</button>' . "\n";
-		$html .= '<button class="' . $buttonclass . '" onclick="document.adminForm.' . $this->id . '.value=\'\';this.form.submit();" title="' . JText::_('JSEARCH_RESET') . '">' . "\n";
+		$html .= '<button class="' . $buttonclass . '" onclick="document.adminForm.' . $this->id . '.value=\'\';this.form.submit();" title="' . Text::_('JSEARCH_RESET') . '">' . "\n";
 		$html .= '<i class="icon-remove"></i>';
 		$html .= '</button>' . "\n";
 

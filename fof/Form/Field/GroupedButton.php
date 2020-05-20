@@ -10,10 +10,13 @@ namespace FOF30\Form\Field;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
+use JFormFieldText;
+use Joomla\CMS\Form\FormHelper;
+use SimpleXMLElement;
 
 defined('_JEXEC') or die;
 
-\JFormHelper::loadFieldClass('text');
+FormHelper::loadFieldClass('text');
 
 /**
  * Form Field class for FOF
@@ -21,38 +24,34 @@ defined('_JEXEC') or die;
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
-class GroupedButton extends \JFormFieldText implements FieldInterface
+class GroupedButton extends JFormFieldText implements FieldInterface
 {
-	/**
-	 * @var  string  Static field output
-	 */
-	protected $static;
-
-	/**
-	 * @var  string  Repeatable field output
-	 */
-	protected $repeatable;
-
-	/**
-	 * The Form object of the form attached to the form field.
-	 *
-	 * @var    Form
-	 */
-	protected $form;
-
 	/**
 	 * A monotonically increasing number, denoting the row number in a repeatable view
 	 *
 	 * @var  int
 	 */
 	public $rowid;
-
 	/**
 	 * The item being rendered in a repeatable form field
 	 *
 	 * @var  DataModel
 	 */
 	public $item;
+	/**
+	 * @var  string  Static field output
+	 */
+	protected $static;
+	/**
+	 * @var  string  Repeatable field output
+	 */
+	protected $repeatable;
+	/**
+	 * The Form object of the form attached to the form field.
+	 *
+	 * @var    Form
+	 */
+	protected $form;
 
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
@@ -94,9 +93,9 @@ class GroupedButton extends \JFormFieldText implements FieldInterface
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
-	 * @return  string  The field HTML
 	 */
 	public function getStatic()
 	{
@@ -107,9 +106,9 @@ class GroupedButton extends \JFormFieldText implements FieldInterface
 	 * Get the rendering of this field type for a repeatable (grid) display,
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
-	 * @return  string  The field HTML
 	 */
 	public function getRepeatable()
 	{
@@ -120,9 +119,9 @@ class GroupedButton extends \JFormFieldText implements FieldInterface
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
-	 * @return  string  The field HTML
 	 */
 	public function getInput()
 	{
@@ -130,10 +129,10 @@ class GroupedButton extends \JFormFieldText implements FieldInterface
 
 		$html = '<div id="' . $this->id . '" class="btn-group ' . $class . '">';
 
-		/** @var \SimpleXMLElement $option */
+		/** @var SimpleXMLElement $option */
 		foreach ($this->element->children() as $option)
 		{
-			$renderedAttributes = array();
+			$renderedAttributes = [];
 
 			foreach ($option->attributes() as $name => $value)
 			{
@@ -143,11 +142,11 @@ class GroupedButton extends \JFormFieldText implements FieldInterface
 				}
 			}
 
-			$buttonXML   = new \SimpleXMLElement('<field ' . implode(' ', $renderedAttributes) . ' />');
+			$buttonXML   = new SimpleXMLElement('<field ' . implode(' ', $renderedAttributes) . ' />');
 			$buttonField = new Button($this->form);
 
 			// Pass required objects to the field
-			$buttonField->item = $this->item;
+			$buttonField->item  = $this->item;
 			$buttonField->rowid = $this->rowid;
 			$buttonField->setup($buttonXML, null);
 

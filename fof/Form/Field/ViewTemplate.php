@@ -12,10 +12,12 @@ use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use FOF30\View\View;
+use Joomla\CMS\Form\FormField;
+use Joomla\CMS\Form\FormHelper;
 
 defined('_JEXEC') or die;
 
-\JFormHelper::loadFieldClass('text');
+FormHelper::loadFieldClass('text');
 
 /**
  * Form Field class for the FOF framework
@@ -23,18 +25,28 @@ defined('_JEXEC') or die;
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
-class ViewTemplate extends \JFormField implements FieldInterface
+class ViewTemplate extends FormField implements FieldInterface
 {
+	/**
+	 * A monotonically increasing number, denoting the row number in a repeatable view
+	 *
+	 * @var  int
+	 */
+	public $rowid;
+	/**
+	 * The item being rendered in a repeatable form field
+	 *
+	 * @var  DataModel
+	 */
+	public $item;
 	/**
 	 * @var  string  Static field output
 	 */
 	protected $static;
-
 	/**
 	 * @var  string  Repeatable field output
 	 */
 	protected $repeatable;
-
 	/**
 	 * The Form object of the form attached to the form field.
 	 *
@@ -43,23 +55,9 @@ class ViewTemplate extends \JFormField implements FieldInterface
 	protected $form;
 
 	/**
-	 * A monotonically increasing number, denoting the row number in a repeatable view
-	 *
-	 * @var  int
-	 */
-	public $rowid;
-
-	/**
-	 * The item being rendered in a repeatable form field
-	 *
-	 * @var  DataModel
-	 */
-	public $item;
-
-	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
 	 *
-	 * @param   string $name The property name for which to the the value.
+	 * @param   string  $name  The property name for which to the the value.
 	 *
 	 * @return  mixed  The property value or null.
 	 *
@@ -105,9 +103,9 @@ class ViewTemplate extends \JFormField implements FieldInterface
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
-	 * @return  string  The field HTML
 	 */
 	public function getStatic()
 	{
@@ -118,9 +116,9 @@ class ViewTemplate extends \JFormField implements FieldInterface
 	 * Get the rendering of this field type for a repeatable (grid) display,
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
-	 * @return  string  The field HTML
 	 */
 	public function getRepeatable()
 	{
@@ -146,9 +144,9 @@ class ViewTemplate extends \JFormField implements FieldInterface
 	 */
 	protected function getRenderedTemplate($isRepeatable = false)
 	{
-		$sourceTemplate = isset($this->element['source']) ? (string) $this->element['source'] : null;
-		$sourceView = isset($this->element['source_view']) ? (string) $this->element['source_view'] : null;
-		$sourceViewType = isset($this->element['source_view_type']) ? (string) $this->element['source_view_type'] : 'html';
+		$sourceTemplate  = isset($this->element['source']) ? (string) $this->element['source'] : null;
+		$sourceView      = isset($this->element['source_view']) ? (string) $this->element['source_view'] : null;
+		$sourceViewType  = isset($this->element['source_view_type']) ? (string) $this->element['source_view_type'] : 'html';
 		$sourceComponent = isset($this->element['source_component']) ? (string) $this->element['source_component'] : null;
 
 		if (empty($sourceTemplate))
@@ -160,9 +158,9 @@ class ViewTemplate extends \JFormField implements FieldInterface
 
 		if (empty($sourceView))
 		{
-			$viewObject = new View($sourceContainer, array(
-				'name' => 'FAKE_FORM_VIEW'
-			));
+			$viewObject = new View($sourceContainer, [
+				'name' => 'FAKE_FORM_VIEW',
+			]);
 		}
 		else
 		{
@@ -171,13 +169,13 @@ class ViewTemplate extends \JFormField implements FieldInterface
 
 		$viewObject->populateFromModel($this->form->getModel());
 
-		return $viewObject->loadAnyTemplate($sourceTemplate, array(
+		return $viewObject->loadAnyTemplate($sourceTemplate, [
 			'model'        => $isRepeatable ? $this->item : $this->form->getModel(),
 			'rowid'        => $isRepeatable ? $this->rowid : null,
 			'form'         => $this->form,
 			'formType'     => $this->form->getAttribute('type', 'edit'),
 			'fieldValue'   => $this->value,
 			'fieldElement' => $this->element,
-		));
+		]);
 	}
 }

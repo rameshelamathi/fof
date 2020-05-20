@@ -7,10 +7,8 @@
 
 namespace FOF30\Render;
 
+use AkeebaFEFHelper;
 use FOF30\Container\Container;
-use FOF30\Form\Form;
-use JHtml;
-use JText;
 
 defined('_JEXEC') or die;
 
@@ -47,15 +45,15 @@ class FEF extends Joomla3
 			include_once $helperFile;
 		}
 
-		$this->priority	 = 50;
-		$this->enabled	 = class_exists('AkeebaFEFHelper');
+		$this->priority = 50;
+		$this->enabled  = class_exists('AkeebaFEFHelper');
 	}
 
 	/**
 	 * Echoes any HTML to show before the view template. We override it to load the CSS files required for FEF.
 	 *
-	 * @param   string    $view    The current view
-	 * @param   string    $task    The current task
+	 * @param   string  $view  The current view
+	 * @param   string  $task  The current task
 	 *
 	 * @return  void
 	 */
@@ -67,7 +65,7 @@ class FEF extends Joomla3
 
 		if ($useFEF && class_exists('AkeebaFEFHelper'))
 		{
-			\AkeebaFEFHelper::load($useReset);
+			AkeebaFEFHelper::load($useReset);
 
 			if ($useDarkMode != 0)
 			{

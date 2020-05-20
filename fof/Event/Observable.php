@@ -42,5 +42,5 @@ interface Observable
 	 *
 	 * @return  array
 	 */
-	public function trigger($event, array $args = array());
-} 
+	public function trigger($event, array $args = []);
+}

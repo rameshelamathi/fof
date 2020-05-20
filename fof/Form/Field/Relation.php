@@ -8,8 +8,8 @@
 namespace FOF30\Form\Field;
 
 use FOF30\Model\DataModel;
-use JHtml;
-use JText;
+use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
 
 defined('_JEXEC') or die;
 
@@ -25,11 +25,12 @@ class Relation extends GenericList
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
-	 * @return  string  The field HTML
 	 */
-	public function getStatic() {
+	public function getStatic()
+	{
 		return $this->getRepeatable();
 	}
 
@@ -37,9 +38,9 @@ class Relation extends GenericList
 	 * Get the rendering of this field type for a repeatable (grid) display,
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
-	 * @return  string  The field HTML
 	 */
 	public function getRepeatable()
 	{
@@ -62,18 +63,19 @@ class Relation extends GenericList
 		$relationName = $this->form->getModel()->getContainer()->inflector->pluralize($this->name);
 		$relations    = $this->item->getRelations()->getData($relationName);
 
-		$rels = array();
+		$rels = [];
 
-		foreach ($relations as $relation) {
+		foreach ($relations as $relation)
+		{
 
 			$html = '<span class="' . $relationclass . '">';
 
 			if ($link_url)
 			{
-				$keyfield = $relation->getKeyName();
-				$this->_relationId =  $relation->$keyfield;
+				$keyfield          = $relation->getKeyName();
+				$this->_relationId = $relation->$keyfield;
 
-				$url = $this->parseFieldTags($link_url);
+				$url  = $this->parseFieldTags($link_url);
 				$html .= '<a href="' . $url . '">';
 			}
 
@@ -86,12 +88,12 @@ class Relation extends GenericList
 			// Get the (optionally formatted) value
 			if (!empty($empty_replacement) && empty($value))
 			{
-				$value = JText::_($empty_replacement);
+				$value = \Joomla\CMS\Language\Text::_($empty_replacement);
 			}
 
 			if ($translate == true)
 			{
-				$html .= JText::_($value);
+				$html .= \Joomla\CMS\Language\Text::_($value);
 			}
 			else
 			{
@@ -122,15 +124,15 @@ class Relation extends GenericList
 	 */
 	protected function getOptions()
 	{
-		$options     = array();
-		$this->value = array();
+		$options     = [];
+		$this->value = [];
 
 		$value_field = $this->element['value_field'] ? (string) $this->element['value_field'] : 'title';
-		$name = (string) $this->element['name'];
-        	$class = $this->element['model'] ? (string) $this->element['model'] : $name;
+		$name        = (string) $this->element['name'];
+		$class       = $this->element['model'] ? (string) $this->element['model'] : $name;
 
-		$view      = $this->form->getView()->getName();
-		$relation  = $this->form->getModel()->getContainer()->inflector->pluralize($class);
+		$view     = $this->form->getView()->getName();
+		$relation = $this->form->getModel()->getContainer()->inflector->pluralize($class);
 
 		/** @var DataModel $model */
 		$model = $this->form->getContainer()->factory->model($relation)->setIgnoreRequest(true)->savestate(false);
@@ -140,7 +142,7 @@ class Relation extends GenericList
 
 		foreach ($model->get(true) as $option)
 		{
-			$options[] = JHtml::_('select.option', $option->$key, $option->$value);
+			$options[] = HTMLHelper::_('select.option', $option->$key, $option->$value);
 		}
 
 		if ($id = $this->form->getModel()->getId())
@@ -164,44 +166,44 @@ class Relation extends GenericList
 	 *
 	 * @return  string         Text with tags replace
 	 */
-    protected function parseFieldTags($text)
-    {
-        $ret = $text;
+	protected function parseFieldTags($text)
+	{
+		$ret = $text;
 
-        // Replace [ITEM:ID] in the URL with the item's key value (usually:
-        // the auto-incrementing numeric ID)
-        if (is_null($this->item))
-        {
-            $this->item = $this->form->getModel();
-        }
+		// Replace [ITEM:ID] in the URL with the item's key value (usually:
+		// the auto-incrementing numeric ID)
+		if (is_null($this->item))
+		{
+			$this->item = $this->form->getModel();
+		}
 
-        $replace  = $this->item->getId();
-        $ret = str_replace('[ITEM:ID]', $replace, $ret);
+		$replace = $this->item->getId();
+		$ret     = str_replace('[ITEM:ID]', $replace, $ret);
 
-        // Replace the [ITEMID] in the URL with the current Itemid parameter
-        $ret = str_replace('[ITEMID]', $this->form->getContainer()->input->getInt('Itemid', 0), $ret);
+		// Replace the [ITEMID] in the URL with the current Itemid parameter
+		$ret = str_replace('[ITEMID]', $this->form->getContainer()->input->getInt('Itemid', 0), $ret);
 
-        // Replace the [TOKEN] in the URL with the Joomla! form token
-        $ret = str_replace('[TOKEN]', \JFactory::getSession()->getFormToken(), $ret);
+		// Replace the [TOKEN] in the URL with the Joomla! form token
+		$ret = str_replace('[TOKEN]', Factory::getSession()->getFormToken(), $ret);
 
-        // Replace the [RELATION:ID] in the URL with the relation's key value
-        $ret = str_replace('[RELATION:ID]', $this->_relationId, $ret);
+		// Replace the [RELATION:ID] in the URL with the relation's key value
+		$ret = str_replace('[RELATION:ID]', $this->_relationId, $ret);
 
-        // Replace other field variables in the URL
-        $data = $this->item->getData();
+		// Replace other field variables in the URL
+		$data = $this->item->getData();
 
-        foreach ($data as $field => $value)
-        {
-            // Skip non-processable values
-            if(is_array($value) || is_object($value))
-            {
-                continue;
-            }
+		foreach ($data as $field => $value)
+		{
+			// Skip non-processable values
+			if (is_array($value) || is_object($value))
+			{
+				continue;
+			}
 
-            $search = '[ITEM:' . strtoupper($field) . ']';
-            $ret    = str_replace($search, $value, $ret);
-        }
+			$search = '[ITEM:' . strtoupper($field) . ']';
+			$ret    = str_replace($search, $value, $ret);
+		}
 
-        return $ret;
-    }
+		return $ret;
+	}
 }

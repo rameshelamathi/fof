@@ -10,11 +10,14 @@ namespace FOF30\Form\Field;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
-use JText;
+use JFormFieldText;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\HTML\HTMLHelper;
 
 defined('_JEXEC') or die;
 
-\JFormHelper::loadFieldClass('text');
+FormHelper::loadFieldClass('text');
 
 /**
  * Form Field class for the FOF framework
@@ -22,38 +25,34 @@ defined('_JEXEC') or die;
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
-class Text extends \JFormFieldText implements FieldInterface
+class Text extends JFormFieldText implements FieldInterface
 {
-	/**
-	 * @var  string  Static field output
-	 */
-	protected $static;
-
-	/**
-	 * @var  string  Repeatable field output
-	 */
-	protected $repeatable;
-
-	/**
-	 * The Form object of the form attached to the form field.
-	 *
-	 * @var    Form
-	 */
-	protected $form;
-
 	/**
 	 * A monotonically increasing number, denoting the row number in a repeatable view
 	 *
 	 * @var  int
 	 */
 	public $rowid;
-
 	/**
 	 * The item being rendered in a repeatable form field
 	 *
 	 * @var  DataModel
 	 */
 	public $item;
+	/**
+	 * @var  string  Static field output
+	 */
+	protected $static;
+	/**
+	 * @var  string  Repeatable field output
+	 */
+	protected $repeatable;
+	/**
+	 * The Form object of the form attached to the form field.
+	 *
+	 * @var    Form
+	 */
+	protected $form;
 
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
@@ -95,9 +94,9 @@ class Text extends \JFormFieldText implements FieldInterface
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
-	 * @return  string  The field HTML
 	 */
 	public function getStatic()
 	{
@@ -117,7 +116,7 @@ class Text extends \JFormFieldText implements FieldInterface
 
 		if (!empty($empty_replacement) && empty($this->value))
 		{
-			$this->value = JText::_($empty_replacement);
+			$this->value = \Joomla\CMS\Language\Text::_($empty_replacement);
 		}
 
 		return '<span id="' . $this->id . '" ' . $class . '>' .
@@ -129,9 +128,9 @@ class Text extends \JFormFieldText implements FieldInterface
 	 * Get the rendering of this field type for a repeatable (grid) display,
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
-	 * @return  string  The field HTML
 	 */
 	public function getRepeatable()
 	{
@@ -150,20 +149,20 @@ class Text extends \JFormFieldText implements FieldInterface
 
 		if (isset($this->element['checkout']))
 		{
-			$checkoutSupportValue = (string)$this->element['checkout'];
-			$checkoutSupport = in_array(strtolower($checkoutSupportValue), array('yes', 'true', 'on', 1));
+			$checkoutSupportValue = (string) $this->element['checkout'];
+			$checkoutSupport      = in_array(strtolower($checkoutSupportValue), ['yes', 'true', 'on', 1]);
 		}
 
 		// Initialise
-		$class					= $this->class ? $this->class : $this->id;
-		$format_string			= $this->element['format'] ? (string) $this->element['format'] : '';
-		$format_if_not_empty	= in_array((string) $this->element['format_if_not_empty'], array('true', '1', 'on', 'yes'));
-		$parse_value			= in_array((string) $this->element['parse_value'], array('true', '1', 'on', 'yes'));
-		$link_url				= $this->element['url'] ? (string) $this->element['url'] : '';
-		$empty_replacement		= $this->element['empty_replacement'] ? (string) $this->element['empty_replacement'] : '';
-		$format_source_file     = empty($this->element['format_source_file']) ? '' : (string) $this->element['format_source_file'];
-		$format_source_class    = empty($this->element['format_source_class']) ? '' : (string) $this->element['format_source_class'];
-		$format_source_method   = empty($this->element['format_source_method']) ? '' : (string) $this->element['format_source_method'];
+		$class                = $this->class ? $this->class : $this->id;
+		$format_string        = $this->element['format'] ? (string) $this->element['format'] : '';
+		$format_if_not_empty  = in_array((string) $this->element['format_if_not_empty'], ['true', '1', 'on', 'yes']);
+		$parse_value          = in_array((string) $this->element['parse_value'], ['true', '1', 'on', 'yes']);
+		$link_url             = $this->element['url'] ? (string) $this->element['url'] : '';
+		$empty_replacement    = $this->element['empty_replacement'] ? (string) $this->element['empty_replacement'] : '';
+		$format_source_file   = empty($this->element['format_source_file']) ? '' : (string) $this->element['format_source_file'];
+		$format_source_class  = empty($this->element['format_source_class']) ? '' : (string) $this->element['format_source_class'];
+		$format_source_method = empty($this->element['format_source_method']) ? '' : (string) $this->element['format_source_method'];
 
 		if ($link_url && ($this->item instanceof DataModel))
 		{
@@ -179,7 +178,7 @@ class Text extends \JFormFieldText implements FieldInterface
 
 		if (!empty($empty_replacement) && empty($this->value))
 		{
-			$value = JText::_($empty_replacement);
+			$value = \Joomla\CMS\Language\Text::_($empty_replacement);
 		}
 
 		if ($parse_value)
@@ -190,7 +189,7 @@ class Text extends \JFormFieldText implements FieldInterface
 		if (!empty($format_string) && (!$format_if_not_empty || ($format_if_not_empty && !empty($this->value))))
 		{
 			$format_string = $this->parseFieldTags($format_string);
-			$value = sprintf($format_string, $value);
+			$value         = sprintf($format_string, $value);
 		}
 		elseif ($format_source_class && $format_source_method)
 		{
@@ -237,7 +236,7 @@ class Text extends \JFormFieldText implements FieldInterface
 			if ($this->item->hasField('locked_by'))
 			{
 				$lockedUser = $this->form->getContainer()->platform->getUser($this->item->getFieldValue('locked_by'));
-				$lockedBy = $lockedUser->name . ' (' . $lockedUser->username . ')';
+				$lockedBy   = $lockedUser->name . ' (' . $lockedUser->username . ')';
 			}
 
 			if ($this->item->hasField('locked_on'))
@@ -245,7 +244,7 @@ class Text extends \JFormFieldText implements FieldInterface
 				$lockedOn = $this->item->getFieldValue('locked_on');
 			}
 
-			$html .= \JHtml::_('jgrid.checkedout', $key_id, $lockedBy, $lockedOn, '', true);
+			$html .= HTMLHelper::_('jgrid.checkedout', $key_id, $lockedBy, $lockedOn, '', true);
 		}
 
 		if ($link_url)
@@ -272,41 +271,41 @@ class Text extends \JFormFieldText implements FieldInterface
 	 *
 	 * @return  string         Text with tags replace
 	 */
-    protected function parseFieldTags($text)
-    {
-        $ret = $text;
+	protected function parseFieldTags($text)
+	{
+		$ret = $text;
 
-        // Replace [ITEM:ID] in the URL with the item's key value (usually:
-        // the auto-incrementing numeric ID)
-        if (is_null($this->item))
-        {
-            $this->item = $this->form->getModel();
-        }
+		// Replace [ITEM:ID] in the URL with the item's key value (usually:
+		// the auto-incrementing numeric ID)
+		if (is_null($this->item))
+		{
+			$this->item = $this->form->getModel();
+		}
 
-        $replace  = $this->item->getId();
-        $ret = str_replace('[ITEM:ID]', $replace, $ret);
+		$replace = $this->item->getId();
+		$ret     = str_replace('[ITEM:ID]', $replace, $ret);
 
-        // Replace the [ITEMID] in the URL with the current Itemid parameter
-        $ret = str_replace('[ITEMID]', $this->form->getContainer()->input->getInt('Itemid', 0), $ret);
+		// Replace the [ITEMID] in the URL with the current Itemid parameter
+		$ret = str_replace('[ITEMID]', $this->form->getContainer()->input->getInt('Itemid', 0), $ret);
 
-        // Replace the [TOKEN] in the URL with the Joomla! form token
-        $ret = str_replace('[TOKEN]', \JFactory::getSession()->getFormToken(), $ret);
+		// Replace the [TOKEN] in the URL with the Joomla! form token
+		$ret = str_replace('[TOKEN]', Factory::getSession()->getFormToken(), $ret);
 
-        // Replace other field variables in the URL
-        $data = $this->item->getData();
+		// Replace other field variables in the URL
+		$data = $this->item->getData();
 
-        foreach ($data as $field => $value)
-        {
-            // Skip non-processable values
-            if(is_array($value) || is_object($value))
-            {
-                continue;
-            }
+		foreach ($data as $field => $value)
+		{
+			// Skip non-processable values
+			if (is_array($value) || is_object($value))
+			{
+				continue;
+			}
 
-            $search = '[ITEM:' . strtoupper($field) . ']';
-            $ret    = str_replace($search, $value, $ret);
-        }
+			$search = '[ITEM:' . strtoupper($field) . ']';
+			$ret    = str_replace($search, $value, $ret);
+		}
 
-        return $ret;
-    }
+		return $ret;
+	}
 }

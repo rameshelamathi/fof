@@ -10,12 +10,13 @@ namespace FOF30\Form\Field;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
-use JHtml;
-use JText;
+use JFormFieldLanguage;
+use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\HTML\HTMLHelper;
 
 defined('_JEXEC') or die;
 
-\JFormHelper::loadFieldClass('language');
+FormHelper::loadFieldClass('language');
 
 /**
  * Form Field class for FOF
@@ -23,40 +24,35 @@ defined('_JEXEC') or die;
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
-class Language extends \JFormFieldLanguage implements FieldInterface
+class Language extends JFormFieldLanguage implements FieldInterface
 {
-    protected static $cachedOptions = array();
-
-	/**
-	 * @var  string  Static field output
-	 */
-	protected $static;
-
-	/**
-	 * @var  string  Repeatable field output
-	 */
-	protected $repeatable;
-
-	/**
-	 * The Form object of the form attached to the form field.
-	 *
-	 * @var    Form
-	 */
-	protected $form;
-
+	protected static $cachedOptions = [];
 	/**
 	 * A monotonically increasing number, denoting the row number in a repeatable view
 	 *
 	 * @var  int
 	 */
 	public $rowid;
-
 	/**
 	 * The item being rendered in a repeatable form field
 	 *
 	 * @var  DataModel
 	 */
 	public $item;
+	/**
+	 * @var  string  Static field output
+	 */
+	protected $static;
+	/**
+	 * @var  string  Repeatable field output
+	 */
+	protected $repeatable;
+	/**
+	 * The Form object of the form attached to the form field.
+	 *
+	 * @var    Form
+	 */
+	protected $form;
 
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
@@ -95,11 +91,72 @@ class Language extends \JFormFieldLanguage implements FieldInterface
 	}
 
 	/**
-	 * Method to get the field options.
+	 * Get the rendering of this field type for static display, e.g. in a single
+	 * item view (typically a "read" task).
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
+	 */
+	public function getStatic()
+	{
+		if (isset($this->element['legacy']))
+		{
+			return $this->getInput();
+		}
+
+		$options = [
+			'id' => $this->id,
+		];
+
+		return $this->getFieldContents($options);
+	}
+
+	/**
+	 * Get the rendering of this field type for a repeatable (grid) display,
+	 * e.g. in a view listing many item (typically a "browse" task)
+	 *
+	 * @return  string  The field HTML
+	 * @since 2.0
+	 *
+	 */
+	public function getRepeatable()
+	{
+		if (isset($this->element['legacy']))
+		{
+			return $this->getInput();
+		}
+
+		$options = [
+			'class' => $this->id,
+		];
+
+		return $this->getFieldContents($options);
+	}
+
+	/**
+	 * Method to get the field input markup.
+	 *
+	 * @param   array  $fieldOptions  Options to be passed into the field
+	 *
+	 * @return  string  The field HTML
+	 */
+	public function getFieldContents(array $fieldOptions = [])
+	{
+		$id    = isset($fieldOptions['id']) ? 'id="' . $fieldOptions['id'] . '" ' : '';
+		$class = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
+
+		return '<span ' . ($id ? $id : '') . 'class="' . $class . '">' .
+			htmlspecialchars(GenericList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
+			'</span>';
+	}
+
+	/**
+	 * Method to get the field options.
+	 *
 	 * @return  array  The field option objects.
+	 * @since 2.0
+	 *
 	 */
 	protected function getOptions()
 	{
@@ -121,70 +178,9 @@ class Language extends \JFormFieldLanguage implements FieldInterface
 
 		if ($noneoption)
 		{
-			array_unshift($options, JHtml::_('select.option', '*', JText::_($noneoption)));
+			array_unshift($options, HTMLHelper::_('select.option', '*', \Joomla\CMS\Language\Text::_($noneoption)));
 		}
 
 		return $options;
-	}
-
-	/**
-	 * Get the rendering of this field type for static display, e.g. in a single
-	 * item view (typically a "read" task).
-	 *
-	 * @since 2.0
-	 *
-	 * @return  string  The field HTML
-	 */
-	public function getStatic()
-	{
-		if (isset($this->element['legacy']))
-		{
-			return $this->getInput();
-		}
-
-		$options = array(
-			'id' => $this->id
-		);
-
-		return $this->getFieldContents($options);
-	}
-
-	/**
-	 * Get the rendering of this field type for a repeatable (grid) display,
-	 * e.g. in a view listing many item (typically a "browse" task)
-	 *
-	 * @since 2.0
-	 *
-	 * @return  string  The field HTML
-	 */
-	public function getRepeatable()
-	{
-		if (isset($this->element['legacy']))
-		{
-			return $this->getInput();
-		}
-
-		$options = array(
-			'class' => $this->id
-		);
-
-		return $this->getFieldContents($options);
-	}
-
-	/**
-	 * Method to get the field input markup.
-	 *
-	 * @param   array   $fieldOptions  Options to be passed into the field
-	 *
-	 * @return  string  The field HTML
-	 */
-	public function getFieldContents(array $fieldOptions = array())
-	{
-		$id    = isset($fieldOptions['id']) ? 'id="' . $fieldOptions['id'] . '" ' : '';
-		$class = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
-
-		return '<span ' . ($id ? $id : '') . 'class="' . $class . '">' .
-			htmlspecialchars(GenericList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
-			'</span>';
 	}
 }

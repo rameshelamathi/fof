@@ -8,16 +8,17 @@
 namespace FOF30\Model\DataModel\Exception;
 
 use Exception;
+use Joomla\CMS\Language\Text;
 
 defined('_JEXEC') or die;
 
 class NoItemsFound extends BaseException
 {
-	public function __construct( $className, $code = 404, Exception $previous = null )
+	public function __construct($className, $code = 404, Exception $previous = null)
 	{
-		$message = \JText::sprintf('LIB_FOF_MODEL_ERR_NOITEMSFOUND', $className);
+		$message = Text::sprintf('LIB_FOF_MODEL_ERR_NOITEMSFOUND', $className);
 
-		parent::__construct( $message, $code, $previous );
+		parent::__construct($message, $code, $previous);
 	}
 
 }

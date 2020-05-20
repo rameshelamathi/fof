@@ -7,7 +7,7 @@
 
 namespace FOF30\Form\Header;
 
-use JText;
+use Joomla\CMS\Language\Text;
 
 defined('_JEXEC') or die;
 
@@ -25,7 +25,7 @@ class Filterable extends Searchable
 	 */
 	protected function getFilter()
 	{
-		$valide = array('yes', 'true', '1');
+		$valide = ['yes', 'true', '1'];
 
 		// Initialize some field(s) attributes.
 		$size        = $this->element['size'] ? ' size="' . (int) $this->element['size'] . '"' : '';
@@ -33,17 +33,17 @@ class Filterable extends Searchable
 		$filterclass = $this->element['filterclass'] ? ' class="' . (string) $this->element['filterclass'] . '"' : '';
 		$placeholder = $this->element['placeholder'] ? $this->element['placeholder'] : $this->getLabel();
 		$name        = $this->element['searchfieldname'] ? $this->element['searchfieldname'] : $this->name;
-		$placeholder = ' placeholder="' . JText::_($placeholder) . '"';
+		$placeholder = ' placeholder="' . Text::_($placeholder) . '"';
 
-		$single      = in_array($this->element['single'], $valide) ? true : false;
-		$showMethod  = in_array($this->element['showmethod'], $valide) ? true : false;
-		$method      = $this->element['method'] ? $this->element['method'] : 'between';
-		$fromName    = $this->element['fromname'] ? $this->element['fromname'] : 'from';
-		$toName      = $this->element['toname'] ? $this->element['toname'] : 'to';
+		$single     = in_array($this->element['single'], $valide) ? true : false;
+		$showMethod = in_array($this->element['showmethod'], $valide) ? true : false;
+		$method     = $this->element['method'] ? $this->element['method'] : 'between';
+		$fromName   = $this->element['fromname'] ? $this->element['fromname'] : 'from';
+		$toName     = $this->element['toname'] ? $this->element['toname'] : 'to';
 
-		$values      = $this->form->getModel()->getState($name);
-		$fromValue   = $values[$fromName];
-		$toValue     = $values[$toName];
+		$values    = $this->form->getModel()->getState($name);
+		$fromValue = $values[$fromName];
+		$toValue   = $values[$toName];
 
 		// Initialize JavaScript field attributes.
 		if ($this->element['onchange'])
@@ -57,14 +57,15 @@ class Filterable extends Searchable
 
 		if ($showMethod)
 		{
-			$html  = '<input type="text" name="' . $name . '[method]" value="'. $method . '" />';
-		} else
+			$html = '<input type="text" name="' . $name . '[method]" value="' . $method . '" />';
+		}
+		else
 		{
-			$html  = '<input type="hidden" name="' . $name . '[method]" value="'. $method . '" />';
+			$html = '<input type="hidden" name="' . $name . '[method]" value="' . $method . '" />';
 		}
 
 		$html .= '<input type="text" name="' . $name . '[from]" id="' . $this->id . '_' . $fromName . '"' . ' value="'
-				. htmlspecialchars($fromValue, ENT_COMPAT, 'UTF-8') . '"' . $filterclass . $size . $placeholder . $onchange . $maxLength . '/>';
+			. htmlspecialchars($fromValue, ENT_COMPAT, 'UTF-8') . '"' . $filterclass . $size . $placeholder . $onchange . $maxLength . '/>';
 
 		if (!$single)
 		{

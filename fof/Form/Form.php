@@ -11,11 +11,17 @@ use FOF30\Container\Container;
 use FOF30\Form\Header\HeaderBase;
 use FOF30\Model\DataModel;
 use FOF30\View\DataView\DataViewInterface;
-use JFactory;
-use JForm;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\Path;
+use Joomla\CMS\Form\Form as JForm;
+use Joomla\CMS\Form\FormRule;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Log\Log;
 use Joomla\Registry\Registry;
-use JText;
+use JString;
+use ReflectionClass;
 use SimpleXMLElement;
+use UnexpectedValueException;
 
 defined('_JEXEC') or die;
 
@@ -24,8 +30,8 @@ defined('_JEXEC') or die;
  * browse (record list) and read (single record display) views based on XML
  * forms.
  *
- * @package  FrameworkOnFramework
- * @since    2.0
+ * @package    FrameworkOnFramework
+ * @since      2.0
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
@@ -48,7 +54,7 @@ class Form extends JForm
 	/**
 	 * The Container this form belongs to
 	 *
-	 * @var \FOF30\Container\Container
+	 * @var Container
 	 */
 	protected $container;
 
@@ -65,16 +71,16 @@ class Form extends JForm
 	 *
 	 * @var    array
 	 */
-	protected $entities = array();
+	protected $entities = [];
 
 	/**
 	 * Method to instantiate the form object.
 	 *
-	 * @param   Container $container The component Container where this form belongs to
-	 * @param   string    $name      The name of the form.
-	 * @param   array     $options   An array of form options.
+	 * @param   Container  $container  The component Container where this form belongs to
+	 * @param   string     $name       The name of the form.
+	 * @param   array      $options    An array of form options.
 	 */
-	public function __construct(Container $container, $name, array $options = array())
+	public function __construct(Container $container, $name, array $options = [])
 	{
 		parent::__construct($name, $options);
 
@@ -82,10 +88,94 @@ class Form extends JForm
 	}
 
 	/**
+	 * WARNING: THIS IS IGNORED IN FOF3!
+	 *
+	 * @param   string  $new  IGNORED!
+	 *
+	 * @return  void
+	 *
+	 * @deprecated 3.0
+	 */
+	public static function addFieldPath($new = null)
+	{
+		if ($new)
+		{
+		} // Prevents phpStorm from freaking out about the unused $new parameter...
+
+		if (class_exists('JLog'))
+		{
+			Log::add(__CLASS__ . '::' . __METHOD__ . '() is deprecated since FOF 3.0 and should not be used.', Log::WARNING, 'deprecated');
+		}
+	}
+
+	/**
+	 * WARNING: THIS IS IGNORED IN FOF3!
+	 *
+	 * @param   string  $new  IGNORED!
+	 *
+	 * @return  void
+	 *
+	 * @deprecated 3.0
+	 */
+	public static function addHeaderPath($new = null)
+	{
+		if ($new)
+		{
+		} // Prevents phpStorm from freaking out about the unused $new parameter...
+
+		if (class_exists('JLog'))
+		{
+			Log::add(__CLASS__ . '::' . __METHOD__ . '() is deprecated since FOF 3.0 and should not be used.', Log::WARNING, 'deprecated');
+		}
+	}
+
+	/**
+	 * WARNING: THIS IS IGNORED IN FOF3!
+	 *
+	 * @param   string  $new  IGNORED!
+	 *
+	 * @return  void
+	 *
+	 * @deprecated 3.0
+	 */
+	public static function addFormPath($new = null)
+	{
+		if ($new)
+		{
+		} // Prevents phpStorm from freaking out about the unused $new parameter...
+
+		if (class_exists('JLog'))
+		{
+			Log::add(__CLASS__ . '::' . __METHOD__ . '() is deprecated since FOF 3.0 and should not be used.', Log::WARNING, 'deprecated');
+		}
+	}
+
+	/**
+	 * WARNING: THIS IS IGNORED IN FOF3!
+	 *
+	 * @param   string  $new  IGNORED!
+	 *
+	 * @return  void
+	 *
+	 * @deprecated 3.0
+	 */
+	public static function addRulePath($new = null)
+	{
+		if ($new)
+		{
+		} // Prevents phpStorm from freaking out about the unused $new parameter...
+
+		if (class_exists('JLog'))
+		{
+			Log::add(__CLASS__ . '::' . __METHOD__ . '() is deprecated since FOF 3.0 and should not be used.', Log::WARNING, 'deprecated');
+		}
+	}
+
+	/**
 	 * Returns the value of an attribute of the form itself
 	 *
-	 * @param   string $attribute The name of the attribute
-	 * @param   mixed  $default   Optional default value to return
+	 * @param   string  $attribute  The name of the attribute
+	 * @param   mixed   $default    Optional default value to return
 	 *
 	 * @return  mixed
 	 *
@@ -101,7 +191,7 @@ class Form extends JForm
 		}
 		else
 		{
-			return (string)$value;
+			return (string) $value;
 		}
 	}
 
@@ -136,9 +226,9 @@ class Form extends JForm
 
 			foreach ($lessfiles as $def)
 			{
-				$parts = explode('||', $def, 2);
+				$parts    = explode('||', $def, 2);
 				$lessfile = $parts[0];
-				$alt = (count($parts) > 1) ? trim($parts[1]) : null;
+				$alt      = (count($parts) > 1) ? trim($parts[1]) : null;
 				$this->getView()->addLess(trim($lessfile), $alt);
 			}
 		}
@@ -172,7 +262,7 @@ class Form extends JForm
 	 * Returns a reference to the protected $data object, allowing direct
 	 * access to and manipulation of the form's data.
 	 *
-	 * @return   \JRegistry|Registry  The form's data registry
+	 * @return   Registry|Registry  The form's data registry
 	 *
 	 * @since 2.0
 	 */
@@ -211,18 +301,6 @@ class Form extends JForm
 	}
 
 	/**
-	 * Attaches a DataModel to this form
-	 *
-	 * @param   DataModel &$model The model to attach to the form
-	 *
-	 * @return  void
-	 */
-	public function setModel(DataModel &$model)
-	{
-		$this->model = $model;
-	}
-
-	/**
 	 * Returns the DataModel attached to this form
 	 *
 	 * @return DataModel
@@ -233,15 +311,15 @@ class Form extends JForm
 	}
 
 	/**
-	 * Attaches a DataViewInterface to this form
+	 * Attaches a DataModel to this form
 	 *
-	 * @param   DataViewInterface &$view The view to attach to the form
+	 * @param   DataModel &$model  The model to attach to the form
 	 *
 	 * @return  void
 	 */
-	public function setView(DataViewInterface &$view)
+	public function setModel(DataModel &$model)
 	{
-		$this->view = $view;
+		$this->model = $model;
 	}
 
 	/**
@@ -255,6 +333,18 @@ class Form extends JForm
 	}
 
 	/**
+	 * Attaches a DataViewInterface to this form
+	 *
+	 * @param   DataViewInterface &$view  The view to attach to the form
+	 *
+	 * @return  void
+	 */
+	public function setView(DataViewInterface &$view)
+	{
+		$this->view = $view;
+	}
+
+	/**
 	 * Method to get an array of FormHeader objects in the headerset.
 	 *
 	 * @return  array  The array of HeaderInterface objects in the headerset.
@@ -263,7 +353,7 @@ class Form extends JForm
 	 */
 	public function getHeaderset()
 	{
-		$fields = array();
+		$fields = [];
 
 		$elements = $this->findHeadersByGroup();
 
@@ -276,13 +366,13 @@ class Form extends JForm
 
 		// Build the result array from the found field elements.
 
-		/** @var \SimpleXMLElement $element */
+		/** @var SimpleXMLElement $element */
 		foreach ($elements as $element)
 		{
 			// Get the field groups for the element.
-			$attrs = $element->xpath('ancestor::headerset[@name]/@name');
-			$groups = array_map('strval', $attrs ? $attrs : array());
-			$group = implode('.', $groups);
+			$attrs  = $element->xpath('ancestor::headerset[@name]/@name');
+			$groups = array_map('strval', $attrs ? $attrs : []);
+			$group  = implode('.', $groups);
 
 			// If the field is successfully loaded add it to the result array.
 			/** @var HeaderBase $field */
@@ -296,25 +386,240 @@ class Form extends JForm
 	}
 
 	/**
+	 * Method to get a header field represented as a HeaderInterface object.
+	 *
+	 * @param   string  $name   The name of the header field.
+	 * @param   string  $group  The optional dot-separated form group path on which to find the field.
+	 * @param   mixed   $value  The optional value to use as the default for the field. (DEPRECATED)
+	 *
+	 * @return  HeaderInterface|bool  The HeaderInterface object for the field or boolean false on error.
+	 *
+	 * @since   2.0
+	 */
+	public function getHeader($name, $group = null, $value = null)
+	{
+		// Make sure there is a valid Form XML document.
+		if (!($this->xml instanceof SimpleXMLElement))
+		{
+			return false;
+		}
+
+		// Attempt to find the field by name and group.
+		$element = $this->findHeader($name, $group);
+
+		// If the field element was not found return false.
+		if (!$element)
+		{
+			return false;
+		}
+
+		return $this->loadHeader($element, $group);
+	}
+
+	/**
+	 * Method to remove a header from the form definition.
+	 *
+	 * @param   string  $name   The name of the form field for which remove.
+	 * @param   string  $group  The optional dot-separated form group path on which to find the field.
+	 *
+	 * @return  boolean  True on success, false otherwise.
+	 *
+	 * @throws  UnexpectedValueException
+	 */
+	public function removeHeader($name, $group = null)
+	{
+		// Make sure there is a valid JForm XML document.
+		if (!($this->xml instanceof SimpleXMLElement))
+		{
+			throw new UnexpectedValueException(sprintf('%s::getFieldAttribute `xml` is not an instance of SimpleXMLElement', get_class($this)));
+		}
+
+		// Find the form field element from the definition.
+		$element = $this->findHeader($name, $group);
+
+		// If the element exists remove it from the form definition.
+		if ($element instanceof SimpleXMLElement)
+		{
+			$dom = dom_import_simplexml($element);
+			$dom->parentNode->removeChild($dom);
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Load a class for one of the form's entities of a particular type.
+	 * Currently, it makes sense to use this method for the "field" and "rule" entities
+	 * (but you can support more entities in your subclass).
+	 *
+	 * @param   string  $entity  One of the form entities (field, header or rule).
+	 * @param   string  $type    Type of an entity.
+	 *
+	 * @return  mixed  Class name on success or false otherwise.
+	 *
+	 * @since   2.0
+	 */
+	public function loadClass($entity, $type)
+	{
+		// Get the prefixes for namespaced classes (FOF3 way)
+		$namespacedPrefixes = [
+			$this->container->getNamespacePrefix(),
+			'FOF30\\',
+		];
+
+		// Get the prefixes for non-namespaced classes (FOF2 and Joomla! way)
+		$plainPrefixes = ['J'];
+
+		// If the type is given as prefix.type add the custom type into the two prefix arrays
+		if (strpos($type, '.'))
+		{
+			list($prefix, $type) = explode('.', $type);
+
+			array_unshift($plainPrefixes, $prefix);
+			array_unshift($namespacedPrefixes, $prefix);
+		}
+
+		// First try to find the namespaced class
+		foreach ($namespacedPrefixes as $prefix)
+		{
+			$class = rtrim($prefix, '\\') . '\\Form\\' . ucfirst($entity) . '\\' . ucfirst($type);
+
+			if (class_exists($class, true))
+			{
+				return $class;
+			}
+		}
+
+		// TODO The rest of the code is legacy and will be removed in a future version
+
+		// Then try to find the non-namespaced class
+		$classes = [];
+
+		foreach ($plainPrefixes as $prefix)
+		{
+			$class = JString::ucfirst($prefix, '_') . 'Form' . JString::ucfirst($entity, '_') . JString::ucfirst($type, '_');
+
+			if (class_exists($class, true))
+			{
+				return $class;
+			}
+
+			$classes[] = $class;
+		}
+
+		// Get the field search path array.
+		$reflector     = new ReflectionClass('\\JFormHelper');
+		$addPathMethod = $reflector->getMethod('addPath');
+		$addPathMethod->setAccessible(true);
+		$paths = $addPathMethod->invoke(null, $entity);
+
+		// If the type is complex, add the base type to the paths.
+		if ($pos = strpos($type, '_'))
+		{
+			// Add the complex type prefix to the paths.
+			for ($i = 0, $n = count($paths); $i < $n; $i++)
+			{
+				// Derive the new path.
+				$path = $paths[$i] . '/' . strtolower(substr($type, 0, $pos));
+
+				// If the path does not exist, add it.
+				if (!in_array($path, $paths))
+				{
+					$paths[] = $path;
+				}
+			}
+
+			// Break off the end of the complex type.
+			$type = substr($type, $pos + 1);
+		}
+
+		// Try to find the class file.
+		$type = strtolower($type) . '.php';
+
+		foreach ($paths as $path)
+		{
+			if ($file = Path::find($path, $type))
+			{
+				require_once $file;
+
+				foreach ($classes as $class)
+				{
+					if (class_exists($class, false))
+					{
+						return $class;
+					}
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get a reference to the form's Container
+	 *
+	 * @return Container
+	 */
+	public function &getContainer()
+	{
+		return $this->container;
+	}
+
+	/**
+	 * Set the form's Container
+	 *
+	 * @param   Container  $container
+	 */
+	public function setContainer($container)
+	{
+		$this->container = $container;
+	}
+
+	/**
+	 * Method to bind data to the form.
+	 *
+	 * @param   mixed  $data  An array or object of data to bind to the form.
+	 *
+	 * @return  boolean  True on success.
+	 *
+	 * @since   11.1
+	 */
+	public function bind($data)
+	{
+		$this->data = class_exists('JRegistry') ? new Registry() : new Registry();
+
+		if (is_object($data) && ($data instanceof DataModel))
+		{
+			$maxDepth = (int) $this->getAttribute('relation_depth', '1');
+
+			return parent::bind($this->modelToBindSource($data, $maxDepth));
+		}
+
+		return parent::bind($data);
+	}
+
+	/**
 	 * Method to get an array of <header /> elements from the form XML document which are
 	 * in a control group by name.
 	 *
-	 * @param   mixed   $group    The optional dot-separated form group path on which to find the fields.
+	 * @param   mixed    $group   The optional dot-separated form group path on which to find the fields.
 	 *                            Null will return all fields. False will return fields not in a group.
-	 * @param   boolean $nested   True to also include fields in nested groups that are inside of the
+	 * @param   boolean  $nested  True to also include fields in nested groups that are inside of the
 	 *                            group for which to find fields.
 	 *
-	 * @return  \SimpleXMLElement|bool  Boolean false on error or array of SimpleXMLElement objects.
+	 * @return  SimpleXMLElement|bool  Boolean false on error or array of SimpleXMLElement objects.
 	 *
 	 * @since   2.0
 	 */
 	protected function &findHeadersByGroup($group = null, $nested = false)
 	{
-		$false = false;
-		$fields = array();
+		$false  = false;
+		$fields = [];
 
 		// Make sure there is a valid JForm XML document.
-		if (!($this->xml instanceof \SimpleXMLElement))
+		if (!($this->xml instanceof SimpleXMLElement))
 		{
 			return $false;
 		}
@@ -326,7 +631,7 @@ class Form extends JForm
 			$elements = &$this->findHeader($group);
 
 			// Get all of the field elements for the fields elements.
-			/** @var \SimpleXMLElement $element */
+			/** @var SimpleXMLElement $element */
 			foreach ($elements as $element)
 			{
 				// If there are field elements add them to the return result.
@@ -347,12 +652,12 @@ class Form extends JForm
 						{
 							// Get the names of the groups that the field is in.
 							$attrs = $field->xpath('ancestor::headers[@name]/@name');
-							$names = array_map('strval', $attrs ? $attrs : array());
+							$names = array_map('strval', $attrs ? $attrs : []);
 
 							// If the field is in the specific group then add it to the return list.
-							if ($names == (array)$groupNames)
+							if ($names == (array) $groupNames)
 							{
-								$fields = array_merge($fields, array($field));
+								$fields = array_merge($fields, [$field]);
 							}
 						}
 					}
@@ -374,41 +679,10 @@ class Form extends JForm
 	}
 
 	/**
-	 * Method to get a header field represented as a HeaderInterface object.
-	 *
-	 * @param   string $name  The name of the header field.
-	 * @param   string $group The optional dot-separated form group path on which to find the field.
-	 * @param   mixed  $value The optional value to use as the default for the field. (DEPRECATED)
-	 *
-	 * @return  HeaderInterface|bool  The HeaderInterface object for the field or boolean false on error.
-	 *
-	 * @since   2.0
-	 */
-	public function getHeader($name, $group = null, $value = null)
-	{
-		// Make sure there is a valid Form XML document.
-		if (!($this->xml instanceof \SimpleXMLElement))
-		{
-			return false;
-		}
-
-		// Attempt to find the field by name and group.
-		$element = $this->findHeader($name, $group);
-
-		// If the field element was not found return false.
-		if (!$element)
-		{
-			return false;
-		}
-
-		return $this->loadHeader($element, $group);
-	}
-
-	/**
 	 * Method to get a header field represented as an XML element object.
 	 *
-	 * @param   string $name  The name of the form field.
-	 * @param   string $group The optional dot-separated form group path on which to find the field.
+	 * @param   string  $name   The name of the form field.
+	 * @param   string  $group  The optional dot-separated form group path on which to find the field.
 	 *
 	 * @return  mixed  The XML element object for the field or boolean false on error.
 	 *
@@ -417,10 +691,10 @@ class Form extends JForm
 	protected function findHeader($name, $group = null)
 	{
 		$element = false;
-		$fields = array();
+		$fields  = [];
 
 		// Make sure there is a valid JForm XML document.
-		if (!($this->xml instanceof \SimpleXMLElement))
+		if (!($this->xml instanceof SimpleXMLElement))
 		{
 			return false;
 		}
@@ -432,7 +706,7 @@ class Form extends JForm
 			$elements = &$this->findGroup($group);
 
 			// Get all of the field elements with the correct name for the fields elements.
-			/** @var \SimpleXMLElement $element */
+			/** @var SimpleXMLElement $element */
 			foreach ($elements as $element)
 			{
 				// If there are matching field elements add them to the fields array.
@@ -451,15 +725,15 @@ class Form extends JForm
 			// Use the first correct match in the given group.
 			$groupNames = explode('.', $group);
 
-			/** @var \SimpleXMLElement $field */
+			/** @var SimpleXMLElement $field */
 			foreach ($fields as &$field)
 			{
 				// Get the group names as strings for ancestor fields elements.
 				$attrs = $field->xpath('ancestor::headerfields[@name]/@name');
-				$names = array_map('strval', $attrs ? $attrs : array());
+				$names = array_map('strval', $attrs ? $attrs : []);
 
 				// If the field is in the exact group use it and break out of the loop.
-				if ($names == (array)$groupNames)
+				if ($names == (array) $groupNames)
 				{
 					$element = &$field;
 					break;
@@ -501,8 +775,8 @@ class Form extends JForm
 	/**
 	 * Method to load, setup and return a HeaderInterface object based on field data.
 	 *
-	 * @param   string $element The XML element object representation of the form field.
-	 * @param   string $group   The optional dot-separated form group path on which to find the field.
+	 * @param   string  $element  The XML element object representation of the form field.
+	 * @param   string  $group    The optional dot-separated form group path on which to find the field.
 	 *
 	 * @return  HeaderInterface|bool  The HeaderInterface object for the field or boolean false on error.
 	 *
@@ -511,13 +785,13 @@ class Form extends JForm
 	protected function loadHeader($element, $group = null)
 	{
 		// Make sure there is a valid SimpleXMLElement.
-		if (!($element instanceof \SimpleXMLElement))
+		if (!($element instanceof SimpleXMLElement))
 		{
 			return false;
 		}
 
 		// Get the field type.
-		$type = $element['type'] ? (string)$element['type'] : 'field';
+		$type = $element['type'] ? (string) $element['type'] : 'field';
 
 		// Load the JFormField object for the field.
 		$field = $this->loadHeaderType($type);
@@ -542,43 +816,10 @@ class Form extends JForm
 	}
 
 	/**
-	 * Method to remove a header from the form definition.
-	 *
-	 * @param   string  $name   The name of the form field for which remove.
-	 * @param   string  $group  The optional dot-separated form group path on which to find the field.
-	 *
-	 * @return  boolean  True on success, false otherwise.
-	 *
-	 * @throws  \UnexpectedValueException
-	 */
-	public function removeHeader($name, $group = null)
-	{
-		// Make sure there is a valid JForm XML document.
-		if (!($this->xml instanceof SimpleXMLElement))
-		{
-			throw new \UnexpectedValueException(sprintf('%s::getFieldAttribute `xml` is not an instance of SimpleXMLElement', get_class($this)));
-		}
-
-		// Find the form field element from the definition.
-		$element = $this->findHeader($name, $group);
-
-		// If the element exists remove it from the form definition.
-		if ($element instanceof SimpleXMLElement)
-		{
-			$dom = dom_import_simplexml($element);
-			$dom->parentNode->removeChild($dom);
-
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
 	 * Proxy for {@link Helper::loadFieldType()}.
 	 *
-	 * @param   string  $type The field type.
-	 * @param   boolean $new  Flag to toggle whether we should get a new instance of the object.
+	 * @param   string   $type  The field type.
+	 * @param   boolean  $new   Flag to toggle whether we should get a new instance of the object.
 	 *
 	 * @return  FieldInterface|bool  FieldInterface object on success, false otherwise.
 	 *
@@ -592,8 +833,8 @@ class Form extends JForm
 	/**
 	 * Proxy for {@link Helper::loadHeaderType()}.
 	 *
-	 * @param   string  $type The field type.
-	 * @param   boolean $new  Flag to toggle whether we should get a new instance of the object.
+	 * @param   string   $type  The field type.
+	 * @param   boolean  $new   Flag to toggle whether we should get a new instance of the object.
 	 *
 	 * @return  HeaderInterface|bool  HeaderInterface object on success, false otherwise.
 	 *
@@ -607,10 +848,10 @@ class Form extends JForm
 	/**
 	 * Proxy for {@link Helper::loadRuleType()}.
 	 *
-	 * @param   string  $type The rule type.
-	 * @param   boolean $new  Flag to toggle whether we should get a new instance of the object.
+	 * @param   string   $type  The rule type.
+	 * @param   boolean  $new   Flag to toggle whether we should get a new instance of the object.
 	 *
-	 * @return  \JFormRule|bool  JFormRule object on success, false otherwise.
+	 * @return  FormRule|bool  JFormRule object on success, false otherwise.
 	 *
 	 * @see     Helper::loadRuleType()
 	 * @since   2.0
@@ -625,9 +866,9 @@ class Form extends JForm
 	 * Each type is loaded only once and then used as a prototype for other objects of same type.
 	 * Please, use this method only with those entities which support types (forms don't support them).
 	 *
-	 * @param   string  $entity The entity.
-	 * @param   string  $type   The entity type.
-	 * @param   boolean $new    Flag to toggle whether we should get a new instance of the object.
+	 * @param   string   $entity  The entity.
+	 * @param   string   $type    The entity type.
+	 * @param   boolean  $new     Flag to toggle whether we should get a new instance of the object.
 	 *
 	 * @return  mixed Entity object on success, false otherwise.
 	 */
@@ -655,233 +896,6 @@ class Form extends JForm
 		{
 			return false;
 		}
-	}
-
-	/**
-	 * Load a class for one of the form's entities of a particular type.
-	 * Currently, it makes sense to use this method for the "field" and "rule" entities
-	 * (but you can support more entities in your subclass).
-	 *
-	 * @param   string $entity One of the form entities (field, header or rule).
-	 * @param   string $type   Type of an entity.
-	 *
-	 * @return  mixed  Class name on success or false otherwise.
-	 *
-	 * @since   2.0
-	 */
-	public function loadClass($entity, $type)
-	{
-		// Get the prefixes for namespaced classes (FOF3 way)
-		$namespacedPrefixes = array(
-			$this->container->getNamespacePrefix(),
-			'FOF30\\',
-		);
-
-		// Get the prefixes for non-namespaced classes (FOF2 and Joomla! way)
-		$plainPrefixes = array('J');
-
-		// If the type is given as prefix.type add the custom type into the two prefix arrays
-		if (strpos($type, '.'))
-		{
-			list($prefix, $type) = explode('.', $type);
-
-			array_unshift($plainPrefixes, $prefix);
-			array_unshift($namespacedPrefixes, $prefix);
-		}
-
-		// First try to find the namespaced class
-		foreach ($namespacedPrefixes as $prefix)
-		{
-			$class = rtrim($prefix, '\\') . '\\Form\\' . ucfirst($entity) . '\\' . ucfirst($type);
-
-			if (class_exists($class, true))
-			{
-				return $class;
-			}
-		}
-
-		// TODO The rest of the code is legacy and will be removed in a future version
-
-		// Then try to find the non-namespaced class
-		$classes = array();
-
-		foreach ($plainPrefixes as $prefix)
-		{
-			$class = \JString::ucfirst($prefix, '_') . 'Form' . \JString::ucfirst($entity, '_') . \JString::ucfirst($type, '_');
-
-			if (class_exists($class, true))
-			{
-				return $class;
-			}
-
-			$classes[] = $class;
-		}
-
-		// Get the field search path array.
-		$reflector = new \ReflectionClass('\\JFormHelper');
-		$addPathMethod = $reflector->getMethod('addPath');
-		$addPathMethod->setAccessible(true);
-		$paths = $addPathMethod->invoke(null, $entity);
-
-		// If the type is complex, add the base type to the paths.
-		if ($pos = strpos($type, '_'))
-		{
-			// Add the complex type prefix to the paths.
-			for ($i = 0, $n = count($paths); $i < $n; $i++)
-			{
-				// Derive the new path.
-				$path = $paths[$i] . '/' . strtolower(substr($type, 0, $pos));
-
-				// If the path does not exist, add it.
-				if (!in_array($path, $paths))
-				{
-					$paths[] = $path;
-				}
-			}
-
-			// Break off the end of the complex type.
-			$type = substr($type, $pos + 1);
-		}
-
-		// Try to find the class file.
-		$type = strtolower($type) . '.php';
-
-		foreach ($paths as $path)
-		{
-			if ($file = \JPath::find($path, $type))
-			{
-				require_once $file;
-
-				foreach ($classes as $class)
-				{
-					if (class_exists($class, false))
-					{
-						return $class;
-					}
-				}
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * WARNING: THIS IS IGNORED IN FOF3!
-	 *
-	 * @param   string  $new  IGNORED!
-	 *
-	 * @return  void
-	 *
-	 * @deprecated 3.0
-	 */
-	public static function addFieldPath($new = null)
-	{
-		if ($new) {}; // Prevents phpStorm from freaking out about the unused $new parameter...
-
-		if (class_exists('JLog'))
-		{
-			\JLog::add(__CLASS__ . '::' . __METHOD__ . '() is deprecated since FOF 3.0 and should not be used.', \JLog::WARNING, 'deprecated');
-		}
-	}
-
-	/**
-	 * WARNING: THIS IS IGNORED IN FOF3!
-	 *
-	 * @param   string  $new  IGNORED!
-	 *
-	 * @return  void
-	 *
-	 * @deprecated 3.0
-	 */
-	public static function addHeaderPath($new = null)
-	{
-		if ($new) {}; // Prevents phpStorm from freaking out about the unused $new parameter...
-
-		if (class_exists('JLog'))
-		{
-			\JLog::add(__CLASS__ . '::' . __METHOD__ . '() is deprecated since FOF 3.0 and should not be used.', \JLog::WARNING, 'deprecated');
-		}
-	}
-
-	/**
-	 * WARNING: THIS IS IGNORED IN FOF3!
-	 *
-	 * @param   string  $new  IGNORED!
-	 *
-	 * @return  void
-	 *
-	 * @deprecated 3.0
-	 */
-	public static function addFormPath($new = null)
-	{
-		if ($new) {}; // Prevents phpStorm from freaking out about the unused $new parameter...
-
-		if (class_exists('JLog'))
-		{
-			\JLog::add(__CLASS__ . '::' . __METHOD__ . '() is deprecated since FOF 3.0 and should not be used.', \JLog::WARNING, 'deprecated');
-		}
-	}
-
-	/**
-	 * WARNING: THIS IS IGNORED IN FOF3!
-	 *
-	 * @param   string  $new  IGNORED!
-	 *
-	 * @return  void
-	 *
-	 * @deprecated 3.0
-	 */
-	public static function addRulePath($new = null)
-	{
-		if ($new) {}; // Prevents phpStorm from freaking out about the unused $new parameter...
-
-		if (class_exists('JLog'))
-		{
-			\JLog::add(__CLASS__ . '::' . __METHOD__ . '() is deprecated since FOF 3.0 and should not be used.', \JLog::WARNING, 'deprecated');
-		}
-	}
-
-	/**
-	 * Get a reference to the form's Container
-	 *
-	 * @return Container
-	 */
-	public function &getContainer()
-	{
-		return $this->container;
-	}
-
-	/**
-	 * Set the form's Container
-	 *
-	 * @param Container $container
-	 */
-	public function setContainer($container)
-	{
-		$this->container = $container;
-	}
-
-	/**
-	 * Method to bind data to the form.
-	 *
-	 * @param   mixed  $data  An array or object of data to bind to the form.
-	 *
-	 * @return  boolean  True on success.
-	 *
-	 * @since   11.1
-	 */
-	public function bind($data)
-	{
-		$this->data = class_exists('JRegistry') ? new \JRegistry() : new Registry();
-
-		if (is_object($data) && ($data instanceof DataModel))
-		{
-			$maxDepth = (int) $this->getAttribute('relation_depth', '1');
-
-			return parent::bind($this->modelToBindSource($data, $maxDepth));
-		}
-
-		return parent::bind($data);
 	}
 
 	/**
@@ -949,17 +963,17 @@ class Form extends JForm
 
 			if (($translate = $element['translate_default']) && ((string) $translate == 'true' || (string) $translate == '1'))
 			{
-				$lang = JFactory::getLanguage();
+				$lang = Factory::getLanguage();
 
 				if ($lang->hasKey($default))
 				{
-					$debug = $lang->setDebug(false);
-					$default = JText::_($default);
+					$debug   = $lang->setDebug(false);
+					$default = Text::_($default);
 					$lang->setDebug($debug);
 				}
 				else
 				{
-					$default = JText::_($default);
+					$default = Text::_($default);
 				}
 			}
 
@@ -994,7 +1008,7 @@ class Form extends JForm
 	protected function findField($name, $group = null)
 	{
 		$element = false;
-		$fields = array();
+		$fields  = [];
 
 		// Make sure there is a valid JForm XML document.
 		if (!($this->xml instanceof SimpleXMLElement))
@@ -1037,7 +1051,7 @@ class Form extends JForm
 			{
 				// Get the group names as strings for ancestor fields elements.
 				$attrs = $field->xpath('ancestor::fields[@name]/@name');
-				$names = array_map('strval', $attrs ? $attrs : array());
+				$names = array_map('strval', $attrs ? $attrs : []);
 
 				// If the field is in the exact group use it and break out of the loop.
 				if ($names == (array) $groupNames)
@@ -1054,7 +1068,7 @@ class Form extends JForm
 
 			if (!$fields)
 			{
-				$fields = array();
+				$fields = [];
 			}
 
 			$fieldsNameFrom = $this->xml->xpath('//field[@name_from="' . $name . '"]');
@@ -1108,13 +1122,13 @@ class Form extends JForm
 	 * @return  array
 	 * @throws  DataModel\Relation\Exception\RelationNotFound
 	 */
-	protected function modelToBindSource(DataModel $model, $maxLevel = 1, $modelsProcessed = array())
+	protected function modelToBindSource(DataModel $model, $maxLevel = 1, $modelsProcessed = [])
 	{
 		$maxLevel--;
 
 		$data = $model->toArray();
 
-		$relations = $model->getRelations()->getRelationNames();
+		$relations     = $model->getRelations()->getRelationNames();
 		$relationTypes = $model->getRelations()->getRelationTypes();
 		$relationTypes = array_map(function ($x) {
 			return ltrim($x, '\\');
@@ -1125,7 +1139,7 @@ class Form extends JForm
 		{
 			foreach ($relations as $relationName)
 			{
-				$rel = $model->getRelations()->getRelation($relationName);
+				$rel   = $model->getRelations()->getRelation($relationName);
 				$class = get_class($rel);
 
 				if (!isset($relationTypes[$class]))
@@ -1133,7 +1147,7 @@ class Form extends JForm
 					continue;
 				}
 
-				if (!in_array($relationTypes[$class], array('hasOne', 'belongsTo')))
+				if (!in_array($relationTypes[$class], ['hasOne', 'belongsTo']))
 				{
 					continue;
 				}

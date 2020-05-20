@@ -8,19 +8,21 @@
 namespace FOF30\Model\DataModel\Exception;
 
 use Exception;
+use Joomla\CMS\Language\Text;
+use UnexpectedValueException;
 
 defined('_JEXEC') or die;
 
-class NoAssetKey extends \UnexpectedValueException
+class NoAssetKey extends UnexpectedValueException
 {
-	public function __construct( $message = '', $code = 500, Exception $previous = null )
+	public function __construct($message = '', $code = 500, Exception $previous = null)
 	{
 		if (empty($message))
 		{
-			$message = \JText::_('LIB_FOF_MODEL_ERR_NOASSETKEY');
+			$message = Text::_('LIB_FOF_MODEL_ERR_NOASSETKEY');
 		}
 
-		parent::__construct( $message, $code, $previous );
+		parent::__construct($message, $code, $previous);
 	}
 
 }

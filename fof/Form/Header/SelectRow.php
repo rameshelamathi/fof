@@ -7,8 +7,6 @@
 
 namespace FOF30\Form\Header;
 
-use JText;
-
 defined('_JEXEC') or die;
 
 /**

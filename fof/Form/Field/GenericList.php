@@ -11,13 +11,18 @@ use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use FOF30\Utils\StringHelper;
-use JHtml;
+use JArrayHelper;
+use JFormFieldList;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\Utilities\ArrayHelper;
-use JText;
+use SimpleXMLElement;
+use stdClass;
 
 defined('_JEXEC') or die;
 
-\JFormHelper::loadFieldClass('list');
+FormHelper::loadFieldClass('list');
 
 /**
  * Form Field class for FOF
@@ -25,18 +30,28 @@ defined('_JEXEC') or die;
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
-class GenericList extends \JFormFieldList implements FieldInterface
+class GenericList extends JFormFieldList implements FieldInterface
 {
+	/**
+	 * A monotonically increasing number, denoting the row number in a repeatable view
+	 *
+	 * @var  int
+	 */
+	public $rowid;
+	/**
+	 * The item being rendered in a repeatable form field
+	 *
+	 * @var  DataModel
+	 */
+	public $item;
 	/**
 	 * @var  string  Static field output
 	 */
 	protected $static;
-
 	/**
 	 * @var  string  Repeatable field output
 	 */
 	protected $repeatable;
-
 	/**
 	 * The Form object of the form attached to the form field.
 	 *
@@ -45,18 +60,51 @@ class GenericList extends \JFormFieldList implements FieldInterface
 	protected $form;
 
 	/**
-	 * A monotonically increasing number, denoting the row number in a repeatable view
+	 * Gets the active option's label given an array of JHtml options
 	 *
-	 * @var  int
+	 * @param   array   $data         The JHtml options to parse
+	 * @param   mixed   $selected     The currently selected value
+	 * @param   string  $optKey       Key name
+	 * @param   string  $optText      Value name
+	 * @param   bool    $selectFirst  Should I automatically select the first option?
+	 *
+	 * @return  mixed   The label of the currently selected option
 	 */
-	public $rowid;
+	public static function getOptionName($data, $selected = null, $optKey = 'value', $optText = 'text', $selectFirst = true)
+	{
+		$ret = null;
 
-	/**
-	 * The item being rendered in a repeatable form field
-	 *
-	 * @var  DataModel
-	 */
-	public $item;
+		foreach ($data as $elementKey => &$element)
+		{
+			if (is_array($element))
+			{
+				$key  = $optKey === null ? $elementKey : $element[$optKey];
+				$text = $element[$optText];
+			}
+			elseif (is_object($element))
+			{
+				$key  = $optKey === null ? $elementKey : $element->$optKey;
+				$text = $element->$optText;
+			}
+			else
+			{
+				// This is a simple associative array
+				$key  = $elementKey;
+				$text = $element;
+			}
+
+			if (is_null($ret) && $selectFirst)
+			{
+				$ret = $text;
+			}
+			elseif ($selected == $key)
+			{
+				$ret = $text;
+			}
+		}
+
+		return $ret;
+	}
 
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
@@ -98,9 +146,9 @@ class GenericList extends \JFormFieldList implements FieldInterface
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
-	 * @return  string  The field HTML
 	 */
 	public function getStatic()
 	{
@@ -120,9 +168,9 @@ class GenericList extends \JFormFieldList implements FieldInterface
 	 * Get the rendering of this field type for a repeatable (grid) display,
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
-	 * @return  string  The field HTML
 	 */
 	public function getRepeatable()
 	{
@@ -164,65 +212,19 @@ class GenericList extends \JFormFieldList implements FieldInterface
 	}
 
 	/**
-	 * Gets the active option's label given an array of JHtml options
-	 *
-	 * @param   array   $data           The JHtml options to parse
-	 * @param   mixed   $selected       The currently selected value
-	 * @param   string  $optKey         Key name
-	 * @param   string  $optText        Value name
-	 * @param   bool    $selectFirst    Should I automatically select the first option?
-	 *
-	 * @return  mixed   The label of the currently selected option
-	 */
-	public static function getOptionName($data, $selected = null, $optKey = 'value', $optText = 'text', $selectFirst = true)
-	{
-		$ret = null;
-
-		foreach ($data as $elementKey => &$element)
-		{
-			if (is_array($element))
-			{
-				$key = $optKey === null ? $elementKey : $element[$optKey];
-				$text = $element[$optText];
-			}
-			elseif (is_object($element))
-			{
-				$key = $optKey === null ? $elementKey : $element->$optKey;
-				$text = $element->$optText;
-			}
-			else
-			{
-				// This is a simple associative array
-				$key = $elementKey;
-				$text = $element;
-			}
-
-			if (is_null($ret) && $selectFirst)
-			{
-				$ret = $text;
-			}
-			elseif ($selected == $key)
-			{
-				$ret = $text;
-			}
-		}
-
-		return $ret;
-	}
-
-	/**
 	 * Method to get the field options.
 	 *
 	 * Ordering is disabled by default. You can enable ordering by setting the
 	 * 'order' element in your form field. The other order values are optional.
 	 *
-	 * - order					What to order.			Possible values: 'name' or 'value' (default = false)
-	 * - order_dir				Order direction.		Possible values: 'asc' = Ascending or 'desc' = Descending (default = 'asc')
-	 * - order_case_sensitive	Order case sensitive.	Possible values: 'true' or 'false' (default = false)
+	 * - order                    What to order.            Possible values: 'name' or 'value' (default = false)
+	 * - order_dir                Order direction.        Possible values: 'asc' = Ascending or 'desc' = Descending
+	 * (default = 'asc')
+	 * - order_case_sensitive    Order case sensitive.    Possible values: 'true' or 'false' (default = false)
 	 *
 	 * @return  array  The field option objects.
 	 *
-	 * @since	Ordering is available since FOF 2.1.b2.
+	 * @since    Ordering is available since FOF 2.1.b2.
 	 */
 	protected function getOptions()
 	{
@@ -255,17 +257,17 @@ class GenericList extends \JFormFieldList implements FieldInterface
 		}
 
 		// Create a $sortOptions array in order to apply sorting
-		$i = 0;
-		$sortOptions = array();
+		$i           = 0;
+		$sortOptions = [];
 
 		foreach ($this->element->children() as $option)
 		{
-			$name = JText::alt(trim((string) $option), preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname));
+			$name = \Joomla\CMS\Language\Text::alt(trim((string) $option), preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname));
 
-			$sortOptions[$i] = new \stdClass;
+			$sortOptions[$i]         = new stdClass;
 			$sortOptions[$i]->option = $option;
-			$sortOptions[$i]->value = $option['value'];
-			$sortOptions[$i]->name = $name;
+			$sortOptions[$i]->value  = $option['value'];
+			$sortOptions[$i]->name   = $name;
 			$i++;
 		}
 
@@ -276,7 +278,7 @@ class GenericList extends \JFormFieldList implements FieldInterface
 
 			if (class_exists('JArrayHelper'))
 			{
-				\JArrayHelper::sortObjects($sortOptions, $order, $order_dir == 'asc' ? 1 : -1, $order_case_sensitive, false);
+				JArrayHelper::sortObjects($sortOptions, $order, $order_dir == 'asc' ? 1 : -1, $order_case_sensitive, false);
 			}
 			else
 			{
@@ -285,14 +287,14 @@ class GenericList extends \JFormFieldList implements FieldInterface
 		}
 
 		// Initialise the options
-		$options = array();
+		$options = [];
 
 		// Get the field $options
 		foreach ($sortOptions as $sortOption)
 		{
-			/** @var \SimpleXMLElement $option */
+			/** @var SimpleXMLElement $option */
 			$option = $sortOption->option;
-			$name = $sortOption->name;
+			$name   = $sortOption->name;
 
 			// Only add <option /> elements.
 			if ($option->getName() != 'option')
@@ -300,7 +302,7 @@ class GenericList extends \JFormFieldList implements FieldInterface
 				continue;
 			}
 
-			$tmp = JHtml::_('select.option', (string) $option['value'], $name, 'value', 'text', ((string) $option['disabled'] == 'true'));
+			$tmp = HTMLHelper::_('select.option', (string) $option['value'], $name, 'value', 'text', ((string) $option['disabled'] == 'true'));
 
 			// Set some option attributes.
 			$tmp->class = (string) $option['class'];
@@ -354,15 +356,15 @@ class GenericList extends \JFormFieldList implements FieldInterface
 						// Loop through the data and prime the $options array
 						foreach ($source_data as $k => $v)
 						{
-							$key = (empty($source_key) || ($source_key == '*')) ? $k : @$v[$source_key];
+							$key   = (empty($source_key) || ($source_key == '*')) ? $k : @$v[$source_key];
 							$value = (empty($source_value) || ($source_value == '*')) ? $v : @$v[$source_value];
 
 							if ($source_translate)
 							{
-								$value = JText::_($value);
+								$value = \Joomla\CMS\Language\Text::_($value);
 							}
 
-							$options[] = JHtml::_('select.option', $key, $value, 'value', 'text');
+							$options[] = HTMLHelper::_('select.option', $key, $value, 'value', 'text');
 						}
 					}
 				}
@@ -381,41 +383,41 @@ class GenericList extends \JFormFieldList implements FieldInterface
 	 *
 	 * @return  string         Text with tags replace
 	 */
-    protected function parseFieldTags($text)
-    {
-        $ret = $text;
+	protected function parseFieldTags($text)
+	{
+		$ret = $text;
 
-        // Replace [ITEM:ID] in the URL with the item's key value (usually:
-        // the auto-incrementing numeric ID)
-        if (is_null($this->item))
-        {
-            $this->item = $this->form->getModel();
-        }
+		// Replace [ITEM:ID] in the URL with the item's key value (usually:
+		// the auto-incrementing numeric ID)
+		if (is_null($this->item))
+		{
+			$this->item = $this->form->getModel();
+		}
 
-        $replace  = $this->item->getId();
-        $ret = str_replace('[ITEM:ID]', $replace, $ret);
+		$replace = $this->item->getId();
+		$ret     = str_replace('[ITEM:ID]', $replace, $ret);
 
-        // Replace the [ITEMID] in the URL with the current Itemid parameter
-        $ret = str_replace('[ITEMID]', $this->form->getContainer()->input->getInt('Itemid', 0), $ret);
+		// Replace the [ITEMID] in the URL with the current Itemid parameter
+		$ret = str_replace('[ITEMID]', $this->form->getContainer()->input->getInt('Itemid', 0), $ret);
 
-        // Replace the [TOKEN] in the URL with the Joomla! form token
-        $ret = str_replace('[TOKEN]', \JFactory::getSession()->getFormToken(), $ret);
+		// Replace the [TOKEN] in the URL with the Joomla! form token
+		$ret = str_replace('[TOKEN]', Factory::getSession()->getFormToken(), $ret);
 
-        // Replace other field variables in the URL
-        $data = $this->item->getData();
+		// Replace other field variables in the URL
+		$data = $this->item->getData();
 
-        foreach ($data as $field => $value)
-        {
-            // Skip non-processable values
-            if(is_array($value) || is_object($value))
-            {
-                continue;
-            }
+		foreach ($data as $field => $value)
+		{
+			// Skip non-processable values
+			if (is_array($value) || is_object($value))
+			{
+				continue;
+			}
 
-            $search = '[ITEM:' . strtoupper($field) . ']';
-            $ret    = str_replace($search, $value, $ret);
-        }
+			$search = '[ITEM:' . strtoupper($field) . ']';
+			$ret    = str_replace($search, $value, $ret);
+		}
 
-        return $ret;
-    }
+		return $ret;
+	}
 }

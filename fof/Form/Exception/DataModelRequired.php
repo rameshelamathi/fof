@@ -8,6 +8,8 @@
 namespace FOF30\Form\Exception;
 
 use Exception;
+use Joomla\CMS\Language\Text;
+use RuntimeException;
 
 defined('_JEXEC') or die;
 
@@ -17,11 +19,11 @@ defined('_JEXEC') or die;
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
-class DataModelRequired extends \RuntimeException
+class DataModelRequired extends RuntimeException
 {
 	public function __construct($className, $code = 0, Exception $previous = null)
 	{
-		$message = \JText::sprintf('LIB_FOF_FORM_ERR_DATAMODEL_REQUIRED', $className);
+		$message = Text::sprintf('LIB_FOF_FORM_ERR_DATAMODEL_REQUIRED', $className);
 
 		parent::__construct($message, $code, $previous);
 	}

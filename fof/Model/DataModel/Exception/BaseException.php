@@ -7,9 +7,11 @@
 
 namespace FOF30\Model\DataModel\Exception;
 
+use RuntimeException;
+
 defined('_JEXEC') or die;
 
-class BaseException extends \RuntimeException
+class BaseException extends RuntimeException
 {
 
 }

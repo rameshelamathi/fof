@@ -7,7 +7,7 @@
 
 namespace FOF30\Form\Header;
 
-use JText;
+use Joomla\CMS\Language\Text;
 
 defined('_JEXEC') or die;
 
@@ -26,7 +26,7 @@ class RowSelect extends Field
 	protected function getHeader()
 	{
 		return '<input type="checkbox" name="checkall-toggle" value="" title="'
-			. JText::_('JGLOBAL_CHECK_ALL')
+			. Text::_('JGLOBAL_CHECK_ALL')
 			. '" onclick="Joomla.checkAll(this)" />';
 	}
 }

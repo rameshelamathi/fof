@@ -13,11 +13,15 @@ use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use FOF30\Utils\StringHelper;
-use JHtml;
+use JFormFieldList;
+use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\HTML\HTMLHelper;
+use LogicException;
+use SimpleXMLElement;
 
 defined('_JEXEC') or die;
 
-\JFormHelper::loadFieldClass('list');
+FormHelper::loadFieldClass('list');
 
 /**
  * Form Field class for FOF
@@ -25,38 +29,34 @@ defined('_JEXEC') or die;
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
-class Actions extends \JFormFieldList implements FieldInterface
+class Actions extends JFormFieldList implements FieldInterface
 {
-	/**
-	 * @var  string  Static field output
-	 */
-	protected $static;
-
-	/**
-	 * @var  string  Repeatable field output
-	 */
-	protected $repeatable;
-
-	/**
-	 * The Form object of the form attached to the form field.
-	 *
-	 * @var    Form
-	 */
-	protected $form;
-
 	/**
 	 * A monotonically increasing number, denoting the row number in a repeatable view
 	 *
 	 * @var  int
 	 */
 	public $rowid;
-
 	/**
 	 * The item being rendered in a repeatable form field
 	 *
 	 * @var  DataModel
 	 */
 	public $item;
+	/**
+	 * @var  string  Static field output
+	 */
+	protected $static;
+	/**
+	 * @var  string  Repeatable field output
+	 */
+	protected $repeatable;
+	/**
+	 * The Form object of the form attached to the form field.
+	 *
+	 * @var    Form
+	 */
+	protected $form;
 
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
@@ -95,6 +95,85 @@ class Actions extends \JFormFieldList implements FieldInterface
 	}
 
 	/**
+	 * Get the rendering of this field type for static display, e.g. in a single
+	 * item view (typically a "read" task).
+	 *
+	 * @return  string  The field HTML
+	 *
+	 * @throws  LogicException
+	 * @since 2.0
+	 *
+	 */
+	public function getStatic()
+	{
+		throw new GetStaticNotAllowed(__CLASS__);
+	}
+
+	/**
+	 * Get the rendering of this field type for a repeatable (grid) display,
+	 * e.g. in a view listing many item (typically a "browse" task)
+	 *
+	 * @return  string  The field HTML
+	 *
+	 * @throws  DataModelRequired
+	 * @since 2.0
+	 *
+	 */
+	public function getRepeatable()
+	{
+		if (!($this->item instanceof DataModel))
+		{
+			throw new DataModelRequired(__CLASS__);
+		}
+
+		$config = $this->getConfig();
+
+		$html = '<div class="btn-group">';
+
+		// Render a published field
+		if ($this->item->hasField('enabled'))
+		{
+			$publishedFieldName = $this->item->getFieldAlias('enabled');
+
+			if ($config['published'] || $config['unpublished'])
+			{
+				// Generate a FieldInterfacePublished field
+				$publishedField = $this->getPublishedField($publishedFieldName);
+
+				// Render the publish button
+				$html .= $publishedField->getRepeatable();
+			}
+
+			if ($config['archived'])
+			{
+				$archived = $this->item->getFieldValue($publishedFieldName) == 2 ? true : false;
+
+				// Create dropdown items
+				$action = $archived ? 'unarchive' : 'archive';
+				HTMLHelper::_('actionsdropdown.' . $action, 'cb' . $this->rowid);
+			}
+
+			if ($config['trash'])
+			{
+				$trashed = $this->item->getFieldValue($publishedFieldName) == -2 ? true : false;
+
+				$action = $trashed ? 'untrash' : 'trash';
+				HTMLHelper::_('actionsdropdown.' . $action, 'cb' . $this->rowid);
+			}
+
+			// Render dropdown list
+			if ($config['archived'] || $config['trash'])
+			{
+				$html .= HTMLHelper::_('actionsdropdown.render', $this->item->title);
+			}
+		}
+
+		$html .= '</div>';
+
+		return $html;
+	}
+
+	/**
 	 * Get the field configuration
 	 *
 	 * @return  array
@@ -103,13 +182,13 @@ class Actions extends \JFormFieldList implements FieldInterface
 	{
 		// If no custom options were defined let's figure out which ones of the
 		// defaults we shall use...
-		$config = array(
-			'published'		 => 1,
-			'unpublished'	 => 1,
-			'archived'		 => 0,
-			'trash'			 => 0,
-			'all'			 => 0,
-		);
+		$config = [
+			'published'   => 1,
+			'unpublished' => 1,
+			'archived'    => 0,
+			'trash'       => 0,
+			'all'         => 0,
+		];
 
 		if (isset($this->element['show_published']))
 		{
@@ -142,9 +221,9 @@ class Actions extends \JFormFieldList implements FieldInterface
 	/**
 	 * Method to get the field options.
 	 *
+	 * @return  array  The field option objects.
 	 * @since 2.0
 	 *
-	 * @return  array  The field option objects.
 	 */
 	protected function getOptions()
 	{
@@ -160,10 +239,10 @@ class Actions extends \JFormFieldList implements FieldInterface
 	 */
 	protected function getPublishedField($enabledFieldName)
 	{
-		$attributes = array(
+		$attributes = [
 			'name' => $enabledFieldName,
 			'type' => 'published',
-		);
+		];
 
 		if ($this->element['publish_up'])
 		{
@@ -175,7 +254,7 @@ class Actions extends \JFormFieldList implements FieldInterface
 			$attributes['publish_down'] = (string) $this->element['publish_down'];
 		}
 
-		$renderedAttributes = array();
+		$renderedAttributes = [];
 
 		foreach ($attributes as $name => $value)
 		{
@@ -185,94 +264,15 @@ class Actions extends \JFormFieldList implements FieldInterface
 			}
 		}
 
-		$publishedXml = new \SimpleXMLElement('<field ' . implode(' ', $renderedAttributes) . ' />');
+		$publishedXml = new SimpleXMLElement('<field ' . implode(' ', $renderedAttributes) . ' />');
 
 		$publishedField = new Published($this->form);
 
 		// Pass required objects to the field
-		$publishedField->item = $this->item;
+		$publishedField->item  = $this->item;
 		$publishedField->rowid = $this->rowid;
 		$publishedField->setup($publishedXml, $this->item->{$enabledFieldName});
 
 		return $publishedField;
-	}
-
-	/**
-	 * Get the rendering of this field type for static display, e.g. in a single
-	 * item view (typically a "read" task).
-	 *
-	 * @since 2.0
-	 *
-	 * @return  string  The field HTML
-	 *
-	 * @throws  \LogicException
-	 */
-	public function getStatic()
-	{
-		throw new GetStaticNotAllowed(__CLASS__);
-	}
-
-	/**
-	 * Get the rendering of this field type for a repeatable (grid) display,
-	 * e.g. in a view listing many item (typically a "browse" task)
-	 *
-	 * @since 2.0
-	 *
-	 * @return  string  The field HTML
-	 *
-	 * @throws  DataModelRequired
-	 */
-	public function getRepeatable()
-	{
-		if (!($this->item instanceof DataModel))
-		{
-			throw new DataModelRequired(__CLASS__);
-		}
-
-		$config = $this->getConfig();
-
-		$html = '<div class="btn-group">';
-
-		// Render a published field
-		if ($this->item->hasField('enabled'))
-		{
-            $publishedFieldName = $this->item->getFieldAlias('enabled');
-
-			if ($config['published'] || $config['unpublished'])
-			{
-				// Generate a FieldInterfacePublished field
-				$publishedField = $this->getPublishedField($publishedFieldName);
-
-				// Render the publish button
-				$html .= $publishedField->getRepeatable();
-			}
-
-			if ($config['archived'])
-			{
-				$archived	= $this->item->getFieldValue($publishedFieldName) == 2 ? true : false;
-
-				// Create dropdown items
-				$action = $archived ? 'unarchive' : 'archive';
-				JHtml::_('actionsdropdown.' . $action, 'cb' . $this->rowid);
-			}
-
-			if ($config['trash'])
-			{
-				$trashed	= $this->item->getFieldValue($publishedFieldName) == -2 ? true : false;
-
-				$action = $trashed ? 'untrash' : 'trash';
-				JHtml::_('actionsdropdown.' . $action, 'cb' . $this->rowid);
-			}
-
-			// Render dropdown list
-			if ($config['archived'] || $config['trash'])
-			{
-				$html .= JHtml::_('actionsdropdown.render', $this->item->title);
-			}
-		}
-
-		$html .= '</div>';
-
-		return $html;
 	}
 }

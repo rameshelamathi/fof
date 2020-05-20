@@ -10,12 +10,13 @@ namespace FOF30\Form\Field;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
-use JHtml;
-use JText;
+use JFormFieldAccessLevel;
+use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\HTML\HTMLHelper;
 
 defined('_JEXEC') or die;
 
-\JFormHelper::loadFieldClass('accesslevel');
+FormHelper::loadFieldClass('accesslevel');
 
 /**
  * Form Field class for FOF
@@ -23,38 +24,34 @@ defined('_JEXEC') or die;
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
-class AccessLevel extends \JFormFieldAccessLevel implements FieldInterface
+class AccessLevel extends JFormFieldAccessLevel implements FieldInterface
 {
-	/**
-	 * @var  string  Static field output
-	 */
-	protected $static;
-
-	/**
-	 * @var  string  Repeatable field output
-	 */
-	protected $repeatable;
-
-	/**
-	 * The Form object of the form attached to the form field.
-	 *
-	 * @var    Form
-	 */
-	protected $form;
-
 	/**
 	 * A monotonically increasing number, denoting the row number in a repeatable view
 	 *
 	 * @var  int
 	 */
 	public $rowid;
-
 	/**
 	 * The item being rendered in a repeatable form field
 	 *
 	 * @var  DataModel
 	 */
 	public $item;
+	/**
+	 * @var  string  Static field output
+	 */
+	protected $static;
+	/**
+	 * @var  string  Repeatable field output
+	 */
+	protected $repeatable;
+	/**
+	 * The Form object of the form attached to the form field.
+	 *
+	 * @var    Form
+	 */
+	protected $form;
 
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
@@ -96,9 +93,9 @@ class AccessLevel extends \JFormFieldAccessLevel implements FieldInterface
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
-	 * @return  string  The field HTML
 	 */
 	public function getStatic()
 	{
@@ -107,9 +104,9 @@ class AccessLevel extends \JFormFieldAccessLevel implements FieldInterface
 			return $this->getInput();
 		}
 
-		$options = array(
-			'id' => $this->id
-		);
+		$options = [
+			'id' => $this->id,
+		];
 
 		return $this->getFieldContents($options);
 	}
@@ -118,9 +115,9 @@ class AccessLevel extends \JFormFieldAccessLevel implements FieldInterface
 	 * Get the rendering of this field type for a repeatable (grid) display,
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
-	 * @return  string  The field HTML
 	 */
 	public function getRepeatable()
 	{
@@ -129,9 +126,9 @@ class AccessLevel extends \JFormFieldAccessLevel implements FieldInterface
 			return $this->getInput();
 		}
 
-		$options = array(
-			'class' => $this->id
-		);
+		$options = [
+			'class' => $this->id,
+		];
 
 		return $this->getFieldContents($options);
 	}
@@ -139,11 +136,11 @@ class AccessLevel extends \JFormFieldAccessLevel implements FieldInterface
 	/**
 	 * Method to get the field input markup.
 	 *
-	 * @param   array   $fieldOptions  Options to be passed into the field
+	 * @param   array  $fieldOptions  Options to be passed into the field
 	 *
 	 * @return  string  The field HTML
 	 */
-	public function getFieldContents(array $fieldOptions = array())
+	public function getFieldContents(array $fieldOptions = [])
 	{
 		/** @var array|null The select options coming from the access levels of the site */
 		static $defaultOptions = null;
@@ -157,17 +154,17 @@ class AccessLevel extends \JFormFieldAccessLevel implements FieldInterface
 		{
 			$db    = $this->form->getContainer()->platform->getDbo();
 			$query = $db->getQuery(true)
-			            ->select('a.id AS value, a.title AS text')
-			            ->from('#__viewlevels AS a')
-			            ->group('a.id, a.title, a.ordering')
-			            ->order('a.ordering ASC')
-			            ->order($db->qn('title') . ' ASC');
+				->select('a.id AS value, a.title AS text')
+				->from('#__viewlevels AS a')
+				->group('a.id, a.title, a.ordering')
+				->order('a.ordering ASC')
+				->order($db->qn('title') . ' ASC');
 
 			// Get the options.
 			$defaultOptions = $db->setQuery($query)->loadObjectList();
 		}
 
-        $options = $defaultOptions;
+		$options = $defaultOptions;
 
 		// If params is an array, push these options to the array
 		if (is_array($params))
@@ -178,10 +175,10 @@ class AccessLevel extends \JFormFieldAccessLevel implements FieldInterface
 		// If all levels is allowed, push it into the array.
 		elseif ($params)
 		{
-			array_unshift($options, JHtml::_('select.option', '', JText::_('JOPTION_ACCESS_SHOW_ALL_LEVELS')));
+			array_unshift($options, HTMLHelper::_('select.option', '', \Joomla\CMS\Language\Text::_('JOPTION_ACCESS_SHOW_ALL_LEVELS')));
 		}
 
-		return '<span ' . ($id ? $id : '') . 'class="'. $class . '">' .
+		return '<span ' . ($id ? $id : '') . 'class="' . $class . '">' .
 			htmlspecialchars(GenericList::getOptionName($options, $this->value), ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}

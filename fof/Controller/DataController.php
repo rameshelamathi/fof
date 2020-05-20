@@ -7,6 +7,8 @@
 
 namespace FOF30\Controller;
 
+defined('_JEXEC') or die;
+
 use FOF30\Container\Container;
 use FOF30\Controller\Exception\ItemNotFound;
 use FOF30\Controller\Exception\LockedRecord;
@@ -14,8 +16,8 @@ use FOF30\Controller\Exception\NotADataModel;
 use FOF30\Controller\Exception\TaskNotFound;
 use FOF30\Model\DataModel;
 use FOF30\View\View;
-
-defined('_JEXEC') or die;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Response\JsonResponse;
 
 /**
  * Database-aware Controller
@@ -170,7 +172,7 @@ class DataController extends Controller
 		if ($this->hasRedirect() && $this->input->getCmd('format', 'html') == 'json') {
 			// Error: deal with it in REST api way
 			if ($this->messageType == 'error') {
-				$response = new \JResponseJson($this->message, $this->message, true);
+				$response = new JsonResponse($this->message, $this->message, true);
 
 				echo $response;
 
@@ -455,7 +457,7 @@ class DataController extends Controller
 			if ($model->getId() != reset($ids))
 			{
 				$key = strtoupper($this->container->componentName . '_ERR_' . $model->getName() . '_NOTFOUND');
-				throw new ItemNotFound(\JText::_($key), 404);
+				throw new ItemNotFound(Text::_($key), 404);
 			}
 		}
 
@@ -646,7 +648,7 @@ class DataController extends Controller
 		}
 
 		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . $this->view . '&task=edit&id=' . $id . $this->getItemidURLSuffix();
-		$this->setRedirect($url, \JText::_($textKey));
+		$this->setRedirect($url, Text::_($textKey));
 	}
 
 	/**
@@ -696,7 +698,7 @@ class DataController extends Controller
 		else
 		{
 			$textKey = strtoupper($this->container->componentName . '_LBL_' . $this->container->inflector->singularize($this->view) . '_COPIED');
-			$this->setRedirect($url, \JText::_($textKey));
+			$this->setRedirect($url, Text::_($textKey));
 		}
 	}
 
@@ -723,7 +725,7 @@ class DataController extends Controller
 		}
 
 		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . $this->container->inflector->pluralize($this->view) . $this->getItemidURLSuffix();
-		$this->setRedirect($url, \JText::_($textKey));
+		$this->setRedirect($url, Text::_($textKey));
 	}
 
 	/**
@@ -749,7 +751,7 @@ class DataController extends Controller
 		}
 
 		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . $this->container->inflector->singularize($this->view) . '&task=add' . $this->getItemidURLSuffix();
-		$this->setRedirect($url, \JText::_($textKey));
+		$this->setRedirect($url, Text::_($textKey));
 	}
 
     /**
@@ -801,7 +803,7 @@ class DataController extends Controller
         else
         {
             $textKey = strtoupper($this->container->componentName . '_LBL_' . $this->container->inflector->singularize($this->view) . '_COPIED');
-            $this->setRedirect($url, \JText::_($textKey));
+            $this->setRedirect($url, Text::_($textKey));
         }
     }
 
@@ -1395,7 +1397,7 @@ class DataController extends Controller
 		else
 		{
 			$textKey = strtoupper($this->container->componentName . '_LBL_' . $this->container->inflector->singularize($this->view) . '_DELETED');
-			$this->setRedirect($url, \JText::_($textKey));
+			$this->setRedirect($url, Text::_($textKey));
 		}
 	}
 
@@ -1636,14 +1638,14 @@ class DataController extends Controller
 		// Access check.
 		if (!$this->checkACL('@loadhistory'))
 		{
-			$this->setRedirect($returnUrl, \JText::_('JLIB_APPLICATION_ERROR_EDIT_NOT_PERMITTED'), 'error');
+			$this->setRedirect($returnUrl, Text::_('JLIB_APPLICATION_ERROR_EDIT_NOT_PERMITTED'), 'error');
 			$model->unlock();
 
 			return false;
 		}
 
 		$model->store();
-		$this->setRedirect($returnUrl, \JText::sprintf('JLIB_APPLICATION_SUCCESS_LOAD_HISTORY', $model->getState('save_date'), $model->getState('version_note')));
+		$this->setRedirect($returnUrl, Text::sprintf('JLIB_APPLICATION_SUCCESS_LOAD_HISTORY', $model->getState('save_date'), $model->getState('version_note')));
 
 		return true;
 	}

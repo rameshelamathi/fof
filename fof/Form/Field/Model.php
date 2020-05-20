@@ -12,12 +12,14 @@ use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use FOF30\Utils\StringHelper;
-use JHtml;
-use JText;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\HTML\HTMLHelper;
+use SimpleXMLElement;
 
 defined('_JEXEC') or die;
 
-\JFormHelper::loadFieldClass('list');
+FormHelper::loadFieldClass('list');
 
 /**
  * Form Field class for FOF
@@ -28,42 +30,37 @@ defined('_JEXEC') or die;
 class Model extends GenericList implements FieldInterface
 {
 	/**
-	 * @var  string  Static field output
-	 */
-	protected $static;
-
-	/**
-	 * @var  string  Repeatable field output
-	 */
-	protected $repeatable;
-
-	/**
-	 * The Form object of the form attached to the form field.
+	 * Options loaded from the model, cached for efficiency
 	 *
-	 * @var    Form
+	 * @var null|array
 	 */
-	protected $form;
-
+	protected static $loadedOptions = null;
 	/**
 	 * A monotonically increasing number, denoting the row number in a repeatable view
 	 *
 	 * @var  int
 	 */
 	public $rowid;
-
 	/**
 	 * The item being rendered in a repeatable form field
 	 *
 	 * @var  DataModel
 	 */
 	public $item;
-
 	/**
-	 * Options loaded from the model, cached for efficiency
-	 *
-	 * @var null|array
+	 * @var  string  Static field output
 	 */
-	protected static $loadedOptions = null;
+	protected $static;
+	/**
+	 * @var  string  Repeatable field output
+	 */
+	protected $repeatable;
+	/**
+	 * The Form object of the form attached to the form field.
+	 *
+	 * @var    Form
+	 */
+	protected $form;
 
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
@@ -105,9 +102,9 @@ class Model extends GenericList implements FieldInterface
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
-	 * @return  string  The field HTML
 	 */
 	public function getStatic()
 	{
@@ -122,17 +119,17 @@ class Model extends GenericList implements FieldInterface
 	 * Get the rendering of this field type for a repeatable (grid) display,
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
-	 * @return  string  The field HTML
 	 */
 	public function getRepeatable()
 	{
 		// Get field parameters
-		$class					= $this->class ? $this->class : $this->id;
-		$format_string			= $this->element['format'] ? (string) $this->element['format'] : '';
-		$link_url				= $this->element['url'] ? (string) $this->element['url'] : '';
-		$empty_replacement		= $this->element['empty_replacement'] ? (string) $this->element['empty_replacement'] : '';
+		$class             = $this->class ? $this->class : $this->id;
+		$format_string     = $this->element['format'] ? (string) $this->element['format'] : '';
+		$link_url          = $this->element['url'] ? (string) $this->element['url'] : '';
+		$empty_replacement = $this->element['empty_replacement'] ? (string) $this->element['empty_replacement'] : '';
 
 		if ($link_url && ($this->item instanceof DataModel))
 		{
@@ -148,13 +145,13 @@ class Model extends GenericList implements FieldInterface
 			$empty_replacement = (string) $this->element['empty_replacement'];
 		}
 
-        // Ask GenericList::getOptionName to not automatically select the first value
+		// Ask GenericList::getOptionName to not automatically select the first value
 		$value = GenericList::getOptionName($this->getOptions(), $this->value, 'value', 'text', false);
 
 		// Get the (optionally formatted) value
 		if (!empty($empty_replacement) && empty($value))
 		{
-			$value = JText::_($empty_replacement);
+			$value = \Joomla\CMS\Language\Text::_($empty_replacement);
 		}
 
 		if (empty($format_string))
@@ -186,13 +183,13 @@ class Model extends GenericList implements FieldInterface
 		return $html;
 	}
 
-    /**
-     * Method to get the field options.
-     *
-     * @param   bool $forceReset
-     *
-     * @return  array The field option objects.
-     */
+	/**
+	 * Method to get the field options.
+	 *
+	 * @param   bool  $forceReset
+	 *
+	 * @return  array The field option objects.
+	 */
 	protected function getOptions($forceReset = false)
 	{
 		$myFormKey = $this->form->getName() . '#$#' . (string) $this->element['model'];
@@ -204,7 +201,7 @@ class Model extends GenericList implements FieldInterface
 
 		if (!isset(static::$loadedOptions[$myFormKey]))
 		{
-			$options = array();
+			$options = [];
 
 			// Initialize some field attributes.
 			$key             = $this->element['key_field'] ? (string) $this->element['key_field'] : 'value';
@@ -226,12 +223,12 @@ class Model extends GenericList implements FieldInterface
 
 			if (!empty($nonePlaceholder))
 			{
-				$options[] = JHtml::_('select.option', null, JText::_($nonePlaceholder));
+				$options[] = HTMLHelper::_('select.option', null, \Joomla\CMS\Language\Text::_($nonePlaceholder));
 			}
 
 			// Explode model name into component name and prefix
 			$componentName = $this->form->getContainer()->componentName;
-			$mName = $modelName;
+			$mName         = $modelName;
 
 			if (strpos($modelName, '.') !== false)
 			{
@@ -261,7 +258,7 @@ class Model extends GenericList implements FieldInterface
 			}
 
 			// Process state variables
-			/** @var \SimpleXMLElement $stateoption */
+			/** @var SimpleXMLElement $stateoption */
 			foreach ($this->element->children() as $stateoption)
 			{
 				// Only add <state /> elements.
@@ -286,7 +283,7 @@ class Model extends GenericList implements FieldInterface
 				{
 					if ($translate == true)
 					{
-						$options[] = JHtml::_('select.option', $item->$key, JText::_($item->$value));
+						$options[] = HTMLHelper::_('select.option', $item->$key, \Joomla\CMS\Language\Text::_($item->$value));
 					}
 					else
 					{
@@ -299,7 +296,7 @@ class Model extends GenericList implements FieldInterface
 							$text = $item->$value;
 						}
 
-						$options[] = JHtml::_('select.option', $item->$key, $text);
+						$options[] = HTMLHelper::_('select.option', $item->$key, $text);
 					}
 				}
 			}
@@ -307,7 +304,7 @@ class Model extends GenericList implements FieldInterface
 			// Merge any additional options in the XML definition.
 			$options = array_merge(parent::getOptions(), $options);
 
-            static::$loadedOptions[$myFormKey] = $options;
+			static::$loadedOptions[$myFormKey] = $options;
 		}
 
 		return static::$loadedOptions[$myFormKey];
@@ -329,34 +326,34 @@ class Model extends GenericList implements FieldInterface
 			$this->item = $item;
 		}
 
-        if (is_null($this->item))
-        {
-            $this->item = $this->form->getModel();
-        }
+		if (is_null($this->item))
+		{
+			$this->item = $this->form->getModel();
+		}
 
-        $replace  = $this->item->getId();
-        $ret = str_replace('[ITEM:ID]', $replace, $ret);
+		$replace = $this->item->getId();
+		$ret     = str_replace('[ITEM:ID]', $replace, $ret);
 
-        // Replace the [ITEMID] in the URL with the current Itemid parameter
-        $ret = str_replace('[ITEMID]', $this->form->getContainer()->input->getInt('Itemid', 0), $ret);
+		// Replace the [ITEMID] in the URL with the current Itemid parameter
+		$ret = str_replace('[ITEMID]', $this->form->getContainer()->input->getInt('Itemid', 0), $ret);
 
-        // Replace the [TOKEN] in the URL with the Joomla! form token
-        $ret = str_replace('[TOKEN]', \JFactory::getSession()->getFormToken(), $ret);
+		// Replace the [TOKEN] in the URL with the Joomla! form token
+		$ret = str_replace('[TOKEN]', Factory::getSession()->getFormToken(), $ret);
 
-        // Replace other field variables in the URL
-        $data = $this->item->getData();
+		// Replace other field variables in the URL
+		$data = $this->item->getData();
 
-        foreach ($data as $field => $value)
-        {
-            // Skip non-processable values
-            if(is_array($value) || is_object($value))
-            {
-                continue;
-            }
+		foreach ($data as $field => $value)
+		{
+			// Skip non-processable values
+			if (is_array($value) || is_object($value))
+			{
+				continue;
+			}
 
-            $search = '[ITEM:' . strtoupper($field) . ']';
-            $ret    = str_replace($search, $value, $ret);
-        }
+			$search = '[ITEM:' . strtoupper($field) . ']';
+			$ret    = str_replace($search, $value, $ret);
+		}
 
 		return $ret;
 	}

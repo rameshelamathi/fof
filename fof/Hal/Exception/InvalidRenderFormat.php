@@ -8,14 +8,16 @@
 namespace FOF30\Hal\Exception;
 
 use Exception;
+use Joomla\CMS\Language\Text;
+use RuntimeException;
 
 defined('_JEXEC') or die;
 
-class InvalidRenderFormat extends \RuntimeException
+class InvalidRenderFormat extends RuntimeException
 {
 	public function __construct($format, $code = 500, Exception $previous = null)
 	{
-		$message = \JText::sprintf('LIB_FOF_HAL_ERR_INVALIDRENDERFORMAT', $format);
+		$message = Text::sprintf('LIB_FOF_HAL_ERR_INVALIDRENDERFORMAT', $format);
 
 		parent::__construct($message, $code, $previous);
 	}

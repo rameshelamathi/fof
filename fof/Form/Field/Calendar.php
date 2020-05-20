@@ -7,18 +7,21 @@
 
 namespace FOF30\Form\Field;
 
+use DateTimeZone;
 use FOF30\Date\Date;
 use FOF30\Date\DateDecorator;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
-use JHtml;
-use JText;
+use JFormFieldCalendar;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\HTML\HTMLHelper;
 use SimpleXMLElement;
 
 defined('_JEXEC') or die;
 
-\JFormHelper::loadFieldClass('calendar');
+FormHelper::loadFieldClass('calendar');
 
 /**
  * Form Field class for the FOF framework
@@ -26,18 +29,28 @@ defined('_JEXEC') or die;
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
-class Calendar extends \JFormFieldCalendar implements FieldInterface
+class Calendar extends JFormFieldCalendar implements FieldInterface
 {
+	/**
+	 * A monotonically increasing number, denoting the row number in a repeatable view
+	 *
+	 * @var  int
+	 */
+	public $rowid;
+	/**
+	 * The item being rendered in a repeatable form field
+	 *
+	 * @var  DataModel
+	 */
+	public $item;
 	/**
 	 * @var  string  Static field output
 	 */
 	protected $static;
-
 	/**
 	 * @var  string  Repeatable field output
 	 */
 	protected $repeatable;
-
 	/**
 	 * The Form object of the form attached to the form field.
 	 *
@@ -46,23 +59,9 @@ class Calendar extends \JFormFieldCalendar implements FieldInterface
 	protected $form;
 
 	/**
-	 * A monotonically increasing number, denoting the row number in a repeatable view
-	 *
-	 * @var  int
-	 */
-	public $rowid;
-
-	/**
-	 * The item being rendered in a repeatable form field
-	 *
-	 * @var  DataModel
-	 */
-	public $item;
-
-	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
 	 *
-	 * @param   string $name The property name for which to the the value.
+	 * @param   string  $name  The property name for which to the the value.
 	 *
 	 * @return  mixed  The property value or null.
 	 *
@@ -101,9 +100,9 @@ class Calendar extends \JFormFieldCalendar implements FieldInterface
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
-	 * @return  string  The field HTML
 	 */
 	public function getStatic()
 	{
@@ -114,9 +113,9 @@ class Calendar extends \JFormFieldCalendar implements FieldInterface
 	 * Get the rendering of this field type for a repeatable (grid) display,
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
-	 * @return  string  The field HTML
 	 */
 	public function getRepeatable()
 	{
@@ -128,9 +127,9 @@ class Calendar extends \JFormFieldCalendar implements FieldInterface
 	 * compatibility: all previous Joomla! version would display the time and/or let you specify a time in the Calendar
 	 * field. Joomla! 3.7 broke this, stripping away the time by default.
 	 *
-	 * @param SimpleXMLElement $element
-	 * @param mixed            $value
-	 * @param null             $group
+	 * @param   SimpleXMLElement  $element
+	 * @param   mixed             $value
+	 * @param   null              $group
 	 *
 	 * @return bool
 	 */
@@ -153,7 +152,7 @@ class Calendar extends \JFormFieldCalendar implements FieldInterface
 	/**
 	 * Method to get the calendar input markup.
 	 *
-	 * @param   string $display The display to render ('static' or 'repeatable')
+	 * @param   string  $display  The display to render ('static' or 'repeatable')
 	 *
 	 * @return  string    The field input markup.
 	 *
@@ -162,9 +161,9 @@ class Calendar extends \JFormFieldCalendar implements FieldInterface
 	protected function getCalendar($display)
 	{
 		// Initialize some field attributes.
-		$format      = $this->format ? $this->format : '%Y-%m-%d';
-		$class       = $this->class ? $this->class : '';
-		$default     = $this->element['default'] ? (string) $this->element['default'] : '';
+		$format  = $this->format ? $this->format : '%Y-%m-%d';
+		$class   = $this->class ? $this->class : '';
+		$default = $this->element['default'] ? (string) $this->element['default'] : '';
 
 		// Get some system objects.
 		$config = $this->form->getContainer()->platform->getConfig();
@@ -190,10 +189,10 @@ class Calendar extends \JFormFieldCalendar implements FieldInterface
 				if ((int) $this->value)
 				{
 					// Get a date object based on the correct timezone.
-					$coreObject = \JFactory::getDate($this->value, 'UTC');
+					$coreObject = Factory::getDate($this->value, 'UTC');
 					$date       = new DateDecorator($coreObject);
 
-					$date->setTimezone(new \DateTimeZone($config->get('offset')));
+					$date->setTimezone(new DateTimeZone($config->get('offset')));
 
 					// Transform the date string.
 					$this->value = $date->format('Y-m-d H:i:s', true, false);
@@ -206,10 +205,10 @@ class Calendar extends \JFormFieldCalendar implements FieldInterface
 				if ((int) $this->value)
 				{
 					// Get a date object based on the correct timezone.
-					$coreObject = \JFactory::getDate($this->value, 'UTC');
+					$coreObject = Factory::getDate($this->value, 'UTC');
 					$date       = new DateDecorator($coreObject);
 
-					$date->setTimezone(new \DateTimeZone($user->getParam('timezone', $config->get('offset'))));
+					$date->setTimezone(new DateTimeZone($user->getParam('timezone', $config->get('offset'))));
 
 					// Transform the date string.
 					$this->value = $date->format('Y-m-d H:i:s', true, false);
@@ -221,7 +220,7 @@ class Calendar extends \JFormFieldCalendar implements FieldInterface
 		if ($display == 'static')
 		{
 			// Build the attributes array.
-			$attributes = array();
+			$attributes = [];
 
 			if ($this->placeholder)
 			{
@@ -319,22 +318,22 @@ class Calendar extends \JFormFieldCalendar implements FieldInterface
 			}
 
 			// Including fallback code for HTML5 non supported browsers.
-			JHtml::_('jquery.framework');
-			JHtml::_('script', 'system/html5fallback.js', false, true);
+			HTMLHelper::_('jquery.framework');
+			HTMLHelper::_('script', 'system/html5fallback.js', false, true);
 
 			if (($format == '%Y-%m-%d') && isset($attributes['showTime']))
 			{
 				if ($attributes['showTime'])
 				{
-					$format = JText::_('DATE_FORMAT_CALENDAR_DATETIME');
+					$format = \Joomla\CMS\Language\Text::_('DATE_FORMAT_CALENDAR_DATETIME');
 				}
 				else
 				{
-					$format = JText::_('DATE_FORMAT_CALENDAR_DATE');
+					$format = \Joomla\CMS\Language\Text::_('DATE_FORMAT_CALENDAR_DATE');
 				}
 			}
 
-			return JHtml::_('calendar', $this->value, $this->name, $this->id, $format, $attributes);
+			return HTMLHelper::_('calendar', $this->value, $this->name, $this->id, $format, $attributes);
 		}
 		else
 		{
@@ -342,7 +341,7 @@ class Calendar extends \JFormFieldCalendar implements FieldInterface
 				&& (string) $this->element['empty_replacement'])
 			{
 				$replacement_key = (string) $this->element['empty_replacement'];
-				$value           = \JText::_($replacement_key);
+				$value           = \Joomla\CMS\Language\Text::_($replacement_key);
 			}
 			else
 			{

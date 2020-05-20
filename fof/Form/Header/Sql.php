@@ -7,8 +7,8 @@
 
 namespace FOF30\Form\Header;
 
-use JHtml;
-use JText;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
 
 defined('_JEXEC') or die;
 
@@ -26,7 +26,7 @@ class Sql extends Selectable
 	 */
 	protected function getOptions()
 	{
-		$options = array();
+		$options = [];
 
 		// Initialize some field attributes.
 		$key       = $this->element['key_field'] ? (string) $this->element['key_field'] : 'value';
@@ -48,11 +48,11 @@ class Sql extends Selectable
 			{
 				if ($translate == true)
 				{
-					$options[] = JHtml::_('select.option', $item->$key, JText::_($item->$value));
+					$options[] = HTMLHelper::_('select.option', $item->$key, Text::_($item->$value));
 				}
 				else
 				{
-					$options[] = JHtml::_('select.option', $item->$key, $item->$value);
+					$options[] = HTMLHelper::_('select.option', $item->$key, $item->$value);
 				}
 			}
 		}

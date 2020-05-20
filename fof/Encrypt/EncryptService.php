@@ -6,7 +6,9 @@
  */
 
 namespace FOF30\Encrypt;
+
 use FOF30\Container\Container;
+use FOF30\Utils\Phpfunc;
 
 /**
  * Data encryption service for FOF-based components.
@@ -122,9 +124,9 @@ class EncryptService
 	/**
 	 * Initialize the AES cryptography object
 	 *
+	 * @return void
 	 * @since  3.3.2
 	 *
-	 * @return void
 	 */
 	private function initialize()
 	{
@@ -140,7 +142,7 @@ class EncryptService
 			return;
 		}
 
-		$phpFunc   = new \FOF30\Utils\Phpfunc();
+		$phpFunc   = new Phpfunc();
 		$this->aes = new Aes($password, 128, 'cbc', $phpFunc);
 	}
 
@@ -252,7 +254,7 @@ class EncryptService
 			return;
 		}
 
-		$phpFunc      = new \FOF30\Utils\Phpfunc();
+		$phpFunc      = new Phpfunc();
 		$randval      = new Randval($phpFunc);
 		$secretKey    = $randval->getRandomPassword(64);
 		$constantName = $this->getConstantName();

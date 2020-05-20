@@ -10,12 +10,15 @@ namespace FOF30\Form\Field;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
-use JHtml;
-use JText;
+use JFormFieldRules;
+use Joomla\CMS\Access\Access;
+use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\HTML\HTMLHelper;
+use SimpleXMLElement;
 
 defined('_JEXEC') or die;
 
-\JFormHelper::loadFieldClass('rules');
+FormHelper::loadFieldClass('rules');
 
 /**
  * Form Field class for FOF
@@ -23,38 +26,34 @@ defined('_JEXEC') or die;
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
-class Rules extends \JFormFieldRules implements FieldInterface
+class Rules extends JFormFieldRules implements FieldInterface
 {
-	/**
-	 * @var  string  Static field output
-	 */
-	protected $static;
-
-	/**
-	 * @var  string  Repeatable field output
-	 */
-	protected $repeatable;
-
-	/**
-	 * The Form object of the form attached to the form field.
-	 *
-	 * @var    Form
-	 */
-	protected $form;
-
 	/**
 	 * A monotonically increasing number, denoting the row number in a repeatable view
 	 *
 	 * @var  int
 	 */
 	public $rowid;
-
 	/**
 	 * The item being rendered in a repeatable form field
 	 *
 	 * @var  DataModel
 	 */
 	public $item;
+	/**
+	 * @var  string  Static field output
+	 */
+	protected $static;
+	/**
+	 * @var  string  Repeatable field output
+	 */
+	protected $repeatable;
+	/**
+	 * The Form object of the form attached to the form field.
+	 *
+	 * @var    Form
+	 */
+	protected $form;
 
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
@@ -88,9 +87,9 @@ class Rules extends \JFormFieldRules implements FieldInterface
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
-	 * @return  string  The field HTML
 	 */
 	public function getStatic()
 	{
@@ -101,9 +100,9 @@ class Rules extends \JFormFieldRules implements FieldInterface
 	 * Get the rendering of this field type for a repeatable (grid) display,
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.1
 	 *
-	 * @return  string  The field HTML
 	 */
 	public function getRepeatable()
 	{
@@ -121,7 +120,7 @@ class Rules extends \JFormFieldRules implements FieldInterface
 	 */
 	protected function getInput()
 	{
-		JHtml::_('bootstrap.tooltip');
+		HTMLHelper::_('bootstrap.tooltip');
 
 		// Initialise some field attributes.
 		$section    = $this->section;
@@ -129,16 +128,18 @@ class Rules extends \JFormFieldRules implements FieldInterface
 		$assetField = $this->assetField;
 
 		// Get the actions for the asset.
-		$actions = \JAccess::getActions($component, $section);
+		$actions = Access::getActions($component, $section);
 
 		// Iterate over the children and add to the actions.
-		/** @var \SimpleXMLElement $el */
+		/** @var SimpleXMLElement $el */
 		foreach ($this->element->children() as $el)
 		{
 			if ($el->getName() == 'action')
 			{
-				$actions[] = (object) array('name' => (string) $el['name'], 'title' => (string) $el['title'],
-					'description' => (string) $el['description']);
+				$actions[] = (object) [
+					'name'        => (string) $el['name'], 'title' => (string) $el['title'],
+					'description' => (string) $el['description'],
+				];
 			}
 		}
 
@@ -148,9 +149,9 @@ class Rules extends \JFormFieldRules implements FieldInterface
 			// Need to find the asset id by the name of the component.
 			$db    = $this->form->getContainer()->platform->getDbo();
 			$query = $db->getQuery(true)
-						->select($db->quoteName('id'))
-						->from($db->quoteName('#__assets'))
-						->where($db->quoteName('name') . ' = ' . $db->quote($component));
+				->select($db->quoteName('id'))
+				->from($db->quoteName('#__assets'))
+				->where($db->quoteName('name') . ' = ' . $db->quote($component));
 
 			$assetId = (int) $db->setQuery($query)->loadResult();
 		}
@@ -164,7 +165,7 @@ class Rules extends \JFormFieldRules implements FieldInterface
 			// If there is no assetId (let's say we are dealing with a new record), let's ask the table
 			// to give it to us. Here you should implement your logic (ie getting default permissions from
 			// the component or from the category)
-			if(!$assetId)
+			if (!$assetId)
 			{
 				$table   = $this->form->getModel();
 				$assetId = $table->getAssetParentId();
@@ -175,16 +176,16 @@ class Rules extends \JFormFieldRules implements FieldInterface
 		// Full width format.
 
 		// Get the rules for just this asset (non-recursive).
-		$assetRules = \JAccess::getAssetRules($assetId);
+		$assetRules = Access::getAssetRules($assetId);
 
 		// Get the available user groups.
 		$groups = $this->getUserGroups();
 
 		// Prepare output
-		$html = array();
+		$html = [];
 
 		// Description
-		$html[] = '<p class="rule-desc">' . JText::_('JLIB_RULES_SETTINGS_DESC') . '</p>';
+		$html[] = '<p class="rule-desc">' . \Joomla\CMS\Language\Text::_('JLIB_RULES_SETTINGS_DESC') . '</p>';
 
 		// Begin tabs
 		$html[] = '<div id="permissions-sliders" class="tabbable tabs-left">';
@@ -230,11 +231,11 @@ class Rules extends \JFormFieldRules implements FieldInterface
 			$html[] = '<tr>';
 
 			$html[] = '<th class="actions" id="actions-th' . $group->value . '">';
-			$html[] = '<span class="acl-action">' . JText::_('JLIB_RULES_ACTION') . '</span>';
+			$html[] = '<span class="acl-action">' . \Joomla\CMS\Language\Text::_('JLIB_RULES_ACTION') . '</span>';
 			$html[] = '</th>';
 
 			$html[] = '<th class="settings" id="settings-th' . $group->value . '">';
-			$html[] = '<span class="acl-action">' . JText::_('JLIB_RULES_SELECT_SETTING') . '</span>';
+			$html[] = '<span class="acl-action">' . \Joomla\CMS\Language\Text::_('JLIB_RULES_SELECT_SETTING') . '</span>';
 			$html[] = '</th>';
 
 			// The calculated setting is not shown for the root group of global configuration.
@@ -243,7 +244,7 @@ class Rules extends \JFormFieldRules implements FieldInterface
 			if ($canCalculateSettings)
 			{
 				$html[] = '<th id="aclactionth' . $group->value . '">';
-				$html[] = '<span class="acl-action">' . JText::_('JLIB_RULES_CALCULATED_SETTING') . '</span>';
+				$html[] = '<span class="acl-action">' . \Joomla\CMS\Language\Text::_('JLIB_RULES_CALCULATED_SETTING') . '</span>';
 				$html[] = '</th>';
 			}
 
@@ -256,8 +257,8 @@ class Rules extends \JFormFieldRules implements FieldInterface
 				$html[] = '<tr>';
 				$html[] = '<td headers="actions-th' . $group->value . '">';
 				$html[] = '<label for="' . $this->id . '_' . $action->name . '_' . $group->value . '" class="hasTooltip" title="'
-					. htmlspecialchars(JText::_($action->title) . ' ' . JText::_($action->description), ENT_COMPAT, 'UTF-8') . '">';
-				$html[] = JText::_($action->title);
+					. htmlspecialchars(\Joomla\CMS\Language\Text::_($action->title) . ' ' . \Joomla\CMS\Language\Text::_($action->description), ENT_COMPAT, 'UTF-8') . '">';
+				$html[] = \Joomla\CMS\Language\Text::_($action->title);
 				$html[] = '</label>';
 				$html[] = '</td>';
 
@@ -265,9 +266,9 @@ class Rules extends \JFormFieldRules implements FieldInterface
 
 				$html[] = '<select class="input-small" name="' . $this->name . '[' . $action->name . '][' . $group->value . ']" id="' . $this->id . '_' . $action->name
 					. '_' . $group->value . '" title="'
-					. JText::sprintf('JLIB_RULES_SELECT_ALLOW_DENY_GROUP', JText::_($action->title), trim($group->text)) . '">';
+					. \Joomla\CMS\Language\Text::sprintf('JLIB_RULES_SELECT_ALLOW_DENY_GROUP', \Joomla\CMS\Language\Text::_($action->title), trim($group->text)) . '">';
 
-				$inheritedRule = \JAccess::checkGroup($group->value, $action->name, $assetId);
+				$inheritedRule = Access::checkGroup($group->value, $action->name, $assetId);
 
 				// Get the actual setting for the action for this group.
 				$assetRule = $assetRules->allow($action->name, $group->value);
@@ -276,10 +277,10 @@ class Rules extends \JFormFieldRules implements FieldInterface
 
 				// The parent group has "Not Set", all children can rightly "Inherit" from that.
 				$html[] = '<option value=""' . ($assetRule === null ? ' selected="selected"' : '') . '>'
-					. JText::_(empty($group->parent_id) && empty($component) ? 'JLIB_RULES_NOT_SET' : 'JLIB_RULES_INHERITED') . '</option>';
-				$html[] = '<option value="1"' . ($assetRule === true ? ' selected="selected"' : '') . '>' . JText::_('JLIB_RULES_ALLOWED')
+					. \Joomla\CMS\Language\Text::_(empty($group->parent_id) && empty($component) ? 'JLIB_RULES_NOT_SET' : 'JLIB_RULES_INHERITED') . '</option>';
+				$html[] = '<option value="1"' . ($assetRule === true ? ' selected="selected"' : '') . '>' . \Joomla\CMS\Language\Text::_('JLIB_RULES_ALLOWED')
 					. '</option>';
-				$html[] = '<option value="0"' . ($assetRule === false ? ' selected="selected"' : '') . '>' . JText::_('JLIB_RULES_DENIED')
+				$html[] = '<option value="0"' . ($assetRule === false ? ' selected="selected"' : '') . '>' . \Joomla\CMS\Language\Text::_('JLIB_RULES_DENIED')
 					. '</option>';
 
 				$html[] = '</select>&#160; ';
@@ -287,7 +288,7 @@ class Rules extends \JFormFieldRules implements FieldInterface
 				// If this asset's rule is allowed, but the inherited rule is deny, we have a conflict.
 				if (($assetRule === true) && ($inheritedRule === false))
 				{
-					$html[] = JText::_('JLIB_RULES_CONFLICT');
+					$html[] = \Joomla\CMS\Language\Text::_('JLIB_RULES_CONFLICT');
 				}
 
 				$html[] = '</td>';
@@ -301,32 +302,32 @@ class Rules extends \JFormFieldRules implements FieldInterface
 					// This is where we show the current effective settings considering currrent group, path and cascade.
 					// Check whether this is a component or global. Change the text slightly.
 
-					if (\JAccess::checkGroup($group->value, 'core.admin', $assetId) !== true)
+					if (Access::checkGroup($group->value, 'core.admin', $assetId) !== true)
 					{
 						if ($inheritedRule === null)
 						{
-							$html[] = '<span class="label label-important">' . JText::_('JLIB_RULES_NOT_ALLOWED') . '</span>';
+							$html[] = '<span class="label label-important">' . \Joomla\CMS\Language\Text::_('JLIB_RULES_NOT_ALLOWED') . '</span>';
 						}
 						elseif ($inheritedRule === true)
 						{
-							$html[] = '<span class="label label-success">' . JText::_('JLIB_RULES_ALLOWED') . '</span>';
+							$html[] = '<span class="label label-success">' . \Joomla\CMS\Language\Text::_('JLIB_RULES_ALLOWED') . '</span>';
 						}
 						elseif ($inheritedRule === false)
 						{
 							if ($assetRule === false)
 							{
-								$html[] = '<span class="label label-important">' . JText::_('JLIB_RULES_NOT_ALLOWED') . '</span>';
+								$html[] = '<span class="label label-important">' . \Joomla\CMS\Language\Text::_('JLIB_RULES_NOT_ALLOWED') . '</span>';
 							}
 							else
 							{
-								$html[] = '<span class="label"><i class="icon-lock icon-white"></i> ' . JText::_('JLIB_RULES_NOT_ALLOWED_LOCKED')
+								$html[] = '<span class="label"><i class="icon-lock icon-white"></i> ' . \Joomla\CMS\Language\Text::_('JLIB_RULES_NOT_ALLOWED_LOCKED')
 									. '</span>';
 							}
 						}
 					}
 					elseif (!empty($component))
 					{
-						$html[] = '<span class="label label-success"><i class="icon-lock icon-white"></i> ' . JText::_('JLIB_RULES_ALLOWED_ADMIN')
+						$html[] = '<span class="label label-success"><i class="icon-lock icon-white"></i> ' . \Joomla\CMS\Language\Text::_('JLIB_RULES_ALLOWED_ADMIN')
 							. '</span>';
 					}
 					else
@@ -335,17 +336,17 @@ class Rules extends \JFormFieldRules implements FieldInterface
 						// The admin rights can be changed.
 						if ($action->name === 'core.admin')
 						{
-							$html[] = '<span class="label label-success">' . JText::_('JLIB_RULES_ALLOWED') . '</span>';
+							$html[] = '<span class="label label-success">' . \Joomla\CMS\Language\Text::_('JLIB_RULES_ALLOWED') . '</span>';
 						}
 						elseif ($inheritedRule === false)
 						{
 							// Other actions cannot be changed.
 							$html[] = '<span class="label label-important"><i class="icon-lock icon-white"></i> '
-								. JText::_('JLIB_RULES_NOT_ALLOWED_ADMIN_CONFLICT') . '</span>';
+								. \Joomla\CMS\Language\Text::_('JLIB_RULES_NOT_ALLOWED_ADMIN_CONFLICT') . '</span>';
 						}
 						else
 						{
-							$html[] = '<span class="label label-success"><i class="icon-lock icon-white"></i> ' . JText::_('JLIB_RULES_ALLOWED_ADMIN')
+							$html[] = '<span class="label label-success"><i class="icon-lock icon-white"></i> ' . \Joomla\CMS\Language\Text::_('JLIB_RULES_ALLOWED_ADMIN')
 								. '</span>';
 						}
 					}
@@ -366,11 +367,11 @@ class Rules extends \JFormFieldRules implements FieldInterface
 
 		if ($section == 'component' || $section == null)
 		{
-			$html[] = JText::_('JLIB_RULES_SETTING_NOTES');
+			$html[] = \Joomla\CMS\Language\Text::_('JLIB_RULES_SETTING_NOTES');
 		}
 		else
 		{
-			$html[] = JText::_('JLIB_RULES_SETTING_NOTES_ITEM');
+			$html[] = \Joomla\CMS\Language\Text::_('JLIB_RULES_SETTING_NOTES_ITEM');
 		}
 
 		$html[] = '</div>';

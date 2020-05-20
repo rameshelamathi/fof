@@ -7,8 +7,9 @@
 
 namespace FOF30\Form\Header;
 
-use JHtml;
-use JText;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
+use SimpleXMLElement;
 
 defined('_JEXEC') or die;
 
@@ -26,10 +27,10 @@ class Selectable extends Field
 	 */
 	protected function getOptions()
 	{
-		$options = array();
+		$options = [];
 
 		// Get the field $options
-		/** @var \SimpleXMLElement $option */
+		/** @var SimpleXMLElement $option */
 		foreach ($this->element->children() as $option)
 		{
 			// Only add <option /> elements.
@@ -39,10 +40,10 @@ class Selectable extends Field
 			}
 
 			// Create a new option object based on the <option /> element.
-			$options[] = JHtml::_(
+			$options[] = HTMLHelper::_(
 				'select.option',
 				(string) $option['value'],
-				JText::alt(
+				Text::alt(
 					trim((string) $option),
 					preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)
 				),
@@ -51,14 +52,14 @@ class Selectable extends Field
 		}
 
 		// Do we have a class and method source for our options?
-		$source_file = empty($this->element['source_file']) ? '' : (string) $this->element['source_file'];
-		$source_class = empty($this->element['source_class']) ? '' : (string) $this->element['source_class'];
-		$source_method = empty($this->element['source_method']) ? '' : (string) $this->element['source_method'];
-		$source_key = empty($this->element['source_key']) ? '*' : (string) $this->element['source_key'];
-		$source_value = empty($this->element['source_value']) ? '*' : (string) $this->element['source_value'];
+		$source_file      = empty($this->element['source_file']) ? '' : (string) $this->element['source_file'];
+		$source_class     = empty($this->element['source_class']) ? '' : (string) $this->element['source_class'];
+		$source_method    = empty($this->element['source_method']) ? '' : (string) $this->element['source_method'];
+		$source_key       = empty($this->element['source_key']) ? '*' : (string) $this->element['source_key'];
+		$source_value     = empty($this->element['source_value']) ? '*' : (string) $this->element['source_value'];
 		$source_translate = empty($this->element['source_translate']) ? 'true' : (string) $this->element['source_translate'];
-		$source_translate = in_array(strtolower($source_translate), array('true','yes','1','on')) ? true : false;
-		$source_format = empty($this->element['source_format']) ? '' : (string) $this->element['source_format'];
+		$source_translate = in_array(strtolower($source_translate), ['true', 'yes', '1', 'on']) ? true : false;
+		$source_format    = empty($this->element['source_format']) ? '' : (string) $this->element['source_format'];
 
 		if ($source_class && $source_method)
 		{
@@ -91,15 +92,15 @@ class Selectable extends Field
 						// Loop through the data and prime the $options array
 						foreach ($source_data as $k => $v)
 						{
-							$key = (empty($source_key) || ($source_key == '*')) ? $k : @$v[$source_key];
+							$key   = (empty($source_key) || ($source_key == '*')) ? $k : @$v[$source_key];
 							$value = (empty($source_value) || ($source_value == '*')) ? $v : @$v[$source_value];
 
 							if ($source_translate)
 							{
-								$value = JText::_($value);
+								$value = Text::_($value);
 							}
 
-							$options[] = JHtml::_('select.option', $key, $value, 'value', 'text');
+							$options[] = HTMLHelper::_('select.option', $key, $value, 'value', 'text');
 						}
 					}
 				}

@@ -8,7 +8,7 @@
 namespace FOF30\Layout;
 
 use FOF30\Container\Container;
-use JLayoutFile;
+use Joomla\CMS\Layout\FileLayout;
 
 defined('_JEXEC') or die;
 
@@ -24,7 +24,7 @@ defined('_JEXEC') or die;
  *
  * @package  FrameworkOnFramework
  */
-class LayoutFile extends JLayoutFile
+class LayoutFile extends FileLayout
 {
 	/** @var  Container  The component container */
 	public $container = null;
@@ -62,11 +62,11 @@ class LayoutFile extends JLayoutFile
 			$platformDirs = $this->container->platform->getPlatformBaseDirs();
 			$prefix       = $this->container->platform->isBackend() ? $platformDirs['admin'] : $platformDirs['root'];
 
-			$possiblePaths = array(
+			$possiblePaths = [
 				$prefix . '/templates/' . $this->container->platform->getTemplate() . '/html/layouts/' . $filePath,
 				$this->basePath . '/' . $filePath,
 				$platformDirs['root'] . '/layouts/' . $filePath,
-			);
+			];
 
 			reset($files);
 

@@ -5,6 +5,9 @@
  * @license   GNU General Public License version 2, or later
  */
 
+use Joomla\CMS\Editor\Editor;
+use Joomla\CMS\Factory;
+
 defined('_JEXEC') or die;
 
 /**
@@ -34,8 +37,8 @@ abstract class FEFHelperEdit
 
 		if (is_null($editorType))
 		{
-			$editorType = JFactory::getConfig()->get('editor');
-			$user   = JFactory::getUser();
+			$editorType = Factory::getConfig()->get('editor');
+			$user       = Factory::getUser();
 
 			if (!$user->guest)
 			{
@@ -48,10 +51,10 @@ abstract class FEFHelperEdit
 			$params['id'] = $fieldName;
 		}
 
-		$editor = JEditor::getInstance($editorType);
+		$editor = Editor::getInstance($editorType);
 
 		return $editor->display($fieldName, $value, $params['width'], $params['height'],
-			$params['columns'],  $params['rows'], $params['buttons'], $params['id'],
+			$params['columns'], $params['rows'], $params['buttons'], $params['id'],
 			$params['asset_id'], $params['created_by'], $params);
 	}
 }

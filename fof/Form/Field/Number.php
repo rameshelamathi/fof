@@ -10,10 +10,12 @@ namespace FOF30\Form\Field;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
+use JFormFieldNumber;
+use Joomla\CMS\Form\FormHelper;
 
 defined('_JEXEC') or die;
 
-\JFormHelper::loadFieldClass('number');
+FormHelper::loadFieldClass('number');
 
 /**
  * Form Field class for the FOF framework
@@ -21,38 +23,34 @@ defined('_JEXEC') or die;
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
-class Number extends \JFormFieldNumber implements FieldInterface
+class Number extends JFormFieldNumber implements FieldInterface
 {
-	/**
-	 * @var  string  Static field output
-	 */
-	protected $static;
-
-	/**
-	 * @var  string  Repeatable field output
-	 */
-	protected $repeatable;
-
-	/**
-	 * The Form object of the form attached to the form field.
-	 *
-	 * @var    Form
-	 */
-	protected $form;
-
 	/**
 	 * A monotonically increasing number, denoting the row number in a repeatable view
 	 *
 	 * @var  int
 	 */
 	public $rowid;
-
 	/**
 	 * The item being rendered in a repeatable form field
 	 *
 	 * @var  DataModel
 	 */
 	public $item;
+	/**
+	 * @var  string  Static field output
+	 */
+	protected $static;
+	/**
+	 * @var  string  Repeatable field output
+	 */
+	protected $repeatable;
+	/**
+	 * The Form object of the form attached to the form field.
+	 *
+	 * @var    Form
+	 */
+	protected $form;
 
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
@@ -94,9 +92,9 @@ class Number extends \JFormFieldNumber implements FieldInterface
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
 	 *
+	 * @return  string  The field HTML
 	 * @since 2.0
 	 *
-	 * @return  string  The field HTML
 	 */
 	public function getStatic()
 	{
@@ -108,11 +106,11 @@ class Number extends \JFormFieldNumber implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
-		$currencyPos = $this->getAttribute('currency_position', false);
+		$currencyPos    = $this->getAttribute('currency_position', false);
 		$currencySymbol = $this->getAttribute('currency_symbol', false);
 
 		// Initialise
-		$class             = $this->id;
+		$class = $this->id;
 
 		// Get field parameters
 		if ($this->element['class'])
@@ -136,20 +134,20 @@ class Number extends \JFormFieldNumber implements FieldInterface
 
 		if (isset($this->element['format_number']))
 		{
-			$formatNumberValue = (string)$this->element['format_number'];
-			$formatNumber = in_array(strtolower($formatNumberValue), array('yes', 'true', 'on', 1));
+			$formatNumberValue = (string) $this->element['format_number'];
+			$formatNumber      = in_array(strtolower($formatNumberValue), ['yes', 'true', 'on', 1]);
 		}
 
 		// Format the number correctly
 		if ($formatNumber)
 		{
-			$numDecimals 	= $this->getAttribute('decimals', 2);
+			$numDecimals    = $this->getAttribute('decimals', 2);
 			$minNumDecimals = $this->getAttribute('min_decimals', 2);
-			$decimalsSep 	= $this->getAttribute('decimals_separator', '.');
-			$thousandSep 	= $this->getAttribute('thousand_separator', ',');
+			$decimalsSep    = $this->getAttribute('decimals_separator', '.');
+			$thousandSep    = $this->getAttribute('thousand_separator', ',');
 
 			// Format the number
-			$number = number_format((float)$this->value, $numDecimals, $decimalsSep, $thousandSep);
+			$number = number_format((float) $this->value, $numDecimals, $decimalsSep, $thousandSep);
 		}
 
 		// Put it all together

@@ -19,7 +19,7 @@ class AccessLevel extends Selectable
 	/**
 	 * Method to get the list of access levels
 	 *
-	 * @return  array	A list of access levels.
+	 * @return  array    A list of access levels.
 	 *
 	 * @since   2.0
 	 */

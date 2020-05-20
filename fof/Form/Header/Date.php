@@ -7,8 +7,9 @@
 
 namespace FOF30\Form\Header;
 
-use JHtml;
-use JText;
+use DateTimeZone;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
 
 defined('_JEXEC') or die;
 
@@ -27,8 +28,8 @@ class Date extends Field
 	protected function getFilter()
 	{
 		// Initialize some field attributes.
-		$format		 = $this->element['format'] ? (string) $this->element['format'] : '%Y-%m-%d';
-		$attributes  = array();
+		$format     = $this->element['format'] ? (string) $this->element['format'] : '%Y-%m-%d';
+		$attributes = [];
 
 		if ($this->element['size'])
 		{
@@ -66,7 +67,7 @@ class Date extends Field
 
 		if ((string) $this->element['placeholder'])
 		{
-			$attributes['placeholder'] = JText::_((string) $this->element['placeholder']);
+			$attributes['placeholder'] = Text::_((string) $this->element['placeholder']);
 		}
 
 		$name = $this->element['searchfieldname'] ? $this->element['searchfieldname'] : $this->name;
@@ -94,7 +95,7 @@ class Date extends Field
 				{
 					// Get a date object based on the correct timezone.
 					$date = $this->form->getContainer()->platform->getDate($searchvalue, 'UTC');
-					$date->setTimezone(new \DateTimeZone($config->get('offset')));
+					$date->setTimezone(new DateTimeZone($config->get('offset')));
 
 					// Transform the date string.
 					$searchvalue = $date->format('Y-m-d H:i:s', true, false);
@@ -107,7 +108,7 @@ class Date extends Field
 				{
 					// Get a date object based on the correct timezone.
 					$date = $this->form->getContainer()->platform->getDate($this->value, 'UTC');
-					$date->setTimezone(new \DateTimeZone($user->getParam('timezone', $config->get('offset'))));
+					$date->setTimezone(new DateTimeZone($user->getParam('timezone', $config->get('offset'))));
 
 					// Transform the date string.
 					$searchvalue = $date->format('Y-m-d H:i:s', true, false);
@@ -115,7 +116,7 @@ class Date extends Field
 				break;
 		}
 
-		return JHtml::_('calendar', $searchvalue, $name, $name, $format, $attributes);
+		return HTMLHelper::_('calendar', $searchvalue, $name, $name, $format, $attributes);
 	}
 
 	/**
