@@ -179,7 +179,7 @@ class GenericList extends JFormFieldList implements FieldInterface
 			return $this->getInput();
 		}
 
-		$class = $this->class ? $this->class : '';
+		$class = $this->class ?: '';
 
 		$link_url = $this->element['url'];
 

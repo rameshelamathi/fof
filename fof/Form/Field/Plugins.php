@@ -144,7 +144,7 @@ class Plugins extends JFormFieldPlugins implements FieldInterface
 		$id    = isset($fieldOptions['id']) ? 'id="' . $fieldOptions['id'] . '" ' : '';
 		$class = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
 
-		return '<span ' . ($id ? $id : '') . 'class="' . $class . '">' .
+		return '<span ' . ($id ?: '') . 'class="' . $class . '">' .
 			htmlspecialchars(GenericList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}

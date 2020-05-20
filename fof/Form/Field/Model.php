@@ -126,7 +126,7 @@ class Model extends GenericList implements FieldInterface
 	public function getRepeatable()
 	{
 		// Get field parameters
-		$class             = $this->class ? $this->class : $this->id;
+		$class             = $this->class ?: $this->id;
 		$format_string     = $this->element['format'] ? (string) $this->element['format'] : '';
 		$link_url          = $this->element['url'] ? (string) $this->element['url'] : '';
 		$empty_replacement = $this->element['empty_replacement'] ? (string) $this->element['empty_replacement'] : '';

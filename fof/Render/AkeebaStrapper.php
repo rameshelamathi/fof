@@ -1002,7 +1002,7 @@ JS;
 	{
 		$html = '';
 
-		$labelClass = $field->labelClass ? $field->labelClass : $field->labelclass; // Joomla! 2.5/3.x use different case for the same name
+		$labelClass = $field->labelClass ?: $field->labelclass; // Joomla! 2.5/3.x use different case for the same name
 		$required   = $field->required;
 
 		$tooltip = $form->getFieldAttribute($field->fieldname, 'tooltip', '', $field->group);
@@ -1307,7 +1307,7 @@ JS;
 					{
 						$class = $link['active'] ? 'active' : '';
 
-						$href = $link['link'] ? $link['link'] : '#';
+						$href = $link['link'] ?: '#';
 
 						echo "<a href=\"$href\" class=\"nav-link $class\">{$link['name']}</a>";
 					}

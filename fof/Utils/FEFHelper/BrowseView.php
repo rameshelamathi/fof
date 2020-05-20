@@ -437,7 +437,7 @@ abstract class BrowseView
 		// If fof.autosubmit is enabled and onchange is not set we will add our own handler
 		if ($params['fof.autosubmit'] && is_null($params['onchange']))
 		{
-			$formName           = $params['fof.formname'] ? $params['fof.formname'] : 'adminForm';
+			$formName           = $params['fof.formname'] ?: 'adminForm';
 			$params['onchange'] = "document.{$formName}.submit()";
 		}
 

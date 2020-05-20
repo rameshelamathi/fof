@@ -178,7 +178,7 @@ class AccessLevel extends JFormFieldAccessLevel implements FieldInterface
 			array_unshift($options, HTMLHelper::_('select.option', '', \Joomla\CMS\Language\Text::_('JOPTION_ACCESS_SHOW_ALL_LEVELS')));
 		}
 
-		return '<span ' . ($id ? $id : '') . 'class="' . $class . '">' .
+		return '<span ' . ($id ?: '') . 'class="' . $class . '">' .
 			htmlspecialchars(GenericList::getOptionName($options, $this->value), ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}

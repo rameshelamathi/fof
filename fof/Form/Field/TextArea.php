@@ -144,7 +144,7 @@ class TextArea extends JFormFieldTextarea implements FieldInterface
 		$id    = isset($fieldOptions['id']) ? 'id="' . $fieldOptions['id'] . '" ' : '';
 		$class = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
 
-		return '<div ' . ($id ? $id : '') . 'class="' . $class . '">' .
+		return '<div ' . ($id ?: '') . 'class="' . $class . '">' .
 			htmlspecialchars(nl2br($this->value), ENT_COMPAT, 'UTF-8') .
 			'</div>';
 	}

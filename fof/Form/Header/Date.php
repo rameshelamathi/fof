@@ -70,7 +70,7 @@ class Date extends Field
 			$attributes['placeholder'] = Text::_((string) $this->element['placeholder']);
 		}
 
-		$name = $this->element['searchfieldname'] ? $this->element['searchfieldname'] : $this->name;
+		$name = $this->element['searchfieldname'] ?: $this->name;
 
 		if ($this->element['searchfieldname'])
 		{

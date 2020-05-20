@@ -129,8 +129,8 @@ class Published extends JFormFieldList implements FieldInterface
 		$publish_up   = $this->element['publish_up'] ? (string) $this->element['publish_up'] : null;
 		$publish_down = $this->element['publish_down'] ? (string) $this->element['publish_down'] : null;
 		$container    = $this->form->getContainer();
-		$privilege    = $this->element['acl_privilege'] ? $this->element['acl_privilege'] : 'core.edit.state';
-		$component    = $this->element['acl_component'] ? $this->element['acl_component'] : $container->componentName;
+		$privilege    = $this->element['acl_privilege'] ?: 'core.edit.state';
+		$component    = $this->element['acl_component'] ?: $container->componentName;
 		$component    = empty($component) ? null : $component;
 		$enabled      = $container->platform->getUser()->authorise($privilege, $component);
 

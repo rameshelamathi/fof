@@ -144,6 +144,6 @@ class Editor extends EditorField implements FieldInterface
 		$id    = isset($fieldOptions['id']) ? 'id="' . $fieldOptions['id'] . '" ' : '';
 		$class = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
 
-		return '<div ' . ($id ? $id : '') . 'class="' . $class . '">' . $this->value . '</div>';
+		return '<div ' . ($id ?: '') . 'class="' . $class . '">' . $this->value . '</div>';
 	}
 }

@@ -125,7 +125,7 @@ class GroupedButton extends JFormFieldText implements FieldInterface
 	 */
 	public function getInput()
 	{
-		$class = $this->class ? $this->class : '';
+		$class = $this->class ?: '';
 
 		$html = '<div id="' . $this->id . '" class="btn-group ' . $class . '">';
 

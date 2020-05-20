@@ -172,7 +172,7 @@ class Tel extends JFormFieldTel implements FieldInterface
 				$value . '</a>';
 		}
 
-		return '<span ' . ($id ? $id : '') . 'class="' . $class . '"">' .
+		return '<span ' . ($id ?: '') . 'class="' . $class . '"">' .
 			$html .
 			'</span>';
 	}

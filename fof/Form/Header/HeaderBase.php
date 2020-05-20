@@ -392,11 +392,11 @@ abstract class HeaderBase
 
 		if ($id)
 		{
-			$id .= '_' . ($fieldId ? $fieldId : $fieldName);
+			$id .= '_' . ($fieldId ?: $fieldName);
 		}
 		else
 		{
-			$id .= ($fieldId ? $fieldId : $fieldName);
+			$id .= ($fieldId ?: $fieldName);
 		}
 
 		// Clean up any invalid characters.

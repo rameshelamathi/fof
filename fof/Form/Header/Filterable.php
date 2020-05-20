@@ -31,15 +31,15 @@ class Filterable extends Searchable
 		$size        = $this->element['size'] ? ' size="' . (int) $this->element['size'] . '"' : '';
 		$maxLength   = $this->element['maxlength'] ? ' maxlength="' . (int) $this->element['maxlength'] . '"' : '';
 		$filterclass = $this->element['filterclass'] ? ' class="' . (string) $this->element['filterclass'] . '"' : '';
-		$placeholder = $this->element['placeholder'] ? $this->element['placeholder'] : $this->getLabel();
-		$name        = $this->element['searchfieldname'] ? $this->element['searchfieldname'] : $this->name;
+		$placeholder = $this->element['placeholder'] ?: $this->getLabel();
+		$name        = $this->element['searchfieldname'] ?: $this->name;
 		$placeholder = ' placeholder="' . Text::_($placeholder) . '"';
 
 		$single     = in_array($this->element['single'], $valide) ? true : false;
 		$showMethod = in_array($this->element['showmethod'], $valide) ? true : false;
-		$method     = $this->element['method'] ? $this->element['method'] : 'between';
-		$fromName   = $this->element['fromname'] ? $this->element['fromname'] : 'from';
-		$toName     = $this->element['toname'] ? $this->element['toname'] : 'to';
+		$method     = $this->element['method'] ?: 'between';
+		$fromName   = $this->element['fromname'] ?: 'from';
+		$toName     = $this->element['toname'] ?: 'to';
 
 		$values    = $this->form->getModel()->getState($name);
 		$fromValue = $values[$fromName];

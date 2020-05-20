@@ -114,7 +114,7 @@ class Color extends JFormFieldColor implements FieldInterface
 			return $this->getInput();
 		}
 
-		$class    = $this->class ? $this->class : '';
+		$class    = $this->class ?: '';
 		$hexColor = '#' . ltrim($this->value, '#');
 
 		return '<div class="' . $this->id . ' ' . $class

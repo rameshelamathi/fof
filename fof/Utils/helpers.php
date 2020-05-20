@@ -491,7 +491,7 @@ if (!function_exists('object_get'))
 	 */
 	function object_get($object, $key, $default = null)
 	{
-		if (is_null($key) or trim($key) == '')
+		if (is_null($key) || trim($key) == '')
 		{
 			return $object;
 		}

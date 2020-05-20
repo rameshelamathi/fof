@@ -152,7 +152,7 @@ class UserGroup extends JFormFieldUsergroup implements FieldInterface
 			return $this->getInput();
 		}
 
-		$class = $this->class ? $this->class : '';
+		$class = $this->class ?: '';
 
 		$db    = $this->form->getContainer()->platform->getDbo();
 		$query = $db->getQuery(true)

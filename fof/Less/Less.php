@@ -495,9 +495,9 @@ class Less
 		{
 			$root = $in;
 		}
-		elseif (is_array($in) and isset($in['root']))
+		elseif (is_array($in) && isset($in['root']))
 		{
-			if ($force or !isset($in['files']))
+			if ($force || !isset($in['files']))
 			{
 				/**
 				 * If we are forcing a recompile or if for some reason the
@@ -506,11 +506,11 @@ class Less
 				 */
 				$root = $in['root'];
 			}
-			elseif (isset($in['files']) and is_array($in['files']))
+			elseif (isset($in['files']) && is_array($in['files']))
 			{
 				foreach ($in['files'] as $fname => $ftime)
 				{
-					if (!file_exists($fname) or filemtime($fname) > $ftime)
+					if (!file_exists($fname) || filemtime($fname) > $ftime)
 					{
 						/**
 						 * One of the files we knew about previously has changed

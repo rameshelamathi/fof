@@ -167,9 +167,9 @@ class User extends UserField implements FieldInterface
 		$show_id       = !$this->element['show_id'] == 'false';
 		$show_avatar   = !$this->element['show_avatar'] == 'false';
 		$show_link     = $this->element['show_link'] == 'true';
-		$link_url      = $this->element['link_url'] ? $this->element['link_url'] : null;
+		$link_url      = $this->element['link_url'] ?: null;
 		$avatar_method = 'gravatar';
-		$avatar_size   = $this->element['avatar_size'] ? $this->element['avatar_size'] : 64;
+		$avatar_size   = $this->element['avatar_size'] ?: 64;
 		$class         = '';
 
 		// Get the user record

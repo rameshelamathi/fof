@@ -161,8 +161,8 @@ class Calendar extends JFormFieldCalendar implements FieldInterface
 	protected function getCalendar($display)
 	{
 		// Initialize some field attributes.
-		$format  = $this->format ? $this->format : '%Y-%m-%d';
-		$class   = $this->class ? $this->class : '';
+		$format  = $this->format ?: '%Y-%m-%d';
+		$class   = $this->class ?: '';
 		$default = $this->element['default'] ? (string) $this->element['default'] : '';
 
 		// Get some system objects.

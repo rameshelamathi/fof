@@ -153,7 +153,7 @@ class Joomla3 extends AkeebaStrapper
 	{
 		$html = '';
 
-		$labelClass = $field->labelClass ? $field->labelClass : $field->labelclass; // Joomla! 2.5/3.x use different case for the same name
+		$labelClass = $field->labelClass ?: $field->labelclass; // Joomla! 2.5/3.x use different case for the same name
 		$required   = $field->required;
 
 		$tooltip = $form->getFieldAttribute($field->fieldname, 'tooltip', '', $field->group);

@@ -39,7 +39,7 @@ class Images extends ImageList
 			$this->value = (array) $this->value;
 		}
 
-		$html = '<span ' . ($id ? $id : '') . 'class="' . $class . '">';
+		$html = '<span ' . ($id ?: '') . 'class="' . $class . '">';
 
 		foreach ($this->value as $image)
 		{

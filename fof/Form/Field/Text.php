@@ -154,7 +154,7 @@ class Text extends JFormFieldText implements FieldInterface
 		}
 
 		// Initialise
-		$class                = $this->class ? $this->class : $this->id;
+		$class                = $this->class ?: $this->id;
 		$format_string        = $this->element['format'] ? (string) $this->element['format'] : '';
 		$format_if_not_empty  = in_array((string) $this->element['format_if_not_empty'], ['true', '1', 'on', 'yes']);
 		$parse_value          = in_array((string) $this->element['parse_value'], ['true', '1', 'on', 'yes']);

@@ -93,7 +93,7 @@ class Button extends TextField implements FieldInterface
 		}
 
 		$text  = $this->element['text'] ? (string) $this->element['text'] : '';
-		$class = $this->class ? $this->class : '';
+		$class = $this->class ?: '';
 		$icon  = $this->element['icon'] ? '<span class="icon ' . (string) $this->element['icon'] . '"></span> ' : '';
 
 		if ($this->element['listItemTask'])

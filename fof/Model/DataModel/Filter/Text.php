@@ -69,7 +69,7 @@ class Text extends AbstractFilter
 
 		if (is_array($value) || is_object($value))
 		{
-			settype($value, 'array');
+			$value = (array) $value;
 
 			$db    = $this->db;
 			$value = array_map([$db, 'quote'], $value);

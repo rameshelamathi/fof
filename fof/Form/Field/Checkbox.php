@@ -153,8 +153,8 @@ class Checkbox extends JFormFieldCheckbox implements FieldInterface
 		$onchange = $this->onchange ? ' onchange="' . $this->onchange . '"' : '';
 		$onclick  = $this->onclick ? ' onclick="' . $this->onclick . '"' : '';
 
-		return '<span ' . ($id ? $id : '') . 'class="' . $class . '">' .
-			'<input type="checkbox" name="' . $this->name . '" ' . ($id ? $id : '') . 'class="' . $this->id . ' ' . $class . '"' . ' value="'
+		return '<span ' . ($id ?: '') . 'class="' . $class . '">' .
+			'<input type="checkbox" name="' . $this->name . '" ' . ($id ?: '') . 'class="' . $this->id . ' ' . $class . '"' . ' value="'
 			. htmlspecialchars($value, ENT_COMPAT, 'UTF-8') . '"' . $checked . $disabled . $onclick . $onchange
 			. $required . $autofocus . ' />' .
 			'</span>';

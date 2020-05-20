@@ -30,7 +30,7 @@ trait MemStatsAware
 	{
 		$unit = ['b', 'KB', 'MB', 'GB', 'TB', 'PB'];
 
-		return @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
+		return @round($size / 1024 ** ($i = floor(log($size, 1024))), 2) . ' ' . $unit[$i];
 	}
 
 	/**

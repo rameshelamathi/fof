@@ -167,7 +167,7 @@ class Installer
 			}
 
 			// Am I allowed to let this action fail?
-			$canFailAction = $attributes->canfail ? $attributes->canfail : 0;
+			$canFailAction = $attributes->canfail ?: 0;
 
 			// Evaluate conditions
 			$shouldExecute = true;
@@ -502,7 +502,7 @@ class Installer
 
 		// Get the condition's attributes
 		$attributes = $node->attributes();
-		$type       = $attributes->type ? $attributes->type : null;
+		$type       = $attributes->type ?: null;
 		$value      = $attributes->value ? (string) $attributes->value : null;
 
 		switch ($type)
@@ -546,7 +546,7 @@ class Installer
 
 				if (array_key_exists($value, $tableColumns))
 				{
-					$coltype = $attributes->coltype ? $attributes->coltype : null;
+					$coltype = $attributes->coltype ?: null;
 
 					if (!empty($coltype))
 					{

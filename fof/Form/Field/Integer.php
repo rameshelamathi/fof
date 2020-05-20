@@ -125,7 +125,7 @@ class Integer extends JFormFieldInteger implements FieldInterface
 			return $this->getInput();
 		}
 
-		$class = $this->class ? $this->class : '';
+		$class = $this->class ?: '';
 
 		return '<span class="' . $this->id . ' ' . $class . '">' .
 			htmlspecialchars(GenericList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .

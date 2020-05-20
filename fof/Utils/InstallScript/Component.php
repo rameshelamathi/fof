@@ -862,7 +862,7 @@ class Component extends BaseInstaller
 			$data['published']    = 0;
 			$data['parent_id']    = 1;
 			$data['component_id'] = $componentId;
-			$data['img']          = ((string) $menuElement->attributes()->img) ? (string) $menuElement->attributes()->img : 'class:component';
+			$data['img']          = (string) $menuElement->attributes()->img ?: 'class:component';
 			$data['home']         = 0;
 			$data['path']         = '';
 			$data['params']       = '';
@@ -998,7 +998,7 @@ class Component extends BaseInstaller
 			$data['published']    = 0;
 			$data['parent_id']    = $parent_id;
 			$data['component_id'] = $componentId;
-			$data['img']          = ((string) $child->attributes()->img) ? (string) $child->attributes()->img : 'class:component';
+			$data['img']          = (string) $child->attributes()->img ?: 'class:component';
 			$data['home']         = 0;
 
 			// Set the sub menu link

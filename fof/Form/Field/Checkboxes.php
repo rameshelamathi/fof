@@ -147,7 +147,7 @@ class Checkboxes extends JFormFieldCheckboxes implements FieldInterface
 
 		$translate = StringHelper::toBool($this->element['translate']) ? true : false;
 
-		$html = '<span ' . ($id ? $id : '') . 'class="' . $class . '">';
+		$html = '<span ' . ($id ?: '') . 'class="' . $class . '">';
 
 		foreach ($this->value as $value)
 		{

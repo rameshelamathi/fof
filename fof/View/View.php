@@ -1178,7 +1178,7 @@ class View
 	protected function addTemplatePath($path)
 	{
 		// Just force to array
-		settype($path, 'array');
+		$path = (array) $path;
 
 		// Loop through the path directories
 		foreach ($path as $dir)

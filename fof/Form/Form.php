@@ -371,7 +371,7 @@ class Form extends JForm
 		{
 			// Get the field groups for the element.
 			$attrs  = $element->xpath('ancestor::headerset[@name]/@name');
-			$groups = array_map('strval', $attrs ? $attrs : []);
+			$groups = array_map('strval', $attrs ?: []);
 			$group  = implode('.', $groups);
 
 			// If the field is successfully loaded add it to the result array.
@@ -652,7 +652,7 @@ class Form extends JForm
 						{
 							// Get the names of the groups that the field is in.
 							$attrs = $field->xpath('ancestor::headers[@name]/@name');
-							$names = array_map('strval', $attrs ? $attrs : []);
+							$names = array_map('strval', $attrs ?: []);
 
 							// If the field is in the specific group then add it to the return list.
 							if ($names == (array) $groupNames)
@@ -730,7 +730,7 @@ class Form extends JForm
 			{
 				// Get the group names as strings for ancestor fields elements.
 				$attrs = $field->xpath('ancestor::headerfields[@name]/@name');
-				$names = array_map('strval', $attrs ? $attrs : []);
+				$names = array_map('strval', $attrs ?: []);
 
 				// If the field is in the exact group use it and break out of the loop.
 				if ($names == (array) $groupNames)
@@ -1051,7 +1051,7 @@ class Form extends JForm
 			{
 				// Get the group names as strings for ancestor fields elements.
 				$attrs = $field->xpath('ancestor::fields[@name]/@name');
-				$names = array_map('strval', $attrs ? $attrs : []);
+				$names = array_map('strval', $attrs ?: []);
 
 				// If the field is in the exact group use it and break out of the loop.
 				if ($names == (array) $groupNames)
