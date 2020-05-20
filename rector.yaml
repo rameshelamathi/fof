@@ -431,64 +431,64 @@ services:
       JFilesystemWrapperFolder: 'Joomla\CMS\Filesystem\Wrapper\FolderWrapper'
       JFilesystemWrapperPath: 'Joomla\CMS\Filesystem\Wrapper\PathWrapper'
 
-#  ## "Celebrity" PHP language changes
-#  # <> → !=
-#  Rector\Celebrity\Rector\NotEqual\CommonNotEqualRector: null
-#
-#  # Old to new function names
-#  Rector\Renaming\Rector\Function_\RenameFunctionRector:
-#    $oldFunctionToNewFunction:
-#      split: 'explode'
-#      join: 'implode'
-#      sizeof: 'count'
-#
-#      # https://www.php.net/manual/en/aliases.php
-#      chop: 'rtrim'
-#      doubleval: 'floatval'
-#      gzputs: 'gzwrites'
-#      fputs: 'fwrite'
-#      ini_alter: 'ini_set'
-#      is_double: 'is_float'
-#      is_integer: 'is_int'
-#      is_long: 'is_int'
-#      is_real: 'is_float'
-#      is_writeable: 'is_writable'
-#      key_exists: 'array_key_exists'
-#      pos: 'current'
-#      strchr: 'strstr'
-#      # mb
-#      mbstrcut: 'mb_strcut'
-#      mbstrlen: 'mb_strlen'
-#      mbstrpos: 'mb_strpos'
-#      mbstrrpos: 'mb_strrpos'
-#      mbsubstr: 'mb_substr'
-#
-#  # settype($value, 'int') → (int) $value
-#  Rector\Celebrity\Rector\FuncCall\SetTypeToCastRector: null
-#
-#  #  false or true → false || true
-#  #  false and true → false && true
-#  Rector\Celebrity\Rector\BooleanOp\LogicalToBooleanRector: null
-#
-###  ## PHP 5.2 compatibility rectors
-#  Rector\Php52\Rector\Property\VarToPublicPropertyRector: ~
-#  Rector\Php52\Rector\Switch_\ContinueToBreakInSwitchRector: ~
-#
-###  ## PHP 5.3 compatibility rectors
-#  Rector\Php53\Rector\Ternary\TernaryToElvisRector: ~
-#
-###  ## PHP 5.4 compatibility rectors
-#  Rector\Php54\Rector\FuncCall\RemoveReferenceFromCallRector: ~
-#
-### ## PHP 5.5 compatibility rectors
-### ## WATCH OUT! This does crazy things, like convert $ret['ErrorException'] to $ret[\ErrorException::class] which is 100% WRONG AND FUCKS EVERYTHING UP!
-##  Rector\Php55\Rector\String_\StringClassNameToClassConstantRector: ~
-#
-###  ## PHP 5.6 compatibility rectors
-#  Rector\Php56\Rector\FuncCall\PowToExpRector: ~
-##  # inspired by level in psalm - https://github.com/vimeo/psalm/blob/82e0bcafac723fdf5007a31a7ae74af1736c9f6f/tests/FileManipulationTest.php#L1063
-#  Rector\Php56\Rector\FunctionLike\AddDefaultValueForUndefinedVariableRector: ~
-#
+  ## "Celebrity" PHP language changes
+  # <> → !=
+  Rector\Celebrity\Rector\NotEqual\CommonNotEqualRector: null
+
+  # Old to new function names
+  Rector\Renaming\Rector\Function_\RenameFunctionRector:
+    $oldFunctionToNewFunction:
+      split: 'explode'
+      join: 'implode'
+      sizeof: 'count'
+
+      # https://www.php.net/manual/en/aliases.php
+      chop: 'rtrim'
+      doubleval: 'floatval'
+      gzputs: 'gzwrites'
+      fputs: 'fwrite'
+      ini_alter: 'ini_set'
+      is_double: 'is_float'
+      is_integer: 'is_int'
+      is_long: 'is_int'
+      is_real: 'is_float'
+      is_writeable: 'is_writable'
+      key_exists: 'array_key_exists'
+      pos: 'current'
+      strchr: 'strstr'
+      # mb
+      mbstrcut: 'mb_strcut'
+      mbstrlen: 'mb_strlen'
+      mbstrpos: 'mb_strpos'
+      mbstrrpos: 'mb_strrpos'
+      mbsubstr: 'mb_substr'
+
+  # settype($value, 'int') → (int) $value
+  Rector\Celebrity\Rector\FuncCall\SetTypeToCastRector: null
+
+  #  false or true → false || true
+  #  false and true → false && true
+  Rector\Celebrity\Rector\BooleanOp\LogicalToBooleanRector: null
+
+##  ## PHP 5.2 compatibility rectors
+  Rector\Php52\Rector\Property\VarToPublicPropertyRector: ~
+  Rector\Php52\Rector\Switch_\ContinueToBreakInSwitchRector: ~
+
+##  ## PHP 5.3 compatibility rectors
+  Rector\Php53\Rector\Ternary\TernaryToElvisRector: ~
+
+##  ## PHP 5.4 compatibility rectors
+  Rector\Php54\Rector\FuncCall\RemoveReferenceFromCallRector: ~
+
+## ## PHP 5.5 compatibility rectors
+## ## WATCH OUT! This does crazy things, like convert $ret['ErrorException'] to $ret[\ErrorException::class] which is 100% WRONG AND FUCKS EVERYTHING UP!
+#  Rector\Php55\Rector\String_\StringClassNameToClassConstantRector: ~
+
+##  ## PHP 5.6 compatibility rectors
+  Rector\Php56\Rector\FuncCall\PowToExpRector: ~
+#  # inspired by level in psalm - https://github.com/vimeo/psalm/blob/82e0bcafac723fdf5007a31a7ae74af1736c9f6f/tests/FileManipulationTest.php#L1063
+  Rector\Php56\Rector\FunctionLike\AddDefaultValueForUndefinedVariableRector: ~
+
 ##  ## PHP 7.0 compatibility rectors
 #  Rector\Php70\Rector\Break_\BreakNotInLoopOrSwitchToReturnRector: ~
 #  Rector\Php70\Rector\FuncCall\CallUserMethodRector: ~

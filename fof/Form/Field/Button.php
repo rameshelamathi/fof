@@ -9,6 +9,7 @@ namespace FOF30\Form\Field;
 
 defined('_JEXEC') || die;
 
+use FOF30\Form\Field\Text as TextField;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Utils\StringHelper;
@@ -23,7 +24,7 @@ FormHelper::loadFieldClass('text');
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
-class Button extends Text implements FieldInterface
+class Button extends TextField implements FieldInterface
 {
 	/**
 	 * @var  string  Static field output

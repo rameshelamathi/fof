@@ -9,6 +9,7 @@ namespace FOF30\Form\Field;
 
 defined('_JEXEC') || die;
 
+use FOF30\Form\Field\Text as TextField;
 use FOF30\Form\FieldInterface;
 use Joomla\CMS\Form\FormHelper;
 use Joomla\CMS\Language\Text;
@@ -21,7 +22,7 @@ FormHelper::loadFieldClass('text');
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
-class Title extends Text implements FieldInterface
+class Title extends TextField implements FieldInterface
 {
 	/**
 	 * Get the rendering of this field type for a repeatable (grid) display,
