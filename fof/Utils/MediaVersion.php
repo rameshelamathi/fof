@@ -193,7 +193,7 @@ class MediaVersion
 	protected function getDefaultMediaVersion()
 	{
 		// Initialise
-		list ($version, $date) = self::getComponentVersionAndDate($this->container->componentName, $this->container->db);
+		[$version, $date] = self::getComponentVersionAndDate($this->container->componentName, $this->container->db);
 
 		// Get the site's secret
 		try

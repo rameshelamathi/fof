@@ -425,7 +425,7 @@ class PlgUserFoftoken extends JPlugin
 			return $response;
 		}
 
-		list($algo, $userId, $tokenHMAC) = $parts;
+		[$algo, $userId, $tokenHMAC] = $parts;
 
 		/**
 		 * Verify the HMAC algorithm described in the token is allowed

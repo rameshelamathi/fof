@@ -50,7 +50,7 @@ if (!function_exists('array_build'))
 
 		foreach ($array as $key => $value)
 		{
-			list($innerKey, $innerValue) = call_user_func($callback, $key, $value);
+			[$innerKey, $innerValue] = call_user_func($callback, $key, $value);
 
 			$results[$innerKey] = $innerValue;
 		}

@@ -99,7 +99,7 @@ class BaseErector implements ErectorInterface
 			$type .= '()';
 		}
 
-		list($type, $parameters) = explode('(', $type);
+		[$type, $parameters] = explode('(', $type);
 
 		$detectedType       = null;
 		$detectedParameters = null;
@@ -170,7 +170,8 @@ class BaseErector implements ErectorInterface
 		// Sometimes we have character types followed by a space and some cruft. Let's handle them.
 		if (is_null($detectedType) && !empty($type))
 		{
-			list ($type,) = explode(' ', $type);
+			[$type, $junk] = explode(' ', $type, 2);
+			unset ($junk);
 
 			switch (trim($type))
 			{

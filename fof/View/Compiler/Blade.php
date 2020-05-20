@@ -400,7 +400,7 @@ class Blade implements CompilerInterface
 	 */
 	protected function parseToken($token)
 	{
-		list($id, $content) = $token;
+		[$id, $content] = $token;
 
 		if ($id == T_INLINE_HTML)
 		{

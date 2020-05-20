@@ -20,19 +20,19 @@ use FOF30\Encrypt\Totp;
 class TransparentAuthentication
 {
 	/** Use HTTP Basic Authentication with time-based one time passwords */
-	const Auth_HTTPBasicAuth_TOTP = 1;
+	public const Auth_HTTPBasicAuth_TOTP = 1;
 
 	/** Use Query String Parameter authentication with time-based one time passwords */
-	const Auth_QueryString_TOTP = 2;
+	public const Auth_QueryString_TOTP = 2;
 
 	/** Use HTTP Basic Authentication with plain text username and password */
-	const Auth_HTTPBasicAuth_Plaintext = 3;
+	public const Auth_HTTPBasicAuth_Plaintext = 3;
 
 	/** Use single query string parameter authentication with JSON-encoded, plain text username and password */
-	const Auth_QueryString_Plaintext = 4;
+	public const Auth_QueryString_Plaintext = 4;
 
 	/** Use two query string parameters for plain text username and password authentication */
-	const Auth_SplitQueryString_Plaintext = 5;
+	public const Auth_SplitQueryString_Plaintext = 5;
 
 	/** @var int The time step for TOTP authentication */
 	protected $timeStep = 6;

@@ -58,7 +58,7 @@ class Configuration
 			$domains = $this->getDomains();
 		}
 
-		list($domain, $var) = explode('.', $variable, 2);
+		[$domain, $var] = explode('.', $variable, 2);
 
 		if (!in_array(ucfirst($domain), $domains))
 		{

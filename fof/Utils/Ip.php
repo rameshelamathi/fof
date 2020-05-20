@@ -181,7 +181,7 @@ class Ip
 			// Inclusive IP range, i.e. 123.123.123.123-124.125.126.127
 			if (strstr($ipExpression, '-'))
 			{
-				list($from, $to) = explode('-', $ipExpression, 2);
+				[$from, $to] = explode('-', $ipExpression, 2);
 
 				if ($ipv6 && (!self::isIPv6($from) || !self::isIPv6($to)))
 				{
@@ -206,7 +206,7 @@ class Ip
 				// Swap from/to if they're in the wrong order
 				if ($from > $to)
 				{
-					list($from, $to) = [$to, $from];
+					[$from, $to] = [$to, $from];
 				}
 
 				if (($myIP >= $from) && ($myIP <= $to))
@@ -219,7 +219,7 @@ class Ip
 			{
 				$binaryip = self::inet_to_bits($myIP);
 
-				list($net, $maskbits) = explode('/', $ipExpression, 2);
+				[$net, $maskbits] = explode('/', $ipExpression, 2);
 				if ($ipv6 && !self::isIPv6($net))
 				{
 					// Do not apply IPv4 filtering on an IPv6 address
@@ -500,7 +500,7 @@ class Ip
 			// Get the embedded IPv4 (in hex notation)
 			$ip = substr($ip, strpos($ip, ':FFFF:') + 6);
 			// Convert each 16-bit WORD to decimal
-			list($word1, $word2) = explode(':', $ip);
+			[$word1, $word2] = explode(':', $ip);
 			$word1  = hexdec($word1);
 			$word2  = hexdec($word2);
 			$longIp = $word1 * 65536 + $word2;
@@ -616,7 +616,7 @@ class Ip
 		$ip       = inet_pton($ip);
 		$binaryip = self::inet_to_bits($ip);
 
-		list($net, $maskbits) = explode('/', $cidrnet);
+		[$net, $maskbits] = explode('/', $cidrnet);
 		$net       = inet_pton($net);
 		$binarynet = self::inet_to_bits($net);
 

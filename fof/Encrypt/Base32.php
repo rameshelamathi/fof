@@ -22,7 +22,7 @@ class Base32
 	 * The character set as defined by RFC3548
 	 * @link http://www.ietf.org/rfc/rfc3548.txt
 	 */
-	const CSRFC3548 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+	public const CSRFC3548 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 
 	/**
 	 * Convert any string to a base32 string

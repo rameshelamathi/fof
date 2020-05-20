@@ -510,13 +510,13 @@ services:
   Rector\Php70\Rector\FunctionLike\ExceptionHandlerTypehintRector: ~
   Rector\Php70\Rector\MethodCall\ThisCallOnStaticMethodToStaticCallRector: ~
   Rector\Php70\Rector\StaticCall\StaticCallOnNonStaticToInstanceCallRector: ~
-#
-#  ## PHP 7.1 compatibility rectors
-#  Rector\Php71\Rector\Assign\AssignArrayToStringRector: ~
-#  Rector\Php71\Rector\BinaryOp\BinaryOpBetweenNumberAndStringRector: ~
-#  Rector\Php71\Rector\ClassConst\PublicConstantVisibilityRector: ~
-#  Rector\Php71\Rector\FuncCall\CountOnNullRector: ~
-#  Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector: ~
-#  Rector\Php71\Rector\List_\ListToArrayDestructRector: ~
-#  Rector\Php71\Rector\Name\ReservedObjectRector: ~
-#  Rector\Php71\Rector\TryCatch\MultiExceptionCatchRector: ~
+
+  ## PHP 7.1 compatibility rectors
+  Rector\Php71\Rector\Assign\AssignArrayToStringRector: ~
+  Rector\Php71\Rector\BinaryOp\BinaryOpBetweenNumberAndStringRector: ~
+  Rector\Php71\Rector\ClassConst\PublicConstantVisibilityRector: ~
+  Rector\Php71\Rector\FuncCall\CountOnNullRector: ~
+  Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector: ~
+  Rector\Php71\Rector\List_\ListToArrayDestructRector: ~
+  Rector\Php71\Rector\Name\ReservedObjectRector: ~
+  Rector\Php71\Rector\TryCatch\MultiExceptionCatchRector: ~

@@ -218,7 +218,7 @@ class Platform extends BasePlatform
 	 */
 	public function getTemplateOverridePath($component, $absolute = true)
 	{
-		list($isCli, $isAdmin) = $this->isCliAdmin();
+		[$isCli, $isAdmin] = $this->isCliAdmin();
 
 		if (!$isCli)
 		{
@@ -424,7 +424,7 @@ class Platform extends BasePlatform
 	 */
 	public function getUserStateFromRequest($key, $request, $input, $default = null, $type = 'none', $setUserState = true)
 	{
-		list($isCLI, $isAdmin) = $this->isCliAdmin();
+		[$isCLI, $isAdmin] = $this->isCliAdmin();
 
 		unset($isAdmin); // Just to make phpStorm happy
 
@@ -576,7 +576,7 @@ class Platform extends BasePlatform
 	 */
 	public function isBackend()
 	{
-		list ($isCli, $isAdmin) = $this->isCliAdmin();
+		[$isCli, $isAdmin] = $this->isCliAdmin();
 
 		return $isAdmin && !$isCli;
 	}
@@ -590,7 +590,7 @@ class Platform extends BasePlatform
 	 */
 	public function isFrontend()
 	{
-		list ($isCli, $isAdmin) = $this->isCliAdmin();
+		[$isCli, $isAdmin] = $this->isCliAdmin();
 
 		return !$isAdmin && !$isCli;
 	}
@@ -604,7 +604,7 @@ class Platform extends BasePlatform
 	 */
 	public function isCli()
 	{
-		list ($isCli, $isAdmin) = $this->isCliAdmin();
+		[$isCli, $isAdmin] = $this->isCliAdmin();
 
 		return !$isAdmin && $isCli;
 	}
@@ -779,7 +779,7 @@ class Platform extends BasePlatform
 					$response->email    = $user->email;
 					$response->fullname = $user->name;
 
-					list($isCli, $isAdmin) = $this->isCliAdmin();
+					[$isCli, $isAdmin] = $this->isCliAdmin();
 
 					if ($isAdmin)
 					{

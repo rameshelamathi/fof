@@ -498,7 +498,7 @@ class DataModel extends Model implements TableInterface
 	 * only look for a scope filter.
 	 *
 	 * @param   string  $name
-	 * @param   mixed   $arguments
+	 * @param   array   $arguments
 	 *
 	 * @return  static
 	 */
@@ -825,7 +825,7 @@ class DataModel extends Model implements TableInterface
 					{
 						if (stristr($field->Default, '\'::timestamp without time zone'))
 						{
-							list ($date,) = explode('::', $field->Default, 2);
+							[$date, ] = explode('::', $field->Default, 2);
 							$field->Default = trim($date, "'");
 						}
 					}
@@ -1110,7 +1110,7 @@ class DataModel extends Model implements TableInterface
 		}
 
 		$fieldName = substr($fieldName, 0, -3);
-		list($component, $modelName) = explode('_', $fieldName, 2);
+		[$component, $modelName] = explode('_', $fieldName, 2);
 		$modelName = $this->container->inflector->camelize($modelName);
 
 		return "$component.$modelName";

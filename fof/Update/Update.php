@@ -735,7 +735,7 @@ class Update extends Model
 	 */
 	public function getExtensionObject()
 	{
-		list($extensionPrefix, $extensionName) = explode('_', $this->component);
+		[$extensionPrefix, $extensionName] = explode('_', $this->component);
 
 		switch ($extensionPrefix)
 		{

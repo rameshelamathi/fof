@@ -475,7 +475,7 @@ class Form extends JForm
 		// If the type is given as prefix.type add the custom type into the two prefix arrays
 		if (strpos($type, '.'))
 		{
-			list($prefix, $type) = explode('.', $type);
+			[$prefix, $type] = explode('.', $type);
 
 			array_unshift($plainPrefixes, $prefix);
 			array_unshift($namespacedPrefixes, $prefix);

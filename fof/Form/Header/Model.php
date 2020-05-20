@@ -69,7 +69,7 @@ class Model extends Selectable
 
 		if (strpos($modelName, '.') !== false)
 		{
-			list ($componentName, $mName) = explode('.', $mName, 2);
+			[$componentName, $mName] = explode('.', $mName, 2);
 		}
 
 		// Get the applicable container

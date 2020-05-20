@@ -46,7 +46,7 @@ class Input extends JInput
 		elseif (is_object($source) && ($source instanceof JInput))
 		{
 			$serialised = $source->serialize();
-			list ($xOptions, $xData, $xInput) = unserialize($serialised);
+			[$xOptions, $xData, $xInput] = unserialize($serialised);
 			unset ($xOptions);
 			unset ($xInput);
 			unset ($source);

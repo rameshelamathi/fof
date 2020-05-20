@@ -738,7 +738,7 @@ abstract class BrowseView
 
 		if (strpos($modelName, '.') !== false)
 		{
-			list ($componentName, $mName) = explode('.', $mName, 2);
+			[$componentName, $mName] = explode('.', $mName, 2);
 		}
 
 		if ($componentName != $container->componentName)

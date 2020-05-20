@@ -11,6 +11,7 @@ defined('_JEXEC') || die;
 
 use Exception;
 use JDatabaseDriver;
+use JLoader;
 use Joomla\CMS\Filesystem\Folder;
 use SimpleXMLElement;
 
@@ -367,7 +368,7 @@ class Installer
 			}
 		}
 
-		class_exists('\\JFolder') || \JLoader::import('joomla.filesystem.folder');
+		class_exists('\\JFolder') || JLoader::import('joomla.filesystem.folder');
 
 		// Get all XML files in the schema directory
 		$xmlFiles = Folder::files($this->xmlDirectory, '\.xml$');
@@ -521,7 +522,7 @@ class Installer
 					{
 						$tableColumns = $this->db->getTableColumns($tableNormal, true);
 					}
-					catch (\Exception $e)
+					catch (Exception $e)
 					{
 						$tableColumns = [];
 					}
@@ -537,7 +538,7 @@ class Installer
 				{
 					$tableColumns = $this->db->getTableColumns($tableNormal, true);
 				}
-				catch (\Exception $e)
+				catch (Exception $e)
 				{
 					$tableColumns = [];
 				}
@@ -669,7 +670,7 @@ class Installer
 		{
 			$row = $this->db->setQuery($query)->loadAssoc();
 		}
-		catch (\Exception $e)
+		catch (Exception $e)
 		{
 			return $collation;
 		}
@@ -738,7 +739,7 @@ class Installer
 		{
 			$row = $this->db->setQuery($query)->loadAssoc();
 		}
-		catch (\Exception $e)
+		catch (Exception $e)
 		{
 			return $collation;
 		}
@@ -836,7 +837,7 @@ class Installer
 	 * Analyzes a query. If it's a CREATE TABLE query the table is added to the $tables array.
 	 *
 	 * @param   string  $query   The query to analyze
-	 * @param   string  $tables  The array where the name of the detected table is added
+	 * @param   array   $tables  The array where the name of the detected table is added
 	 *
 	 * @return  void
 	 */
@@ -920,7 +921,7 @@ class Installer
 						$this->db->setQuery($query)->execute();
 					}
 				}
-				catch (\Exception $e)
+				catch (Exception $e)
 				{
 					// We ignore failed conversions. Remember, you MUST change your indices MANUALLY.
 				}
@@ -991,7 +992,7 @@ class Installer
 
 				$cache[$tableName][$indexName] = in_array($indexName, $indices);
 			}
-			catch (\Exception $e)
+			catch (Exception $e)
 			{
 				// Ignore errors
 			}

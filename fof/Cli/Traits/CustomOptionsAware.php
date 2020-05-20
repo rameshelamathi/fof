@@ -101,7 +101,7 @@ trait CustomOptionsAware
 
 				if (strstr($argument, '='))
 				{
-					list($name, $value) = explode('=', $argument, 2);
+					[$name, $value] = explode('=', $argument, 2);
 				}
 
 				$currentName = $name;

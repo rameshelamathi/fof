@@ -69,13 +69,15 @@ abstract class FEFHelperBrowse
 			$title = HTMLHelper::_('tooltipText', $title, '', 0);
 		}
 
+		$html   = [];
+
 		if ($enabled)
 		{
 			$btnColor = 'grey';
 
 			if (substr($active_class, 0, 2) == '--')
 			{
-				list($btnColor, $active_class) = explode(' ', $active_class, 2);
+				[$btnColor, $active_class] = explode(' ', $active_class, 2);
 				$btnColor = ltrim($btnColor, '-');
 			}
 
@@ -92,7 +94,7 @@ abstract class FEFHelperBrowse
 
 			if (substr($inactive_class, 0, 2) == '--')
 			{
-				list($btnColor, $inactive_class) = explode(' ', $inactive_class, 2);
+				[$btnColor, $inactive_class] = explode(' ', $inactive_class, 2);
 				$btnColor = ltrim($btnColor, '-');
 			}
 

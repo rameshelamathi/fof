@@ -176,7 +176,7 @@ class Published extends JFormFieldList implements FieldInterface
 
 		foreach ($configMap as $attribute => $preferences)
 		{
-			list($configKey, $default) = $preferences;
+			[$configKey, $default] = $preferences;
 
 			switch (strtolower($this->element[$attribute]))
 			{

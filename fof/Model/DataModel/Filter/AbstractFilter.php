@@ -134,7 +134,7 @@ abstract class AbstractFilter
 		// Remove parentheses, indicating field options / size (they don't matter in type detection)
 		if (!empty($type))
 		{
-			list($type,) = explode('(', $type);
+			[$type, ] = explode('(', $type);
 		}
 
 		$detectedType = null;
@@ -172,7 +172,7 @@ abstract class AbstractFilter
 		// Sometimes we have character types followed by a space and some cruft. Let's handle them.
 		if (is_null($detectedType) && !empty($type))
 		{
-			list ($type,) = explode(' ', $type);
+			[$type, ] = explode(' ', $type);
 
 			switch (trim($type))
 			{
