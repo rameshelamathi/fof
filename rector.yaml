@@ -489,7 +489,7 @@ services:
 #  # inspired by level in psalm - https://github.com/vimeo/psalm/blob/82e0bcafac723fdf5007a31a7ae74af1736c9f6f/tests/FileManipulationTest.php#L1063
   # Rector\Php56\Rector\FunctionLike\AddDefaultValueForUndefinedVariableRector: ~
 
-##  ## PHP 7.0 compatibility rectors
+  ## PHP 7.0 compatibility rectors (safe)
   Rector\Php70\Rector\Break_\BreakNotInLoopOrSwitchToReturnRector: ~
   Rector\Php70\Rector\FuncCall\EregToPregMatchRector: ~
   Rector\Php70\Rector\FuncCall\RandomFunctionRector: ~
@@ -503,11 +503,13 @@ services:
   Rector\Php70\Rector\Switch_\ReduceMultipleDefaultSwitchRector: ~
   Rector\Php70\Rector\Ternary\TernaryToNullCoalescingRector: ~
   Rector\Php70\Rector\Ternary\TernaryToSpaceshipRector: ~
-#  Rector\Php70\Rector\FuncCall\CallUserMethodRector: ~
-#  Rector\Php70\Rector\FuncCall\NonVariableToVariableOnFunctionCallRector: ~
-#  Rector\Php70\Rector\FunctionLike\ExceptionHandlerTypehintRector: ~
-#  Rector\Php70\Rector\MethodCall\ThisCallOnStaticMethodToStaticCallRector: ~
-#  Rector\Php70\Rector\StaticCall\StaticCallOnNonStaticToInstanceCallRector: ~
+
+  ## PHP 7.0 compatibility rectors (always review results)
+  Rector\Php70\Rector\FuncCall\CallUserMethodRector: ~
+  Rector\Php70\Rector\FuncCall\NonVariableToVariableOnFunctionCallRector: ~
+  Rector\Php70\Rector\FunctionLike\ExceptionHandlerTypehintRector: ~
+  Rector\Php70\Rector\MethodCall\ThisCallOnStaticMethodToStaticCallRector: ~
+  Rector\Php70\Rector\StaticCall\StaticCallOnNonStaticToInstanceCallRector: ~
 #
 #  ## PHP 7.1 compatibility rectors
 #  Rector\Php71\Rector\Assign\AssignArrayToStringRector: ~

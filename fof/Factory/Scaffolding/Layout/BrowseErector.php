@@ -286,7 +286,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 			}
 
 			// Other fields, use getFieldType
-			$typeDef = $this->getFieldType($fieldDefinition->Type);
+			$typeDef = self::getFieldType($fieldDefinition->Type);
 
 			switch ($typeDef['type'])
 			{

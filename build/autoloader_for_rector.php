@@ -86,6 +86,7 @@ if (!defined('FOF30_INCLUDED') && !@include_once(__DIR__ . '/../fof/include.php'
 /** @var Composer\Autoload\ClassLoader $autoloader */
 $autoloader = include(__DIR__ . '/../vendor/autoload.php');
 $autoloader->addClassMap([
+	# HTMLHelper classes do not follow namespaces
 	'FEFHelperBrowse'                => __DIR__ . '/../fof/Utils/FEFHelper/browse.php',
 	'FEFHelperEdit'                  => __DIR__ . '/../fof/Utils/FEFHelper/edit.php',
 	'FEFHelperSelect'                => __DIR__ . '/../fof/Utils/FEFHelper/select.php',
@@ -95,4 +96,8 @@ $autoloader->addClassMap([
 	'JFormFieldFofencryptedtoken'    => __DIR__ . '/../plugins/user/foftoken/fields/fofencryptedtoken.php',
 	'PlgUserFoftoken'                => __DIR__ . '/../plugins/user/foftoken/foftoken.php',
 	'plgUserFoftokenInstallerScript' => __DIR__ . '/../plugins/user/foftoken/script.php',
+	# Joomla 3 classes
+	'TagsHelperRoute'                => $joomlaPath . '/components/com_tags/helpers/route.php',
+	# Akeeba FEF (must be installed in Joomla)
+	'AkeebaFEFHelper'                => $joomlaPath . '/media/fef/fef.php',
 ]);
