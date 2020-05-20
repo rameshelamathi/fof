@@ -200,7 +200,7 @@ class GroupedList extends JFormFieldGroupedList implements FieldInterface
 	 */
 	public function getFieldContents(array $fieldOptions = [])
 	{
-		$id    = isset($fieldOptions['id']) ? $fieldOptions['id'] : null;
+		$id    = $fieldOptions['id'] ?? null;
 		$class = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
 
 		$selected = self::getOptionName($this->getGroups(), $this->value);

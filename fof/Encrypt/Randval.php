@@ -114,7 +114,8 @@ class Randval implements RandvalInterface
 			 * Collect any entropy available from the PHP system and filesystem.
 			 * If we have ssl data that isn't strong, we use it once.
 			 */
-			$entropy = rand() . uniqid(mt_rand(), true) . $sslStr;
+			$entropy = random_int(0, mt_getrandmax()) . uniqid(random_int(0, mt_getrandmax()), true) . $sslStr;
+
 			$entropy .= implode('', @fstat(fopen(__FILE__, 'r')));
 			$entropy .= memory_get_usage();
 			$sslStr  = '';
@@ -139,7 +140,7 @@ class Randval implements RandvalInterface
 				for ($pass = 0; $pass < $samples; ++$pass)
 				{
 					$microStart = microtime(true) * 1000000;
-					$hash       = sha1(mt_rand(), true);
+					$hash       = sha1(random_int(0, mt_getrandmax()), true);
 
 					for ($count = 0; $count < 50; ++$count)
 					{
@@ -174,7 +175,7 @@ class Randval implements RandvalInterface
 				for ($pass = 0; $pass < $iter; ++$pass)
 				{
 					$microStart = microtime(true);
-					$hash       = sha1(mt_rand(), true);
+					$hash       = sha1(random_int(0, mt_getrandmax()), true);
 
 					for ($count = 0; $count < $rounds; ++$count)
 					{

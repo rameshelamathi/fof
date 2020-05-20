@@ -122,8 +122,8 @@ class Ordering extends FormField implements FieldInterface
 			throw new DataModelRequired(__CLASS__);
 		}
 
-		$class = isset($this->class) ? $this->class : 'input-mini';
-		$icon  = isset($this->element['icon']) ? $this->element['icon'] : 'icon-menu';
+		$class = $this->class ?? 'input-mini';
+		$icon  = $this->element['icon'] ?? 'icon-menu';
 		$dnd   = isset($this->element['dragndrop']) ? (string) $this->element['dragndrop'] : 'notbroken';
 
 		if (strtolower($dnd) == 'notbroken')

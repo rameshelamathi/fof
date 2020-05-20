@@ -141,7 +141,7 @@ class Timezone extends JFormFieldTimezone implements FieldInterface
 	 */
 	public function getFieldContents(array $fieldOptions = [])
 	{
-		$id    = isset($fieldOptions['id']) ? $fieldOptions['id'] : null;
+		$id    = $fieldOptions['id'] ?? null;
 		$class = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
 
 		$selected = GroupedList::getOptionName($this->getGroups(), $this->value);

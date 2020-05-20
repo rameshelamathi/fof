@@ -667,7 +667,7 @@ JS;
 		{
 			/** @var DataModel $model */
 			$model      = $view->getModel();
-			$sortFields = isset($view->getLists()->sortFields) ? $view->getLists()->sortFields : [];
+			$sortFields = $view->getLists()->sortFields ?? [];
 			$sortFields = empty($sortFields) ? self::getSortFields($model) : $sortFields;
 		}
 

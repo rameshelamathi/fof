@@ -170,12 +170,12 @@ abstract class BrowseView
 		$model                     = $view->getModel();
 		$searchField               = empty($searchField) ? $localField : $searchField;
 		$placeholder               = empty($placeholder) ? self::fieldLabelKey($localField) : $placeholder;
-		$attributes['type']        = isset($attributes['type']) ? $attributes['type'] : 'text';
+		$attributes['type']        = $attributes['type'] ?? 'text';
 		$attributes['name']        = $searchField;
 		$attributes['id']          = !isset($attributes['id']) ? "filter_$localField" : $attributes['id'];
 		$attributes['onchange']    = !isset($attributes['onchange']) ? 'document.adminForm.submit()' : null;
 		$attributes['placeholder'] = !isset($attributes['placeholder']) ? $view->escape(Text::_($placeholder)) : $attributes['placeholder'];
-		$attributes['title']       = isset($attributes['title']) ? $attributes['title'] : $attributes['placeholder'];
+		$attributes['title']       = $attributes['title'] ?? $attributes['placeholder'];
 		$attributes['value']       = $view->escape($model->getState($localField));
 
 		// Remove null attributes and collapse into a string

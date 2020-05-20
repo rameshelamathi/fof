@@ -816,10 +816,10 @@ JS;
 		}
 
 		// Add an external view template, if specified
-		$sourceTemplate  = isset($fieldset->source) ? $fieldset->source : null;
-		$sourceView      = isset($fieldset->source_view) ? $fieldset->source_view : null;
-		$sourceViewType  = isset($fieldset->source_view_type) ? $fieldset->source_view_type : 'html';
-		$sourceComponent = isset($fieldset->source_component) ? $fieldset->source_component : null;
+		$sourceTemplate  = $fieldset->source ?? null;
+		$sourceView      = $fieldset->source_view ?? null;
+		$sourceViewType  = $fieldset->source_view_type ?? 'html';
+		$sourceComponent = $fieldset->source_component ?? null;
 
 		if (!empty($sourceTemplate))
 		{

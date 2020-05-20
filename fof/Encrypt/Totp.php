@@ -172,7 +172,7 @@ class Totp
 
 		for ($i = 1; $i <= $this->secretLength; $i++)
 		{
-			$c      = rand(0, 255);
+			$c      = random_int(0, 255);
 			$secret .= pack("c", $c);
 		}
 

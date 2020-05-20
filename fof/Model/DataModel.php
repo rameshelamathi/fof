@@ -4155,7 +4155,7 @@ class DataModel extends Model implements TableInterface
 	 */
 	public function getBehaviorParam($name, $default = null)
 	{
-		return isset($this->_behaviorParams[$name]) ? $this->_behaviorParams[$name] : $default;
+		return $this->_behaviorParams[$name] ?? $default;
 	}
 
 	/**
@@ -4370,7 +4370,7 @@ class DataModel extends Model implements TableInterface
 	protected function loadForm($name, $source, $options = [], $clear = false, $xpath = false)
 	{
 		// Handle the optional arguments.
-		$options['control'] = isset($options['control']) ? $options['control'] : false;
+		$options['control'] = $options['control'] ?? false;
 
 		// Create a signature hash.
 		$hash = md5($source . serialize($options));

@@ -538,9 +538,9 @@ class Template
 			case 'plugin':
 				// The path is pluginType/pluginName/viewTemplate
 				$pathInfo     = explode('/', $path);
-				$pluginType   = isset($pathInfo[0]) ? $pathInfo[0] : 'system';
-				$pluginName   = isset($pathInfo[1]) ? $pathInfo[1] : 'foobar';
-				$viewTemplate = isset($pathInfo[2]) ? $pathInfo[2] : 'default';
+				$pluginType   = $pathInfo[0] ?? 'system';
+				$pluginName   = $pathInfo[1] ?? 'foobar';
+				$viewTemplate = $pathInfo[2] ?? 'default';
 
 				$pluginSystemName = 'plg_' . $pluginType . '_' . $pluginName;
 
@@ -554,8 +554,8 @@ class Template
 			case 'module':
 				// The path is moduleName/viewTemplate
 				$pathInfo     = explode('/', $path, 2);
-				$moduleName   = isset($pathInfo[0]) ? $pathInfo[0] : 'foobar';
-				$viewTemplate = isset($pathInfo[1]) ? $pathInfo[1] : 'default';
+				$moduleName   = $pathInfo[0] ?? 'foobar';
+				$viewTemplate = $pathInfo[1] ?? 'default';
 
 				$moduleSystemName = 'mod_' . $moduleName;
 				$basePath         = $this->container->platform->isBackend() ? 'administrator/' : '';

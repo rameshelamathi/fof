@@ -1592,7 +1592,7 @@ class Less
 	protected function compileProp($prop, $block, $out)
 	{
 		// Set error position context
-		$this->sourceLoc = isset($prop[-1]) ? $prop[-1] : -1;
+		$this->sourceLoc = $prop[-1] ?? -1;
 
 		switch ($prop[0])
 		{
@@ -2218,7 +2218,7 @@ class Less
 	protected function lib_fadeout($args)
 	{
 		list($color, $delta) = $this->colorArgs($args);
-		$color[4] = $this->clamp((isset($color[4]) ? $color[4] : 1) - $delta / 100);
+		$color[4] = $this->clamp(($color[4] ?? 1) - $delta / 100);
 
 		return $color;
 	}
@@ -2233,7 +2233,7 @@ class Less
 	protected function lib_fadein($args)
 	{
 		list($color, $delta) = $this->colorArgs($args);
-		$color[4] = $this->clamp((isset($color[4]) ? $color[4] : 1) + $delta / 100);
+		$color[4] = $this->clamp(($color[4] ?? 1) + $delta / 100);
 
 		return $color;
 	}
@@ -2292,7 +2292,7 @@ class Less
 	{
 		if (!is_null($color = $this->coerceColor($value)))
 		{
-			return isset($color[4]) ? $color[4] : 1;
+			return $color[4] ?? 1;
 		}
 	}
 
@@ -2798,8 +2798,7 @@ class Less
 					$name = "_sprintf";
 				}
 
-				$f = isset($this->libFunctions[$name]) ?
-					$this->libFunctions[$name] : [$this, 'lib_' . $name];
+				$f = $this->libFunctions[$name] ?? [$this, 'lib_' . $name];
 
 				if (is_callable($f))
 				{
@@ -3160,8 +3159,8 @@ class Less
 
 		foreach (range(1, $max - 1) as $i)
 		{
-			$lval = isset($left[$i]) ? $left[$i] : 0;
-			$rval = isset($right[$i]) ? $right[$i] : 0;
+			$lval = $left[$i] ?? 0;
+			$rval = $right[$i] ?? 0;
 
 			switch ($op)
 			{
@@ -3337,8 +3336,7 @@ class Less
 			}
 			else
 			{
-				$current = isset($current->storeParent) ?
-					$current->storeParent : $current->parent;
+				$current = $current->storeParent ?? $current->parent;
 			}
 		}
 
