@@ -7,12 +7,16 @@
 
 namespace FOF30\Form\Field;
 
+defined('_JEXEC') || die;
+
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use FOF30\Utils\StringHelper;
 use JFormFieldCheckboxes;
-use Joomla\CMS\Form\FormHelper;FormHelper::loadFieldClass('checkboxes');
+use Joomla\CMS\Form\FormHelper;
+
+FormHelper::loadFieldClass('checkboxes');
 
 /**
  * Form Field class for FOF

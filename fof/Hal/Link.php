@@ -7,7 +7,12 @@
 
 namespace FOF30\Hal;
 
-use FOF30\Hal\Exception\InvalidLinkFormat;/**
+defined('_JEXEC') || die;
+
+use FOF30\Hal\Exception\InvalidLinkFormat;
+use InvalidArgumentException;
+
+/**
  * Implementation of the Hypertext Application Language link in PHP.
  *
  * @see http://stateless.co/hal_specification.html
@@ -68,7 +73,7 @@ class Link
 	 * @param   string   $hreflang   See $this->_hreflang
 	 * @param   string   $title      See $this->_title
 	 *
-	 * @throws  \InvalidArgumentException  If $href is empty
+	 * @throws  InvalidArgumentException  If $href is empty
 	 */
 	public function __construct($href, $templated = false, $name = null, $hreflang = null, $title = null)
 	{
@@ -77,11 +82,11 @@ class Link
 			throw new InvalidLinkFormat;
 		}
 
-		$this->_href = $href;
+		$this->_href      = $href;
 		$this->_templated = $templated;
-		$this->_name = $name;
-		$this->_hreflang = $hreflang;
-		$this->_title = $title;
+		$this->_name      = $name;
+		$this->_hreflang  = $hreflang;
+		$this->_title     = $title;
 	}
 
 	/**

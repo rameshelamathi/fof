@@ -5,7 +5,11 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Model\DataModel\Filter;class Boolean extends Number
+namespace FOF30\Model\DataModel\Filter;
+
+defined('_JEXEC') || die;
+
+class Boolean extends Number
 {
 	/**
 	 * Is it a null or otherwise empty value?

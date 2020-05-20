@@ -5,7 +5,11 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Model\DataModel\Exception;class NoTableColumns extends BaseException
+namespace FOF30\Model\DataModel\Exception;
+
+defined('_JEXEC') || die;
+
+class NoTableColumns extends BaseException
 {
 
 }

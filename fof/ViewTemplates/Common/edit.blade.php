@@ -5,6 +5,8 @@
  * @license     GNU GPL version 3 or later
  */
 
+defined('_JEXEC') || die;
+
 /**
  * Template for Edit (form) views using the FEF renderer
  *

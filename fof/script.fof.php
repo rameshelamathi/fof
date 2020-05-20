@@ -5,6 +5,8 @@
  * @license   GNU General Public License version 2, or later
  */
 
+defined('_JEXEC') || die;
+
 use FOF30\Container\Container;
 use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
@@ -14,7 +16,9 @@ use Joomla\CMS\Installer\Adapter\ComponentAdapter;
 use Joomla\CMS\Installer\Adapter\FileAdapter;
 use Joomla\CMS\Installer\Installer;
 use Joomla\CMS\Log\Log;
-use Joomla\CMS\Table\Table;if (class_exists('file_fof30InstallerScript', false))
+use Joomla\CMS\Table\Table;
+
+if (class_exists('file_fof30InstallerScript', false))
 {
 	return;
 }
@@ -53,7 +57,7 @@ class file_fof30InstallerScript
 	 * Joomla! pre-flight event. This runs before Joomla! installs or updates the component. This is our last chance to
 	 * tell Joomla! if it should abort the installation.
 	 *
-	 * @param   string                           $type    Installation type (install, update, discover_install)
+	 * @param   string     $type    Installation type (install, update, discover_install)
 	 * @param   Installer  $parent  Parent object
 	 *
 	 * @return  boolean  True to let the installation proceed, false to halt the installation
@@ -131,7 +135,7 @@ class file_fof30InstallerScript
 	 * or updating your component. This is the last chance you've got to perform any additional installations, clean-up,
 	 * database updates and similar housekeeping functions.
 	 *
-	 * @param   string                                     $type    install, update or discover_update
+	 * @param   string       $type    install, update or discover_update
 	 * @param   FileAdapter  $parent  Parent object
 	 *
 	 * @throws  Exception

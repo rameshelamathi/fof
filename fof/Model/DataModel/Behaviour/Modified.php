@@ -7,9 +7,13 @@
 
 namespace FOF30\Model\DataModel\Behaviour;
 
+defined('_JEXEC') || die;
+
 use FOF30\Event\Observer;
 use FOF30\Model\DataModel;
-use JDatabaseQuery;/**
+use stdClass;
+
+/**
  * FOF model behavior class to updated the modified_by and modified_on fields on newly created records.
  *
  * This behaviour is added to DataModel by default. If you want to remove it you need to do
@@ -33,12 +37,12 @@ class Modified extends Observer
 
 	/**
 	 * @param   DataModel  $model
-	 * @param   \stdClass  $dataObject
+	 * @param   stdClass  $dataObject
 	 */
 	public function onBeforeUpdate(&$model, &$dataObject)
 	{
 		// Make sure we're not modifying a locked record
-		$userId = $model->getContainer()->platform->getUser()->id;
+		$userId   = $model->getContainer()->platform->getUser()->id;
 		$isLocked = $model->isLocked($userId);
 
 		if ($isLocked)
@@ -51,7 +55,7 @@ class Modified extends Observer
 		{
 			$model->setFieldValue('modified_on', $model->getContainer()->platform->getDate()->toSql(false, $model->getDbo()));
 
-			$modifiedOnField = $model->getFieldAlias('modified_on');
+			$modifiedOnField              = $model->getFieldAlias('modified_on');
 			$dataObject->$modifiedOnField = $model->getFieldValue('modified_on');
 		}
 
@@ -60,7 +64,7 @@ class Modified extends Observer
 		{
 			$model->setFieldValue('modified_by', $userId);
 
-			$modifiedByField = $model->getFieldAlias('modified_by');
+			$modifiedByField              = $model->getFieldAlias('modified_by');
 			$dataObject->$modifiedByField = $model->getFieldValue('modified_by');
 		}
 	}

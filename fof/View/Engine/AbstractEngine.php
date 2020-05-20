@@ -7,7 +7,11 @@
 
 namespace FOF30\View\Engine;
 
-use FOF30\View\View;abstract class AbstractEngine implements EngineInterface
+defined('_JEXEC') || die;
+
+use FOF30\View\View;
+
+abstract class AbstractEngine implements EngineInterface
 {
 	/** @var   View  The view we belong to */
 	protected $view = null;
@@ -28,13 +32,14 @@ use FOF30\View\View;abstract class AbstractEngine implements EngineInterface
 	 * @param   string  $path         The path to the view template
 	 * @param   array   $forceParams  Any additional information to pass to the view template engine
 	 *
-	 * @return  array  Content 3ναlυα+ιοη information (I use leetspeak here because of bad quality hosts with broken scanners)
+	 * @return  array  Content 3ναlυα+ιοη information (I use leetspeak here because of bad quality hosts with broken
+	 *                 scanners)
 	 */
-	public function get($path, array $forceParams = array())
+	public function get($path, array $forceParams = [])
 	{
-		return array(
-			'type' => 'raw',
-			'content' => ''
-		);
+		return [
+			'type'    => 'raw',
+			'content' => '',
+		];
 	}
 }

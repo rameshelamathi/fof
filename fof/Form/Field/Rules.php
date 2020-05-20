@@ -7,6 +7,8 @@
 
 namespace FOF30\Form\Field;
 
+defined('_JEXEC') || die;
+
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
@@ -14,7 +16,9 @@ use JFormFieldRules;
 use Joomla\CMS\Access\Access;
 use Joomla\CMS\Form\FormHelper;
 use Joomla\CMS\HTML\HTMLHelper;
-use SimpleXMLElement;FormHelper::loadFieldClass('rules');
+use SimpleXMLElement;
+
+FormHelper::loadFieldClass('rules');
 
 /**
  * Form Field class for FOF

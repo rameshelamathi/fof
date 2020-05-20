@@ -7,10 +7,16 @@
 
 namespace FOF30\Factory\Scaffolding\Layout;
 
-use FOF30\Model\DataModel;/**
+defined('_JEXEC') || die;
+
+use Exception;
+use FOF30\Model\DataModel;
+use SimpleXMLElement;
+
+/**
  * Erects a scaffolding XML for browse views
  *
- * @package FOF30\Factory\Scaffolding
+ * @package    FOF30\Factory\Scaffolding
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
 class BrowseErector extends BaseErector implements ErectorInterface
@@ -33,7 +39,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 
 		// Create the headerset and fieldset sections of the form file
 		$headerSet = $this->xml->addChild('headerset');
-		$fieldSet = $this->xml->addChild('fieldset');
+		$fieldSet  = $this->xml->addChild('fieldset');
 		$fieldSet->addAttribute('name', 'items');
 
 		// Get the database fields
@@ -123,7 +129,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 			}
 
 			// body, introtext, fulltext => Editor
-			if (in_array($lowercaseFieldName, array('body', 'introtext', 'fulltext', 'description')))
+			if (in_array($lowercaseFieldName, ['body', 'introtext', 'fulltext', 'description']))
 			{
 				$this->applyEditorField($model, $headerSet, $fieldSet, $fieldName);
 
@@ -141,7 +147,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 
 			// image, media, *_image => Media
 			if (
-				in_array($lowercaseFieldName, array('image', 'media'))
+				in_array($lowercaseFieldName, ['image', 'media'])
 				|| (substr($lowercaseFieldName, -6) == '_image')
 			)
 			{
@@ -151,7 +157,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 			}
 
 			// language, lang, lang_id => Language
-			if (in_array($lowercaseFieldName, array('language', 'lang', 'lang_id')))
+			if (in_array($lowercaseFieldName, ['language', 'lang', 'lang_id']))
 			{
 				$this->applyLanguageField($model, $headerSet, $fieldSet, $fieldName);
 
@@ -159,7 +165,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 			}
 
 			// password, passwd, pass => Password
-			if (in_array($lowercaseFieldName, array('password', 'passwd', 'pass')))
+			if (in_array($lowercaseFieldName, ['password', 'passwd', 'pass']))
 			{
 				$this->applyPasswordField($model, $headerSet, $fieldSet, $fieldName);
 
@@ -189,7 +195,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 			}
 
 			// tel, telephone, phone => Tel
-			if (in_array($lowercaseFieldName, array('tel', 'telephone', 'phone')))
+			if (in_array($lowercaseFieldName, ['tel', 'telephone', 'phone']))
 			{
 				$this->applyTelField($model, $headerSet, $fieldSet, $fieldName);
 
@@ -197,7 +203,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 			}
 
 			// timezone, tz, time_zone => Timezone
-			if (in_array($lowercaseFieldName, array('timezone', 'tz', 'time_zone')))
+			if (in_array($lowercaseFieldName, ['timezone', 'tz', 'time_zone']))
 			{
 				$this->applyTimezoneField($model, $headerSet, $fieldSet, $fieldName);
 
@@ -205,7 +211,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 			}
 
 			// url, link, href => Url
-			if (in_array($lowercaseFieldName, array('url', 'link', 'href')))
+			if (in_array($lowercaseFieldName, ['url', 'link', 'href']))
 			{
 				$this->applyUrlField($model, $headerSet, $fieldSet, $fieldName);
 
@@ -213,7 +219,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 			}
 
 			// user, user_id, userid, uid => User
-			if (in_array($lowercaseFieldName, array('user', 'user_id', 'userid', 'uid')))
+			if (in_array($lowercaseFieldName, ['user', 'user_id', 'userid', 'uid']))
 			{
 				$this->applyUserField($model, $headerSet, $fieldSet, $fieldName);
 
@@ -221,7 +227,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 			}
 
 			// group, group_id, groupid, gid => UserGroup
-			if (in_array($lowercaseFieldName, array('group', 'group_id', 'groupid', 'gid')))
+			if (in_array($lowercaseFieldName, ['group', 'group_id', 'groupid', 'gid']))
 			{
 				$this->applyUserGroupField($model, $headerSet, $fieldSet, $fieldName);
 
@@ -249,8 +255,8 @@ class BrowseErector extends BaseErector implements ErectorInterface
 					$foreignName1 = $this->model->getContainer()->inflector->pluralize($foreignName1);
 					$foreignName2 = array_shift($parts);
 					$foreignName2 = $this->model->getContainer()->inflector->pluralize($foreignName2);
-					$modelName = $model->getName();
-					$modelName = $this->model->getContainer()->inflector->pluralize($modelName);
+					$modelName    = $model->getName();
+					$modelName    = $this->model->getContainer()->inflector->pluralize($modelName);
 
 					$foreignName = ($foreignName1 == $modelName) ? $foreignName2 : $foreignName1;
 				}
@@ -273,7 +279,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 
 						continue;
 					}
-					catch (\Exception $e)
+					catch (Exception $e)
 					{
 					}
 				}
@@ -320,12 +326,12 @@ class BrowseErector extends BaseErector implements ErectorInterface
 	/**
 	 * Apply the ordering field
 	 *
-	 * @param \FOF30\Model\DataModel $model
-	 * @param \SimpleXMLElement      $headerSet
-	 * @param \SimpleXMLElement      $fieldSet
-	 * @param array                  $allFields
+	 * @param   DataModel         $model
+	 * @param   SimpleXMLElement  $headerSet
+	 * @param   SimpleXMLElement  $fieldSet
+	 * @param   array             $allFields
 	 */
-	private function applyOrderingField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, array &$allFields)
+	private function applyOrderingField(DataModel $model, SimpleXMLElement &$headerSet, SimpleXMLElement &$fieldSet, array &$allFields)
 	{
 		$langDefs = $this->getFieldLabel('ordering');
 		$this->addString($langDefs['label']['key'], $langDefs['label']['value']);
@@ -351,12 +357,12 @@ class BrowseErector extends BaseErector implements ErectorInterface
 	/**
 	 * Apply the ordering field
 	 *
-	 * @param \FOF30\Model\DataModel $model
-	 * @param \SimpleXMLElement      $headerSet
-	 * @param \SimpleXMLElement      $fieldSet
-	 * @param array                  $allFields
+	 * @param   DataModel         $model
+	 * @param   SimpleXMLElement  $headerSet
+	 * @param   SimpleXMLElement  $fieldSet
+	 * @param   array             $allFields
 	 */
-	private function applyPrimaryKeyField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, array &$allFields)
+	private function applyPrimaryKeyField(DataModel $model, SimpleXMLElement &$headerSet, SimpleXMLElement &$fieldSet, array &$allFields)
 	{
 		$keyField = $model->getKeyName();
 
@@ -378,7 +384,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 		unset($allFields[$keyField]);
 	}
 
-	private function applyFieldOfType(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName, $fieldTypeHeader, $fieldTypeField, array $headerAttributes = array())
+	private function applyFieldOfType(DataModel $model, SimpleXMLElement &$headerSet, SimpleXMLElement &$fieldSet, $fieldName, $fieldTypeHeader, $fieldTypeField, array $headerAttributes = [])
 	{
 		$langDefs = $this->getFieldLabel($fieldName);
 		$this->addString($langDefs['label']['key'], $langDefs['label']['value']);
@@ -405,171 +411,171 @@ class BrowseErector extends BaseErector implements ErectorInterface
 	/**
 	 * Apply an access level field
 	 *
-	 * @param \FOF30\Model\DataModel $model
-	 * @param \SimpleXMLElement      $headerSet
-	 * @param \SimpleXMLElement      $fieldSet
-	 * @param string                 $fieldName
+	 * @param   DataModel         $model
+	 * @param   SimpleXMLElement  $headerSet
+	 * @param   SimpleXMLElement  $fieldSet
+	 * @param   string            $fieldName
 	 */
-	private function applyAccessLevelField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyAccessLevelField(DataModel $model, SimpleXMLElement &$headerSet, SimpleXMLElement &$fieldSet, $fieldName)
 	{
-		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'AccessLevel', 'AccessLevel', array(
-			'sortable' => 'true'
-		));
+		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'AccessLevel', 'AccessLevel', [
+			'sortable' => 'true',
+		]);
 	}
 
-	private function applyActionsField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyActionsField(DataModel $model, SimpleXMLElement &$headerSet, SimpleXMLElement &$fieldSet, $fieldName)
 	{
-		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Published', 'Actions', array(
-			'sortable' => 'true'
-		));
+		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Published', 'Actions', [
+			'sortable' => 'true',
+		]);
 	}
 
-	private function applyCacheHandlerField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyCacheHandlerField(DataModel $model, SimpleXMLElement &$headerSet, SimpleXMLElement &$fieldSet, $fieldName)
 	{
-		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Field', 'CacheHandler', array(
-			'sortable' => 'true'
-		));
+		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Field', 'CacheHandler', [
+			'sortable' => 'true',
+		]);
 	}
 
-	private function applyCalendarField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyCalendarField(DataModel $model, SimpleXMLElement &$headerSet, SimpleXMLElement &$fieldSet, $fieldName)
 	{
-		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Date', 'Calendar', array(
-			'sortable' => 'true'
-		));
+		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Date', 'Calendar', [
+			'sortable' => 'true',
+		]);
 	}
 
-	private function applyCheckboxField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyCheckboxField(DataModel $model, SimpleXMLElement &$headerSet, SimpleXMLElement &$fieldSet, $fieldName)
 	{
-		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Field', 'Checkbox', array(
-			'sortable' => 'true'
-		));
+		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Field', 'Checkbox', [
+			'sortable' => 'true',
+		]);
 	}
 
-	private function applyComponentsField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyComponentsField(DataModel $model, SimpleXMLElement &$headerSet, SimpleXMLElement &$fieldSet, $fieldName)
 	{
-		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Field', 'Components', array(
-			'sortable' => 'true'
-		));
+		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Field', 'Components', [
+			'sortable' => 'true',
+		]);
 	}
 
-	private function applyEditorField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyEditorField(DataModel $model, SimpleXMLElement &$headerSet, SimpleXMLElement &$fieldSet, $fieldName)
 	{
-		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Searchable', 'Editor', array(
-			'sortable' => 'true'
-		));
+		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Searchable', 'Editor', [
+			'sortable' => 'true',
+		]);
 	}
 
-	private function applyEmailField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyEmailField(DataModel $model, SimpleXMLElement &$headerSet, SimpleXMLElement &$fieldSet, $fieldName)
 	{
-		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Searchable', 'Email', array(
-			'sortable' => 'true'
-		));
+		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Searchable', 'Email', [
+			'sortable' => 'true',
+		]);
 	}
 
-	private function applyIntegerField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyIntegerField(DataModel $model, SimpleXMLElement &$headerSet, SimpleXMLElement &$fieldSet, $fieldName)
 	{
-		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Searchable', 'Integer', array(
-			'sortable' => 'true'
-		));
+		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Searchable', 'Integer', [
+			'sortable' => 'true',
+		]);
 	}
 
-	private function applyNumberField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyNumberField(DataModel $model, SimpleXMLElement &$headerSet, SimpleXMLElement &$fieldSet, $fieldName)
 	{
-		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Searchable', 'Number', array(
-			'sortable' => 'true'
-		));
+		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Searchable', 'Number', [
+			'sortable' => 'true',
+		]);
 	}
 
-	private function applyMediaField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyMediaField(DataModel $model, SimpleXMLElement &$headerSet, SimpleXMLElement &$fieldSet, $fieldName)
 	{
 		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Field', 'Media');
 	}
 
-	private function applyLanguageField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyLanguageField(DataModel $model, SimpleXMLElement &$headerSet, SimpleXMLElement &$fieldSet, $fieldName)
 	{
-		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Language', 'Language', array(
-			'sortable' => 'true'
-		));
+		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Language', 'Language', [
+			'sortable' => 'true',
+		]);
 	}
 
-	private function applyPasswordField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyPasswordField(DataModel $model, SimpleXMLElement &$headerSet, SimpleXMLElement &$fieldSet, $fieldName)
 	{
-		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Searchable', 'Password', array(
-			'sortable' => 'true'
-		));
+		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Searchable', 'Password', [
+			'sortable' => 'true',
+		]);
 	}
 
-	private function applyPluginsField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyPluginsField(DataModel $model, SimpleXMLElement &$headerSet, SimpleXMLElement &$fieldSet, $fieldName)
 	{
-		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Field', 'Plugins', array(
-			'sortable' => 'true'
-		));
+		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Field', 'Plugins', [
+			'sortable' => 'true',
+		]);
 	}
 
-	private function applySessionHandlerField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applySessionHandlerField(DataModel $model, SimpleXMLElement &$headerSet, SimpleXMLElement &$fieldSet, $fieldName)
 	{
-		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Field', 'SessionHandler', array(
-			'sortable' => 'true'
-		));
+		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Field', 'SessionHandler', [
+			'sortable' => 'true',
+		]);
 	}
 
-	private function applyTelField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyTelField(DataModel $model, SimpleXMLElement &$headerSet, SimpleXMLElement &$fieldSet, $fieldName)
 	{
-		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Searchable', 'Tel', array(
-			'sortable' => 'true'
-		));
+		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Searchable', 'Tel', [
+			'sortable' => 'true',
+		]);
 	}
 
-	private function applyTextField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyTextField(DataModel $model, SimpleXMLElement &$headerSet, SimpleXMLElement &$fieldSet, $fieldName)
 	{
-		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Searchable', 'Text', array(
-			'sortable' => 'true'
-		));
+		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Searchable', 'Text', [
+			'sortable' => 'true',
+		]);
 	}
 
-	private function applyTimezoneField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyTimezoneField(DataModel $model, SimpleXMLElement &$headerSet, SimpleXMLElement &$fieldSet, $fieldName)
 	{
-		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Field', 'Timezone', array(
-			'sortable' => 'true'
-		));
+		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Field', 'Timezone', [
+			'sortable' => 'true',
+		]);
 	}
 
-	private function applyUrlField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyUrlField(DataModel $model, SimpleXMLElement &$headerSet, SimpleXMLElement &$fieldSet, $fieldName)
 	{
-		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Searchable', 'Url', array(
-			'sortable' => 'true'
-		));
+		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Searchable', 'Url', [
+			'sortable' => 'true',
+		]);
 	}
 
-	private function applyUserField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyUserField(DataModel $model, SimpleXMLElement &$headerSet, SimpleXMLElement &$fieldSet, $fieldName)
 	{
-		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Searchable', 'User', array(
-			'sortable' => 'true'
-		));
+		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Searchable', 'User', [
+			'sortable' => 'true',
+		]);
 	}
 
-	private function applyUserGroupField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyUserGroupField(DataModel $model, SimpleXMLElement &$headerSet, SimpleXMLElement &$fieldSet, $fieldName)
 	{
-		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Searchable', 'UserGroup', array(
-			'sortable' => 'true'
-		));
+		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Searchable', 'UserGroup', [
+			'sortable' => 'true',
+		]);
 	}
 
 	private function applyRelationField($model, $headerSet, $fieldSet, $fieldName)
 	{
-		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Field', 'Relation', array(
-			'sortable' => 'true'
-		));
+		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Field', 'Relation', [
+			'sortable' => 'true',
+		]);
 	}
 
 	private function applyTagField($model, $headerSet, $fieldSet, $fieldName)
 	{
-		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Field', 'Tag', array(
-			'sortable' => 'true'
-		));
+		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Field', 'Tag', [
+			'sortable' => 'true',
+		]);
 	}
 
-	private function applyTitleField($model, \SimpleXMLElement $headerSet, \SimpleXMLElement $fieldSet, $fieldName)
+	private function applyTitleField($model, SimpleXMLElement $headerSet, SimpleXMLElement $fieldSet, $fieldName)
 	{
 		$langDefs = $this->getFieldLabel($fieldName);
 		$this->addString($langDefs['label']['key'], $langDefs['label']['value']);
@@ -596,7 +602,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 		);
 	}
 
-	private function applyModelField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName, $modelName)
+	private function applyModelField(DataModel $model, SimpleXMLElement &$headerSet, SimpleXMLElement &$fieldSet, $fieldName, $modelName)
 	{
 		// This will fail if the model is invalid, e.g. we have example_foobar_id but no #__example_foobars table. The
 		// error will balloon up the stack and the field will be rendered as simple number field instead of a Model
@@ -632,9 +638,9 @@ class BrowseErector extends BaseErector implements ErectorInterface
 		$field->addAttribute('value_field', $value_field);
 	}
 
-	private function applyGenericListField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName, $options)
+	private function applyGenericListField(DataModel $model, SimpleXMLElement &$headerSet, SimpleXMLElement &$fieldSet, $fieldName, $options)
 	{
-		$displayOptions = array();
+		$displayOptions = [];
 
 		foreach ($options as $k => $v)
 		{
@@ -677,8 +683,8 @@ class BrowseErector extends BaseErector implements ErectorInterface
 	 */
 	private function getDoNotShow()
 	{
-		$return = array();
-		$checkFields = array('created_by', 'created_on', 'modified_by', 'modified_on', 'locked_by', 'locked_on');
+		$return      = [];
+		$checkFields = ['created_by', 'created_on', 'modified_by', 'modified_on', 'locked_by', 'locked_on'];
 
 		foreach ($checkFields as $checkField)
 		{

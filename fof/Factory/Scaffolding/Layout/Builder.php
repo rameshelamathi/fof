@@ -7,13 +7,17 @@
 
 namespace FOF30\Factory\Scaffolding\Layout;
 
+defined('_JEXEC') || die;
+
 use DOMDocument;
 use FOF30\Container\Container;
 use JLoader;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
 use ReflectionObject;
-use SimpleXMLElement;/**
+use SimpleXMLElement;
+
+/**
  * Scaffolding Builder
  *
  * Creates an automatic XML form definition to render a view based on the database fields you've got in the model. This

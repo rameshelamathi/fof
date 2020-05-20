@@ -7,12 +7,16 @@
 
 namespace FOF30\Model;
 
+defined('_JEXEC') || die;
+
 use FOF30\Container\Container;
 use FOF30\Input\Input;
 use FOF30\Model\Exception\CannotGetName;
 use Joomla\CMS\Filter\InputFilter;
 use RuntimeException;
-use stdClass;/**
+use stdClass;
+
+/**
  * Class Model
  *
  * A generic MVC model implementation

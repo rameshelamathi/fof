@@ -7,8 +7,14 @@
 
 namespace FOF30\Hal;
 
+defined('_JEXEC') || die;
+
 use FOF30\Hal\Exception\InvalidRenderFormat;
-use FOF30\Hal\Render\RenderInterface;/**
+use FOF30\Hal\Render\RenderInterface;
+use LogicException;
+use stdClass;
+
+/**
  * Implementation of the Hypertext Application Language document in PHP. It can
  * be used to provide hypermedia in a web service context.
  *
@@ -19,7 +25,7 @@ class Document
 	/**
 	 * The collection of links of this document
 	 *
-	 * @var   \FOF30\Hal\Links
+	 * @var   Links
 	 */
 	private $_links = null;
 
@@ -36,7 +42,7 @@ class Document
 	 *
 	 * @var   array
 	 */
-	private $_embedded = array();
+	private $_embedded = [];
 
 	/**
 	 * When $_data is an array we'll output the list of data under this key
@@ -53,7 +59,7 @@ class Document
 	 */
 	public function __construct($data = null)
 	{
-		$this->_data = $data;
+		$this->_data  = $data;
 		$this->_links = new Links;
 	}
 
@@ -61,15 +67,15 @@ class Document
 	 * Add a link to the document
 	 *
 	 * @param   string   $rel        The relation of the link to the document.
-	 *                               See RFC 5988 http://tools.ietf.org/html/rfc5988#section-6.2.2 A document MUST always have
-	 *                               a "self" link.
+	 *                               See RFC 5988 http://tools.ietf.org/html/rfc5988#section-6.2.2 A document MUST
+	 *                               always have a "self" link.
 	 * @param   Link     $link       The actual link object
-	 * @param   boolean  $overwrite  When false and a link of $rel relation exists, an array of links is created. Otherwise the
-	 *                              existing link is overwriten with the new one
-	 *
-	 * @see Links::addLink
+	 * @param   boolean  $overwrite  When false and a link of $rel relation exists, an array of links is created.
+	 *                               Otherwise the existing link is overwriten with the new one
 	 *
 	 * @return  boolean  True if the link was added to the collection
+	 * @see Links::addLink
+	 *
 	 */
 	public function addLink($rel, Link $link, $overwrite = true)
 	{
@@ -85,9 +91,9 @@ class Document
 	 *                               links is created. Otherwise the existing link is overwriten
 	 *                               with the new one
 	 *
+	 * @return  boolean
 	 * @see Links::addLinks
 	 *
-	 * @return  boolean
 	 */
 	public function addLinks($rel, array $links, $overwrite = true)
 	{
@@ -97,8 +103,8 @@ class Document
 	/**
 	 * Add data to the document
 	 *
-	 * @param   \stdClass  $data       The data to add
-	 * @param   boolean   $overwrite  Should I overwrite existing data?
+	 * @param   stdClass  $data       The data to add
+	 * @param   boolean    $overwrite  Should I overwrite existing data?
 	 *
 	 * @return  void
 	 */
@@ -117,7 +123,7 @@ class Document
 		{
 			if (!is_array($this->_data))
 			{
-				$this->_data = array($this->_data);
+				$this->_data = [$this->_data];
 			}
 
 			$this->_data[] = $data;
@@ -145,7 +151,7 @@ class Document
 		{
 			if (!is_array($this->_embedded[$rel]))
 			{
-				$this->_embedded[$rel] = array($this->_embedded[$rel]);
+				$this->_embedded[$rel] = [$this->_embedded[$rel]];
 			}
 
 			$this->_embedded[$rel][] = $document;
@@ -189,14 +195,14 @@ class Document
 		}
 		else
 		{
-			return array();
+			return [];
 		}
 	}
 
 	/**
 	 * Return the data attached to this document
 	 *
-	 * @return   array|\stdClass
+	 * @return   array|stdClass
 	 */
 	public function getData()
 	{
@@ -211,7 +217,7 @@ class Document
 	 *
 	 * @return  string  The rendered document
 	 *
-	 * @throws  \LogicException  If the format is unknown, i.e. there is no suitable renderer
+	 * @throws  LogicException  If the format is unknown, i.e. there is no suitable renderer
 	 */
 	public function render($format = 'json')
 	{
@@ -226,9 +232,9 @@ class Document
 		$renderer = new $class_name($this);
 
 		return $renderer->render(
-			array(
-				'data_key'		=> $this->_dataKey
-			)
+			[
+				'data_key' => $this->_dataKey,
+			]
 		);
 	}
 }

@@ -5,7 +5,11 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Utils\FEFHelper;use FOF30\View\DataView\DataViewInterface;
+namespace FOF30\Utils\FEFHelper;
+
+defined('_JEXEC') || die;
+
+use FOF30\View\DataView\DataViewInterface;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Pagination\Pagination;
 
@@ -33,9 +37,9 @@ abstract class Html
 	 * Creates the required HTML code for backend pagination and sorting
 	 *
 	 * @param   Pagination  $pagination  Pagination object
-	 * @param   array                              $sortFields  Fields allowed to be sorted
-	 * @param   string                             $order       Ordering field
-	 * @param   string                             $order_Dir   Ordering direction (ASC, DESC)
+	 * @param   array       $sortFields  Fields allowed to be sorted
+	 * @param   string      $order       Ordering field
+	 * @param   string      $order_Dir   Ordering direction (ASC, DESC)
 	 *
 	 * @return string
 	 */

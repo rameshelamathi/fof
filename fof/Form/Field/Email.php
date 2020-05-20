@@ -7,13 +7,17 @@
 
 namespace FOF30\Form\Field;
 
+defined('_JEXEC') || die;
+
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use FOF30\Utils\StringHelper;
 use JFormFieldEMail;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Form\FormHelper;FormHelper::loadFieldClass('email');
+use Joomla\CMS\Form\FormHelper;
+
+FormHelper::loadFieldClass('email');
 
 /**
  * Form Field class for the FOF framework

@@ -7,12 +7,16 @@
 
 namespace FOF30\Model\DataModel\Behaviour;
 
+defined('_JEXEC') || die;
+
 use Exception;
 use FOF30\Event\Observable;
 use FOF30\Event\Observer;
 use FOF30\Model\DataModel;
 use Joomla\CMS\Helper\TagsHelper;
-use stdClass;/**
+use stdClass;
+
+/**
  * FOF model behavior class to add Joomla! Tags support
  *
  * @since    2.1
@@ -33,7 +37,7 @@ class Tags extends Observer
 	 * This event runs after unpublishing a record in a model
 	 *
 	 * @param   DataModel  &$model       The model which calls this event
-	 * @param   stdClass  &$dataObject  The data to bind to the form
+	 * @param   stdClass  & $dataObject  The data to bind to the form
 	 *
 	 * @return  void
 	 */
@@ -48,7 +52,7 @@ class Tags extends Observer
 	 * This event runs after unpublishing a record in a model
 	 *
 	 * @param   DataModel  &$model       The model which calls this event
-	 * @param   stdClass  &$dataObject  The data to bind to the form
+	 * @param   stdClass  & $dataObject  The data to bind to the form
 	 *
 	 * @return  void
 	 */

@@ -7,10 +7,14 @@
 
 namespace FOF30\Utils;
 
+defined('_JEXEC') || die;
+
 use FOF30\Container\Container;
 use ReflectionClass;
 use ReflectionException;
-use ReflectionObject;/**
+use ReflectionObject;
+
+/**
  * Dynamic user to user group assignment.
  *
  * This class allows you to add / remove the currently logged in user to a user group without writing the information to

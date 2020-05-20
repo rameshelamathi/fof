@@ -7,9 +7,13 @@
 
 namespace FOF30\Form\Exception;
 
+defined('_JEXEC') || die;
+
 use Exception;
 use Joomla\CMS\Language\Text;
-use LogicException;/**
+use LogicException;
+
+/**
  * Class GetInputNotAllowed
  * @package    FOF30\Form\Exception
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4

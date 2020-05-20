@@ -5,7 +5,11 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Event;/**
+namespace FOF30\Event;
+
+defined('_JEXEC') || die;
+
+/**
  * Interface Observable
  *
  * @codeCoverageIgnore

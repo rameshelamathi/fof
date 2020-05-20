@@ -7,9 +7,12 @@
 
 namespace FOF30\Encrypt\AesAdapter;
 
-// Protect from unauthorized access
+defined('_JEXEC') || die;
+
 use FOF30\Encrypt\Randval;
-use FOF30\Utils\Phpfunc;class Mcrypt extends AbstractAdapter implements AdapterInterface
+use FOF30\Utils\Phpfunc;
+
+class Mcrypt extends AbstractAdapter implements AdapterInterface
 {
 	protected $cipherType = MCRYPT_RIJNDAEL_128;
 
@@ -55,8 +58,8 @@ use FOF30\Utils\Phpfunc;class Mcrypt extends AbstractAdapter implements AdapterI
 
 		if (empty($iv))
 		{
-			$randVal   = new Randval();
-			$iv        = $randVal->generate($iv_size);
+			$randVal = new Randval();
+			$iv      = $randVal->generate($iv_size);
 		}
 
 		$cipherText = mcrypt_encrypt($this->cipherType, $key, $plainText, $this->cipherMode, $iv);

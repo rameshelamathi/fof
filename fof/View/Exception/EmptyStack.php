@@ -7,9 +7,13 @@
 
 namespace FOF30\View\Exception;
 
+defined('_JEXEC') || die;
+
 use Exception;
 use Joomla\CMS\Language\Text;
-use RuntimeException;/**
+use RuntimeException;
+
+/**
  * Exception thrown when we are trying to operate on an empty section stack
  */
 class EmptyStack extends RuntimeException

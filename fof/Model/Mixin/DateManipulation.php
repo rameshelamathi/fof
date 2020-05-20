@@ -7,8 +7,14 @@
 
 namespace FOF30\Model\Mixin;
 
+defined('_JEXEC') || die;
+
 use FOF30\Date\Date;
-use FOF30\Model\DataModel;/**
+use FOF30\Model\DataModel;
+use JDatabaseDriver;
+use JLoader;
+
+/**
  * Trait for date manipulations commonly used in models
  */
 trait DateManipulation
@@ -16,9 +22,9 @@ trait DateManipulation
 	/**
 	 * Normalise a date into SQL format
 	 *
-	 * @param   string $value   The date to normalise
-	 * @param   string $default The default date to use if the normalised date is invalid or empty (use 'now' for
-	 *                          current date/time)
+	 * @param   string  $value    The date to normalise
+	 * @param   string  $default  The default date to use if the normalised date is invalid or empty (use 'now' for
+	 *                            current date/time)
 	 *
 	 * @return  string
 	 */
@@ -26,7 +32,7 @@ trait DateManipulation
 	{
 		/** @var DataModel $this */
 
-		\JLoader::import('joomla.utilities.date');
+		JLoader::import('joomla.utilities.date');
 
 		$db = $this->container->platform->getDbo();
 
@@ -63,15 +69,15 @@ trait DateManipulation
 	 * Sort the published up/down times in case they are give out of order. If publish_up equals publish_down the
 	 * foreverDate will be used for publish_down.
 	 *
-	 * @param   string $publish_up   Publish Up date
-	 * @param   string $publish_down Publish Down date
-	 * @param   string $foreverDate  See above
+	 * @param   string  $publish_up    Publish Up date
+	 * @param   string  $publish_down  Publish Down date
+	 * @param   string  $foreverDate   See above
 	 *
 	 * @return  array  (publish_up, publish_down)
 	 */
 	protected function sortPublishDates($publish_up, $publish_down, $foreverDate = '2038-01-18 00:00:00')
 	{
-		\JLoader::import('joomla.utilities.date');
+		JLoader::import('joomla.utilities.date');
 
 		$jUp   = new Date($publish_up);
 		$jDown = new Date($publish_down);
@@ -88,7 +94,7 @@ trait DateManipulation
 			$publish_down = $jDown->toSql();
 		}
 
-		return array($publish_up, $publish_down);
+		return [$publish_up, $publish_down];
 	}
 
 	/**
@@ -102,7 +108,7 @@ trait DateManipulation
 	{
 		static $uNow = null;
 
-		\JLoader::import('joomla.utilities.date');
+		JLoader::import('joomla.utilities.date');
 
 		if (is_null($uNow))
 		{
@@ -110,7 +116,7 @@ trait DateManipulation
 			$uNow = $jNow->toUnix();
 		}
 
-		/** @var \JDatabaseDriver $db */
+		/** @var JDatabaseDriver $db */
 		$db = $this->container->platform->getDbo();
 
 		$triggered = false;

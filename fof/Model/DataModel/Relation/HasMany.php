@@ -7,9 +7,13 @@
 
 namespace FOF30\Model\DataModel\Relation;
 
+defined('_JEXEC') || die;
+
 use FOF30\Model\DataModel;
 use FOF30\Model\DataModel\Relation;
-use JDatabaseQuery;/**
+use JDatabaseQuery;
+
+/**
  * HasMany (1-to-many) relation: this model is a parent which has zero or more children in the foreign table
  *
  * For example, parentModel is Users and foreignModel is Articles. Each user has zero or more articles.

@@ -5,7 +5,11 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Model\Mixin;/**
+namespace FOF30\Model\Mixin;
+
+defined('_JEXEC') || die;
+
+/**
  * Trait for dealing with data stored as JSON-encoded strings
  */
 trait JsonData
@@ -26,14 +30,14 @@ trait JsonData
 
 		if (empty($value))
 		{
-			return array();
+			return [];
 		}
 
 		$value = json_decode($value, true);
 
 		if (empty($value))
 		{
-			return array();
+			return [];
 		}
 
 		return $value;

@@ -5,7 +5,15 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Model\Mixin;/**
+namespace FOF30\Model\Mixin;
+
+defined('_JEXEC') || die;
+
+use Exception;
+use Generator;
+use ReflectionObject;
+
+/**
  * Trait for PHP 5.5 Generators
  */
 trait Generators
@@ -24,9 +32,9 @@ trait Generators
 	 * @param   integer  $limit           How many items to return (0 = all)
 	 * @param   bool     $overrideLimits  Set to true to override limitstart, limit and ordering
 	 *
-	 * @return  \Generator  A PHP generator of DataModel objects
+	 * @return  Generator  A PHP generator of DataModel objects
+	 * @throws  Exception
 	 * @since   3.3.2
-	 * @throws  \Exception
 	 */
 	public function &getGenerator($limitstart = 0, $limit = 0, $overrideLimits = false)
 	{
@@ -39,7 +47,7 @@ trait Generators
 		$db->setQuery($query, $limitstart, $limit);
 		$cursor = $db->execute();
 
-		$reflectDB     = new \ReflectionObject($db);
+		$reflectDB     = new ReflectionObject($db);
 		$refFetchAssoc = $reflectDB->getMethod('fetchAssoc');
 		$refFetchAssoc->setAccessible(true);
 

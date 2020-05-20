@@ -7,11 +7,15 @@
 
 namespace FOF30\Model\DataModel\Behaviour;
 
+defined('_JEXEC') || die;
+
 use FOF30\Event\Observer;
 use FOF30\Model\DataModel;
 use Joomla\CMS\Application\SiteApplication;
 use Joomla\CMS\Factory;
-use Joomla\Registry\Registry;/**
+use Joomla\Registry\Registry;
+
+/**
  * FOF model behavior class to populate the state with the front-end page parameters
  *
  * @since    2.1

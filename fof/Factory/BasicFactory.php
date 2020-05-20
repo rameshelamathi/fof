@@ -7,6 +7,9 @@
 
 namespace FOF30\Factory;
 
+defined('_JEXEC') || die;
+
+use Exception;
 use FOF30\Container\Container;
 use FOF30\Controller\Controller;
 use FOF30\Dispatcher\Dispatcher;
@@ -28,7 +31,10 @@ use FOF30\Model\Model;
 use FOF30\Toolbar\Toolbar;
 use FOF30\TransparentAuthentication\TransparentAuthentication;
 use FOF30\View\View;
-use FOF30\View\ViewTemplateFinder;/**
+use FOF30\View\ViewTemplateFinder;
+use RuntimeException;
+
+/**
  * MVC object factory. This implements the basic functionality, i.e. creating MVC objects only if the classes exist in
  * the same component section (front-end, back-end) you are currently running in. The Dispatcher and Toolbar will be
  * created from default objects if specialised classes are not found in your application.
@@ -47,27 +53,28 @@ class BasicFactory implements FactoryInterface
 	/** @var  bool  When enabled, FOF will commit the scaffolding results to disk. */
 	protected $saveScaffolding = false;
 
-    /** @var  bool  When enabled, FOF will commit controller scaffolding results to disk. */
-    protected $saveControllerScaffolding = false;
+	/** @var  bool  When enabled, FOF will commit controller scaffolding results to disk. */
+	protected $saveControllerScaffolding = false;
 
-    /** @var  bool  When enabled, FOF will commit model scaffolding results to disk. */
-    protected $saveModelScaffolding = false;
+	/** @var  bool  When enabled, FOF will commit model scaffolding results to disk. */
+	protected $saveModelScaffolding = false;
 
-    /** @var  bool  When enabled, FOF will commit view scaffolding results to disk. */
-    protected $saveViewScaffolding = false;
+	/** @var  bool  When enabled, FOF will commit view scaffolding results to disk. */
+	protected $saveViewScaffolding = false;
 
-    /**
-     * Section used to build the namespace prefix. We have to pass it since in CLI scaffolding we need
-     * to force the section we're in (ie Site or Admin). {@see \FOF30\Container\Container::getNamespacePrefix() } for valid values
-     *
-     * @var   string
-     */
-    protected $section = 'auto';
+	/**
+	 * Section used to build the namespace prefix. We have to pass it since in CLI scaffolding we need
+	 * to force the section we're in (ie Site or Admin). {@see \FOF30\Container\Container::getNamespacePrefix() } for
+	 * valid values
+	 *
+	 * @var   string
+	 */
+	protected $section = 'auto';
 
 	/**
 	 * Public constructor for the factory object
 	 *
-	 * @param  \FOF30\Container\Container $container  The container we belong to
+	 * @param   Container  $container  The container we belong to
 	 */
 	public function __construct(Container $container)
 	{
@@ -82,7 +89,7 @@ class BasicFactory implements FactoryInterface
 	 *
 	 * @return  Controller
 	 */
-	public function controller($viewName, array $config = array())
+	public function controller($viewName, array $config = [])
 	{
 		$controllerClass = $this->container->getNamespacePrefix($this->getSection()) . 'Controller\\' . ucfirst($viewName);
 
@@ -94,32 +101,32 @@ class BasicFactory implements FactoryInterface
 		{
 		}
 
-        $controllerClass = $this->container->getNamespacePrefix($this->getSection()) . 'Controller\\' . ucfirst($this->container->inflector->singularize($viewName));
+		$controllerClass = $this->container->getNamespacePrefix($this->getSection()) . 'Controller\\' . ucfirst($this->container->inflector->singularize($viewName));
 
-        try
-        {
-            $controller = $this->createController($controllerClass, $config);
-        }
-        catch(ControllerNotFound $e)
-        {
-            // Do I have to create and save the class file? If not, let's rethrow the exception
-            if(!$this->saveControllerScaffolding)
-            {
-                throw $e;
-            }
+		try
+		{
+			$controller = $this->createController($controllerClass, $config);
+		}
+		catch (ControllerNotFound $e)
+		{
+			// Do I have to create and save the class file? If not, let's rethrow the exception
+			if (!$this->saveControllerScaffolding)
+			{
+				throw $e;
+			}
 
-            $scaffolding = new ControllerBuilder($this->container);
+			$scaffolding = new ControllerBuilder($this->container);
 
-            // Was the scaffolding successful? If so let's call ourself again, otherwise throw a not found exception
-            if($scaffolding->make($controllerClass, $viewName))
-            {
-                $controller = $this->controller($viewName, $config);
-            }
-            else
-            {
-                throw $e;
-            }
-        }
+			// Was the scaffolding successful? If so let's call ourself again, otherwise throw a not found exception
+			if ($scaffolding->make($controllerClass, $viewName))
+			{
+				$controller = $this->controller($viewName, $config);
+			}
+			else
+			{
+				throw $e;
+			}
+		}
 
 		return $controller;
 	}
@@ -132,7 +139,7 @@ class BasicFactory implements FactoryInterface
 	 *
 	 * @return  Model
 	 */
-	public function model($viewName, array $config = array())
+	public function model($viewName, array $config = [])
 	{
 		$modelClass = $this->container->getNamespacePrefix($this->getSection()) . 'Model\\' . ucfirst($viewName);
 
@@ -146,34 +153,34 @@ class BasicFactory implements FactoryInterface
 
 		$modelClass = $this->container->getNamespacePrefix($this->getSection()) . 'Model\\' . ucfirst($this->container->inflector->singularize($viewName));
 
-        try
-        {
-            $model = $this->createModel($modelClass, $config);
-        }
-        catch(ModelNotFound $e)
-        {
-            // Do I have to create and save the class file? If not, let's rethrow the exception
-            if(!$this->saveModelScaffolding)
-            {
-                throw $e;
-            }
+		try
+		{
+			$model = $this->createModel($modelClass, $config);
+		}
+		catch (ModelNotFound $e)
+		{
+			// Do I have to create and save the class file? If not, let's rethrow the exception
+			if (!$this->saveModelScaffolding)
+			{
+				throw $e;
+			}
 
-            // By default model classes are plural
-            $modelClass  = $this->container->getNamespacePrefix($this->getSection()) . 'Model\\' . ucfirst($viewName);
-            $scaffolding = new ModelBuilder($this->container);
+			// By default model classes are plural
+			$modelClass  = $this->container->getNamespacePrefix($this->getSection()) . 'Model\\' . ucfirst($viewName);
+			$scaffolding = new ModelBuilder($this->container);
 
-            // Was the scaffolding successful? If so let's call ourself again, otherwise throw a not found exception
-            if($scaffolding->make($modelClass, $viewName))
-            {
-                $model = $this->model($viewName, $config);
-            }
-            else
-            {
-                throw $e;
-            }
-        }
+			// Was the scaffolding successful? If so let's call ourself again, otherwise throw a not found exception
+			if ($scaffolding->make($modelClass, $viewName))
+			{
+				$model = $this->model($viewName, $config);
+			}
+			else
+			{
+				throw $e;
+			}
+		}
 
-        return $model;
+		return $model;
 	}
 
 	/**
@@ -185,10 +192,10 @@ class BasicFactory implements FactoryInterface
 	 *
 	 * @return  View
 	 */
-	public function view($viewName, $viewType = 'html', array $config = array())
+	public function view($viewName, $viewType = 'html', array $config = [])
 	{
-        $container = $this->container;
-        $prefix    = $this->container->getNamespacePrefix($this->getSection());
+		$container = $this->container;
+		$prefix    = $this->container->getNamespacePrefix($this->getSection());
 
 		$viewClass = $prefix . 'View\\' . ucfirst($viewName) . '\\' . ucfirst($viewType);
 
@@ -202,34 +209,34 @@ class BasicFactory implements FactoryInterface
 
 		$viewClass = $prefix . 'View\\' . ucfirst($container->inflector->singularize($viewName)) . '\\' . ucfirst($viewType);
 
-        try
-        {
-            $view = $this->createView($viewClass, $config);
-        }
-        catch(ViewNotFound $e)
-        {
-            // Do I have to create and save the class file? If not, let's rethrow the exception. Note: I can only create HTML views
-            if(!$this->saveViewScaffolding)
-            {
-                throw $e;
-            }
+		try
+		{
+			$view = $this->createView($viewClass, $config);
+		}
+		catch (ViewNotFound $e)
+		{
+			// Do I have to create and save the class file? If not, let's rethrow the exception. Note: I can only create HTML views
+			if (!$this->saveViewScaffolding)
+			{
+				throw $e;
+			}
 
-            // By default view classes are plural
-            $viewClass = $prefix . 'View\\' . ucfirst($container->inflector->pluralize($viewName)) . '\\' . ucfirst($viewType);
-            $scaffolding = new ViewBuilder($this->container);
+			// By default view classes are plural
+			$viewClass   = $prefix . 'View\\' . ucfirst($container->inflector->pluralize($viewName)) . '\\' . ucfirst($viewType);
+			$scaffolding = new ViewBuilder($this->container);
 
-            // Was the scaffolding successful? If so let's call ourself again, otherwise throw a not found exception
-            if($scaffolding->make($viewClass, $viewName, $viewType))
-            {
-                $view = $this->view($viewName, $viewType, $config);
-            }
-            else
-            {
-                throw $e;
-            }
-        }
+			// Was the scaffolding successful? If so let's call ourself again, otherwise throw a not found exception
+			if ($scaffolding->make($viewClass, $viewName, $viewType))
+			{
+				$view = $this->view($viewName, $viewType, $config);
+			}
+			else
+			{
+				throw $e;
+			}
+		}
 
-        return $view;
+		return $view;
 	}
 
 	/**
@@ -239,7 +246,7 @@ class BasicFactory implements FactoryInterface
 	 *
 	 * @return  Dispatcher
 	 */
-	public function dispatcher(array $config = array())
+	public function dispatcher(array $config = [])
 	{
 		$dispatcherClass = $this->container->getNamespacePrefix($this->getSection()) . 'Dispatcher\\Dispatcher';
 
@@ -261,7 +268,7 @@ class BasicFactory implements FactoryInterface
 	 *
 	 * @return  Toolbar
 	 */
-    public function toolbar(array $config = array())
+	public function toolbar(array $config = [])
 	{
 		$toolbarClass = $this->container->getNamespacePrefix($this->getSection()) . 'Toolbar\\Toolbar';
 
@@ -279,11 +286,11 @@ class BasicFactory implements FactoryInterface
 	/**
 	 * Creates a new TransparentAuthentication handler
 	 *
-	 * @param   array $config The configuration values for the TransparentAuthentication object
+	 * @param   array  $config  The configuration values for the TransparentAuthentication object
 	 *
 	 * @return  TransparentAuthentication
 	 */
-    public function transparentAuthentication(array $config = array())
+	public function transparentAuthentication(array $config = [])
 	{
 		$authClass = $this->container->getNamespacePrefix($this->getSection()) . 'TransparentAuthentication\\TransparentAuthentication';
 
@@ -302,7 +309,8 @@ class BasicFactory implements FactoryInterface
 	 * Creates a new Form object
 	 *
 	 * @param   string  $name      The name of the form.
-	 * @param   string  $source    The form source filename without path and .xml extension e.g. "form.default" OR raw XML data
+	 * @param   string  $source    The form source filename without path and .xml extension e.g. "form.default" OR raw
+	 *                             XML data
 	 * @param   string  $viewName  The name of the view you're getting the form for.
 	 * @param   array   $options   Options to the Form object
 	 * @param   bool    $replace   Should form fields be replaced if a field already exists with the same group/name?
@@ -310,23 +318,23 @@ class BasicFactory implements FactoryInterface
 	 *
 	 * @return  Form|null  The loaded form or null if the form filename doesn't exist
 	 *
-	 * @throws  \RuntimeException If the form exists but cannot be loaded
+	 * @throws  RuntimeException If the form exists but cannot be loaded
 	 *
 	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
 	 */
-    public function form($name, $source, $viewName, array $options = array(), $replace = true, $xpath = false)
+	public function form($name, $source, $viewName, array $options = [], $replace = true, $xpath = false)
 	{
-        $formClass = $this->container->getNamespacePrefix($this->getSection()) . 'Form\\Form';
+		$formClass = $this->container->getNamespacePrefix($this->getSection()) . 'Form\\Form';
 
-        try
-        {
-            $form = $this->createForm($formClass, $name, $options);
-        }
-        catch (FormNotFound $e)
-        {
-            // Not found. Return the default Toolbar
-            $form = new Form($this->container, $name, $options);
-        }
+		try
+		{
+			$form = $this->createForm($formClass, $name, $options);
+		}
+		catch (FormNotFound $e)
+		{
+			// Not found. Return the default Toolbar
+			$form = new Form($this->container, $name, $options);
+		}
 
 		// If $source looks like raw XML data, parse it directly
 		if (strpos($source, '<form') !== false)
@@ -346,7 +354,7 @@ class BasicFactory implements FactoryInterface
 			if ($this->scaffolding)
 			{
 				$scaffolding = new LayoutBuilder($this->container);
-				$xml = $scaffolding->make($source, $viewName);
+				$xml         = $scaffolding->make($source, $viewName);
 
 				if (!is_null($xml))
 				{
@@ -373,39 +381,39 @@ class BasicFactory implements FactoryInterface
 	 * look only for the specified view; do NOT fall back to the default layout or subtemplate;
 	 * look for templates ONLY in site or admin, depending on where we're running from
 	 *
-	 * @param   View  $view   The view this view template finder will be attached to
-	 * @param   array $config Configuration variables for the object
+	 * @param   View   $view    The view this view template finder will be attached to
+	 * @param   array  $config  Configuration variables for the object
 	 *
 	 * @return  ViewTemplateFinder
 	 *
-     * @throws \Exception
+	 * @throws Exception
 	 */
-    public function viewFinder(View $view, array $config = array())
+	public function viewFinder(View $view, array $config = [])
 	{
 		// Initialise the configuration with the default values
-		$defaultConfig = array(
-			'extensions'    => array('.php', '.blade.php'),
+		$defaultConfig = [
+			'extensions'    => ['.php', '.blade.php'],
 			'defaultLayout' => 'default',
 			'defaultTpl'    => '',
 			'strictView'    => true,
 			'strictTpl'     => true,
 			'strictLayout'  => true,
-			'sidePrefix'    => 'auto'
-		);
+			'sidePrefix'    => 'auto',
+		];
 
 		$config = array_merge($defaultConfig, $config);
 
 		// Apply fof.xml overrides
 		$appConfig = $this->container->appConfig;
-		$key = "views." . ucfirst($view->getName()) . ".config";
+		$key       = "views." . ucfirst($view->getName()) . ".config";
 
-		$fofXmlConfig = array(
-			'extensions'    => $appConfig->get("$key.templateExtensions", $config['extensions']),
-			'strictView'    => $appConfig->get("$key.templateStrictView", $config['strictView']),
-			'strictTpl'     => $appConfig->get("$key.templateStrictTpl", $config['strictTpl']),
-			'strictLayout'  => $appConfig->get("$key.templateStrictLayout", $config['strictLayout']),
-			'sidePrefix'    => $appConfig->get("$key.templateLocation", $config['sidePrefix'])
-		);
+		$fofXmlConfig = [
+			'extensions'   => $appConfig->get("$key.templateExtensions", $config['extensions']),
+			'strictView'   => $appConfig->get("$key.templateStrictView", $config['strictView']),
+			'strictTpl'    => $appConfig->get("$key.templateStrictTpl", $config['strictTpl']),
+			'strictLayout' => $appConfig->get("$key.templateStrictLayout", $config['strictLayout']),
+			'sidePrefix'   => $appConfig->get("$key.templateLocation", $config['sidePrefix']),
+		];
 
 		$config = array_merge($config, $fofXmlConfig);
 
@@ -426,7 +434,7 @@ class BasicFactory implements FactoryInterface
 	/**
 	 * Set the scaffolding status
 	 *
-	 * @param boolean $scaffolding
+	 * @param   boolean  $scaffolding
 	 */
 	public function setScaffolding($scaffolding)
 	{
@@ -446,72 +454,88 @@ class BasicFactory implements FactoryInterface
 	/**
 	 * Set the status of saving the scaffolding result to disk.
 	 *
-	 * @param boolean $saveScaffolding
+	 * @param   boolean  $saveScaffolding
 	 */
 	public function setSaveScaffolding($saveScaffolding)
 	{
 		$this->saveScaffolding = (bool) $saveScaffolding;
 	}
 
-    /**
-     * Should we save controller to disk?
-     *
-     * @param   boolean $state
-     */
-    public function setSaveControllerScaffolding($state)
-    {
-        $this->saveControllerScaffolding = (bool) $state;
-    }
+	/**
+	 * Should we save controller scaffolding to disk?
+	 *
+	 * @return  boolean $state
+	 */
+	public function isSaveControllerScaffolding()
+	{
+		return $this->saveControllerScaffolding;
+	}
 
-    /**
-     * Should we save controller scaffolding to disk?
-     *
-     * @return  boolean $state
-     */
-    public function isSaveControllerScaffolding()
-    {
-        return $this->saveControllerScaffolding;
-    }
+	/**
+	 * Should we save controller to disk?
+	 *
+	 * @param   boolean  $state
+	 */
+	public function setSaveControllerScaffolding($state)
+	{
+		$this->saveControllerScaffolding = (bool) $state;
+	}
 
-    /**
-     * Should we save model to disk?
-     *
-     * @param   boolean $state
-     */
-    public function setSaveModelScaffolding($state)
-    {
-        $this->saveModelScaffolding = (bool) $state;
-    }
+	/**
+	 * Should we save model scaffolding to disk?
+	 *
+	 * @return  boolean $state
+	 */
+	public function isSaveModelScaffolding()
+	{
+		return $this->saveModelScaffolding;
+	}
 
-    /**
-     * Should we save model scaffolding to disk?
-     *
-     * @return  boolean $state
-     */
-    public function isSaveModelScaffolding()
-    {
-        return $this->saveModelScaffolding;
-    }
+	/**
+	 * Should we save model to disk?
+	 *
+	 * @param   boolean  $state
+	 */
+	public function setSaveModelScaffolding($state)
+	{
+		$this->saveModelScaffolding = (bool) $state;
+	}
 
-    /**
-     * Should we save view to disk?
-     *
-     * @param   boolean $state
-     */
-    public function setSaveViewScaffolding($state)
-    {
-        $this->saveViewScaffolding = (bool) $state;
-    }
+	/**
+	 * Should we save view scaffolding to disk?
+	 *
+	 * @return  boolean $state
+	 */
+	public function isSaveViewScaffolding()
+	{
+		return $this->saveViewScaffolding;
+	}
 
-    /**
-     * Should we save view scaffolding to disk?
-     *
-     * @return  boolean $state
-     */
-    public function isSaveViewScaffolding()
-    {
-        return $this->saveViewScaffolding;
-    }
+	/**
+	 * Should we save view to disk?
+	 *
+	 * @param   boolean  $state
+	 */
+	public function setSaveViewScaffolding($state)
+	{
+		$this->saveViewScaffolding = (bool) $state;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSection()
+	{
+		return $this->section;
+	}
+
+	/**
+	 * @param   string  $section
+	 */
+	public function setSection($section)
+	{
+		$this->section = $section;
+	}
 
 	/**
 	 * Creates a Controller object
@@ -521,9 +545,9 @@ class BasicFactory implements FactoryInterface
 	 *
 	 * @return  Controller
 	 *
-	 * @throws  \RuntimeException  If the $controllerClass does not exist
+	 * @throws  RuntimeException  If the $controllerClass does not exist
 	 */
-	protected function createController($controllerClass, array $config = array())
+	protected function createController($controllerClass, array $config = [])
 	{
 		if (!class_exists($controllerClass))
 		{
@@ -541,9 +565,9 @@ class BasicFactory implements FactoryInterface
 	 *
 	 * @return  Model
 	 *
-	 * @throws  \RuntimeException  If the $modelClass does not exist
+	 * @throws  RuntimeException  If the $modelClass does not exist
 	 */
-	protected function createModel($modelClass, array $config = array())
+	protected function createModel($modelClass, array $config = [])
 	{
 		if (!class_exists($modelClass))
 		{
@@ -561,9 +585,9 @@ class BasicFactory implements FactoryInterface
 	 *
 	 * @return  View
 	 *
-	 * @throws  \RuntimeException  If the $viewClass does not exist
+	 * @throws  RuntimeException  If the $viewClass does not exist
 	 */
-	protected function createView($viewClass, array $config = array())
+	protected function createView($viewClass, array $config = [])
 	{
 		if (!class_exists($viewClass))
 		{
@@ -581,9 +605,9 @@ class BasicFactory implements FactoryInterface
 	 *
 	 * @return  Toolbar
 	 *
-	 * @throws  \RuntimeException  If the $toolbarClass does not exist
+	 * @throws  RuntimeException  If the $toolbarClass does not exist
 	 */
-	protected function createToolbar($toolbarClass, array $config = array())
+	protected function createToolbar($toolbarClass, array $config = [])
 	{
 		if (!class_exists($toolbarClass))
 		{
@@ -593,38 +617,38 @@ class BasicFactory implements FactoryInterface
 		return new $toolbarClass($this->container, $config);
 	}
 
-    /**
-     * Creates a Form object
-     *
-     * @param   string  $formClass     The fully qualified class name for the Form
-     * @param   string  $name          The name of the form
-     * @param   array   $options       The options values for the Form object
-     *
-     * @return  Toolbar
-     *
-     * @throws  FormNotFound  	If the $formClass does not exist
-     */
-    protected function createForm($formClass, $name, array $options = array())
-    {
-        if (!class_exists($formClass))
-        {
-            throw new FormNotFound($formClass);
-        }
+	/**
+	 * Creates a Form object
+	 *
+	 * @param   string  $formClass  The fully qualified class name for the Form
+	 * @param   string  $name       The name of the form
+	 * @param   array   $options    The options values for the Form object
+	 *
+	 * @return  Toolbar
+	 *
+	 * @throws  FormNotFound    If the $formClass does not exist
+	 */
+	protected function createForm($formClass, $name, array $options = [])
+	{
+		if (!class_exists($formClass))
+		{
+			throw new FormNotFound($formClass);
+		}
 
-        return new $formClass($this->container, $name, $options);
-    }
+		return new $formClass($this->container, $name, $options);
+	}
 
 	/**
 	 * Creates a Dispatcher object
 	 *
 	 * @param   string  $dispatcherClass  The fully qualified class name for the Dispatcher
-	 * @param   array   $config            The configuration values for the Dispatcher object
+	 * @param   array   $config           The configuration values for the Dispatcher object
 	 *
 	 * @return  Dispatcher
 	 *
-	 * @throws  \RuntimeException  If the $dispatcherClass does not exist
+	 * @throws  RuntimeException  If the $dispatcherClass does not exist
 	 */
-	protected function createDispatcher($dispatcherClass, array $config = array())
+	protected function createDispatcher($dispatcherClass, array $config = [])
 	{
 		if (!class_exists($dispatcherClass))
 		{
@@ -642,7 +666,7 @@ class BasicFactory implements FactoryInterface
 	 *
 	 * @return  TransparentAuthentication
 	 *
-	 * @throws  \RuntimeException  If the $authClass does not exist
+	 * @throws  RuntimeException  If the $authClass does not exist
 	 */
 	protected function createTransparentAuthentication($authClass, $config)
 	{
@@ -686,29 +710,29 @@ class BasicFactory implements FactoryInterface
 
 		$componentPaths = $this->container->platform->getComponentBaseDirs($componentName);
 
-		$file_root      = $componentPaths['main'];
-		$alt_file_root  = $componentPaths['alt'];
-		$template_root  = $this->container->platform->getTemplateOverridePath($componentName);
+		$file_root     = $componentPaths['main'];
+		$alt_file_root = $componentPaths['alt'];
+		$template_root = $this->container->platform->getTemplateOverridePath($componentName);
 
 		// Basic paths we need to always search
-		$paths = array(
+		$paths = [
 			// Template override
 			$template_root . '/' . $viewName,
 			$template_root . '/' . $viewNameAlt,
-            // Forms inside the specialized folder for easier template overrides
-            $file_root . '/ViewTemplates/' . $viewName,
-            $file_root . '/ViewTemplates/' . $viewNameAlt,
+			// Forms inside the specialized folder for easier template overrides
+			$file_root . '/ViewTemplates/' . $viewName,
+			$file_root . '/ViewTemplates/' . $viewNameAlt,
 			// This side of the component
 			$file_root . '/View/' . $viewName . '/tmpl',
 			$file_root . '/View/' . $viewNameAlt . '/tmpl',
-		);
+		];
 
 		// The other side of the component
 		if ($this->formLookupInOtherSide)
 		{
-            // Forms inside the specialized folder for easier template overrides
-            $paths[] = $alt_file_root . '/ViewTemplates/' . $viewName;
-            $paths[] = $alt_file_root . '/ViewTemplates/' . $viewNameAlt;
+			// Forms inside the specialized folder for easier template overrides
+			$paths[] = $alt_file_root . '/ViewTemplates/' . $viewName;
+			$paths[] = $alt_file_root . '/ViewTemplates/' . $viewNameAlt;
 
 			$paths[] = $alt_file_root . '/View/' . $viewName . '/tmpl';
 			$paths[] = $alt_file_root . '/View/' . $viewNameAlt . '/tmpl';
@@ -732,7 +756,7 @@ class BasicFactory implements FactoryInterface
 		$paths = array_unique($paths);
 
 		// Set up the suffixes to look into
-		$suffixes = array();
+		$suffixes      = [];
 		$temp_suffixes = $this->container->platform->getTemplateSuffixes();
 
 		if (!empty($temp_suffixes))
@@ -770,20 +794,4 @@ class BasicFactory implements FactoryInterface
 
 		return $result;
 	}
-
-    /**
-     * @return string
-     */
-    public function getSection()
-    {
-        return $this->section;
-    }
-
-    /**
-     * @param string $section
-     */
-    public function setSection($section)
-    {
-        $this->section = $section;
-    }
 }

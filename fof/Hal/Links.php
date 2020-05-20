@@ -5,7 +5,11 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Hal;/**
+namespace FOF30\Hal;
+
+defined('_JEXEC') || die;
+
+/**
  * Implementation of the Hypertext Application Language links in PHP. This is
  * actually a collection of links.
  *
@@ -18,7 +22,7 @@ class Links
 	 *
 	 * @var array
 	 */
-	private $_links = array();
+	private $_links = [];
 
 	/**
 	 * Add a single link to the links collection
@@ -48,7 +52,7 @@ class Links
 		{
 			if (!is_array($this->_links[$rel]))
 			{
-				$this->_links[$rel] = array($this->_links[$rel]);
+				$this->_links[$rel] = [$this->_links[$rel]];
 			}
 
 			$this->_links[$rel][] = $link;
@@ -111,7 +115,7 @@ class Links
 		}
 		else
 		{
-			return array();
+			return [];
 		}
 	}
 }

@@ -7,8 +7,12 @@
 
 namespace FOF30\Date;
 
+defined('_JEXEC') || die;
+
 use DateTime;
-use JDatabaseDriver;/**
+use JDatabaseDriver;
+
+/**
  * This decorator will get any DateTime descendant and turn it into a FOF30\Date\Date compatible class. If the methods
  * specific to Date/JDate are available they will be used. Otherwise a new Date object will be spun from the information
  * in the decorated DateTime object and the results of a call to its method will be returned.

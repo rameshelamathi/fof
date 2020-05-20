@@ -7,10 +7,14 @@
 
 namespace FOF30\Factory\Scaffolding\Layout;
 
+defined('_JEXEC') || die;
+
 use FOF30\Model\DataModel;
 use Joomla\CMS\Language\Text;
 use LogicException;
-use SimpleXMLElement;/**
+use SimpleXMLElement;
+
+/**
  * Class BaseErector
  * @package    FOF30\Factory\Scaffolding\Layout
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4

@@ -7,6 +7,8 @@
 
 namespace FOF30\Platform\Joomla;
 
+defined('_JEXEC') || die;
+
 use ActionlogsModelActionlog;
 use Exception;
 use FOF30\Container\Container;
@@ -38,7 +40,9 @@ use Joomla\CMS\User\User;
 use Joomla\CMS\User\UserHelper;
 use Joomla\CMS\Version;
 use Joomla\Component\Actionlogs\Administrator\Model\ActionlogModel;
-use Joomla\Registry\Registry;/**
+use Joomla\Registry\Registry;
+
+/**
  * Part of the FOF Platform Abstraction Layer.
  *
  * This implements the platform class for Joomla! 3

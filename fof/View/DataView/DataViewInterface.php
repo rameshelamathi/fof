@@ -7,10 +7,14 @@
 
 namespace FOF30\View\DataView;
 
+defined('_JEXEC') || die;
+
 use Exception;
 use FOF30\Container\Container;
 use Joomla\CMS\Pagination\Pagination;
-use stdClass;interface DataViewInterface
+use stdClass;
+
+interface DataViewInterface
 {
 	/**
 	 * Determines if the current Joomla! version and your current table support AJAX-powered drag and drop reordering.

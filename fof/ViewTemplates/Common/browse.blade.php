@@ -5,6 +5,8 @@
  * @license     GNU GPL version 3 or later
  */
 
+defined('_JEXEC') || die;
+
 /**
  * Template for Browse views using the FEF renderer
  *

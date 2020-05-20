@@ -7,7 +7,11 @@
 
 namespace FOF30\View\Engine;
 
-use FOF30\View\View;/**
+defined('_JEXEC') || die;
+
+use FOF30\View\View;
+
+/**
  * View engine for compiling PHP template files.
  */
 class BladeEngine extends CompilingEngine implements EngineInterface

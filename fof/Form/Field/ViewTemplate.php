@@ -7,13 +7,17 @@
 
 namespace FOF30\Form\Field;
 
+defined('_JEXEC') || die;
+
 use FOF30\Container\Container;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use FOF30\View\View;
 use Joomla\CMS\Form\FormField;
-use Joomla\CMS\Form\FormHelper;FormHelper::loadFieldClass('text');
+use Joomla\CMS\Form\FormHelper;
+
+FormHelper::loadFieldClass('text');
 
 /**
  * Form Field class for the FOF framework

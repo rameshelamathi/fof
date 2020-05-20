@@ -7,9 +7,13 @@
 
 namespace FOF30\Factory\Exception;
 
+defined('_JEXEC') || die;
+
 use Exception;
 use Joomla\CMS\Language\Text;
-use RuntimeException;class DispatcherNotFound extends RuntimeException
+use RuntimeException;
+
+class DispatcherNotFound extends RuntimeException
 {
 	public function __construct($dispatcherClass, $code = 500, Exception $previous = null)
 	{

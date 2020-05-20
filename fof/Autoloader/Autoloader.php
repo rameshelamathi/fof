@@ -7,6 +7,8 @@
 
 namespace FOF30\Autoloader;
 
+defined('_JEXEC') || die;
+
 use InvalidArgumentException;
 
 /**

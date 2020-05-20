@@ -7,6 +7,8 @@
 
 namespace FOF30\Model;
 
+defined('_JEXEC') || die;
+
 use Exception;
 use FOF30\Container\Container;
 use FOF30\Model\DataModel\Exception\TreeIncompatibleTable;
@@ -21,7 +23,9 @@ use FOF30\Model\DataModel\Exception\TreeUnsupportedMethod;
 use JDatabaseQuery;
 use Joomla\CMS\Application\ApplicationHelper;
 use RuntimeException;
-use UnexpectedValueException;/**
+use UnexpectedValueException;
+
+/**
  * A DataModel which implements nested trees
  *
  * @property int    $lft  Left value (for nested set implementation)

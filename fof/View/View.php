@@ -7,6 +7,8 @@
 
 namespace FOF30\View;
 
+defined('_JEXEC') || die;
+
 use ErrorException;
 use Exception;
 use FOF30\Container\Container;
@@ -17,7 +19,9 @@ use FOF30\View\Exception\CannotGetName;
 use FOF30\View\Exception\EmptyStack;
 use FOF30\View\Exception\ModelNotFound;
 use FOF30\View\Exception\UnrecognisedExtension;
-use Joomla\CMS\Language\Text;/**
+use Joomla\CMS\Language\Text;
+
+/**
  * Class View
  *
  * A generic MVC view implementation
@@ -1256,7 +1260,7 @@ class View
 	 * Handle a view exception.
 	 *
 	 * @param   Exception  $e        The exception to handle
-	 * @param   int         $obLevel  The target output buffering level
+	 * @param   int        $obLevel  The target output buffering level
 	 *
 	 * @return  void
 	 *

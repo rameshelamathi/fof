@@ -7,9 +7,13 @@
 
 namespace FOF30\Model\DataModel\Exception;
 
+defined('_JEXEC') || die;
+
 use Exception;
 use Joomla\CMS\Language\Text;
-use RuntimeException;class TreeRootNotFound extends RuntimeException
+use RuntimeException;
+
+class TreeRootNotFound extends RuntimeException
 {
 	public function __construct($tableName, $lft, $code = 500, Exception $previous = null)
 	{

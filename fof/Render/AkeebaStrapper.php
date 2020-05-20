@@ -7,6 +7,8 @@
 
 namespace FOF30\Render;
 
+defined('_JEXEC') || die;
+
 use Exception;
 use FOF30\Container\Container;
 use FOF30\Form\Field\Ordering as FieldOrdering;
@@ -23,7 +25,9 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
-use stdClass;/**
+use stdClass;
+
+/**
  * Renderer class for use with Akeeba Strapper
  *
  * Renderer options
@@ -766,7 +770,7 @@ JS;
 	/**
 	 * Renders a raw fieldset of a F0FForm and returns the corresponding HTML
 	 *
-	 * @param   stdClass  &$fieldset    The fieldset to render
+	 * @param   stdClass  & $fieldset    The fieldset to render
 	 * @param   Form       &$form        The form to render
 	 * @param   DataModel   $model       The model providing our data
 	 * @param   string      $formType    The form type e.g. 'edit' or 'read'

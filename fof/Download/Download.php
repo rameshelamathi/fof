@@ -7,10 +7,14 @@
 
 namespace FOF30\Download;
 
+defined('_JEXEC') || die;
+
 use FOF30\Container\Container;
 use FOF30\Download\Exception\DownloadError;
 use FOF30\Timer\Timer;
-use Joomla\CMS\Language\Text;class Download
+use Joomla\CMS\Language\Text;
+
+class Download
 {
 	/**
 	 * The component container object

@@ -7,6 +7,8 @@
 
 namespace FOF30\Model;
 
+defined('_JEXEC') || die;
+
 use Exception;
 use FOF30\Container\Container;
 use FOF30\Controller\Exception\LockedRecord;
@@ -41,7 +43,9 @@ use Joomla\CMS\Table\Table;
 use Joomla\CMS\Table\TableInterface;
 use Joomla\CMS\UCM\UCMContent;
 use RuntimeException;
-use UnexpectedValueException;/**
+use UnexpectedValueException;
+
+/**
  * Data-aware model, implementing a convenient ORM
  *
  * Type hinting -- start
@@ -190,19 +194,17 @@ class DataModel extends Model implements TableInterface
 	 *
 	 * You can use the $config array to pass some configuration values to the object:
 	 *
-	 * tableName             String   The name of the database table to use. Default: #__appName_viewNamePlural (Ruby on Rails convention)
-	 * idFieldName           String   The table key field name. Default: appName_viewNameSingular_id (Ruby on Rails convention)
-	 * knownFields           Array    The known fields in the table. Default: read from the table itself
-	 * autoChecks            Boolean  Should I turn on automatic data validation checks?
-	 * fieldsSkipChecks      Array    List of fields which should not participate in automatic data validation checks.
-	 * aliasFields           Array    Associative array of "magic" field aliases.
-	 * behavioursDispatcher  EventDispatcher  The model behaviours event dispatcher.
-	 * behaviourObservers    Array    The model behaviour observers to attach to the behavioursDispatcher.
-	 * behaviours            Array    A list of behaviour names to instantiate and attach to the behavioursDispatcher.
-	 * fillable_fields       Array    Which fields should be auto-filled from the model state (by extent, the request)?
-	 * guarded_fields        Array    Which fields should never be auto-filled from the model state (by extent, the request)?
-	 * relations             Array    (hashed)  The relations to autoload on model creation.
-	 * contentType           String   The UCM content type, e.g. "com_foobar.items"
+	 * tableName             String   The name of the database table to use. Default: #__appName_viewNamePlural (Ruby
+	 * on Rails convention) idFieldName           String   The table key field name. Default:
+	 * appName_viewNameSingular_id (Ruby on Rails convention) knownFields           Array    The known fields in the
+	 * table. Default: read from the table itself autoChecks            Boolean  Should I turn on automatic data
+	 * validation checks? fieldsSkipChecks      Array    List of fields which should not participate in automatic data
+	 * validation checks. aliasFields           Array    Associative array of "magic" field aliases.
+	 * behavioursDispatcher  EventDispatcher  The model behaviours event dispatcher. behaviourObservers    Array    The
+	 * model behaviour observers to attach to the behavioursDispatcher. behaviours            Array    A list of
+	 * behaviour names to instantiate and attach to the behavioursDispatcher. fillable_fields       Array    Which
+	 * fields should be auto-filled from the model state (by extent, the request)? guarded_fields        Array    Which
+	 * fields should never be auto-filled from the model state (by extent, the request)? relations             Array    (hashed)  The relations to autoload on model creation. contentType           String   The UCM content type, e.g. "com_foobar.items"
 	 *
 	 * Setting either fillable_fields or guarded_fields turns on automatic filling of fields in the constructor. If
 	 * both

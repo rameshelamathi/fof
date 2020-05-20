@@ -7,6 +7,8 @@
 
 namespace FOF30\Form;
 
+defined('_JEXEC') || die;
+
 use FOF30\Container\Container;
 use FOF30\Form\Header\HeaderBase;
 use FOF30\Model\DataModel;
@@ -21,7 +23,9 @@ use Joomla\Registry\Registry;
 use JString;
 use ReflectionClass;
 use SimpleXMLElement;
-use UnexpectedValueException;/**
+use UnexpectedValueException;
+
+/**
  * Form is an extension to JForm which support not only edit views but also
  * browse (record list) and read (single record display) views based on XML
  * forms.

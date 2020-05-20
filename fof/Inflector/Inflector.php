@@ -5,7 +5,11 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Inflector;/**
+namespace FOF30\Inflector;
+
+defined('_JEXEC') || die;
+
+/**
  * An Inflector to pluralize and singularize English nouns.
  */
 class Inflector
@@ -15,10 +19,9 @@ class Inflector
 	 *
 	 * @var array
 	 */
-	protected $rules = array
-	(
+	protected $rules = [
 		// Pluralization rules. The regex on the left transforms to the regex on the right.
-		'pluralization'   => array(
+		'pluralization'   => [
 			'/move$/i'                      => 'moves',
 			'/sex$/i'                       => 'sexes',
 			'/child$/i'                     => 'children',
@@ -56,9 +59,9 @@ class Inflector
 			'/(ax|test)is$/i'               => '$1es',
 			'/s$/i'                         => 's',
 			'/$/'                           => 's',
-		),
+		],
 		// Singularization rules. The regex on the left transforms to the regex on the right.
-		'singularization' => array(
+		'singularization' => [
 			'/cookies$/i'                                                      => 'cookie',
 			'/moves$/i'                                                        => 'move',
 			'/sexes$/i'                                                        => 'sex',
@@ -102,9 +105,9 @@ class Inflector
 			'/(n)ews$/i'                                                       => '\1ews',
 			'/(.*)ss$/i'                                                       => '\1ss',
 			'/(.*)s$/i'                                                        => '\1',
-		),
+		],
 		// Uncountable objects are always singular
-		'uncountable'       => array(
+		'uncountable'     => [
 			'aircraft',
 			'cannon',
 			'deer',
@@ -119,30 +122,30 @@ class Inflector
 			'sheep',
 			'species',
 			'swine',
-		)
-	);
+		],
+	];
 
 	/**
 	 * Cache of pluralized and singularized nouns.
 	 *
 	 * @var array
 	 */
-	protected $cache = array(
-		'singularized' => array(),
-		'pluralized'   => array()
-	);
+	protected $cache = [
+		'singularized' => [],
+		'pluralized'   => [],
+	];
 
 	public function deleteCache()
 	{
-		$this->cache['pluralized'] = array();
-		$this->cache['singularized'] = array();
+		$this->cache['pluralized']   = [];
+		$this->cache['singularized'] = [];
 	}
 
 	/**
 	 * Add a word to the cache, useful to make exceptions or to add words in other languages.
 	 *
-	 * @param   string $singular word.
-	 * @param   string $plural   word.
+	 * @param   string  $singular  word.
+	 * @param   string  $plural    word.
 	 *
 	 * @return  void
 	 */
@@ -155,7 +158,7 @@ class Inflector
 	/**
 	 * Singular English word to plural.
 	 *
-	 * @param   string $word word to pluralize.
+	 * @param   string  $word  word to pluralize.
 	 *
 	 * @return  string Plural noun.
 	 */
@@ -172,7 +175,7 @@ class Inflector
 		{
 			return $word;
 		}
-		
+
 		// Create the plural noun
 		if (in_array($word, $this->rules['uncountable']))
 		{
@@ -184,7 +187,7 @@ class Inflector
 		foreach ($this->rules['pluralization'] as $regexp => $replacement)
 		{
 			$matches = null;
-			$plural = preg_replace($regexp, $replacement, $word, -1, $matches);
+			$plural  = preg_replace($regexp, $replacement, $word, -1, $matches);
 
 			if ($matches > 0)
 			{
@@ -200,7 +203,7 @@ class Inflector
 	/**
 	 * Plural English word to singular.
 	 *
-	 * @param   string $word Word to singularize.
+	 * @param   string  $word  Word to singularize.
 	 *
 	 * @return  string Singular noun.
 	 */
@@ -211,7 +214,7 @@ class Inflector
 		{
 			return $this->cache['singularized'][$word];
 		}
-		
+
 		// Check if the noun is already in singular form, i.e. in the pluralized cache
 		if (isset($this->cache['pluralized'][$word]))
 		{
@@ -228,7 +231,7 @@ class Inflector
 
 		foreach ($this->rules['singularization'] as $regexp => $replacement)
 		{
-			$matches = null;
+			$matches  = null;
 			$singular = preg_replace($regexp, $replacement, $word, -1, $matches);
 
 			if ($matches > 0)
@@ -249,7 +252,7 @@ class Inflector
 	 * will remove non alphanumeric characters from the word, so
 	 * "who's online" will be converted to "WhoSOnline"
 	 *
-	 * @param   string $word Word to convert to camel case.
+	 * @param   string  $word  Word to convert to camel case.
 	 *
 	 * @return  string  UpperCamelCasedWord
 	 */
@@ -266,7 +269,7 @@ class Inflector
 	 *
 	 * Convert any "CamelCased" or "ordinary Word" into an "underscored_word".
 	 *
-	 * @param   string $word Word to underscore
+	 * @param   string  $word  Word to underscore
 	 *
 	 * @return string Underscored word
 	 */
@@ -284,7 +287,7 @@ class Inflector
 	 * Returns an array of strings each of which is a substring of string formed
 	 * by splitting it at the camelcased letters.
 	 *
-	 * @param   string $word Word to explode
+	 * @param   string  $word  Word to explode
 	 *
 	 * @return  array   Array of strings
 	 */
@@ -298,7 +301,7 @@ class Inflector
 	/**
 	 * Convert  an array of strings into a "CamelCased" word.
 	 *
-	 * @param   array $words Array to implode
+	 * @param   array  $words  Array to implode
 	 *
 	 * @return  string UpperCamelCasedWord
 	 */
@@ -316,7 +319,7 @@ class Inflector
 	 * underscores with a space, and by upper-casing the initial
 	 * character by default.
 	 *
-	 * @param   string $word String to "humanize"
+	 * @param   string  $word  String to "humanize"
 	 *
 	 * @return string Human-readable word
 	 */
@@ -330,7 +333,7 @@ class Inflector
 	/**
 	 * Returns camelBacked version of a string. Same as camelize but first char is lowercased.
 	 *
-	 * @param   string $string String to be camelBacked.
+	 * @param   string  $string  String to be camelBacked.
 	 *
 	 * @return string
 	 *
@@ -338,8 +341,8 @@ class Inflector
 	 */
 	public function variablize($string)
 	{
-		$string = self::camelize(self::underscore($string));
-		$result = strtolower(substr($string, 0, 1));
+		$string   = self::camelize(self::underscore($string));
+		$result   = strtolower(substr($string, 0, 1));
 		$variable = preg_replace('/\\w/', $result, $string, 1);
 
 		return $variable;
@@ -348,7 +351,7 @@ class Inflector
 	/**
 	 * Check to see if an English word is singular
 	 *
-	 * @param   string $string The word to check
+	 * @param   string  $string  The word to check
 	 *
 	 * @return boolean
 	 */
@@ -356,7 +359,7 @@ class Inflector
 	{
 		// Check cache assuming the string is plural.
 		$singular = isset($this->cache['singularized'][$string]) ? $this->cache['singularized'][$string] : null;
-		$plural = $singular && isset($this->cache['pluralized'][$singular]) ? $this->cache['pluralized'][$singular] : null;
+		$plural   = $singular && isset($this->cache['pluralized'][$singular]) ? $this->cache['pluralized'][$singular] : null;
 
 		if ($singular && $plural)
 		{
@@ -370,7 +373,7 @@ class Inflector
 	/**
 	 * Check to see if an Enlish word is plural.
 	 *
-	 * @param   string $string String to be checked.
+	 * @param   string  $string  String to be checked.
 	 *
 	 * @return boolean
 	 */
@@ -383,7 +386,7 @@ class Inflector
 		}
 
 		// Check cache assuming the string is singular.
-		$plural = isset($this->cache['pluralized'][$string]) ? $this->cache['pluralized'][$string] : null;
+		$plural   = isset($this->cache['pluralized'][$string]) ? $this->cache['pluralized'][$string] : null;
 		$singular = $plural && isset($this->cache['singularized'][$plural]) ? $this->cache['singularized'][$plural] : null;
 
 		if ($plural && $singular)
@@ -401,9 +404,9 @@ class Inflector
 	 * Use a negative index to start at the last part of the word (-1 is the
 	 * last part)
 	 *
-	 * @param   string  $string  Word
-	 * @param   integer $index   Index of the part
-	 * @param   string  $default Default value
+	 * @param   string   $string   Word
+	 * @param   integer  $index    Index of the part
+	 * @param   string   $default  Default value
 	 *
 	 * @return string
 	 */

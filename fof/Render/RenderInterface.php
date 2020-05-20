@@ -7,9 +7,15 @@
 
 namespace FOF30\Render;
 
+defined('_JEXEC') || die;
+
 use FOF30\Container\Container;
+use FOF30\Form\Form;
 use FOF30\Model\DataModel;
-use FOF30\Form\Form;interface RenderInterface
+use SimpleXMLElement;
+use stdClass;
+
+interface RenderInterface
 {
 	/**
 	 * Public constructor
@@ -28,8 +34,8 @@ use FOF30\Form\Form;interface RenderInterface
 	/**
 	 * Echoes any HTML to show before the view template
 	 *
-	 * @param   string $view The current view
-	 * @param   string $task The current task
+	 * @param   string  $view  The current view
+	 * @param   string  $task  The current task
 	 *
 	 * @return  void
 	 */
@@ -38,8 +44,8 @@ use FOF30\Form\Form;interface RenderInterface
 	/**
 	 * Echoes any HTML to show after the view template
 	 *
-	 * @param   string $view The current view
-	 * @param   string $task The current task
+	 * @param   string  $view  The current view
+	 * @param   string  $task  The current task
 	 *
 	 * @return  void
 	 */
@@ -49,9 +55,9 @@ use FOF30\Form\Form;interface RenderInterface
 	 * Renders a Form and returns the corresponding HTML
 	 *
 	 * @param   Form      &$form         The form to render
-	 * @param   DataModel $model         The model providing our data
-	 * @param   string    $formType      The form type: edit, browse or read
-	 * @param   boolean   $raw           If true, the raw form fields rendering (without the surrounding form tag) is
+	 * @param   DataModel  $model        The model providing our data
+	 * @param   string     $formType     The form type: edit, browse or read
+	 * @param   boolean    $raw          If true, the raw form fields rendering (without the surrounding form tag) is
 	 *                                   returned.
 	 *
 	 * @return  string    The HTML rendering of the form
@@ -63,8 +69,8 @@ use FOF30\Form\Form;interface RenderInterface
 	/**
 	 * Renders a F0FForm for a Browse view and returns the corresponding HTML
 	 *
-	 * @param   Form      &$form The form to render
-	 * @param   DataModel $model The model providing our data
+	 * @param   Form      &$form   The form to render
+	 * @param   DataModel  $model  The model providing our data
 	 *
 	 * @return  string    The HTML rendering of the form
 	 *
@@ -75,8 +81,8 @@ use FOF30\Form\Form;interface RenderInterface
 	/**
 	 * Renders a F0FForm for a Read view and returns the corresponding HTML
 	 *
-	 * @param   Form      &$form The form to render
-	 * @param   DataModel $model The model providing our data
+	 * @param   Form      &$form   The form to render
+	 * @param   DataModel  $model  The model providing our data
 	 *
 	 * @return  string    The HTML rendering of the form
 	 *
@@ -87,8 +93,8 @@ use FOF30\Form\Form;interface RenderInterface
 	/**
 	 * Renders a F0FForm for an Edit view and returns the corresponding HTML
 	 *
-	 * @param   Form      &$form The form to render
-	 * @param   DataModel $model The model providing our data
+	 * @param   Form      &$form   The form to render
+	 * @param   DataModel  $model  The model providing our data
 	 *
 	 * @return  string    The HTML rendering of the form
 	 *
@@ -99,9 +105,9 @@ use FOF30\Form\Form;interface RenderInterface
 	/**
 	 * Renders a F0FForm for an Edit view and returns the corresponding HTML
 	 *
-	 * @param   Form      &$form    The form to render
-	 * @param   DataModel $model    The model providing our data
-	 * @param   string    $formType The form type: edit, browse or read
+	 * @param   Form      &$form      The form to render
+	 * @param   DataModel  $model     The model providing our data
+	 * @param   string     $formType  The form type: edit, browse or read
 	 *
 	 * @return  string    The HTML rendering of the form
 	 *
@@ -125,24 +131,24 @@ use FOF30\Form\Form;interface RenderInterface
 	/**
 	 * Renders a raw fieldset of a F0FForm and returns the corresponding HTML
 	 *
-	 * @param   \stdClass &$fieldset  The fieldset to render
-	 * @param   Form      &$form      The form to render
-	 * @param   DataModel $model      The model providing our data
-	 * @param   string    $formType   The form type e.g. 'edit' or 'read'
-	 * @param   boolean   $showHeader Should I render the fieldset's header?
+	 * @param   stdClass &$fieldset    The fieldset to render
+	 * @param   Form      &$form        The form to render
+	 * @param   DataModel  $model       The model providing our data
+	 * @param   string     $formType    The form type e.g. 'edit' or 'read'
+	 * @param   boolean    $showHeader  Should I render the fieldset's header?
 	 *
 	 * @return  string    The HTML rendering of the fieldset
 	 *
 	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
 	 */
-	function renderFieldset(\stdClass &$fieldset, Form &$form, DataModel $model, $formType, $showHeader = true);
+	function renderFieldset(stdClass &$fieldset, Form &$form, DataModel $model, $formType, $showHeader = true);
 
 	/**
 	 * Renders a label for a fieldset.
 	 *
-	 * @param   object  $field The field of the label to render
-	 * @param   Form    &$form The form to render
-	 * @param    string $title The title of the label
+	 * @param   object   $field  The field of the label to render
+	 * @param   Form    &$form   The form to render
+	 * @param   string   $title  The title of the label
 	 *
 	 * @return    string        The rendered label
 	 *
@@ -153,7 +159,7 @@ use FOF30\Form\Form;interface RenderInterface
 	/**
 	 * Checks if the fieldset defines a tab pane
 	 *
-	 * @param   \SimpleXMLElement $fieldset
+	 * @param   SimpleXMLElement  $fieldset
 	 *
 	 * @return  boolean
 	 *

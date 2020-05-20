@@ -7,6 +7,8 @@
 
 namespace FOF30\View\DataView;
 
+defined('_JEXEC') || die;
+
 use Exception;
 use FOF30\Hal\Document;
 use FOF30\Hal\Link;
@@ -14,7 +16,9 @@ use FOF30\Model\DataModel;
 use Joomla\CMS\Document\JsonDocument as JDocumentJSON;
 use Joomla\CMS\Pagination\Pagination;
 use Joomla\CMS\Router\Route;
-use Joomla\CMS\Uri\Uri;class Json extends Raw implements DataViewInterface
+use Joomla\CMS\Uri\Uri;
+
+class Json extends Raw implements DataViewInterface
 {
 	/**
 	 * When set to true we'll add hypermedia to the output, implementing the

@@ -5,7 +5,11 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Database;use Exception;
+namespace FOF30\Database;
+
+defined('_JEXEC') || die;
+
+use Exception;
 use JDatabaseDriver;
 use Joomla\CMS\Filesystem\Folder;
 use SimpleXMLElement;

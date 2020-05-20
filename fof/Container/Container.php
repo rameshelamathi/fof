@@ -5,21 +5,31 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Container;use FOF30\Autoloader\Autoloader;
+namespace FOF30\Container;
+
+defined('_JEXEC') || die;
+
+use FOF30\Autoloader\Autoloader;
+use FOF30\Configuration\Configuration;
+use FOF30\Container\Exception\NoComponent;
+use FOF30\Dispatcher\Dispatcher;
 use FOF30\Encrypt\EncryptService;
 use FOF30\Factory\FactoryInterface;
 use FOF30\Inflector\Inflector;
 use FOF30\Input\Input as FOFInput;
 use FOF30\Params\Params;
+use FOF30\Platform\FilesystemInterface;
 use FOF30\Platform\Joomla\Filesystem as JoomlaFilesystem;
+use FOF30\Platform\PlatformInterface;
 use FOF30\Render\RenderInterface;
 use FOF30\Template\Template;
+use FOF30\Toolbar\Toolbar;
 use FOF30\TransparentAuthentication\TransparentAuthentication as TransparentAuth;
 use FOF30\Utils\MediaVersion;
 use FOF30\View\Compiler\Blade;
+use JDatabaseDriver;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Input\Input as CMSInput;
-use Joomla\CMS\Session\Session;
 
 /**
  * Dependency injection container for FOF-powered components.
@@ -53,31 +63,31 @@ use Joomla\CMS\Session\Session;
  * @property  string                                   $backEndPath        The absolute path to the back-end files
  * @property  string                                   $thisPath           The preferred path. Backend for Admin
  *            application, frontend otherwise
- * @property  string                                   $rendererClass      The fully qualified class name of the view
+ * @property  string                                  $rendererClass      The fully qualified class name of the view
  *            renderer we'll be using. Must implement FOF30\Render\RenderInterface.
- * @property  string                                   $factoryClass       The fully qualified class name of the MVC
+ * @property  string                                  $factoryClass       The fully qualified class name of the MVC
  *            Factory object, default is FOF30\Factory\BasicFactory.
- * @property  string                                   $platformClass      The fully qualified class name of the
+ * @property  string                                  $platformClass      The fully qualified class name of the
  *            Platform abstraction object, default is FOF30\Platform\Joomla\Platform.
- * @property  MediaVersion                             $mediaVersion       A version string for media files in forms.
+ * @property  MediaVersion                            $mediaVersion       A version string for media files in forms.
  *            Default: md5 of release version, release date and site secret (if found)
  *
- * @property-read  \FOF30\Configuration\Configuration  $appConfig          The application configuration registry
- * @property-read  \FOF30\View\Compiler\Blade          $blade              The Blade view template compiler engine
- * @property-read  \JDatabaseDriver                    $db                 The database connection object
- * @property-read  \FOF30\Dispatcher\Dispatcher        $dispatcher         The component's dispatcher
- * @property-read  \FOF30\Factory\FactoryInterface     $factory            The MVC object factory
- * @property-read  \FOF30\Platform\FilesystemInterface $filesystem         The filesystem abstraction layer object
- * @property-read  \FOF30\Inflector\Inflector          $inflector          The English word inflector (pluralise /
+ * @property-read  Configuration $appConfig          The application configuration registry
+ * @property-read  Blade                              $blade              The Blade view template compiler engine
+ * @property-read  JDatabaseDriver                    $db                 The database connection object
+ * @property-read  Dispatcher                         $dispatcher         The component's dispatcher
+ * @property-read  FactoryInterface                   $factory            The MVC object factory
+ * @property-read  FilesystemInterface                $filesystem         The filesystem abstraction layer object
+ * @property-read  Inflector                          $inflector          The English word inflector (pluralise /
  *                 singularise words etc)
- * @property-read  \FOF30\Params\Params                $params             The component's params
- * @property-read  FOFInput                            $input              The input object
- * @property-read  \FOF30\Platform\PlatformInterface   $platform           The platform abstraction layer object
- * @property-read  \FOF30\Render\RenderInterface       $renderer           The view renderer
- * @property-read  JSession                            $session            Joomla! session storage
- * @property-read  \FOF30\Template\Template            $template           The template helper
- * @property-read  TransparentAuth                     $transparentAuth    Transparent authentication handler
- * @property-read  \FOF30\Toolbar\Toolbar              $toolbar            The component's toolbar
+ * @property-read  Params                             $params             The component's params
+ * @property-read  FOFInput                           $input              The input object
+ * @property-read  PlatformInterface                  $platform           The platform abstraction layer object
+ * @property-read  RenderInterface                    $renderer           The view renderer
+ * @property-read  JSession                           $session            Joomla! session storage
+ * @property-read  Template                           $template           The template helper
+ * @property-read  TransparentAuth                    $transparentAuth    Transparent authentication handler
+ * @property-read  Toolbar                             $toolbar            The component's toolbar
  * @property-read  EncryptService                      $crypto             The component's data encryption service
  */
 class Container extends ContainerBase
@@ -95,7 +105,7 @@ class Container extends ContainerBase
 	 *
 	 * @param   array  $values  Overrides for the container configuration and services
 	 *
-	 * @throws  \FOF30\Container\Exception\NoComponent  If no component name is specified
+	 * @throws  NoComponent  If no component name is specified
 	 */
 	public function __construct(array $values = [])
 	{
@@ -501,7 +511,7 @@ class Container extends ContainerBase
 	 * @param   string  $section    The application section (site, admin) you want to fetch. Any other value results in
 	 *                              auto-detection.
 	 *
-	 * @return \FOF30\Container\Container
+	 * @return Container
 	 */
 	public static function &getInstance($component, array $values = [], $section = 'auto')
 	{
@@ -536,7 +546,7 @@ class Container extends ContainerBase
 	 * @param   string  $section    The application section (site, admin) you want to fetch. Any other value results in
 	 *                              auto-detection.
 	 *
-	 * @return \FOF30\Container\Container
+	 * @return Container
 	 */
 	protected static function &makeInstance($component, array $values = [], $section = 'auto')
 	{

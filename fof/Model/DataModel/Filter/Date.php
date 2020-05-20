@@ -5,7 +5,11 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Model\DataModel\Filter;class Date extends Text
+namespace FOF30\Model\DataModel\Filter;
+
+defined('_JEXEC') || die;
+
+class Date extends Text
 {
 	/**
 	 * Returns the default search method for this field.
@@ -87,7 +91,8 @@ namespace FOF30\Model\DataModel\Filter;class Date extends Text
 	 * Interval date search
 	 *
 	 * @param   string               $value     The value to search
-	 * @param   string|array|object  $interval  The interval. Can be (+1 MONTH or array('value' => 1, 'unit' => 'MONTH', 'sign' => '+'))
+	 * @param   string|array|object  $interval  The interval. Can be (+1 MONTH or array('value' => 1, 'unit' =>
+	 *                                          'MONTH', 'sign' => '+'))
 	 * @param   boolean              $include   If the borders should be included
 	 *
 	 * @return  string  the sql string
@@ -102,7 +107,7 @@ namespace FOF30\Model\DataModel\Filter;class Date extends Text
 		$interval = $this->getInterval($interval);
 
 		// Sanity check on $interval array
-		if(!isset($interval['sign']) || !isset($interval['value']) || !isset($interval['unit']))
+		if (!isset($interval['sign']) || !isset($interval['value']) || !isset($interval['unit']))
 		{
 			return '';
 		}
@@ -156,7 +161,7 @@ namespace FOF30\Model\DataModel\Filter;class Date extends Text
 			$extra = '=';
 		}
 
-		$sql = array();
+		$sql = [];
 
 		if ($from)
 		{
@@ -187,22 +192,22 @@ namespace FOF30\Model\DataModel\Filter;class Date extends Text
 			if (strlen($interval) > 2)
 			{
 				$interval = explode(" ", $interval);
-				$sign = ($interval[0] == '-') ? '-' : '+';
-				$value = (int) substr($interval[0], 1);
+				$sign     = ($interval[0] == '-') ? '-' : '+';
+				$value    = (int) substr($interval[0], 1);
 
-				$interval = array(
-					'unit' => $interval[1],
+				$interval = [
+					'unit'  => $interval[1],
 					'value' => $value,
-					'sign' => $sign
-				);
+					'sign'  => $sign,
+				];
 			}
 			else
 			{
-				$interval = array(
-					'unit' => 'MONTH',
+				$interval = [
+					'unit'  => 'MONTH',
 					'value' => 1,
-					'sign' => '+'
-				);
+					'sign'  => '+',
+				];
 			}
 		}
 		else

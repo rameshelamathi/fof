@@ -7,27 +7,31 @@
 
 namespace FOF30\Utils;
 
+defined('_JEXEC') || die;
+
 use ArrayAccess;
 use ArrayIterator;
 use CachingIterator;
 use Closure;
 use Countable;
 use IteratorAggregate;
-use JsonSerializable;class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
+use JsonSerializable;
+
+class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
 {
 	/**
 	 * The items contained in the collection.
 	 *
 	 * @var array
 	 */
-	protected $items = array();
+	protected $items = [];
 
 	/**
 	 * Create a new collection.
 	 *
-	 * @param  array $items
+	 * @param   array  $items
 	 */
-	public function __construct(array $items = array())
+	public function __construct(array $items = [])
 	{
 		$this->items = $items;
 	}
@@ -35,7 +39,7 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Create a new collection instance if the value isn't one already.
 	 *
-	 * @param  mixed $items
+	 * @param   mixed  $items
 	 *
 	 * @return static
 	 */
@@ -51,7 +55,7 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 			return $items;
 		}
 
-		return new static(is_array($items) ? $items : array($items));
+		return new static(is_array($items) ? $items : [$items]);
 	}
 
 	/**
@@ -71,7 +75,7 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	 */
 	public function collapse()
 	{
-		$results = array();
+		$results = [];
 
 		foreach ($this->items as $values)
 		{
@@ -84,7 +88,7 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Diff the collection with the given items.
 	 *
-	 * @param  Collection|array $items
+	 * @param   Collection|array  $items
 	 *
 	 * @return static
 	 */
@@ -96,7 +100,7 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Execute a callback over each item.
 	 *
-	 * @param  Closure $callback
+	 * @param   Closure  $callback
 	 *
 	 * @return static
 	 */
@@ -110,7 +114,7 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Fetch a nested element of the collection.
 	 *
-	 * @param  string $key
+	 * @param   string  $key
 	 *
 	 * @return static
 	 */
@@ -122,7 +126,7 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Run a filter over each of the items.
 	 *
-	 * @param  Closure $callback
+	 * @param   Closure  $callback
 	 *
 	 * @return static
 	 */
@@ -134,8 +138,8 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Get the first item from the collection.
 	 *
-	 * @param  \Closure $callback
-	 * @param  mixed    $default
+	 * @param   Closure  $callback
+	 * @param   mixed    $default
 	 *
 	 * @return mixed|null
 	 */
@@ -164,7 +168,7 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Remove an item from the collection by key.
 	 *
-	 * @param  mixed $key
+	 * @param   mixed  $key
 	 *
 	 * @return void
 	 */
@@ -176,8 +180,8 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Get an item from the collection by key.
 	 *
-	 * @param  mixed $key
-	 * @param  mixed $default
+	 * @param   mixed  $key
+	 * @param   mixed  $default
 	 *
 	 * @return mixed
 	 */
@@ -194,13 +198,13 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Group an associative array by a field or Closure value.
 	 *
-	 * @param  callable|string $groupBy
+	 * @param   callable|string  $groupBy
 	 *
 	 * @return static
 	 */
 	public function groupBy($groupBy)
 	{
-		$results = array();
+		$results = [];
 
 		foreach ($this->items as $key => $value)
 		{
@@ -215,7 +219,7 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Determine if an item exists in the collection by key.
 	 *
-	 * @param  mixed $key
+	 * @param   mixed  $key
 	 *
 	 * @return bool
 	 */
@@ -227,8 +231,8 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Concatenate values of a given key as a string.
 	 *
-	 * @param  string $value
-	 * @param  string $glue
+	 * @param   string  $value
+	 * @param   string  $glue
 	 *
 	 * @return string
 	 */
@@ -245,7 +249,7 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Intersect the collection with the given items.
 	 *
-	 * @param  Collection|array $items
+	 * @param   Collection|array  $items
 	 *
 	 * @return static
 	 */
@@ -277,8 +281,8 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Get an array with the values of a given key.
 	 *
-	 * @param  string $value
-	 * @param  string $key
+	 * @param   string  $value
+	 * @param   string  $key
 	 *
 	 * @return array
 	 */
@@ -290,7 +294,7 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Run a map over each of the items.
 	 *
-	 * @param  Closure $callback
+	 * @param   Closure  $callback
 	 *
 	 * @return static
 	 */
@@ -302,7 +306,7 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Merge the collection with the given items.
 	 *
-	 * @param  Collection|array $items
+	 * @param   Collection|array  $items
 	 *
 	 * @return static
 	 */
@@ -324,7 +328,7 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Push an item onto the beginning of the collection.
 	 *
-	 * @param  mixed $value
+	 * @param   mixed  $value
 	 *
 	 * @return void
 	 */
@@ -336,7 +340,7 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Push an item onto the end of the collection.
 	 *
-	 * @param  mixed $value
+	 * @param   mixed  $value
 	 *
 	 * @return void
 	 */
@@ -348,8 +352,8 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Put an item in the collection by key.
 	 *
-	 * @param  mixed $key
-	 * @param  mixed $value
+	 * @param   mixed  $key
+	 * @param   mixed  $value
 	 *
 	 * @return void
 	 */
@@ -361,8 +365,8 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Reduce the collection to a single value.
 	 *
-	 * @param  callable $callback
-	 * @param  mixed    $initial
+	 * @param   callable  $callback
+	 * @param   mixed     $initial
 	 *
 	 * @return mixed
 	 */
@@ -374,7 +378,7 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Get one or more items randomly from the collection.
 	 *
-	 * @param  int $amount
+	 * @param   int  $amount
 	 *
 	 * @return mixed
 	 */
@@ -408,9 +412,9 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Slice the underlying collection array.
 	 *
-	 * @param  int  $offset
-	 * @param  int  $length
-	 * @param  bool $preserveKeys
+	 * @param   int   $offset
+	 * @param   int   $length
+	 * @param   bool  $preserveKeys
 	 *
 	 * @return static
 	 */
@@ -422,7 +426,7 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Sort through each item with a callback.
 	 *
-	 * @param  Closure $callback
+	 * @param   Closure  $callback
 	 *
 	 * @return static
 	 */
@@ -436,15 +440,15 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Sort the collection using the given Closure.
 	 *
-	 * @param  \Closure|string $callback
-	 * @param  int             $options
-	 * @param  bool            $descending
+	 * @param   Closure|string  $callback
+	 * @param   int             $options
+	 * @param   bool            $descending
 	 *
 	 * @return static
 	 */
 	public function sortBy($callback, $options = SORT_REGULAR, $descending = false)
 	{
-		$results = array();
+		$results = [];
 
 		if (is_string($callback))
 		{
@@ -479,8 +483,8 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Sort the collection in descending order using the given Closure.
 	 *
-	 * @param  \Closure|string $callback
-	 * @param  int             $options
+	 * @param   Closure|string  $callback
+	 * @param   int             $options
 	 *
 	 * @return static
 	 */
@@ -492,13 +496,13 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Splice portion of the underlying collection array.
 	 *
-	 * @param  int   $offset
-	 * @param  int   $length
-	 * @param  mixed $replacement
+	 * @param   int    $offset
+	 * @param   int    $length
+	 * @param   mixed  $replacement
 	 *
 	 * @return static
 	 */
-	public function splice($offset, $length = 0, $replacement = array())
+	public function splice($offset, $length = 0, $replacement = [])
 	{
 		return new static(array_splice($this->items, $offset, $length, $replacement));
 	}
@@ -506,7 +510,7 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Get the sum of the given values.
 	 *
-	 * @param  \Closure|string $callback
+	 * @param   Closure|string  $callback
 	 *
 	 * @return mixed
 	 */
@@ -517,8 +521,7 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 			$callback = $this->valueRetriever($callback);
 		}
 
-		return $this->reduce(function ($result, $item) use ($callback)
-		{
+		return $this->reduce(function ($result, $item) use ($callback) {
 			return $result += $callback($item);
 
 		}, 0);
@@ -527,7 +530,7 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Take the first or last {$limit} items.
 	 *
-	 * @param  int $limit
+	 * @param   int  $limit
 	 *
 	 * @return static
 	 */
@@ -548,7 +551,7 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	 */
 	public function reset()
 	{
-		$this->items = array();
+		$this->items = [];
 
 		return $this;
 	}
@@ -556,7 +559,7 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Transform each item in the collection using a callback.
 	 *
-	 * @param  callable $callback
+	 * @param   callable  $callback
 	 *
 	 * @return static
 	 */
@@ -590,29 +593,13 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	}
 
 	/**
-	 * Get a value retrieving callback.
-	 *
-	 * @param  string $value
-	 *
-	 * @return \Closure
-	 */
-	protected function valueRetriever($value)
-	{
-		return function ($item) use ($value)
-		{
-			return is_object($item) ? $item->{$value} : array_get($item, $value);
-		};
-	}
-
-	/**
 	 * Get the collection of items as a plain array.
 	 *
 	 * @return array
 	 */
 	public function toArray()
 	{
-		return array_map(function ($value)
-		{
+		return array_map(function ($value) {
 			return (is_object($value) && method_exists($value, 'toArray')) ? $value->toArray() : $value;
 
 		}, $this->items);
@@ -631,7 +618,7 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Get the collection of items as JSON.
 	 *
-	 * @param  int $options
+	 * @param   int  $options
 	 *
 	 * @return string
 	 */
@@ -653,13 +640,13 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Get a CachingIterator instance.
 	 *
-	 * @param  integer  $flags  Caching iterator flags
+	 * @param   integer  $flags  Caching iterator flags
 	 *
-	 * @return \CachingIterator
+	 * @return CachingIterator
 	 */
 	public function getCachingIterator($flags = CachingIterator::CALL_TOSTRING)
 	{
-		return new \CachingIterator($this->getIterator(), $flags);
+		return new CachingIterator($this->getIterator(), $flags);
 	}
 
 	/**
@@ -675,7 +662,7 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Determine if an item exists at an offset.
 	 *
-	 * @param  mixed $key
+	 * @param   mixed  $key
 	 *
 	 * @return bool
 	 */
@@ -687,7 +674,7 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Get an item at a given offset.
 	 *
-	 * @param  mixed $key
+	 * @param   mixed  $key
 	 *
 	 * @return mixed
 	 */
@@ -699,8 +686,8 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Set the item at a given offset.
 	 *
-	 * @param  mixed $key
-	 * @param  mixed $value
+	 * @param   mixed  $key
+	 * @param   mixed  $value
 	 *
 	 * @return void
 	 */
@@ -719,7 +706,7 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	/**
 	 * Unset the item at a given offset.
 	 *
-	 * @param  string $key
+	 * @param   string  $key
 	 *
 	 * @return void
 	 */
@@ -739,9 +726,23 @@ use JsonSerializable;class Collection implements ArrayAccess, Countable, Iterato
 	}
 
 	/**
+	 * Get a value retrieving callback.
+	 *
+	 * @param   string  $value
+	 *
+	 * @return Closure
+	 */
+	protected function valueRetriever($value)
+	{
+		return function ($item) use ($value) {
+			return is_object($item) ? $item->{$value} : array_get($item, $value);
+		};
+	}
+
+	/**
 	 * Results array of items from Collection.
 	 *
-	 * @param  Collection|array $items
+	 * @param   Collection|array  $items
 	 *
 	 * @return array
 	 */

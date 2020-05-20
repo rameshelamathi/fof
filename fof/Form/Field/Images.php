@@ -7,8 +7,12 @@
 
 namespace FOF30\Form\Field;
 
+defined('_JEXEC') || die;
+
 use Joomla\CMS\Form\FormHelper;
-use Joomla\CMS\HTML\HTMLHelper;FormHelper::loadFieldClass('imagelist');
+use Joomla\CMS\HTML\HTMLHelper;
+
+FormHelper::loadFieldClass('imagelist');
 
 /**
  * Form Field class for the FOF framework

@@ -7,7 +7,11 @@
 
 namespace FOF30\Container;
 
-use FOF30\Pimple\Container;class ContainerBase extends Container
+defined('_JEXEC') || die;
+
+use FOF30\Pimple\Container;
+
+class ContainerBase extends Container
 {
 	/**
 	 * Magic getter for alternative syntax, e.g. $container->foo instead of $container['foo']

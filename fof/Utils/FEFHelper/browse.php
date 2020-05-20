@@ -5,6 +5,8 @@
  * @license   GNU General Public License version 2, or later
  */
 
+defined('_JEXEC') || die;
+
 use FOF30\Model\DataModel;
 use FOF30\Utils\ArrayHelper;
 use FOF30\Utils\FEFHelper\BrowseView;
@@ -14,7 +16,9 @@ use FOF30\View\DataView\Raw as DataViewRaw;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Pagination\Pagination;/**
+use Joomla\CMS\Pagination\Pagination;
+
+/**
  * Custom JHtml (HTMLHelper) class. Offers browse view controls compatible with Akeeba Frontend
  * Framework (FEF).
  *
@@ -636,16 +640,16 @@ JS;
 	 * Returns the table ordering / pagination header for a browse view: number of records to display, order direction,
 	 * order by field.
 	 *
-	 * @param   DataViewRaw                        $view        The view you're rendering against. If not provided we
+	 * @param   DataViewRaw  $view                              The view you're rendering against. If not provided we
 	 *                                                          will guess it using MAGIC.
-	 * @param   array                              $sortFields  Array of field name => description for the ordering
+	 * @param   array        $sortFields                        Array of field name => description for the ordering
 	 *                                                          fields in the dropdown. If not provided we will use all
 	 *                                                          the fields available in the model.
-	 * @param   Pagination  $pagination  The Joomla pagination object. If not provided we fetch
+	 * @param   Pagination   $pagination                        The Joomla pagination object. If not provided we fetch
 	 *                                                          it from the view.
-	 * @param   string                             $sortBy      Order by field name. If not provided we fetch it from
+	 * @param   string       $sortBy                            Order by field name. If not provided we fetch it from
 	 *                                                          the view.
-	 * @param   string                             $order_Dir   Order direction. If not provided we fetch it from the
+	 * @param   string       $order_Dir                         Order direction. If not provided we fetch it from the
 	 *                                                          view.
 	 *
 	 * @return  string

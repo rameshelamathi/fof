@@ -5,7 +5,11 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Model\DataModel\Filter;class Number extends AbstractFilter
+namespace FOF30\Model\DataModel\Filter;
+
+defined('_JEXEC') || die;
+
+class Number extends AbstractFilter
 {
 	/**
 	 * The partial match is mapped to an exact match
@@ -50,7 +54,7 @@ namespace FOF30\Model\DataModel\Filter;class Number extends AbstractFilter
 		}
 
 		$from = $this->sanitiseValue($from);
-		$to = $this->sanitiseValue($to);
+		$to   = $this->sanitiseValue($to);
 
 		$sql = '((' . $this->getFieldName() . ' >' . $extra . ' ' . $from . ') AND ';
 		$sql .= '(' . $this->getFieldName() . ' <' . $extra . ' ' . $to . '))';
@@ -89,7 +93,7 @@ namespace FOF30\Model\DataModel\Filter;class Number extends AbstractFilter
 		}
 
 		$from = $this->sanitiseValue($from);
-		$to = $this->sanitiseValue($to);
+		$to   = $this->sanitiseValue($to);
 
 		$sql = '((' . $this->getFieldName() . ' <' . $extra . ' ' . $from . ') OR ';
 		$sql .= '(' . $this->getFieldName() . ' >' . $extra . ' ' . $to . '))';
@@ -120,7 +124,7 @@ namespace FOF30\Model\DataModel\Filter;class Number extends AbstractFilter
 		$interval = (float) $interval;
 
 		$from = $value - $interval;
-		$to = $value + $interval;
+		$to   = $value + $interval;
 
 		$extra = '';
 
@@ -130,7 +134,7 @@ namespace FOF30\Model\DataModel\Filter;class Number extends AbstractFilter
 		}
 
 		$from = $this->sanitiseValue($from);
-		$to = $this->sanitiseValue($to);
+		$to   = $this->sanitiseValue($to);
 
 		$sql = '((' . $this->getFieldName() . ' >' . $extra . ' ' . $from . ') AND ';
 		$sql .= '(' . $this->getFieldName() . ' <' . $extra . ' ' . $to . '))';
@@ -165,7 +169,7 @@ namespace FOF30\Model\DataModel\Filter;class Number extends AbstractFilter
 			$extra = '=';
 		}
 
-		$sql = array();
+		$sql = [];
 
 		if ($from)
 		{
@@ -258,7 +262,7 @@ namespace FOF30\Model\DataModel\Filter;class Number extends AbstractFilter
 		}
 		else
 		{
-			$value = array_map(array($this, 'sanitiseValue'), $value);
+			$value = array_map([$this, 'sanitiseValue'], $value);
 		}
 
 		return $value;

@@ -7,8 +7,11 @@
 
 namespace FOF30\Encrypt\AesAdapter;
 
-// Protect from unauthorized access
-use FOF30\Utils\Phpfunc;/**
+defined('_JEXEC') || die;
+
+use FOF30\Utils\Phpfunc;
+
+/**
  * Interface for AES encryption adapters
  */
 interface AdapterInterface
@@ -39,7 +42,8 @@ interface AdapterInterface
 	 * plaintext and trim the string to that length upon decryption.
 	 *
 	 * @param   string       $plainText  The plaintext to encrypt
-	 * @param   string       $key        The raw binary key (will be zero-padded or chopped if its size is different than the block size)
+	 * @param   string       $key        The raw binary key (will be zero-padded or chopped if its size is different
+	 *                                   than the block size)
 	 * @param   null|string  $iv         The initialization vector (for CBC mode algorithms)
 	 *
 	 * @return  string  The raw encrypted binary string.
@@ -58,7 +62,8 @@ interface AdapterInterface
 	 * just padding!).
 	 *
 	 * @param   string  $cipherText  The ciphertext to encrypt
-	 * @param   string  $key         The raw binary key (will be zero-padded or chopped if its size is different than the block size)
+	 * @param   string  $key         The raw binary key (will be zero-padded or chopped if its size is different than
+	 *                               the block size)
 	 *
 	 * @return  string  The raw unencrypted binary string.
 	 */

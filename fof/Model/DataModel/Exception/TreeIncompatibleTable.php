@@ -7,9 +7,13 @@
 
 namespace FOF30\Model\DataModel\Exception;
 
+defined('_JEXEC') || die;
+
 use Exception;
 use Joomla\CMS\Language\Text;
-use UnexpectedValueException;class TreeIncompatibleTable extends UnexpectedValueException
+use UnexpectedValueException;
+
+class TreeIncompatibleTable extends UnexpectedValueException
 {
 	public function __construct($tableName, $code = 500, Exception $previous = null)
 	{

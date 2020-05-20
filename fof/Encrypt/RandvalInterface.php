@@ -7,7 +7,9 @@
 
 namespace FOF30\Encrypt;
 
-// Protect from unauthorized accessinterface RandvalInterface
+defined('_JEXEC') || die;
+
+interface RandvalInterface
 {
 	/**
 	 *

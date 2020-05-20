@@ -7,11 +7,16 @@
 
 namespace FOF30\View\DataView;
 
+defined('_JEXEC') || die;
+
+use Exception;
 use FOF30\Form\Form as FormObject;
 use FOF30\Model\DataModel;
-use FOF30\Render\RenderInterface;/**
+use FOF30\Render\RenderInterface;
+
+/**
  * Class Form
- * @package FOF30\View\DataView
+ * @package    FOF30\View\DataView
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
@@ -27,7 +32,7 @@ class Form extends Html implements DataViewInterface
 	 *
 	 * @return  boolean|null False if we can't render anything
 	 *
-	 * @throws  \Exception
+	 * @throws  Exception
 	 */
 	public function display($tpl = null)
 	{
@@ -40,7 +45,7 @@ class Form extends Html implements DataViewInterface
 		$this->form->setView($this);
 
 		$eventName = 'onBefore' . ucfirst($this->doTask);
-		$this->triggerEvent($eventName, array($tpl));
+		$this->triggerEvent($eventName, [$tpl]);
 
 		$preRenderResult = '';
 
@@ -56,15 +61,15 @@ class Form extends Html implements DataViewInterface
 		{
 			$templateResult = $this->loadTemplate($tpl);
 		}
-		catch (\Exception $e)
+		catch (Exception $e)
 		{
 			$templateResult = $this->getRenderedForm();
 		}
 
 		$eventName = 'onAfter' . ucfirst($this->doTask);
-		$this->triggerEvent($eventName, array($tpl));
+		$this->triggerEvent($eventName, [$tpl]);
 
-		if (is_object($templateResult) && ($templateResult instanceof \Exception))
+		if (is_object($templateResult) && ($templateResult instanceof Exception))
 		{
 			throw $templateResult;
 		}
@@ -88,7 +93,7 @@ class Form extends Html implements DataViewInterface
 	 */
 	public function getRenderedForm()
 	{
-		$html = '';
+		$html     = '';
 		$renderer = $this->container->renderer;
 
 		if ($renderer instanceof RenderInterface)
@@ -97,7 +102,7 @@ class Form extends Html implements DataViewInterface
 			$this->form->loadCSSFiles();
 			$this->form->loadJSFiles();
 
-			/** @var  DataModel  $model */
+			/** @var  DataModel $model */
 			$model = $this->getModel();
 
 			// Get the form's HTML

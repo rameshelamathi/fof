@@ -5,7 +5,11 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Hal\Render;/**
+namespace FOF30\Hal\Render;
+
+defined('_JEXEC') || die;
+
+/**
  * Interface for HAL document renderers
  *
  * @see http://stateless.co/hal_specification.html
@@ -21,5 +25,5 @@ interface RenderInterface
 	 *
 	 * @return  string
 	 */
-	public function render($options = array());
+	public function render($options = []);
 }

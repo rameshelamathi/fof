@@ -7,9 +7,13 @@
 
 namespace FOF30\View\Exception;
 
+defined('_JEXEC') || die;
+
 use Exception;
 use Joomla\CMS\Language\Text;
-use RuntimeException;/**
+use RuntimeException;
+
+/**
  * Exception thrown when the access to the requested resource is forbidden under the current execution context
  */
 class AccessForbidden extends RuntimeException

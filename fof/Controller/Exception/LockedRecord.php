@@ -5,7 +5,11 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Controller\Exception;use Exception;
+namespace FOF30\Controller\Exception;
+
+defined('_JEXEC') || die;
+
+use Exception;
 use Joomla\CMS\Language\Text;
 
 /**

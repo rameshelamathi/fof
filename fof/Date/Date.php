@@ -5,7 +5,11 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Date;use DateInterval;
+namespace FOF30\Date;
+
+defined('_JEXEC') || die;
+
+use DateInterval;
 use DateTime;
 use DateTimeZone;
 use JDatabaseDriver;

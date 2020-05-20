@@ -5,7 +5,11 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Controller;use FOF30\Container\Container;
+namespace FOF30\Controller;
+
+defined('_JEXEC') || die;
+
+use FOF30\Container\Container;
 use FOF30\Controller\Exception\ItemNotFound;
 use FOF30\Controller\Exception\LockedRecord;
 use FOF30\Controller\Exception\NotADataModel;
@@ -18,17 +22,17 @@ use Joomla\CMS\Response\JsonResponse;
 /**
  * Database-aware Controller
  *
- * @property-read  \FOF30\Input\Input  $input  The input object (magic __get returns the Input from the Container)
+ * @property-read  \FOF30\Input\Input $input  The input object (magic __get returns the Input from the Container)
  */
 class DataController extends Controller
 {
-    /**
-     * Variables that should be taken in account while working with the cache. You can set them in Controller constructor
-     * or inside onBefore* methods
-     *
-     * @var false|array
-     */
-    protected $cacheParams = false;
+	/**
+	 * Variables that should be taken in account while working with the cache. You can set them in Controller
+	 * constructor or inside onBefore* methods
+	 *
+	 * @var false|array
+	 */
+	protected $cacheParams = false;
 
 	/**
 	 * Do we have a valid XML form?
@@ -51,28 +55,28 @@ class DataController extends Controller
 	 *
 	 * @var array
 	 */
-	protected $taskPrivileges = array(
+	protected $taskPrivileges = [
 		// Special privileges
-		'*editown' => 'core.edit.own', // Privilege required to edit own record
+		'*editown'    => 'core.edit.own', // Privilege required to edit own record
 		// Standard tasks
-		'add' => 'core.create',
-		'apply' => '&getACLForApplySave', // Apply task: call the getACLForApplySave method
-		'archive' => 'core.edit.state',
-		'cancel' => 'core.edit.state',
-		'copy' => '@add', // Maps copy ACLs to the add task
-		'edit' => 'core.edit',
+		'add'         => 'core.create',
+		'apply'       => '&getACLForApplySave', // Apply task: call the getACLForApplySave method
+		'archive'     => 'core.edit.state',
+		'cancel'      => 'core.edit.state',
+		'copy'        => '@add', // Maps copy ACLs to the add task
+		'edit'        => 'core.edit',
 		'loadhistory' => '@edit', // Maps loadhistory ACLs to the edit task
-		'orderup' => 'core.edit.state',
-		'orderdown' => 'core.edit.state',
-		'publish' => 'core.edit.state',
-		'remove' => 'core.delete',
+		'orderup'     => 'core.edit.state',
+		'orderdown'   => 'core.edit.state',
+		'publish'     => 'core.edit.state',
+		'remove'      => 'core.delete',
 		'forceRemove' => 'core.delete',
-		'save' => '&getACLForApplySave', // Save task: call the getACLForApplySave method
-		'savenew' => 'core.create',
-		'saveorder' => 'core.edit.state',
-		'trash' => 'core.edit.state',
-		'unpublish' => 'core.edit.state',
-	);
+		'save'        => '&getACLForApplySave', // Save task: call the getACLForApplySave method
+		'savenew'     => 'core.create',
+		'saveorder'   => 'core.edit.state',
+		'trash'       => 'core.edit.state',
+		'unpublish'   => 'core.edit.state',
+	];
 
 	/**
 	 * An indexed array of default values for the add task. Since the add task resets the model you can't set these
@@ -81,7 +85,7 @@ class DataController extends Controller
 	 *
 	 * @var  array
 	 */
-	protected $defaultsForAdd = array();
+	protected $defaultsForAdd = [];
 
 	/**
 	 * Public constructor of the Controller class. You can pass the following variables in the $config array,
@@ -93,7 +97,7 @@ class DataController extends Controller
 	 * @param   Container  $container  The application container
 	 * @param   array      $config     The configuration array
 	 */
-	public function __construct(Container $container, array $config = array())
+	public function __construct(Container $container, array $config = [])
 	{
 		parent::__construct($container, $config);
 
@@ -114,7 +118,7 @@ class DataController extends Controller
 			if (!is_array($config['cacheableTasks']))
 			{
 				$config['cacheableTasks'] = explode(',', $config['cacheableTasks']);
-                $config['cacheableTasks'] = array_map('trim', $config['cacheableTasks']);
+				$config['cacheableTasks'] = array_map('trim', $config['cacheableTasks']);
 			}
 
 			$this->cacheableTasks = $config['cacheableTasks'];
@@ -141,7 +145,7 @@ class DataController extends Controller
 	 * If $task == 'default' we will determine the CRUD task to use based on the view name and HTTP verb in the request,
 	 * overriding the routing.
 	 *
-	 * @param   string $task The task to execute, e.g. "browse"
+	 * @param   string  $task  The task to execute, e.g. "browse"
 	 *
 	 * @return  null|bool  False on execution failure
 	 *
@@ -158,199 +162,17 @@ class DataController extends Controller
 	}
 
 	/**
-	 * Deal with JSON format: no redirects needed
-	 * @param  string $task The task being executed
-	 * @return boolean      True if everything went well
-	 */
-	protected function onAfterExecute($task)
-	{
-		// JSON shouldn't have redirects
-		if ($this->hasRedirect() && $this->input->getCmd('format', 'html') == 'json') {
-			// Error: deal with it in REST api way
-			if ($this->messageType == 'error') {
-				$response = new JsonResponse($this->message, $this->message, true);
-
-				echo $response;
-
-				$this->redirect = false;
-				$this->container->platform->setHeader('Status', 500);
-				return;
-			} else {
-				// Not an error, avoid redirect and display the record(s)
-				$this->redirect = false;
-				return $this->display();
-			}
-		}
-
-		return true;
-	}
-
-	/**
-	 * Determines the CRUD task to use based on the view name and HTTP verb used in the request.
-	 *
-	 * @return  string  The CRUD task (browse, read, edit, delete)
-	 */
-	protected function getCrudTask()
-	{
-		// By default, a plural view means 'browse' and a singular view means 'edit'
-		$view = $this->input->getCmd('view', null);
-		$task = $this->container->inflector->isPlural($view) ? 'browse' : 'edit';
-
-		// If the task is 'edit' but there's no logged in user switch to a 'read' task
-		if (($task == 'edit') && !$this->container->platform->getUser()->id)
-		{
-			$task = 'read';
-		}
-
-		// Check if there is an id passed in the request
-		$id = $this->input->get('id', null, 'int');
-
-		if ($id == 0)
-		{
-			$ids = $this->input->get('ids', array(), 'array');
-
-			if (!empty($ids))
-			{
-				$id = array_shift($ids);
-			}
-		}
-
-		// Get the request HTTP verb
-		$requestMethod = 'GET';
-
-		if (isset($_SERVER['REQUEST_METHOD']))
-		{
-			$requestMethod = strtoupper($_SERVER['REQUEST_METHOD']);
-		}
-
-		// Alter the task based on the verb
-		switch ($requestMethod)
-		{
-			// POST and PUT result in a record being saved; no ID means creating a new record
-			case 'POST':
-			case 'PUT':
-				$task = 'save';
-				break;
-
-			// DELETE results in a record being deleted, as long as there is an ID
-			case 'DELETE':
-				if ($id)
-				{
-					$task = 'remove';
-				}
-				break;
-
-			// GET results in browse, edit or add depending on the ID
-			case 'GET':
-			default:
-				// If it's an edit without an ID or ID=0, it's really an add
-				if (($task == 'edit') && ($id == 0))
-				{
-					$task = 'add';
-				}
-				break;
-		}
-
-		return $task;
-	}
-
-	/**
-	 * Checks if the current user has enough privileges for the requested ACL area. This overridden method supports
-	 * asset tracking as well.
-	 *
-	 * @param   string  $area  The ACL area, e.g. core.manage
-	 *
-	 * @return  boolean  True if the user has the ACL privilege specified
-	 */
-	protected function checkACL($area)
-	{
-		$area = $this->getACLRuleFor($area);
-
-		$result = parent::checkACL($area);
-
-		// Check if we're dealing with ids
-		$ids = null;
-
-		// First, check if there is an asset for this record
-		/** @var DataModel $model */
-		$model = $this->getModel();
-
-		$ids = null;
-
-		if (is_object($model) && ($model instanceof DataModel) && $model->isAssetsTracked())
-		{
-			$ids = $this->getIDsFromRequest($model, false);
-		}
-
-		// No IDs tracked, return parent's result
-		if (empty($ids))
-		{
-			return $result;
-		}
-
-		// Asset tracking
-		if (!is_array($ids))
-		{
-			$ids = array($ids);
-		}
-
-		$resource = $this->container->inflector->singularize($this->view);
-		$isEditState = ($area == 'core.edit.state');
-
-		foreach ($ids as $id)
-		{
-			$asset = $this->container->componentName . '.' . $resource . '.' . $id;
-
-			// Dedicated permission found, check it!
-			$platform = $this->container->platform;
-
-			if ($platform->authorise($area, $asset) )
-			{
-				return true;
-			}
-
-			// Fallback on edit.own, if not edit.state. First test if the permission is available.
-
-			$editOwn = $this->getACLRuleFor('@*editown');
-
-			if ((!$isEditState) && ($platform->authorise($editOwn, $asset)))
-			{
-				$model->load($id);
-
-				if (!$model->hasField('created_by'))
-				{
-					return false;
-				}
-
-				// Now test the owner is the user.
-				$owner_id = (int) $model->getFieldValue('created_by', null);
-
-				// If the owner matches 'me' then do the test.
-				if ($owner_id == $platform->getUser()->id)
-				{
-					return true;
-				}
-
-				return false;
-			}
-		}
-
-		// No result found? Not authorised.
-		return false;
-	}
-
-	/**
 	 * Returns a named View object
 	 *
-	 * @param   string $name     The Model name. If null we'll use the modelName
+	 * @param   string  $name    The Model name. If null we'll use the modelName
 	 *                           variable or, if it's empty, the same name as
 	 *                           the Controller
-	 * @param   array  $config   Configuration parameters to the Model. If skipped
+	 * @param   array   $config  Configuration parameters to the Model. If skipped
 	 *                           we will use $this->config
 	 *
 	 * @return  View  The instance of the Model known to this Controller
 	 */
-	public function getView($name = null, $config = array())
+	public function getView($name = null, $config = [])
 	{
 		if (!empty($name))
 		{
@@ -511,7 +333,7 @@ class DataController extends Controller
 
 		// Get temporary data from the session, set if the save failed and we're redirected back here
 		$sessionKey = $this->viewName . '.savedata';
-		$itemData = $this->container->platform->getSessionVar($sessionKey, null, $this->container->componentName);
+		$itemData   = $this->container->platform->getSessionVar($sessionKey, null, $this->container->componentName);
 		$this->container->platform->setSessionVar($sessionKey, null, $this->container->componentName);
 
 		if (!empty($itemData))
@@ -577,7 +399,7 @@ class DataController extends Controller
 				$customURL = base64_decode($customURL);
 			}
 
-			$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName.'&view=' . $this->container->inflector->pluralize($this->view) . $this->getItemidURLSuffix();
+			$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . $this->container->inflector->pluralize($this->view) . $this->getItemidURLSuffix();
 			$this->setRedirect($url, $e->getMessage(), 'error');
 
 			return;
@@ -595,7 +417,7 @@ class DataController extends Controller
 
 		// Get temporary data from the session, set if the save failed and we're redirected back here
 		$sessionKey = $this->viewName . '.savedata';
-		$itemData = $this->container->platform->getSessionVar($sessionKey, null, $this->container->componentName);
+		$itemData   = $this->container->platform->getSessionVar($sessionKey, null, $this->container->componentName);
 		$this->container->platform->setSessionVar($sessionKey, null, $this->container->componentName);
 
 		if (!empty($itemData))
@@ -635,7 +457,7 @@ class DataController extends Controller
 			return;
 		}
 
-		$id = $this->input->get('id', 0, 'int');
+		$id      = $this->input->get('id', 0, 'int');
 		$textKey = strtoupper($this->container->componentName . '_LBL_' . $this->container->inflector->singularize($this->view) . '_SAVED');
 
 		if ($customURL = $this->input->getBase64('returnurl', ''))
@@ -676,7 +498,7 @@ class DataController extends Controller
 		catch (\Exception $e)
 		{
 			$status = false;
-			$error = $e->getMessage();
+			$error  = $e->getMessage();
 		}
 
 		// Redirect
@@ -750,58 +572,58 @@ class DataController extends Controller
 		$this->setRedirect($url, Text::_($textKey));
 	}
 
-    /**
-     * Save the incoming data as a copy of the given model and then redirect to the copied object edit view
-     *
-     * @return  bool
-     */
-    public function save2copy()
-    {
-        // CSRF prevention
-        $this->csrfProtection();
+	/**
+	 * Save the incoming data as a copy of the given model and then redirect to the copied object edit view
+	 *
+	 * @return  bool
+	 */
+	public function save2copy()
+	{
+		// CSRF prevention
+		$this->csrfProtection();
 
-        $model = $this->getModel()->savestate(false);
-        $ids = $this->getIDsFromRequest($model, true);
-        $data   = $this->input->getData();
+		$model = $this->getModel()->savestate(false);
+		$ids   = $this->getIDsFromRequest($model, true);
+		$data  = $this->input->getData();
 
-        unset($data[$model->getIdFieldName()]);
+		unset($data[$model->getIdFieldName()]);
 
-        $error = null;
+		$error = null;
 
-        try
-        {
-            $status = true;
+		try
+		{
+			$status = true;
 
-            foreach ($ids as $id)
-            {
-                $model->find($id);
-                $model = $model->copy($data);
-            }
-        }
-        catch (\Exception $e)
-        {
-            $status = false;
-            $error = $e->getMessage();
-        }
+			foreach ($ids as $id)
+			{
+				$model->find($id);
+				$model = $model->copy($data);
+			}
+		}
+		catch (\Exception $e)
+		{
+			$status = false;
+			$error  = $e->getMessage();
+		}
 
-        // Redirect
-        if ($customURL = $this->input->getBase64('returnurl', ''))
-        {
-            $customURL = base64_decode($customURL);
-        }
+		// Redirect
+		if ($customURL = $this->input->getBase64('returnurl', ''))
+		{
+			$customURL = base64_decode($customURL);
+		}
 
-        $url = !empty($customURL) ? $customURL : $url = 'index.php?option=' . $this->container->componentName . '&view=' . $this->view . '&task=edit&id=' . $model->getId() . $this->getItemidURLSuffix();
+		$url = !empty($customURL) ? $customURL : $url = 'index.php?option=' . $this->container->componentName . '&view=' . $this->view . '&task=edit&id=' . $model->getId() . $this->getItemidURLSuffix();
 
-        if (!$status)
-        {
-            $this->setRedirect($url, $error, 'error');
-        }
-        else
-        {
-            $textKey = strtoupper($this->container->componentName . '_LBL_' . $this->container->inflector->singularize($this->view) . '_COPIED');
-            $this->setRedirect($url, Text::_($textKey));
-        }
-    }
+		if (!$status)
+		{
+			$this->setRedirect($url, $error, 'error');
+		}
+		else
+		{
+			$textKey = strtoupper($this->container->componentName . '_LBL_' . $this->container->inflector->singularize($this->view) . '_COPIED');
+			$this->setRedirect($url, Text::_($textKey));
+		}
+	}
 
 	/**
 	 * Cancel the edit, check in the record and return to the Browse task
@@ -1143,10 +965,10 @@ class DataController extends Controller
 		$msg    = null;
 		$model  = $this->getModel()->savestate(false);
 		$ids    = $this->getIDsFromRequest($model, false);
-		$orders = $this->input->get('order', array(), 'array');
+		$orders = $this->input->get('order', [], 'array');
 
 		// Before saving the order, I have to check I the table really supports the ordering feature
-		if(!$model->hasField('ordering'))
+		if (!$model->hasField('ordering'))
 		{
 			$msg  = sprintf('%s does not support ordering.', $model->getTableName());
 			$type = 'error';
@@ -1163,7 +985,7 @@ class DataController extends Controller
 					for ($i = 0; $i < $n; $i++)
 					{
 						$item     = $model->find($ids[$i]);
-						$neworder = (int)$orders[$i];
+						$neworder = (int) $orders[$i];
 
 						if (!($item instanceof DataModel))
 						{
@@ -1188,7 +1010,7 @@ class DataController extends Controller
 
 				$model->reorder();
 			}
-			catch(\Exception $e)
+			catch (\Exception $e)
 			{
 				$msg  = $e->getMessage();
 				$type = 'error';
@@ -1201,7 +1023,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url    = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . $this->container->inflector->pluralize($this->view) . $this->getItemidURLSuffix();
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . $this->container->inflector->pluralize($this->view) . $this->getItemidURLSuffix();
 
 		$this->setRedirect($url, $msg, $type);
 	}
@@ -1240,7 +1062,7 @@ class DataController extends Controller
 		catch (\Exception $e)
 		{
 			$status = false;
-			$error = $e->getMessage();
+			$error  = $e->getMessage();
 		}
 
 		// Redirect
@@ -1295,7 +1117,7 @@ class DataController extends Controller
 		catch (\Exception $e)
 		{
 			$status = false;
-			$error = $e->getMessage();
+			$error  = $e->getMessage();
 		}
 
 		// Redirect
@@ -1338,13 +1160,345 @@ class DataController extends Controller
 		$this->deleteOrTrash(true);
 	}
 
+	/**
+	 * Returns a named Model object. Makes sure that the Model is a database-aware model, throwing an exception
+	 * otherwise, when $name is null.
+	 *
+	 * @param   string  $name    The Model name. If null we'll use the modelName
+	 *                           variable or, if it's empty, the same name as
+	 *                           the Controller
+	 * @param   array   $config  Configuration parameters to the Model. If skipped
+	 *                           we will use $this->config
+	 *
+	 * @return  DataModel  The instance of the Model known to this Controller
+	 *
+	 * @throws  NotADataModel  When the model type doesn't match our expectations
+	 */
+	public function getModel($name = null, $config = [])
+	{
+		$model = parent::getModel($name, $config);
+
+		if (is_null($name) && !($model instanceof DataModel))
+		{
+			throw new NotADataModel('Model ' . get_class($model) . ' is not a database-aware Model');
+		}
+
+		return $model;
+	}
+
+	/**
+	 * Gets the list of IDs from the request data
+	 *
+	 * @param   DataModel  $model       The model where the record will be loaded
+	 * @param   bool       $loadRecord  When true, the record matching the *first* ID found will be loaded into $model
+	 *
+	 * @return array
+	 */
+	public function getIDsFromRequest(DataModel &$model, $loadRecord = true)
+	{
+		// Get the ID or list of IDs from the request or the configuration
+		$cid = $this->input->get('cid', [], 'array');
+		$id  = $this->input->getInt('id', 0);
+		$kid = $this->input->getInt($model->getIdFieldName(), 0);
+
+		$ids = [];
+
+		if (is_array($cid) && !empty($cid))
+		{
+			$ids = $cid;
+		}
+		else
+		{
+			if (empty($id))
+			{
+				if (!empty($kid))
+				{
+					$ids = [$kid];
+				}
+			}
+			else
+			{
+				$ids = [$id];
+			}
+		}
+
+		if ($loadRecord && !empty($ids))
+		{
+			$id = reset($ids);
+			$model->find(['id' => $id]);
+		}
+
+		return $ids;
+	}
+
+	/**
+	 * Method to load a row from version history
+	 *
+	 * @return   boolean  True if the content history is reverted, false otherwise
+	 *
+	 * @since   2.2
+	 */
+	public function loadhistory()
+	{
+		$model = $this->getModel();
+		$model->lock();
+
+		$historyId = $this->input->get('version_id', null, 'integer');
+		$alias     = $this->container->componentName . '.' . $this->view;
+		$returnUrl = 'index.php?option=' . $this->container->componentName . '&view=' . $this->container->inflector->pluralize($this->view) . $this->getItemidURLSuffix();
+
+		if ($customURL = $this->input->getBase64('returnurl', ''))
+		{
+			$customURL = base64_decode($customURL);
+		}
+
+		if (!empty($customURL))
+		{
+			$returnUrl = $customURL;
+		}
+
+		try
+		{
+			$model->loadhistory($historyId, $alias);
+		}
+		catch (\Exception $e)
+		{
+			$this->setRedirect($returnUrl, $e->getMessage(), 'error');
+			$model->unlock();
+
+			return false;
+		}
+
+		// Access check.
+		if (!$this->checkACL('@loadhistory'))
+		{
+			$this->setRedirect($returnUrl, Text::_('JLIB_APPLICATION_ERROR_EDIT_NOT_PERMITTED'), 'error');
+			$model->unlock();
+
+			return false;
+		}
+
+		$model->store();
+		$this->setRedirect($returnUrl, Text::sprintf('JLIB_APPLICATION_SUCCESS_LOAD_HISTORY', $model->getState('save_date'), $model->getState('version_note')));
+
+		return true;
+	}
+
+	/**
+	 * Gets a URL suffix with the Itemid parameter. If it's not the front-end of the site, or if
+	 * there is no Itemid set it returns an empty string.
+	 *
+	 * @return  string  The &Itemid=123 URL suffix, or an empty string if Itemid is not applicable
+	 */
+	public function getItemidURLSuffix()
+	{
+		if ($this->container->platform->isFrontend() && ($this->input->getCmd('Itemid', 0) != 0))
+		{
+			return '&Itemid=' . $this->input->getInt('Itemid', 0);
+		}
+		else
+		{
+			return '';
+		}
+	}
+
+	/**
+	 * Deal with JSON format: no redirects needed
+	 *
+	 * @param   string  $task  The task being executed
+	 *
+	 * @return boolean      True if everything went well
+	 */
+	protected function onAfterExecute($task)
+	{
+		// JSON shouldn't have redirects
+		if ($this->hasRedirect() && $this->input->getCmd('format', 'html') == 'json')
+		{
+			// Error: deal with it in REST api way
+			if ($this->messageType == 'error')
+			{
+				$response = new JsonResponse($this->message, $this->message, true);
+
+				echo $response;
+
+				$this->redirect = false;
+				$this->container->platform->setHeader('Status', 500);
+
+				return;
+			}
+			else
+			{
+				// Not an error, avoid redirect and display the record(s)
+				$this->redirect = false;
+
+				return $this->display();
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Determines the CRUD task to use based on the view name and HTTP verb used in the request.
+	 *
+	 * @return  string  The CRUD task (browse, read, edit, delete)
+	 */
+	protected function getCrudTask()
+	{
+		// By default, a plural view means 'browse' and a singular view means 'edit'
+		$view = $this->input->getCmd('view', null);
+		$task = $this->container->inflector->isPlural($view) ? 'browse' : 'edit';
+
+		// If the task is 'edit' but there's no logged in user switch to a 'read' task
+		if (($task == 'edit') && !$this->container->platform->getUser()->id)
+		{
+			$task = 'read';
+		}
+
+		// Check if there is an id passed in the request
+		$id = $this->input->get('id', null, 'int');
+
+		if ($id == 0)
+		{
+			$ids = $this->input->get('ids', [], 'array');
+
+			if (!empty($ids))
+			{
+				$id = array_shift($ids);
+			}
+		}
+
+		// Get the request HTTP verb
+		$requestMethod = 'GET';
+
+		if (isset($_SERVER['REQUEST_METHOD']))
+		{
+			$requestMethod = strtoupper($_SERVER['REQUEST_METHOD']);
+		}
+
+		// Alter the task based on the verb
+		switch ($requestMethod)
+		{
+			// POST and PUT result in a record being saved; no ID means creating a new record
+			case 'POST':
+			case 'PUT':
+				$task = 'save';
+				break;
+
+			// DELETE results in a record being deleted, as long as there is an ID
+			case 'DELETE':
+				if ($id)
+				{
+					$task = 'remove';
+				}
+				break;
+
+			// GET results in browse, edit or add depending on the ID
+			case 'GET':
+			default:
+				// If it's an edit without an ID or ID=0, it's really an add
+				if (($task == 'edit') && ($id == 0))
+				{
+					$task = 'add';
+				}
+				break;
+		}
+
+		return $task;
+	}
+
+	/**
+	 * Checks if the current user has enough privileges for the requested ACL area. This overridden method supports
+	 * asset tracking as well.
+	 *
+	 * @param   string  $area  The ACL area, e.g. core.manage
+	 *
+	 * @return  boolean  True if the user has the ACL privilege specified
+	 */
+	protected function checkACL($area)
+	{
+		$area = $this->getACLRuleFor($area);
+
+		$result = parent::checkACL($area);
+
+		// Check if we're dealing with ids
+		$ids = null;
+
+		// First, check if there is an asset for this record
+		/** @var DataModel $model */
+		$model = $this->getModel();
+
+		$ids = null;
+
+		if (is_object($model) && ($model instanceof DataModel) && $model->isAssetsTracked())
+		{
+			$ids = $this->getIDsFromRequest($model, false);
+		}
+
+		// No IDs tracked, return parent's result
+		if (empty($ids))
+		{
+			return $result;
+		}
+
+		// Asset tracking
+		if (!is_array($ids))
+		{
+			$ids = [$ids];
+		}
+
+		$resource    = $this->container->inflector->singularize($this->view);
+		$isEditState = ($area == 'core.edit.state');
+
+		foreach ($ids as $id)
+		{
+			$asset = $this->container->componentName . '.' . $resource . '.' . $id;
+
+			// Dedicated permission found, check it!
+			$platform = $this->container->platform;
+
+			if ($platform->authorise($area, $asset))
+			{
+				return true;
+			}
+
+			// Fallback on edit.own, if not edit.state. First test if the permission is available.
+
+			$editOwn = $this->getACLRuleFor('@*editown');
+
+			if ((!$isEditState) && ($platform->authorise($editOwn, $asset)))
+			{
+				$model->load($id);
+
+				if (!$model->hasField('created_by'))
+				{
+					return false;
+				}
+
+				// Now test the owner is the user.
+				$owner_id = (int) $model->getFieldValue('created_by', null);
+
+				// If the owner matches 'me' then do the test.
+				if ($owner_id == $platform->getUser()->id)
+				{
+					return true;
+				}
+
+				return false;
+			}
+		}
+
+		// No result found? Not authorised.
+		return false;
+	}
+
 	protected function deleteOrTrash($forceDelete = false)
 	{
 		// CSRF prevention
 		$this->csrfProtection();
 
 		$model = $this->getModel()->savestate(false);
-		$ids = $this->getIDsFromRequest($model, false);
+		$ids   = $this->getIDsFromRequest($model, false);
 		$error = null;
 
 		try
@@ -1375,7 +1529,7 @@ class DataController extends Controller
 		catch (\Exception $e)
 		{
 			$status = false;
-			$error = $e->getMessage();
+			$error  = $e->getMessage();
 		}
 
 		// Redirect
@@ -1431,7 +1585,7 @@ class DataController extends Controller
 				}
 
 				$eventName = 'onAfterApplySaveError';
-				$result = $this->triggerEvent($eventName, array(&$data, $id, $e));
+				$result    = $this->triggerEvent($eventName, [&$data, $id, $e]);
 
 				$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . $this->container->inflector->pluralize($this->view) . $this->getItemidURLSuffix();
 				$this->setRedirect($url, $e->getMessage(), 'error');
@@ -1452,12 +1606,12 @@ class DataController extends Controller
 
 		// Save the data
 		$status = true;
-		$error = null;
+		$error  = null;
 
 		try
 		{
 			$eventName = 'onBeforeApplySave';
-			$result = $this->triggerEvent($eventName, array(&$data));
+			$result    = $this->triggerEvent($eventName, [&$data]);
 
 			if ($id != 0)
 			{
@@ -1469,17 +1623,17 @@ class DataController extends Controller
 			$model->save($data);
 
 			$eventName = 'onAfterApplySave';
-			$result = $this->triggerEvent($eventName, array(&$data, $model->getId()));
+			$result    = $this->triggerEvent($eventName, [&$data, $model->getId()]);
 
 			$this->input->set('id', $model->getId());
 		}
 		catch (\Exception $e)
 		{
 			$status = false;
-			$error = $e->getMessage();
+			$error  = $e->getMessage();
 
 			$eventName = 'onAfterApplySaveError';
-			$result = $this->triggerEvent($eventName, array(&$data, $model->getId(), $e));
+			$result    = $this->triggerEvent($eventName, [&$data, $model->getId(), $e]);
 		}
 
 		if (!$status)
@@ -1523,148 +1677,6 @@ class DataController extends Controller
 	}
 
 	/**
-	 * Returns a named Model object. Makes sure that the Model is a database-aware model, throwing an exception
-	 * otherwise, when $name is null.
-	 *
-	 * @param   string $name     The Model name. If null we'll use the modelName
-	 *                           variable or, if it's empty, the same name as
-	 *                           the Controller
-	 * @param   array  $config   Configuration parameters to the Model. If skipped
-	 *                           we will use $this->config
-	 *
-	 * @return  DataModel  The instance of the Model known to this Controller
-	 *
-	 * @throws  NotADataModel  When the model type doesn't match our expectations
-	 */
-	public function getModel($name = null, $config = array())
-	{
-		$model = parent::getModel($name, $config);
-
-		if (is_null($name) && !($model instanceof DataModel))
-		{
-			throw new NotADataModel('Model ' . get_class($model) . ' is not a database-aware Model');
-		}
-
-		return $model;
-	}
-
-	/**
-	 * Gets the list of IDs from the request data
-	 *
-	 * @param DataModel $model      The model where the record will be loaded
-	 * @param bool      $loadRecord When true, the record matching the *first* ID found will be loaded into $model
-	 *
-	 * @return array
-	 */
-	public function getIDsFromRequest(DataModel &$model, $loadRecord = true)
-	{
-		// Get the ID or list of IDs from the request or the configuration
-		$cid = $this->input->get('cid', array(), 'array');
-		$id = $this->input->getInt('id', 0);
-		$kid = $this->input->getInt($model->getIdFieldName(), 0);
-
-		$ids = array();
-
-		if (is_array($cid) && !empty($cid))
-		{
-			$ids = $cid;
-		}
-		else
-		{
-			if (empty($id))
-			{
-				if(!empty($kid))
-				{
-					$ids = array($kid);
-				}
-			}
-			else
-			{
-				$ids = array($id);
-			}
-		}
-
-		if ($loadRecord && !empty($ids))
-		{
-			$id = reset($ids);
-			$model->find(array('id' => $id));
-		}
-
-		return $ids;
-	}
-
-	/**
-	 * Method to load a row from version history
-	 *
-	 * @return   boolean  True if the content history is reverted, false otherwise
-	 *
-	 * @since   2.2
-	 */
-	public function loadhistory()
-	{
-		$model = $this->getModel();
-		$model->lock();
-
-        $historyId = $this->input->get('version_id', null, 'integer');
-		$alias     = $this->container->componentName . '.' . $this->view;
-        $returnUrl = 'index.php?option=' . $this->container->componentName . '&view=' . $this->container->inflector->pluralize($this->view) . $this->getItemidURLSuffix();
-
-        if ($customURL = $this->input->getBase64('returnurl', ''))
-        {
-            $customURL = base64_decode($customURL);
-        }
-
-        if(!empty($customURL))
-        {
-            $returnUrl = $customURL;
-        }
-
-		try
-		{
-			$model->loadhistory($historyId, $alias);
-		}
-		catch (\Exception $e)
-		{
-			$this->setRedirect($returnUrl, $e->getMessage(), 'error');
-            $model->unlock();
-
-			return false;
-		}
-
-		// Access check.
-		if (!$this->checkACL('@loadhistory'))
-		{
-			$this->setRedirect($returnUrl, Text::_('JLIB_APPLICATION_ERROR_EDIT_NOT_PERMITTED'), 'error');
-			$model->unlock();
-
-			return false;
-		}
-
-		$model->store();
-		$this->setRedirect($returnUrl, Text::sprintf('JLIB_APPLICATION_SUCCESS_LOAD_HISTORY', $model->getState('save_date'), $model->getState('version_note')));
-
-		return true;
-	}
-
-	/**
-	 * Gets a URL suffix with the Itemid parameter. If it's not the front-end of the site, or if
-	 * there is no Itemid set it returns an empty string.
-	 *
-	 * @return  string  The &Itemid=123 URL suffix, or an empty string if Itemid is not applicable
-	 */
-	public function getItemidURLSuffix()
-	{
-		if ($this->container->platform->isFrontend() && ($this->input->getCmd('Itemid', 0) != 0))
-		{
-			return '&Itemid=' . $this->input->getInt('Itemid', 0);
-		}
-		else
-		{
-			return '';
-		}
-	}
-
-	/**
 	 * Gets the applicable ACL privilege for the apply and save tasks. The value returned is:
 	 * - @add if the record's ID is empty / record doesn't exist
 	 * - True if the ACL privilege of the edit task (@edit) is allowed
@@ -1695,7 +1707,7 @@ class DataController extends Controller
 		}
 
 		$user = $this->container->platform->getUser();
-		$uid = 0;
+		$uid  = 0;
 
 		if ($model->hasField('user_id'))
 		{

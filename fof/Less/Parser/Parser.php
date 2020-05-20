@@ -7,8 +7,13 @@
 
 namespace FOF30\Less\Parser;
 
+defined('_JEXEC') || die;
+
+use Exception;
 use FOF30\Less\Less;
-use Exception;/**
+use stdClass;
+
+/**
  * This class is taken verbatim from:
  *
  * lessphp v0.3.9
@@ -28,18 +33,18 @@ class Parser
 	// Used to uniquely identify blocks
 	protected static $nextBlockId = 0;
 
-	protected static $precedence = array(
-		'=<'					 => 0,
-		'>='					 => 0,
-		'='						 => 0,
-		'<'						 => 0,
-		'>'						 => 0,
-		'+'						 => 1,
-		'-'						 => 1,
-		'*'						 => 2,
-		'/'						 => 2,
-		'%'						 => 2,
-	);
+	protected static $precedence = [
+		'=<' => 0,
+		'>=' => 0,
+		'='  => 0,
+		'<'  => 0,
+		'>'  => 0,
+		'+'  => 1,
+		'-'  => 1,
+		'*'  => 2,
+		'/'  => 2,
+		'%'  => 2,
+	];
 
 	protected static $whitePattern;
 
@@ -55,12 +60,12 @@ class Parser
 	protected static $operatorString;
 
 	// These properties will supress division unless it's inside parenthases
-	protected static $supressDivisionProps = array('/border-radius$/i', '/^font$/i');
+	protected static $supressDivisionProps = ['/border-radius$/i', '/^font$/i'];
+	protected static $literalCache = [];
+	protected $blockDirectives = ["font-face", "keyframes", "page", "-moz-document"];
+	protected $lineDirectives = ["charset"];
 
-	protected $blockDirectives = array("font-face", "keyframes", "page", "-moz-document");
-
-	protected $lineDirectives = array("charset");
-
+	// Caches preg escaped literals
 	/**
 	 * if we are in parens we can be more liberal with whitespace around
 	 * operators because it must resolve to a single value and thus is less
@@ -71,9 +76,6 @@ class Parser
 	 *     property2: (10 -5); // should resolve to 5
 	 */
 	protected $inParens = false;
-
-	// Caches preg escaped literals
-	protected static $literalCache = array();
 
 	/**
 	 * Constructor
@@ -95,10 +97,12 @@ class Parser
 
 		if (!self::$operatorString)
 		{
-			self::$operatorString = '(' . implode('|', array_map(array('\\FOF30\\Less\\Less', 'preg_quote'), array_keys(self::$precedence))) . ')';
+			self::$operatorString = '(' . implode('|', array_map([
+					'\\FOF30\\Less\\Less', 'preg_quote',
+				], array_keys(self::$precedence))) . ')';
 
-			$commentSingle = Less::preg_quote(self::$commentSingle);
-			$commentMultiLeft = Less::preg_quote(self::$commentMultiLeft);
+			$commentSingle     = Less::preg_quote(self::$commentSingle);
+			$commentMultiLeft  = Less::preg_quote(self::$commentMultiLeft);
 			$commentMultiRight = Less::preg_quote(self::$commentMultiRight);
 
 			self::$commentMulti = $commentMultiLeft . '.*?' . $commentMultiRight;
@@ -116,14 +120,14 @@ class Parser
 	public function parse($buffer)
 	{
 		$this->count = 0;
-		$this->line = 1;
+		$this->line  = 1;
 
 		// Block stack
-		$this->env = null;
+		$this->env    = null;
 		$this->buffer = $this->writeComments ? $buffer : $this->removeComments($buffer);
 		$this->pushSpecialBlock("root");
 		$this->eatWhiteDefault = true;
-		$this->seenComments = array();
+		$this->seenComments    = [];
 
 		/*
 		 * trim whitespace on head
@@ -136,7 +140,9 @@ class Parser
 
 		// Parse the entire file
 		$lastCount = $this->count;
-		while (false !== $this->parseChunk());
+		while (false !== $this->parseChunk())
+		{
+		}
 
 		if ($this->count != strlen($this->buffer))
 		{
@@ -150,6 +156,90 @@ class Parser
 		}
 
 		return $this->env;
+	}
+
+	/**
+	 * Consume a list of values for a property
+	 *
+	 * @param   [type]  &$value   [description]
+	 * @param   [type]  $keyName  [description]
+	 *
+	 * @return  boolean
+	 */
+	public function propertyValue(&$value, $keyName = null)
+	{
+		$values = [];
+
+		if ($keyName !== null)
+		{
+			$this->env->currentProperty = $keyName;
+		}
+
+		$s = null;
+
+		while ($this->expressionList($v))
+		{
+			$values[] = $v;
+			$s        = $this->seek();
+
+			if (!$this->literal(','))
+			{
+				break;
+			}
+		}
+
+		if ($s)
+		{
+			$this->seek($s);
+		}
+
+		if ($keyName !== null)
+		{
+			unset($this->env->currentProperty);
+		}
+
+		if (count($values) == 0)
+		{
+			return false;
+		}
+
+		$value = Less::compressList($values, ', ');
+
+		return true;
+	}
+
+	/**
+	 * [throwError description]
+	 *
+	 * @param   string  $msg  [description]
+	 * @param   [type]  $count  [description]
+	 *
+	 * @return  void
+	 */
+	public function throwError($msg = "parse error", $count = null)
+	{
+		$count = is_null($count) ? $this->count : $count;
+
+		$line = $this->line + substr_count(substr($this->buffer, 0, $count), "\n");
+
+		if (!empty($this->sourceName))
+		{
+			$loc = "$this->sourceName on line $line";
+		}
+		else
+		{
+			$loc = "line: $line";
+		}
+
+		// TODO this depends on $this->count
+		if ($this->peek("(.*?)(\n|$)", $m, $count))
+		{
+			throw new exception("$msg: failed at `$m[1]` $loc");
+		}
+		else
+		{
+			throw new exception("$msg: $loc");
+		}
 	}
 
 	/**
@@ -203,7 +293,7 @@ class Parser
 		if ($this->keyword($key) && $this->assign()
 			&& $this->propertyValue($value, $key) && $this->end())
 		{
-			$this->append(array('assign', $key, $value), $s);
+			$this->append(['assign', $key, $value], $s);
 
 			return true;
 		}
@@ -223,8 +313,8 @@ class Parser
 				if (($this->mediaQueryList($mediaQueries) || true)
 					&& $this->literal('{'))
 				{
-					$media = $this->pushSpecialBlock("media");
-					$media->queries = is_null($mediaQueries) ? array() : $mediaQueries;
+					$media          = $this->pushSpecialBlock("media");
+					$media->queries = is_null($mediaQueries) ? [] : $mediaQueries;
 
 					return true;
 				}
@@ -240,10 +330,10 @@ class Parser
 			{
 				if ($this->isDirective($dirName, $this->blockDirectives))
 				{
-					if (($this->openString("{", $dirValue, null, array(";")) || true)
+					if (($this->openString("{", $dirValue, null, [";"]) || true)
 						&& $this->literal("{"))
 					{
-						$dir = $this->pushSpecialBlock("directive");
+						$dir       = $this->pushSpecialBlock("directive");
 						$dir->name = $dirName;
 
 						if (isset($dirValue))
@@ -258,7 +348,7 @@ class Parser
 				{
 					if ($this->propertyValue($dirValue) && $this->end())
 					{
-						$this->append(array("directive", $dirName, $dirValue));
+						$this->append(["directive", $dirName, $dirValue]);
 
 						return true;
 					}
@@ -272,7 +362,7 @@ class Parser
 		if ($this->variable($var) && $this->assign()
 			&& $this->propertyValue($value) && $this->end())
 		{
-			$this->append(array('assign', $var, $value), $s);
+			$this->append(['assign', $var, $value], $s);
 
 			return true;
 		}
@@ -293,8 +383,8 @@ class Parser
 			&& ($this->guards($guards) || true)
 			&& $this->literal('{'))
 		{
-			$block = $this->pushBlock($this->fixTags(array($tag)));
-			$block->args = $args;
+			$block           = $this->pushBlock($this->fixTags([$tag]));
+			$block->args     = $args;
 			$block->isVararg = $isVararg;
 
 			if (!empty($guards))
@@ -364,7 +454,7 @@ class Parser
 
 			if (!$hidden)
 			{
-				$this->append(array('block', $block), $s);
+				$this->append(['block', $block], $s);
 			}
 
 			// This is done here so comments aren't bundled into he block that was just closed
@@ -380,7 +470,7 @@ class Parser
 			&& $this->end())
 		{
 			$tags = $this->fixTags($tags);
-			$this->append(array('mixin', $tags, $argv, $suffix), $s);
+			$this->append(['mixin', $tags, $argv, $suffix], $s);
 
 			return true;
 		}
@@ -402,7 +492,7 @@ class Parser
 	/**
 	 * [isDirective description]
 	 *
-	 * @param   string  $dirname     [description]
+	 * @param   string  $dirname  [description]
 	 * @param   [type]  $directives  [description]
 	 *
 	 * @return  boolean
@@ -410,7 +500,7 @@ class Parser
 	protected function isDirective($dirname, $directives)
 	{
 		// TODO: cache pattern in parser
-		$pattern = implode("|", array_map(array("\\FOF30\\Less\\Less", "preg_quote"), $directives));
+		$pattern = implode("|", array_map(["\\FOF30\\Less\\Less", "preg_quote"], $directives));
 		$pattern = '/^(-[a-z-]+-)?(' . $pattern . ')$/i';
 
 		return preg_match($pattern, $dirname);
@@ -446,7 +536,7 @@ class Parser
 	 */
 	protected function expressionList(&$exps)
 	{
-		$values = array();
+		$values = [];
 
 		while ($this->expression($exp))
 		{
@@ -468,9 +558,9 @@ class Parser
 	 *
 	 * @param   string  &$out  [description]
 	 *
+	 * @return  boolean
 	 * @link http://en.wikipedia.org/wiki/Operator-precedence_parser#Pseudo-code
 	 *
-	 * @return  boolean
 	 */
 	protected function expression(&$out)
 	{
@@ -486,8 +576,10 @@ class Parser
 
 				if ($this->literal("/") && $this->value($rhs))
 				{
-					$out = array("list", "",
-								 array($out, array("keyword", "/"), $rhs));
+					$out = [
+						"list", "",
+						[$out, ["keyword", "/"], $rhs],
+					];
 				}
 				else
 				{
@@ -512,7 +604,7 @@ class Parser
 	protected function expHelper($lhs, $minP)
 	{
 		$this->inExp = true;
-		$ss = $this->seek();
+		$ss          = $this->seek();
 
 		while (true)
 		{
@@ -549,8 +641,8 @@ class Parser
 					$rhs = $this->expHelper($rhs, self::$precedence[$next[1]]);
 				}
 
-				$lhs = array('expression', $m[1], $lhs, $rhs, $whiteBefore, $whiteAfter);
-				$ss = $this->seek();
+				$lhs = ['expression', $m[1], $lhs, $rhs, $whiteBefore, $whiteAfter];
+				$ss  = $this->seek();
 
 				continue;
 			}
@@ -561,56 +653,6 @@ class Parser
 		$this->seek($ss);
 
 		return $lhs;
-	}
-
-	/**
-	 * Consume a list of values for a property
-	 *
-	 * @param   [type]  &$value   [description]
-	 * @param   [type]  $keyName  [description]
-	 *
-	 * @return  boolean
-	 */
-	public function propertyValue(&$value, $keyName = null)
-	{
-		$values = array();
-
-		if ($keyName !== null)
-		{
-			$this->env->currentProperty = $keyName;
-		}
-
-		$s = null;
-
-		while ($this->expressionList($v))
-		{
-			$values[] = $v;
-			$s = $this->seek();
-
-			if (!$this->literal(','))
-			{
-				break;
-			}
-		}
-
-		if ($s)
-		{
-			$this->seek($s);
-		}
-
-		if ($keyName !== null)
-		{
-			unset($this->env->currentProperty);
-		}
-
-		if (count($values) == 0)
-		{
-			return false;
-		}
-
-		$value = Less::compressList($values, ', ');
-
-		return true;
 	}
 
 	/**
@@ -634,7 +676,7 @@ class Parser
 
 		if ($this->literal("(") && ($this->inParens = true) && $this->expression($exp) && $this->literal(")"))
 		{
-			$out = $exp;
+			$out            = $exp;
 			$this->inParens = $inParens;
 
 			return true;
@@ -663,10 +705,10 @@ class Parser
 		if (isset($this->buffer[$this->count]) && $this->buffer[$this->count] == "-")
 		{
 			// Negation
-			if ($this->literal("-", false) &&(($this->variable($inner) && $inner = array("variable", $inner))
+			if ($this->literal("-", false) && (($this->variable($inner) && $inner = ["variable", $inner])
 					|| $this->unit($inner) || $this->parenValue($inner)))
 			{
-				$value = array("unary", "-", $inner);
+				$value = ["unary", "-", $inner];
 
 				return true;
 			}
@@ -703,7 +745,7 @@ class Parser
 
 		if ($this->keyword($word))
 		{
-			$value = array('keyword', $word);
+			$value = ['keyword', $word];
 
 			return true;
 		}
@@ -711,7 +753,7 @@ class Parser
 		// Try a variable
 		if ($this->variable($var))
 		{
-			$value = array('variable', $var);
+			$value = ['variable', $var];
 
 			return true;
 		}
@@ -719,7 +761,7 @@ class Parser
 		// Unquote string (should this work on any type?
 		if ($this->literal("~") && $this->string($str))
 		{
-			$value = array("escape", $str);
+			$value = ["escape", $str];
 
 			return true;
 		}
@@ -731,7 +773,7 @@ class Parser
 		// Css hack: \0
 		if ($this->literal('\\') && $this->match('([0-9]+)', $m))
 		{
-			$value = array('keyword', '\\' . $m[1]);
+			$value = ['keyword', '\\' . $m[1]];
 
 			return true;
 		}
@@ -767,7 +809,7 @@ class Parser
 
 		if ($this->propertyValue($value))
 		{
-			$out = array("import", $value);
+			$out = ["import", $value];
 
 			return true;
 		}
@@ -804,11 +846,11 @@ class Parser
 		$s = $this->seek();
 
 		$expressions = null;
-		$parts = array();
+		$parts       = [];
 
 		if (($this->literal("only") && ($only = true) || $this->literal("not") && ($not = true) || true) && $this->keyword($mediaType))
 		{
-			$prop = array("mediaType");
+			$prop = ["mediaType"];
 
 			if (isset($only))
 			{
@@ -820,7 +862,7 @@ class Parser
 				$prop[] = "not";
 			}
 
-			$prop[] = $mediaType;
+			$prop[]  = $mediaType;
 			$parts[] = $prop;
 		}
 		else
@@ -863,13 +905,13 @@ class Parser
 	 */
 	protected function mediaExpression(&$out)
 	{
-		$s = $this->seek();
+		$s     = $this->seek();
 		$value = null;
 
 		if ($this->literal("(") && $this->keyword($feature) && ($this->literal(":")
 				&& $this->expression($value) || true) && $this->literal(")"))
 		{
-			$out = array("mediaExp", $feature);
+			$out = ["mediaExp", $feature];
 
 			if ($value)
 			{
@@ -880,7 +922,7 @@ class Parser
 		}
 		elseif ($this->variable($variable))
 		{
-			$out = array('variable', $variable);
+			$out = ['variable', $variable];
 
 			return true;
 		}
@@ -901,11 +943,11 @@ class Parser
 	 */
 	protected function openString($end, &$out, $nestingOpen = null, $rejectStrs = null)
 	{
-		$oldWhite = $this->eatWhiteDefault;
+		$oldWhite              = $this->eatWhiteDefault;
 		$this->eatWhiteDefault = false;
 
-		$stop = array("'", '"', "@{", $end);
-		$stop = array_map(array("\\FOF30\\Less\\Less", "preg_quote"), $stop);
+		$stop = ["'", '"', "@{", $end];
+		$stop = array_map(["\\FOF30\\Less\\Less", "preg_quote"], $stop);
 
 		// $stop[] = self::$commentMulti;
 
@@ -918,7 +960,7 @@ class Parser
 
 		$nestingLevel = 0;
 
-		$content = array();
+		$content = [];
 
 		while ($this->match($patt, $m, false))
 		{
@@ -966,14 +1008,16 @@ class Parser
 				break;
 			}
 
-			$content[] = $tok;
+			$content[]   = $tok;
 			$this->count += strlen($tok);
 		}
 
 		$this->eatWhiteDefault = $oldWhite;
 
 		if (count($content) == 0)
+		{
 			return false;
+		}
 
 		// Trim the end
 		if (is_string(end($content)))
@@ -981,7 +1025,7 @@ class Parser
 			$content[count($content) - 1] = rtrim(end($content));
 		}
 
-		$out = array("string", "", $content);
+		$out = ["string", "", $content];
 
 		return true;
 	}
@@ -1010,12 +1054,12 @@ class Parser
 			return false;
 		}
 
-		$content = array();
+		$content = [];
 
 		// Look for either ending delim , escape, or string interpolation
 		$patt = '([^\n]*?)(@\{|\\\\|' . Less::preg_quote($delim) . ')';
 
-		$oldWhite = $this->eatWhiteDefault;
+		$oldWhite              = $this->eatWhiteDefault;
 		$this->eatWhiteDefault = false;
 
 		while ($this->match($patt, $m, false))
@@ -1060,7 +1104,7 @@ class Parser
 
 		if ($this->literal($delim))
 		{
-			$out = array("string", $delim, $content);
+			$out = ["string", $delim, $content];
 
 			return true;
 		}
@@ -1079,14 +1123,16 @@ class Parser
 	 */
 	protected function interpolation(&$out)
 	{
-		$oldWhite = $this->eatWhiteDefault;
+		$oldWhite              = $this->eatWhiteDefault;
 		$this->eatWhiteDefault = true;
 
 		$s = $this->seek();
 
-		if ($this->literal("@{") && $this->openString("}", $interp, null, array("'", '"', ";")) && $this->literal("}", false))
+		if ($this->literal("@{") && $this->openString("}", $interp, null, [
+				"'", '"', ";",
+			]) && $this->literal("}", false))
 		{
-			$out = array("interpolate", $interp);
+			$out                   = ["interpolate", $interp];
 			$this->eatWhiteDefault = $oldWhite;
 
 			if ($this->eatWhiteDefault)
@@ -1125,7 +1171,7 @@ class Parser
 
 		if ($this->match('([0-9]+(?:\.[0-9]*)?|\.[0-9]+)([%a-zA-Z]+)?', $m))
 		{
-			$unit = array("number", $m[1], empty($m[2]) ? "" : $m[2]);
+			$unit = ["number", $m[1], empty($m[2]) ? "" : $m[2]];
 
 			return true;
 		}
@@ -1146,11 +1192,11 @@ class Parser
 		{
 			if (strlen($m[1]) > 7)
 			{
-				$out = array("string", "", array($m[1]));
+				$out = ["string", "", [$m[1]]];
 			}
 			else
 			{
-				$out = array("raw_color", $m[1]);
+				$out = ["raw_color", $m[1]];
 			}
 
 			return true;
@@ -1176,7 +1222,7 @@ class Parser
 			return false;
 		}
 
-		$values = array();
+		$values = [];
 
 		while (true)
 		{
@@ -1227,9 +1273,11 @@ class Parser
 	{
 		$s = $this->seek();
 		if (!$this->literal('('))
+		{
 			return false;
+		}
 
-		$values = array();
+		$values = [];
 
 		$isVararg = false;
 
@@ -1243,8 +1291,8 @@ class Parser
 
 			if ($this->variable($vname))
 			{
-				$arg = array("arg", $vname);
-				$ss = $this->seek();
+				$arg = ["arg", $vname];
+				$ss  = $this->seek();
 
 				if ($this->assign() && $this->expressionList($value))
 				{
@@ -1256,7 +1304,7 @@ class Parser
 
 					if ($this->literal("..."))
 					{
-						$arg[0] = "rest";
+						$arg[0]   = "rest";
 						$isVararg = true;
 					}
 				}
@@ -1273,7 +1321,7 @@ class Parser
 
 			if ($this->value($literal))
 			{
-				$values[] = array("lit", $literal);
+				$values[] = ["lit", $literal];
 			}
 
 			if (!$this->literal($delim))
@@ -1306,7 +1354,7 @@ class Parser
 	 */
 	protected function tags(&$tags, $simple = false, $delim = ',')
 	{
-		$tags = array();
+		$tags = [];
 
 		while ($this->tag($tt, $simple))
 		{
@@ -1336,8 +1384,8 @@ class Parser
 	 */
 	protected function mixinTags(&$tags)
 	{
-		$s = $this->seek();
-		$tags = array();
+		$s    = $this->seek();
+		$tags = [];
 
 		while ($this->tag($tt, true))
 		{
@@ -1404,7 +1452,7 @@ class Parser
 
 		if ($this->literal("(") && $this->expression($exp) && $this->literal(")"))
 		{
-			$value = array('exp', $exp);
+			$value = ['exp', $exp];
 
 			return true;
 		}
@@ -1441,7 +1489,7 @@ class Parser
 		}
 
 		$hasExpression = false;
-		$parts         = array();
+		$parts         = [];
 
 		while ($this->tagBracket($first))
 		{
@@ -1479,7 +1527,7 @@ class Parser
 
 					// Don't unescape
 					$interp[2] = true;
-					$parts[] = $interp;
+					$parts[]   = $interp;
 
 					continue;
 				}
@@ -1514,7 +1562,7 @@ class Parser
 
 		if ($hasExpression)
 		{
-			$tag = array("exp", array("string", "", $parts));
+			$tag = ["exp", ["string", "", $parts]];
 		}
 		else
 		{
@@ -1543,7 +1591,7 @@ class Parser
 
 			$sPreArgs = $this->seek();
 
-			$args = array();
+			$args = [];
 
 			while (true)
 			{
@@ -1552,7 +1600,7 @@ class Parser
 				// This ugly nonsense is for ie filter properties
 				if ($this->keyword($name) && $this->literal('=') && $this->expressionList($value))
 				{
-					$args[] = array("string", "", array($name, "=", $value));
+					$args[] = ["string", "", [$name, "=", $value]];
 				}
 				else
 				{
@@ -1570,11 +1618,11 @@ class Parser
 				}
 			}
 
-			$args = array('list', ',', $args);
+			$args = ['list', ',', $args];
 
 			if ($this->literal(')'))
 			{
-				$func = array('function', $fname, $args);
+				$func = ['function', $fname, $args];
 
 				return true;
 			}
@@ -1585,7 +1633,7 @@ class Parser
 
 				if ($this->openString(")", $string) && $this->literal(")"))
 				{
-					$func = array('function', $fname, $string);
+					$func = ['function', $fname, $string];
 
 					return true;
 				}
@@ -1608,11 +1656,11 @@ class Parser
 	{
 		$s = $this->seek();
 
-		if ($this->literal($this->lessc->vPrefix, false) &&	($this->variable($sub) || $this->keyword($name)))
+		if ($this->literal($this->lessc->vPrefix, false) && ($this->variable($sub) || $this->keyword($name)))
 		{
 			if (!empty($sub))
 			{
-				$name = array('variable', $sub);
+				$name = ['variable', $sub];
 			}
 			else
 			{
@@ -1703,7 +1751,7 @@ class Parser
 			return false;
 		}
 
-		$guards = array();
+		$guards = [];
 
 		while ($this->guardGroup($g))
 		{
@@ -1731,14 +1779,14 @@ class Parser
 	 *
 	 * @param   [type]  &$guardGroup  [description]
 	 *
-	 * @todo rename to guardGroup
-	 *
 	 * @return  boolean
+	 * @todo    rename to guardGroup
+	 *
 	 */
 	protected function guardGroup(&$guardGroup)
 	{
-		$s = $this->seek();
-		$guardGroup = array();
+		$s          = $this->seek();
+		$guardGroup = [];
 
 		while ($this->guard($guard))
 		{
@@ -1761,6 +1809,8 @@ class Parser
 		return true;
 	}
 
+	/* raw parsing functions */
+
 	/**
 	 * [guard description]
 	 *
@@ -1770,7 +1820,7 @@ class Parser
 	 */
 	protected function guard(&$guard)
 	{
-		$s = $this->seek();
+		$s      = $this->seek();
 		$negate = $this->literal("not");
 
 		if ($this->literal("(") && $this->expression($exp) && $this->literal(")"))
@@ -1779,7 +1829,7 @@ class Parser
 
 			if ($negate)
 			{
-				$guard = array("negate", $guard);
+				$guard = ["negate", $guard];
 			}
 
 			return true;
@@ -1789,8 +1839,6 @@ class Parser
 
 		return false;
 	}
-
-	/* raw parsing functions */
 
 	/**
 	 * [literal description]
@@ -1838,15 +1886,15 @@ class Parser
 	 *
 	 * @param   [type]   &$out       [description]
 	 * @param   [type]   $parseItem  [description]
-	 * @param   string   $delim      [description]
-	 * @param   boolean  $flatten    [description]
+	 * @param   string   $delim    [description]
+	 * @param   boolean  $flatten  [description]
 	 *
 	 * @return  boolean
 	 */
 	protected function genericList(&$out, $parseItem, $delim = "", $flatten = true)
 	{
-		$s = $this->seek();
-		$items = array();
+		$s     = $this->seek();
+		$items = [];
 
 		while ($this->$parseItem($value))
 		{
@@ -1874,7 +1922,7 @@ class Parser
 		}
 		else
 		{
-			$out = array("list", $delim, $items);
+			$out = ["list", $delim, $items];
 		}
 
 		return true;
@@ -1967,12 +2015,12 @@ class Parser
 			{
 				if (isset($m[1]) && empty($this->commentsSeen[$this->count]))
 				{
-					$this->append(array("comment", $m[1]));
+					$this->append(["comment", $m[1]]);
 					$this->commentsSeen[$this->count] = true;
 				}
 
 				$this->count += strlen($m[0]);
-				$gotWhite = true;
+				$gotWhite    = true;
 			}
 
 			return $gotWhite;
@@ -2001,11 +2049,13 @@ class Parser
 			$from = $this->count;
 		}
 
-		$r = '/' . $regex . '/Ais';
+		$r      = '/' . $regex . '/Ais';
 		$result = preg_match($r, $this->buffer, $out, null, $from);
 
 		return $result;
 	}
+
+	/* misc functions */
 
 	/**
 	 * Seek to a spot in the buffer or return where we are on no argument
@@ -2028,64 +2078,28 @@ class Parser
 		return true;
 	}
 
-	/* misc functions */
-
-	/**
-	 * [throwError description]
-	 *
-	 * @param   string  $msg    [description]
-	 * @param   [type]  $count  [description]
-	 *
-	 * @return  void
-	 */
-	public function throwError($msg = "parse error", $count = null)
-	{
-		$count = is_null($count) ? $this->count : $count;
-
-		$line = $this->line + substr_count(substr($this->buffer, 0, $count), "\n");
-
-		if (!empty($this->sourceName))
-		{
-			$loc = "$this->sourceName on line $line";
-		}
-		else
-		{
-			$loc = "line: $line";
-		}
-
-		// TODO this depends on $this->count
-		if ($this->peek("(.*?)(\n|$)", $m, $count))
-		{
-			throw new exception("$msg: failed at `$m[1]` $loc");
-		}
-		else
-		{
-			throw new exception("$msg: $loc");
-		}
-	}
-
 	/**
 	 * [pushBlock description]
 	 *
 	 * @param   [type]  $selectors  [description]
 	 * @param   [type]  $type       [description]
 	 *
-	 * @return  \stdClass
+	 * @return  stdClass
 	 */
 	protected function pushBlock($selectors = null, $type = null)
 	{
-		$b = new \stdClass;
+		$b         = new stdClass;
 		$b->parent = $this->env;
 
 		$b->type = $type;
-		$b->id = self::$nextBlockId++;
+		$b->id   = self::$nextBlockId++;
 
 		// TODO: kill me from here
 		$b->isVararg = false;
-		$b->tags = $selectors;
+		$b->tags     = $selectors;
 
-		$b->props = array();
-		$b->children = array();
+		$b->props    = [];
+		$b->children = [];
 
 		$this->env = $b;
 
@@ -2097,7 +2111,7 @@ class Parser
 	 *
 	 * @param   [type]  $type  [description]
 	 *
-	 * @return  \stdClass
+	 * @return  stdClass
 	 */
 	protected function pushSpecialBlock($type)
 	{
@@ -2129,7 +2143,7 @@ class Parser
 	 */
 	protected function pop()
 	{
-		$old = $this->env;
+		$old       = $this->env;
 		$this->env = $this->env->parent;
 
 		return $old;
@@ -2140,15 +2154,15 @@ class Parser
 	 *
 	 * @param   [type]  $text  [description]
 	 *
-	 * @todo: make it work for all functions, not just url
-	 *
 	 * @return  [type]         [description]
+	 * @todo    : make it work for all functions, not just url
+	 *
 	 */
 	protected function removeComments($text)
 	{
-		$look = array(
-			'url(', '//', '/*', '"', "'"
-		);
+		$look = [
+			'url(', '//', '/*', '"', "'",
+		];
 
 		$out = '';
 		$min = null;
@@ -2164,16 +2178,18 @@ class Parser
 				{
 					if (!isset($min) || $pos < $min[1])
 					{
-						$min = array($token, $pos);
+						$min = [$token, $pos];
 					}
 				}
 			}
 
 			if (is_null($min))
+			{
 				break;
+			}
 
-			$count = $min[1];
-			$skip = 0;
+			$count    = $min[1];
+			$skip     = 0;
 			$newlines = 0;
 
 			switch ($min[0])
@@ -2212,7 +2228,7 @@ class Parser
 
 					if (preg_match('/\/\*.*?\*\//s', $text, $m, 0, $count))
 					{
-						$skip = strlen($m[0]);
+						$skip     = strlen($m[0]);
 						$newlines = substr_count($m[0], "\n");
 					}
 
@@ -2224,7 +2240,7 @@ class Parser
 				$count += strlen($min[0]);
 			}
 
-			$out .= substr($text, 0, $count) . str_repeat("\n", $newlines);
+			$out  .= substr($text, 0, $count) . str_repeat("\n", $newlines);
 			$text = substr($text, $count + $skip);
 
 			$min = null;

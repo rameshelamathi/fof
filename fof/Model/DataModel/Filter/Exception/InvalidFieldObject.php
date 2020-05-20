@@ -7,9 +7,13 @@
 
 namespace FOF30\Model\DataModel\Filter\Exception;
 
+defined('_JEXEC') || die;
+
 use Exception;
 use InvalidArgumentException;
-use Joomla\CMS\Language\Text;class InvalidFieldObject extends InvalidArgumentException
+use Joomla\CMS\Language\Text;
+
+class InvalidFieldObject extends InvalidArgumentException
 {
 	public function __construct($message = "", $code = 500, Exception $previous = null)
 	{

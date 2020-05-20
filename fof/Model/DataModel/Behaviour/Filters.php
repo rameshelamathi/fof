@@ -7,10 +7,14 @@
 
 namespace FOF30\Model\DataModel\Behaviour;
 
+defined('_JEXEC') || die;
+
 use FOF30\Event\Observer;
 use FOF30\Model\DataModel;
 use JDatabaseQuery;
-use Joomla\Registry\Registry;class Filters extends Observer
+use Joomla\Registry\Registry;
+
+class Filters extends Observer
 {
 	/**
 	 * This event runs after we have built the query used to fetch a record

@@ -7,17 +7,21 @@
 
 namespace FOF30\Model\DataModel\Behaviour;
 
+defined('_JEXEC') || die;
+
 use FOF30\Event\Observer;
 use FOF30\Model\DataModel;
 use JDatabaseQuery;
-use Joomla\Registry\Registry;class RelationFilters extends Observer
+use Joomla\Registry\Registry;
+
+class RelationFilters extends Observer
 {
 	/**
 	 * This event runs after we have built the query used to fetch a record list in a model. It is used to apply
 	 * automatic query filters based on model relations.
 	 *
 	 * @param   DataModel  &          $model  The model which calls this event
-	 * @param   JDatabaseQuery      &$query  The query we are manipulating
+	 * @param   JDatabaseQuery      & $query  The query we are manipulating
 	 *
 	 * @return  void
 	 */

@@ -5,7 +5,11 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Model\Mixin;use Joomla\CMS\Language\Text;
+namespace FOF30\Model\Mixin;
+
+defined('_JEXEC') || die;
+
+use Joomla\CMS\Language\Text;
 use RuntimeException;
 
 /**

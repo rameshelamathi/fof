@@ -7,9 +7,12 @@
 
 namespace FOF30\Encrypt\AesAdapter;
 
-// Protect from unauthorized access
+defined('_JEXEC') || die;
+
 use FOF30\Encrypt\Randval;
-use FOF30\Utils\Phpfunc;class OpenSSL extends AbstractAdapter implements AdapterInterface
+use FOF30\Utils\Phpfunc;
+
+class OpenSSL extends AbstractAdapter implements AdapterInterface
 {
 	/**
 	 * The OpenSSL options for encryption / decryption
@@ -54,8 +57,10 @@ use FOF30\Utils\Phpfunc;class OpenSSL extends AbstractAdapter implements Adapter
 		{
 			$availableAlgorithms = openssl_get_cipher_methods();
 
-			foreach (array('aes-256-cbc', 'aes-256-ecb', 'aes-192-cbc',
-				         'aes-192-ecb', 'aes-128-cbc', 'aes-128-ecb') as $algo)
+			foreach ([
+				         'aes-256-cbc', 'aes-256-ecb', 'aes-192-cbc',
+				         'aes-192-ecb', 'aes-128-cbc', 'aes-128-ecb',
+			         ] as $algo)
 			{
 				if (in_array($algo, $availableAlgorithms))
 				{
@@ -68,12 +73,12 @@ use FOF30\Utils\Phpfunc;class OpenSSL extends AbstractAdapter implements Adapter
 		$strength = (int) $strength;
 		$mode     = strtolower($mode);
 
-		if (!in_array($strength, array(128, 192, 256)))
+		if (!in_array($strength, [128, 192, 256]))
 		{
 			$strength = 256;
 		}
 
-		if (!in_array($mode, array('cbc', 'ebc')))
+		if (!in_array($mode, ['cbc', 'ebc']))
 		{
 			$mode = 'cbc';
 		}
@@ -96,11 +101,11 @@ use FOF30\Utils\Phpfunc;class OpenSSL extends AbstractAdapter implements Adapter
 
 		if (empty($iv))
 		{
-			$randVal   = new Randval();
-			$iv        = $randVal->generate($iv_size);
+			$randVal = new Randval();
+			$iv      = $randVal->generate($iv_size);
 		}
 
-		$plainText .= $this->getZeroPadding($plainText, $iv_size);
+		$plainText  .= $this->getZeroPadding($plainText, $iv_size);
 		$cipherText = openssl_encrypt($plainText, $this->method, $key, $this->openSSLOptions, $iv);
 		$cipherText = $iv . $cipherText;
 

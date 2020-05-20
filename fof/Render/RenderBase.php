@@ -7,13 +7,17 @@
 
 namespace FOF30\Render;
 
+defined('_JEXEC') || die;
+
 use FOF30\Container\Container;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use Joomla\Registry\Registry;
 use LogicException;
 use SimpleXMLElement;
-use stdClass;/**
+use stdClass;
+
+/**
  * Base class for other render classes
  */
 abstract class RenderBase implements RenderInterface
@@ -218,7 +222,7 @@ abstract class RenderBase implements RenderInterface
 	/**
 	 * Renders a raw fieldset of a F0FForm and returns the corresponding HTML
 	 *
-	 * @param   stdClass &$fieldset    The fieldset to render
+	 * @param   stdClass & $fieldset    The fieldset to render
 	 * @param   Form      &$form        The form to render
 	 * @param   DataModel  $model       The model providing our data
 	 * @param   string     $formType    The form type e.g. 'edit' or 'read'

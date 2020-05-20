@@ -7,9 +7,14 @@
 
 namespace FOF30\TransparentAuthentication;
 
+defined('_JEXEC') || die;
+
+use Exception;
 use FOF30\Container\Container;
 use FOF30\Encrypt\Aes;
-use FOF30\Encrypt\Totp;/**
+use FOF30\Encrypt\Totp;
+
+/**
  * Retrieves the values for transparent authentication from the request
  */
 class TransparentAuthentication
@@ -34,30 +39,22 @@ class TransparentAuthentication
 
 	/** @var string The TOTP secret key */
 	protected $totpKey = '';
-
-	/** @var string Internal variable */
-	private $cryptoKey = '';
-
 	/** @var array Enabled authentication methods, see the class constants */
-	protected $authenticationMethods = array(3, 4, 5);
-
+	protected $authenticationMethods = [3, 4, 5];
 	/** @var string The username required for the Auth_HTTPBasicAuth_TOTP method */
 	protected $basicAuthUsername = '_fof_auth';
-
 	/** @var string The query parameter for the Auth_QueryString_Plaintext method */
 	protected $queryParam = '_fofauthentication';
-
 	/** @var string The query parameter for the username in the Auth_SplitQueryString_Plaintext method */
 	protected $queryParamUsername = '_fofusername';
-
 	/** @var string The query parameter for the password in the Auth_SplitQueryString_Plaintext method */
 	protected $queryParamPassword = '_fofpassword';
-
 	/** @var  bool  Should I log out the user after the dispatcher exits? */
 	protected $logoutOnExit = true;
-
 	/** @var Container The container we are attached to */
 	protected $container = null;
+	/** @var string Internal variable */
+	private $cryptoKey = '';
 
 	/**
 	 * Public constructor.
@@ -66,18 +63,18 @@ class TransparentAuthentication
 	 * class): timeStep, totpKey, cryptoKey, basicAuthUsername, queryParam, queryParamUsername, queryParamPassword,
 	 * logoutOnExit. See the property descriptions for more information.
 	 *
-	 * @param \FOF30\Container\Container $container
-	 * @param array                      $config
+	 * @param   Container  $container
+	 * @param   array      $config
 	 */
-	function __construct(Container $container, array $config = array())
+	function __construct(Container $container, array $config = [])
 	{
 		$this->container = $container;
 
 		// Initialise from the $config array
-		$knownKeys = array(
-			'timeStep', 'totpKey', 'cryptoKey', 'basicAuthUsername', 'queryParam',  'queryParamUsername',
-			'queryParamPassword', 'logoutOnExit'
-		);
+		$knownKeys = [
+			'timeStep', 'totpKey', 'cryptoKey', 'basicAuthUsername', 'queryParam', 'queryParamUsername',
+			'queryParamPassword', 'logoutOnExit',
+		];
 
 		foreach ($knownKeys as $key)
 		{
@@ -94,18 +91,6 @@ class TransparentAuthentication
 	}
 
 	/**
-	 * Set the enabled authentication methods
-	 *
-	 * @param   array  $authenticationMethods
-	 *
-	 * @codeCoverageIgnore
-	 */
-	public function setAuthenticationMethods($authenticationMethods)
-	{
-		$this->authenticationMethods = $authenticationMethods;
-	}
-
-	/**
 	 * Get the enabled authentication methods
 	 *
 	 * @return   array
@@ -115,6 +100,18 @@ class TransparentAuthentication
 	public function getAuthenticationMethods()
 	{
 		return $this->authenticationMethods;
+	}
+
+	/**
+	 * Set the enabled authentication methods
+	 *
+	 * @param   array  $authenticationMethods
+	 *
+	 * @codeCoverageIgnore
+	 */
+	public function setAuthenticationMethods($authenticationMethods)
+	{
+		$this->authenticationMethods = $authenticationMethods;
 	}
 
 	/**
@@ -145,18 +142,6 @@ class TransparentAuthentication
 	}
 
 	/**
-	 * Set the required username for the HTTP Basic Authentication with TOTP method
-	 *
-	 * @param string $basicAuthUsername
-	 *
-	 * @codeCoverageIgnore
-	 */
-	public function setBasicAuthUsername($basicAuthUsername)
-	{
-		$this->basicAuthUsername = $basicAuthUsername;
-	}
-
-	/**
 	 * Get the required username for the HTTP Basic Authentication with TOTP method
 	 *
 	 * @return string
@@ -169,15 +154,15 @@ class TransparentAuthentication
 	}
 
 	/**
-	 * Set the query parameter for the Auth_QueryString_TOTP method
+	 * Set the required username for the HTTP Basic Authentication with TOTP method
 	 *
-	 * @param string $queryParam
+	 * @param   string  $basicAuthUsername
 	 *
 	 * @codeCoverageIgnore
 	 */
-	public function setQueryParam($queryParam)
+	public function setBasicAuthUsername($basicAuthUsername)
 	{
-		$this->queryParam = $queryParam;
+		$this->basicAuthUsername = $basicAuthUsername;
 	}
 
 	/**
@@ -193,15 +178,15 @@ class TransparentAuthentication
 	}
 
 	/**
-	 * Set the query string for the password in the Auth_SplitQueryString_Plaintext method
+	 * Set the query parameter for the Auth_QueryString_TOTP method
 	 *
-	 * @param string $queryParamPassword
+	 * @param   string  $queryParam
 	 *
 	 * @codeCoverageIgnore
 	 */
-	public function setQueryParamPassword($queryParamPassword)
+	public function setQueryParam($queryParam)
 	{
-		$this->queryParamPassword = $queryParamPassword;
+		$this->queryParam = $queryParam;
 	}
 
 	/**
@@ -217,15 +202,15 @@ class TransparentAuthentication
 	}
 
 	/**
-	 * Set the query string for the username in the Auth_SplitQueryString_Plaintext method
+	 * Set the query string for the password in the Auth_SplitQueryString_Plaintext method
 	 *
-	 * @param string $queryParamUsername
+	 * @param   string  $queryParamPassword
 	 *
 	 * @codeCoverageIgnore
 	 */
-	public function setQueryParamUsername($queryParamUsername)
+	public function setQueryParamPassword($queryParamPassword)
 	{
-		$this->queryParamUsername = $queryParamUsername;
+		$this->queryParamPassword = $queryParamPassword;
 	}
 
 	/**
@@ -241,15 +226,15 @@ class TransparentAuthentication
 	}
 
 	/**
-	 * Set the time step in seconds for the TOTP in the Auth_HTTPBasicAuth_TOTP method
+	 * Set the query string for the username in the Auth_SplitQueryString_Plaintext method
 	 *
-	 * @param int $timeStep
+	 * @param   string  $queryParamUsername
 	 *
 	 * @codeCoverageIgnore
 	 */
-	public function setTimeStep($timeStep)
+	public function setQueryParamUsername($queryParamUsername)
 	{
-		$this->timeStep = (int)$timeStep;
+		$this->queryParamUsername = $queryParamUsername;
 	}
 
 	/**
@@ -265,15 +250,15 @@ class TransparentAuthentication
 	}
 
 	/**
-	 * Set the secret key for the TOTP in the Auth_HTTPBasicAuth_TOTP method
+	 * Set the time step in seconds for the TOTP in the Auth_HTTPBasicAuth_TOTP method
 	 *
-	 * @param string $totpKey
+	 * @param   int  $timeStep
 	 *
 	 * @codeCoverageIgnore
 	 */
-	public function setTotpKey($totpKey)
+	public function setTimeStep($timeStep)
 	{
-		$this->totpKey = $totpKey;
+		$this->timeStep = (int) $timeStep;
 	}
 
 	/**
@@ -286,6 +271,18 @@ class TransparentAuthentication
 	public function getTotpKey()
 	{
 		return $this->totpKey;
+	}
+
+	/**
+	 * Set the secret key for the TOTP in the Auth_HTTPBasicAuth_TOTP method
+	 *
+	 * @param   string  $totpKey
+	 *
+	 * @codeCoverageIgnore
+	 */
+	public function setTotpKey($totpKey)
+	{
+		$this->totpKey = $totpKey;
 	}
 
 	/**
@@ -303,7 +300,7 @@ class TransparentAuthentication
 	/**
 	 * Set the log out on exit flag (for testing)
 	 *
-	 * @param boolean $logoutOnExit
+	 * @param   boolean  $logoutOnExit
 	 *
 	 * @codeCoverageIgnore
 	 */
@@ -416,10 +413,10 @@ class TransparentAuthentication
 						continue 2;
 					}
 
-					return array(
-						'username'	 => $_SERVER['PHP_AUTH_USER'],
-						'password'	 => $_SERVER['PHP_AUTH_PW']
-					);
+					return [
+						'username' => $_SERVER['PHP_AUTH_USER'],
+						'password' => $_SERVER['PHP_AUTH_PW'],
+					];
 
 					break;
 
@@ -476,80 +473,16 @@ class TransparentAuthentication
 						continue 2;
 					}
 
-					return array(
-						'username'	=> $username,
-						'password'	=> $password
-					);
+					return [
+						'username' => $username,
+						'password' => $password,
+					];
 
 					break;
 			}
 		}
 
 		return $return;
-	}
-
-	/**
-	 * Decrypts a transparent authentication message using a TOTP
-	 *
-	 * @param   string  $encryptedData  The encrypted data
-	 *
-	 * @return  array  The decrypted data
-	 */
-	private function decryptWithTOTP($encryptedData)
-	{
-		if (empty($this->totpKey))
-		{
-			$this->cryptoKey = null;
-
-			return null;
-		}
-
-		$totp = new Totp($this->timeStep);
-		$period = $totp->getPeriod();
-		$period--;
-
-		for ($i = 0; $i <= 2; $i++)
-		{
-			$time = ($period + $i) * $this->timeStep;
-			$otp = $totp->getCode($this->totpKey, $time);
-			$this->cryptoKey = hash('sha256', $this->totpKey . $otp);
-
-			$aes = new Aes($this->cryptoKey);
-			try
-			{
-				$ret = $aes->decryptString($encryptedData);
-			}
-			catch (\Exception $e)
-			{
-				continue;
-			}
-			$ret = rtrim($ret, "\000");
-
-			$ret = json_decode($ret, true);
-
-			if (!is_array($ret))
-			{
-				continue;
-			}
-
-			if (!array_key_exists('username', $ret))
-			{
-				continue;
-			}
-
-			if (!array_key_exists('password', $ret))
-			{
-				continue;
-			}
-
-			// Successful decryption!
-			return $ret;
-		}
-
-		// Obviously if we're here we could not decrypt anything. Bail out.
-		$this->cryptoKey = null;
-
-		return null;
 	}
 
 	/**
@@ -564,7 +497,7 @@ class TransparentAuthentication
 	{
 		if (empty($methods))
 		{
-			return array();
+			return [];
 		}
 
 		if (!is_array($methods))
@@ -572,7 +505,7 @@ class TransparentAuthentication
 			$methods = explode(',', $methods);
 		}
 
-		$return = array();
+		$return = [];
 
 		foreach ($methods as $method)
 		{
@@ -613,5 +546,69 @@ class TransparentAuthentication
 		}
 
 		return $return;
+	}
+
+	/**
+	 * Decrypts a transparent authentication message using a TOTP
+	 *
+	 * @param   string  $encryptedData  The encrypted data
+	 *
+	 * @return  array  The decrypted data
+	 */
+	private function decryptWithTOTP($encryptedData)
+	{
+		if (empty($this->totpKey))
+		{
+			$this->cryptoKey = null;
+
+			return null;
+		}
+
+		$totp   = new Totp($this->timeStep);
+		$period = $totp->getPeriod();
+		$period--;
+
+		for ($i = 0; $i <= 2; $i++)
+		{
+			$time            = ($period + $i) * $this->timeStep;
+			$otp             = $totp->getCode($this->totpKey, $time);
+			$this->cryptoKey = hash('sha256', $this->totpKey . $otp);
+
+			$aes = new Aes($this->cryptoKey);
+			try
+			{
+				$ret = $aes->decryptString($encryptedData);
+			}
+			catch (Exception $e)
+			{
+				continue;
+			}
+			$ret = rtrim($ret, "\000");
+
+			$ret = json_decode($ret, true);
+
+			if (!is_array($ret))
+			{
+				continue;
+			}
+
+			if (!array_key_exists('username', $ret))
+			{
+				continue;
+			}
+
+			if (!array_key_exists('password', $ret))
+			{
+				continue;
+			}
+
+			// Successful decryption!
+			return $ret;
+		}
+
+		// Obviously if we're here we could not decrypt anything. Bail out.
+		$this->cryptoKey = null;
+
+		return null;
 	}
 }

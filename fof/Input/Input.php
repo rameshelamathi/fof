@@ -7,11 +7,15 @@
 
 namespace FOF30\Input;
 
+defined('_JEXEC') || die;
+
 use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filter\InputFilter;
 use Joomla\CMS\Input\Input as JInput;
-use ReflectionObject;class Input extends JInput
+use ReflectionObject;
+
+class Input extends JInput
 {
 	/**
 	 * Public constructor. Overridden to allow specifying the global input array

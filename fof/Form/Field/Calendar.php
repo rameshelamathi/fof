@@ -7,6 +7,8 @@
 
 namespace FOF30\Form\Field;
 
+defined('_JEXEC') || die;
+
 use DateTimeZone;
 use FOF30\Date\Date;
 use FOF30\Date\DateDecorator;
@@ -17,7 +19,9 @@ use JFormFieldCalendar;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\FormHelper;
 use Joomla\CMS\HTML\HTMLHelper;
-use SimpleXMLElement;FormHelper::loadFieldClass('calendar');
+use SimpleXMLElement;
+
+FormHelper::loadFieldClass('calendar');
 
 /**
  * Form Field class for the FOF framework

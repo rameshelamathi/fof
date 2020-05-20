@@ -7,8 +7,12 @@
 
 namespace FOF30\Model\DataModel\Exception;
 
+defined('_JEXEC') || die;
+
 use Exception;
-use Joomla\CMS\Language\Text;class CannotLockNotLoadedRecord extends BaseException
+use Joomla\CMS\Language\Text;
+
+class CannotLockNotLoadedRecord extends BaseException
 {
 	public function __construct($message = '', $code = 500, Exception $previous = null)
 	{

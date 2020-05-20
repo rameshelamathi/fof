@@ -7,9 +7,13 @@
 
 namespace FOF30\View\Exception;
 
+defined('_JEXEC') || die;
+
 use Exception;
 use InvalidArgumentException;
-use Joomla\CMS\Language\Text;/**
+use Joomla\CMS\Language\Text;
+
+/**
  * Exception thrown when we can't figure out which engine to use for a view template
  */
 class UnrecognisedExtension extends InvalidArgumentException

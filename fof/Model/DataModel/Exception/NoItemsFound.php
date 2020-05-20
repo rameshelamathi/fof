@@ -7,8 +7,12 @@
 
 namespace FOF30\Model\DataModel\Exception;
 
+defined('_JEXEC') || die;
+
 use Exception;
-use Joomla\CMS\Language\Text;class NoItemsFound extends BaseException
+use Joomla\CMS\Language\Text;
+
+class NoItemsFound extends BaseException
 {
 	public function __construct($className, $code = 404, Exception $previous = null)
 	{

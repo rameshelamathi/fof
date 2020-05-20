@@ -7,9 +7,13 @@
 
 namespace FOF30\Model\DataModel\Behaviour;
 
+defined('_JEXEC') || die;
+
 use FOF30\Event\Observer;
 use FOF30\Model\DataModel;
-use JDatabaseQuery;/**
+use JDatabaseQuery;
+
+/**
  * FOF model behavior class to filter access to items owned by the currently logged in user only
  *
  * @since    2.1
@@ -20,8 +24,8 @@ class Own extends Observer
 	 * This event runs after we have built the query used to fetch a record
 	 * list in a model. It is used to apply automatic query filters.
 	 *
-	 * @param   DataModel      &$model The model which calls this event
-	 * @param   JDatabaseQuery &$query The query we are manipulating
+	 * @param   DataModel      &$model  The model which calls this event
+	 * @param   JDatabaseQuery &$query  The query we are manipulating
 	 *
 	 * @return  void
 	 */
@@ -37,7 +41,7 @@ class Own extends Observer
 		$user_id = $model->getContainer()->platform->getUser()->id;
 
 		// And filter the query output by the user id
-		$db    = $model->getContainer()->platform->getDbo();
+		$db = $model->getContainer()->platform->getDbo();
 
 		$query->where($db->qn($model->getFieldAlias('created_by')) . ' = ' . $db->q($user_id));
 	}
@@ -66,7 +70,7 @@ class Own extends Observer
 		}
 
 		// Get the user
-		$user_id = $model->getContainer()->platform->getUser()->id;
+		$user_id    = $model->getContainer()->platform->getUser()->id;
 		$recordUser = $model->getFieldValue('created_by', null);
 
 		// Filter by authorised access levels

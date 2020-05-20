@@ -7,8 +7,12 @@
 
 namespace FOF30\Form\Header;
 
+defined('_JEXEC') || die;
+
 use Joomla\CMS\HTML\HTMLHelper;
-use Joomla\CMS\Language\Text;/**
+use Joomla\CMS\Language\Text;
+
+/**
  * Ordering field header
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4

@@ -7,13 +7,17 @@
 
 namespace FOF30\Form\Field;
 
+defined('_JEXEC') || die;
+
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use JFormFieldUsergroup;
 use Joomla\CMS\Form\FormHelper;
 use Joomla\CMS\HTML\HTMLHelper;
-use stdClass;FormHelper::loadFieldClass('usergroup');
+use stdClass;
+
+FormHelper::loadFieldClass('usergroup');
 
 /**
  * Form Field class for FOF

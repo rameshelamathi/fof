@@ -7,9 +7,14 @@
 
 namespace FOF30\Hal\Render;
 
+defined('_JEXEC') || die;
+
 use FOF30\Hal\Document;
 use FOF30\Hal\Link;
-use FOF30\Model\DataModel;/**
+use FOF30\Model\DataModel;
+use stdClass;
+
+/**
  * Implements the HAL over JSON renderer
  *
  * @see http://stateless.co/hal_specification.html
@@ -17,18 +22,17 @@ use FOF30\Model\DataModel;/**
 class Json implements RenderInterface
 {
 	/**
-	 * When data is an array we'll output the list of data under this key
-	 *
-	 * @var   string
-	 */
-	private $_dataKey = '_list';
-
-	/**
 	 * The document to render
 	 *
 	 * @var   Document
 	 */
 	protected $_document;
+	/**
+	 * When data is an array we'll output the list of data under this key
+	 *
+	 * @var   string
+	 */
+	private $_dataKey = '_list';
 
 	/**
 	 * Public constructor
@@ -47,7 +51,7 @@ class Json implements RenderInterface
 	 *
 	 * @return  string  The JSON representation of the HAL document
 	 */
-	public function render($options = array())
+	public function render($options = [])
 	{
 		if (isset($options['data_key']))
 		{
@@ -63,11 +67,11 @@ class Json implements RenderInterface
 			$jsonOptions = 0;
 		}
 
-		$serialiseThis = new \stdClass;
+		$serialiseThis = new stdClass;
 
 		// Add links
-		$collection = $this->_document->getLinks();
-		$serialiseThis->_links = new \stdClass;
+		$collection            = $this->_document->getLinks();
+		$serialiseThis->_links = new stdClass;
 
 		foreach ($collection as $rel => $links)
 		{
@@ -77,7 +81,7 @@ class Json implements RenderInterface
 			}
 			else
 			{
-				$serialiseThis->_links->$rel = array();
+				$serialiseThis->_links->$rel = [];
 
 				foreach ($links as $link)
 				{
@@ -92,15 +96,15 @@ class Json implements RenderInterface
 
 		if (!empty($collection))
 		{
-			$serialiseThis->_embedded = new \stdClass;
+			$serialiseThis->_embedded = new stdClass;
 
 			foreach ($collection as $rel => $embeddeddocs)
 			{
-				$serialiseThis->_embedded->$rel = array();
+				$serialiseThis->_embedded->$rel = [];
 
 				if (!is_array($embeddeddocs))
 				{
-					$embeddeddocs = array($embeddeddocs);
+					$embeddeddocs = [$embeddeddocs];
 				}
 
 				foreach ($embeddeddocs as $embedded)
@@ -147,13 +151,13 @@ class Json implements RenderInterface
 	 *
 	 * @param   Link  $link  The link you want converted
 	 *
-	 * @return  \stdClass  The converted link object
+	 * @return  stdClass  The converted link object
 	 */
 	protected function _getLink(Link $link)
 	{
-		$ret = array(
-			'href'	=> $link->href
-		);
+		$ret = [
+			'href' => $link->href,
+		];
 
 		if ($link->templated)
 		{

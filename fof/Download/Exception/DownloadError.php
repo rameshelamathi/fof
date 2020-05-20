@@ -5,7 +5,13 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Download\Exception;class DownloadError extends \RuntimeException
+namespace FOF30\Download\Exception;
+
+defined('_JEXEC') || die;
+
+use RuntimeException;
+
+class DownloadError extends RuntimeException
 {
 
 }

@@ -7,8 +7,12 @@
 
 namespace FOF30\Model\DataModel\Exception;
 
+defined('_JEXEC') || die;
+
 use Exception;
-use Joomla\CMS\Language\Text;class TreeInvalidLftRgtCurrent extends TreeInvalidLftRgt
+use Joomla\CMS\Language\Text;
+
+class TreeInvalidLftRgtCurrent extends TreeInvalidLftRgt
 {
 	public function __construct($message = '', $code = 500, Exception $previous = null)
 	{

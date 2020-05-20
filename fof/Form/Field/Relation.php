@@ -7,9 +7,13 @@
 
 namespace FOF30\Form\Field;
 
+defined('_JEXEC') || die;
+
 use FOF30\Model\DataModel;
 use Joomla\CMS\Factory;
-use Joomla\CMS\HTML\HTMLHelper;/**
+use Joomla\CMS\HTML\HTMLHelper;
+
+/**
  * Form Field class for FOF
  * Relation list
  *

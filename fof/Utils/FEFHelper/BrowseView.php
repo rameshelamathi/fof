@@ -5,7 +5,11 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Utils\FEFHelper;use Exception;
+namespace FOF30\Utils\FEFHelper;
+
+defined('_JEXEC') || die;
+
+use Exception;
 use FOF30\Container\Container;
 use FOF30\Model\DataModel;
 use FOF30\Utils\ArrayHelper;

@@ -7,6 +7,8 @@
 
 namespace FOF30\Form\Field;
 
+defined('_JEXEC') || die;
+
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
@@ -15,7 +17,9 @@ use Joomla\CMS\Form\Field\TagField;
 use Joomla\CMS\Form\FormHelper;
 use Joomla\CMS\Router\Route;
 use TagsHelperRoute;
-use const JPATH_SITE;FormHelper::loadFieldClass('tag');
+use const JPATH_SITE;
+
+FormHelper::loadFieldClass('tag');
 
 /**
  * Form Field class for FOF

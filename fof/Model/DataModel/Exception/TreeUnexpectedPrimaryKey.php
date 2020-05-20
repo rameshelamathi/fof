@@ -7,9 +7,13 @@
 
 namespace FOF30\Model\DataModel\Exception;
 
+defined('_JEXEC') || die;
+
 use Exception;
 use Joomla\CMS\Language\Text;
-use UnexpectedValueException;class TreeUnexpectedPrimaryKey extends UnexpectedValueException
+use UnexpectedValueException;
+
+class TreeUnexpectedPrimaryKey extends UnexpectedValueException
 {
 	public function __construct($message = '', $code = 500, Exception $previous = null)
 	{

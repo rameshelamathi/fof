@@ -7,9 +7,13 @@
 
 namespace FOF30\Factory\Exception;
 
+defined('_JEXEC') || die;
+
 use Exception;
 use Joomla\CMS\Language\Text;
-use RuntimeException;class ControllerNotFound extends RuntimeException
+use RuntimeException;
+
+class ControllerNotFound extends RuntimeException
 {
 	public function __construct($controller, $code = 500, Exception $previous = null)
 	{

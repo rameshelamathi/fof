@@ -7,11 +7,12 @@
 
 namespace FOF30\Less;
 
+defined('_JEXEC') || die;
+
 use Exception;
 use FOF30\Less\Parser\Parser;
-use JLoader;
 use Joomla\CMS\Filesystem\File;
-use stdClass;JLoader::import('joomla.filesystem.file');
+use stdClass;
 
 /**
  * This class is taken near verbatim (changes marked with **FOF** comment markers) from:

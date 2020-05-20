@@ -7,10 +7,16 @@
 
 namespace FOF30\Factory\Scaffolding\Layout;
 
-use FOF30\Model\DataModel;/**
+defined('_JEXEC') || die;
+
+use Exception;
+use FOF30\Model\DataModel;
+use SimpleXMLElement;
+
+/**
  * Erects a scaffolding XML for edit views
  *
- * @package FOF30\Factory\Scaffolding
+ * @package    FOF30\Factory\Scaffolding
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
@@ -104,7 +110,7 @@ class FormErector extends BaseErector implements ErectorInterface
 			}
 
 			// body, introtext, fulltext, description => Editor
-			if (in_array($lowercaseFieldName, array('body', 'introtext', 'fulltext', 'description')))
+			if (in_array($lowercaseFieldName, ['body', 'introtext', 'fulltext', 'description']))
 			{
 				$this->applyEditorField($model, $fieldSet, $fieldName);
 
@@ -122,7 +128,7 @@ class FormErector extends BaseErector implements ErectorInterface
 
 			// image, media, *_image => Media
 			if (
-				in_array($lowercaseFieldName, array('image', 'media'))
+				in_array($lowercaseFieldName, ['image', 'media'])
 				|| (substr($lowercaseFieldName, -6) == '_image')
 			)
 			{
@@ -132,7 +138,7 @@ class FormErector extends BaseErector implements ErectorInterface
 			}
 
 			// language, lang, lang_id => Language
-			if (in_array($lowercaseFieldName, array('language', 'lang', 'lang_id')))
+			if (in_array($lowercaseFieldName, ['language', 'lang', 'lang_id']))
 			{
 				$this->applyLanguageField($model, $fieldSet, $fieldName);
 
@@ -140,7 +146,7 @@ class FormErector extends BaseErector implements ErectorInterface
 			}
 
 			// password, passwd, pass => Password
-			if (in_array($lowercaseFieldName, array('password', 'passwd', 'pass')))
+			if (in_array($lowercaseFieldName, ['password', 'passwd', 'pass']))
 			{
 				$this->applyPasswordField($model, $fieldSet, $fieldName);
 
@@ -208,7 +214,7 @@ class FormErector extends BaseErector implements ErectorInterface
 			}
 
 			// tel, telephone, phone => Tel
-			if (in_array($lowercaseFieldName, array('tel', 'telephone', 'phone')))
+			if (in_array($lowercaseFieldName, ['tel', 'telephone', 'phone']))
 			{
 				$this->applyTelField($model, $fieldSet, $fieldName);
 
@@ -216,7 +222,7 @@ class FormErector extends BaseErector implements ErectorInterface
 			}
 
 			// timezone, tz, time_zone => Timezone
-			if (in_array($lowercaseFieldName, array('timezone', 'tz', 'time_zone')))
+			if (in_array($lowercaseFieldName, ['timezone', 'tz', 'time_zone']))
 			{
 				$this->applyTimezoneField($model, $fieldSet, $fieldName);
 
@@ -224,7 +230,7 @@ class FormErector extends BaseErector implements ErectorInterface
 			}
 
 			// url, link, href => Url
-			if (in_array($lowercaseFieldName, array('url', 'link', 'href')))
+			if (in_array($lowercaseFieldName, ['url', 'link', 'href']))
 			{
 				$this->applyUrlField($model, $fieldSet, $fieldName);
 
@@ -232,7 +238,7 @@ class FormErector extends BaseErector implements ErectorInterface
 			}
 
 			// user, user_id, userid, uid => User
-			if (in_array($lowercaseFieldName, array('user', 'user_id', 'userid', 'uid')))
+			if (in_array($lowercaseFieldName, ['user', 'user_id', 'userid', 'uid']))
 			{
 				$this->applyUserField($model, $fieldSet, $fieldName);
 
@@ -240,7 +246,7 @@ class FormErector extends BaseErector implements ErectorInterface
 			}
 
 			// group, group_id, groupid, gid => UserGroup
-			if (in_array($lowercaseFieldName, array('group', 'group_id', 'groupid', 'gid')))
+			if (in_array($lowercaseFieldName, ['group', 'group_id', 'groupid', 'gid']))
 			{
 				$this->applyUserGroupField($model, $fieldSet, $fieldName);
 
@@ -268,8 +274,8 @@ class FormErector extends BaseErector implements ErectorInterface
 					$foreignName1 = $this->model->getContainer()->inflector->pluralize($foreignName1);
 					$foreignName2 = array_shift($parts);
 					$foreignName2 = $this->model->getContainer()->inflector->pluralize($foreignName2);
-					$modelName = $model->getName();
-					$modelName = $this->model->getContainer()->inflector->pluralize($modelName);
+					$modelName    = $model->getName();
+					$modelName    = $this->model->getContainer()->inflector->pluralize($modelName);
 
 					$foreignName = ($foreignName1 == $modelName) ? $foreignName2 : $foreignName1;
 				}
@@ -297,7 +303,7 @@ class FormErector extends BaseErector implements ErectorInterface
 
 						continue;
 					}
-					catch (\Exception $e)
+					catch (Exception $e)
 					{
 					}
 				}
@@ -340,7 +346,7 @@ class FormErector extends BaseErector implements ErectorInterface
 		$this->pushResults();
 	}
 
-	private function applyFieldOfType(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName, $fieldTypeField)
+	private function applyFieldOfType(DataModel $model, SimpleXMLElement &$fieldSet, $fieldName, $fieldTypeField)
 	{
 		$langDefs = $this->getFieldLabel($fieldName);
 		$this->addString($langDefs['label']['key'], $langDefs['label']['value']);
@@ -359,127 +365,127 @@ class FormErector extends BaseErector implements ErectorInterface
 	/**
 	 * Apply an access level field
 	 *
-	 * @param \FOF30\Model\DataModel $model
-	 * @param \SimpleXMLElement      $headerSet
-	 * @param \SimpleXMLElement      $fieldSet
-	 * @param string                 $fieldName
+	 * @param   DataModel         $model
+	 * @param   SimpleXMLElement  $headerSet
+	 * @param   SimpleXMLElement  $fieldSet
+	 * @param   string            $fieldName
 	 */
-	private function applyAccessLevelField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyAccessLevelField(DataModel $model, SimpleXMLElement &$fieldSet, $fieldName)
 	{
 		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'AccessLevel');
 	}
 
-	private function applyPublishedField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyPublishedField(DataModel $model, SimpleXMLElement &$fieldSet, $fieldName)
 	{
 		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'Published');
 	}
 
-	private function applyCacheHandlerField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyCacheHandlerField(DataModel $model, SimpleXMLElement &$fieldSet, $fieldName)
 	{
 		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'CacheHandler');
 	}
 
-	private function applyCalendarField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyCalendarField(DataModel $model, SimpleXMLElement &$fieldSet, $fieldName)
 	{
 		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'Calendar');
 	}
 
-	private function applyCheckboxField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyCheckboxField(DataModel $model, SimpleXMLElement &$fieldSet, $fieldName)
 	{
 		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'Checkbox');
 	}
 
-	private function applyComponentsField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyComponentsField(DataModel $model, SimpleXMLElement &$fieldSet, $fieldName)
 	{
 		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'Components');
 	}
 
-	private function applyEditorField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyEditorField(DataModel $model, SimpleXMLElement &$fieldSet, $fieldName)
 	{
 		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'Editor');
 	}
 
-	private function applyEmailField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyEmailField(DataModel $model, SimpleXMLElement &$fieldSet, $fieldName)
 	{
 		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'Email');
 	}
 
-	private function applyIntegerField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyIntegerField(DataModel $model, SimpleXMLElement &$fieldSet, $fieldName)
 	{
 		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'Text');
 	}
 
-	private function applyNumberField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyNumberField(DataModel $model, SimpleXMLElement &$fieldSet, $fieldName)
 	{
 		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'Number');
 	}
 
-	private function applyMediaField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyMediaField(DataModel $model, SimpleXMLElement &$fieldSet, $fieldName)
 	{
 		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'Media');
 	}
 
-	private function applyLanguageField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyLanguageField(DataModel $model, SimpleXMLElement &$fieldSet, $fieldName)
 	{
 		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'Language');
 	}
 
-	private function applyPasswordField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyPasswordField(DataModel $model, SimpleXMLElement &$fieldSet, $fieldName)
 	{
 		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'Password');
 	}
 
-	private function applyPluginsField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyPluginsField(DataModel $model, SimpleXMLElement &$fieldSet, $fieldName)
 	{
 		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'Plugins');
 	}
 
-	private function applySessionHandlerField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applySessionHandlerField(DataModel $model, SimpleXMLElement &$fieldSet, $fieldName)
 	{
 		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'SessionHandler');
 	}
 
-	private function applyTelField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyTelField(DataModel $model, SimpleXMLElement &$fieldSet, $fieldName)
 	{
 		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'Tel');
 	}
 
-	private function applyTextField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyTextField(DataModel $model, SimpleXMLElement &$fieldSet, $fieldName)
 	{
 		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'Text');
 	}
 
-	private function applyTimezoneField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyTimezoneField(DataModel $model, SimpleXMLElement &$fieldSet, $fieldName)
 	{
 		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'Timezone');
 	}
 
-	private function applyUrlField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyUrlField(DataModel $model, SimpleXMLElement &$fieldSet, $fieldName)
 	{
 		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'Url');
 	}
 
-	private function applyUserField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyUserField(DataModel $model, SimpleXMLElement &$fieldSet, $fieldName)
 	{
 		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'User');
 	}
 
-	private function applyUserGroupField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyUserGroupField(DataModel $model, SimpleXMLElement &$fieldSet, $fieldName)
 	{
 		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'UserGroup');
 	}
 
-	private function applyRelationField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyRelationField(DataModel $model, SimpleXMLElement &$fieldSet, $fieldName)
 	{
 		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'Relation');
 	}
 
-	private function applyTagField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
+	private function applyTagField(DataModel $model, SimpleXMLElement &$fieldSet, $fieldName)
 	{
 		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'Tag');
 	}
 
-	private function applyModelField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName, $modelName)
+	private function applyModelField(DataModel $model, SimpleXMLElement &$fieldSet, $fieldName, $modelName)
 	{
 		// This will fail if the model is invalid, e.g. we have example_foobar_id but no #__example_foobars table. The
 		// error will balloon up the stack and the field will be rendered as simple number field instead of a Model
@@ -512,9 +518,9 @@ class FormErector extends BaseErector implements ErectorInterface
 		}
 	}
 
-	private function applyGenericListField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName, $options)
+	private function applyGenericListField(DataModel $model, SimpleXMLElement &$fieldSet, $fieldName, $options)
 	{
-		$displayOptions = array();
+		$displayOptions = [];
 
 		foreach ($options as $k => $v)
 		{
@@ -551,8 +557,8 @@ class FormErector extends BaseErector implements ErectorInterface
 	 */
 	private function getDoNotShow()
 	{
-		$return = array();
-		$checkFields = array('created_by', 'created_on', 'modified_by', 'modified_on', 'locked_by', 'locked_on');
+		$return      = [];
+		$checkFields = ['created_by', 'created_on', 'modified_by', 'modified_on', 'locked_by', 'locked_on'];
 
 		foreach ($checkFields as $checkField)
 		{

@@ -7,10 +7,14 @@
 
 namespace FOF30\Utils;
 
+defined('_JEXEC') || die;
+
 use JLoader;
 use Joomla\CMS\Application\ApplicationHelper;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Log\Log;abstract class StringHelper
+use Joomla\CMS\Log\Log;
+
+abstract class StringHelper
 {
 	/**
 	 * Convert a string into a slug (alias), suitable for use in URLs. Please

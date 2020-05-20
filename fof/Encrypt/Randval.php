@@ -7,8 +7,11 @@
 
 namespace FOF30\Encrypt;
 
-// Protect from unauthorized access
-use FOF30\Utils\Phpfunc;/**
+defined('_JEXEC') || die;
+
+use FOF30\Utils\Phpfunc;
+
+/**
  * Generates cryptographically-secure random values.
  */
 class Randval implements RandvalInterface
@@ -22,8 +25,8 @@ class Randval implements RandvalInterface
 	 *
 	 * Constructor.
 	 *
-	 * @param Phpfunc $phpfunc An object to intercept PHP function calls;
-	 *                         this makes testing easier.
+	 * @param   Phpfunc  $phpfunc  An object to intercept PHP function calls;
+	 *                             this makes testing easier.
 	 *
 	 */
 	public function __construct(Phpfunc $phpfunc = null)
@@ -48,7 +51,7 @@ class Randval implements RandvalInterface
 	{
 		if ($this->phpfunc->extension_loaded('openssl') && (version_compare(PHP_VERSION, '5.3.4') >= 0 || IS_WIN))
 		{
-			$strong = false;
+			$strong    = false;
 			$randBytes = openssl_random_pseudo_bytes($bytes, $strong);
 
 			if ($strong)
@@ -81,15 +84,15 @@ class Randval implements RandvalInterface
 		 * Collect any entropy available in the system along with a number
 		 * of time measurements of operating system randomness.
 		 */
-		$bitsPerRound = 2;
-		$maxTimeMicro = 400;
+		$bitsPerRound  = 2;
+		$maxTimeMicro  = 400;
 		$shaHashLength = 20;
-		$randomStr = '';
-		$total = $length;
+		$randomStr     = '';
+		$total         = $length;
 
 		// Check if we can use /dev/urandom.
 		$urandom = false;
-		$handle = null;
+		$handle  = null;
 
 		// This is PHP 5.3.3 and up
 		if ($this->phpfunc->function_exists('stream_set_read_buffer') && @is_readable('/dev/urandom'))
@@ -104,7 +107,7 @@ class Randval implements RandvalInterface
 
 		while ($length > strlen($randomStr))
 		{
-			$bytes = ($total > $shaHashLength)? $shaHashLength : $total;
+			$bytes = ($total > $shaHashLength) ? $shaHashLength : $total;
 			$total -= $bytes;
 
 			/*
@@ -114,7 +117,7 @@ class Randval implements RandvalInterface
 			$entropy = rand() . uniqid(mt_rand(), true) . $sslStr;
 			$entropy .= implode('', @fstat(fopen(__FILE__, 'r')));
 			$entropy .= memory_get_usage();
-			$sslStr = '';
+			$sslStr  = '';
 
 			if ($urandom)
 			{
@@ -130,13 +133,13 @@ class Randval implements RandvalInterface
 				 *
 				 * Measure the time that the operations will take on average.
 				 */
-				$samples = 3;
+				$samples  = 3;
 				$duration = 0;
 
 				for ($pass = 0; $pass < $samples; ++$pass)
 				{
 					$microStart = microtime(true) * 1000000;
-					$hash = sha1(mt_rand(), true);
+					$hash       = sha1(mt_rand(), true);
 
 					for ($count = 0; $count < 50; ++$count)
 					{
@@ -144,7 +147,7 @@ class Randval implements RandvalInterface
 					}
 
 					$microEnd = microtime(true) * 1000000;
-					$entropy .= $microStart . $microEnd;
+					$entropy  .= $microStart . $microEnd;
 
 					if ($microStart >= $microEnd)
 					{
@@ -171,7 +174,7 @@ class Randval implements RandvalInterface
 				for ($pass = 0; $pass < $iter; ++$pass)
 				{
 					$microStart = microtime(true);
-					$hash = sha1(mt_rand(), true);
+					$hash       = sha1(mt_rand(), true);
 
 					for ($count = 0; $count < $rounds; ++$count)
 					{
@@ -215,8 +218,8 @@ class Randval implements RandvalInterface
 		 * distribution is even, and randomize the start shift so it's not
 		 * predictable.
 		 */
-		$random  = $this->generate($length + 1);
-		$shift   = ord($random[0]);
+		$random = $this->generate($length + 1);
+		$shift  = ord($random[0]);
 
 		for ($i = 1; $i <= $length; ++$i)
 		{

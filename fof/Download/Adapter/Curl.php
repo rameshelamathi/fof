@@ -7,9 +7,13 @@
 
 namespace FOF30\Download\Adapter;
 
+defined('_JEXEC') || die;
+
 use FOF30\Download\DownloadInterface;
 use FOF30\Download\Exception\DownloadError;
-use Joomla\CMS\Language\Text;/**
+use Joomla\CMS\Language\Text;
+
+/**
  * A download adapter using the cURL PHP integration
  */
 class Curl extends AbstractAdapter implements DownloadInterface

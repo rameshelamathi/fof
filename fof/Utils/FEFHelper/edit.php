@@ -5,8 +5,12 @@
  * @license   GNU General Public License version 2, or later
  */
 
+defined('_JEXEC') || die;
+
 use Joomla\CMS\Editor\Editor;
-use Joomla\CMS\Factory;/**
+use Joomla\CMS\Factory;
+
+/**
  * Custom JHtml (HTMLHelper) class. Offers edit (form) view controls compatible with Akeeba Frontend
  * Framework (FEF).
  *

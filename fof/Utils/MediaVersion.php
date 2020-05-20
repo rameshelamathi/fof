@@ -7,6 +7,8 @@
 
 namespace FOF30\Utils;
 
+defined('_JEXEC') || die;
+
 use Exception;
 use FOF30\Container\Container;
 use JDatabaseDriver;

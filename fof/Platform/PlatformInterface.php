@@ -7,6 +7,8 @@
 
 namespace FOF30\Platform;
 
+defined('_JEXEC') || die;
+
 use Exception;
 use FOF30\Container\Container;
 use FOF30\Date\Date;
@@ -16,7 +18,9 @@ use Joomla\CMS\Document\Document;
 use Joomla\CMS\Language\Language;
 use Joomla\CMS\User\User;
 use Joomla\Registry\Registry;
-use JsonSerializable;/**
+use JsonSerializable;
+
+/**
  * Part of the F0F Platform Abstraction Layer. It implements everything that
  * depends on the platform F0F is running under, e.g. the Joomla! CMS front-end,
  * the Joomla! CMS back-end, a CLI Joomla! Platform app, a bespoke Joomla!

@@ -5,7 +5,11 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Form\Field;/**
+namespace FOF30\Form\Field;
+
+defined('_JEXEC') || die;
+
+/**
  * Form Field class for the FOF framework
  * Media selection field. This is an alias of the "media" field type.
  *

@@ -7,9 +7,13 @@
 
 namespace FOF30\Hal\Exception;
 
+defined('_JEXEC') || die;
+
 use Exception;
 use Joomla\CMS\Language\Text;
-use RuntimeException;class InvalidLinkFormat extends RuntimeException
+use RuntimeException;
+
+class InvalidLinkFormat extends RuntimeException
 {
 	public function __construct($message = '', $code = 500, Exception $previous = null)
 	{

@@ -5,7 +5,11 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Model\Mixin;/**
+namespace FOF30\Model\Mixin;
+
+defined('_JEXEC') || die;
+
+/**
  * Trait for dealing with imploded arrays, stored as comma-separated values
  */
 trait ImplodedArrays
@@ -26,7 +30,7 @@ trait ImplodedArrays
 
 		if (empty($value))
 		{
-			return array();
+			return [];
 		}
 
 		$value = explode(',', $value);

@@ -7,7 +7,11 @@
 
 namespace FOF30\Form;
 
-use SimpleXMLElement;/**
+defined('_JEXEC') || die;
+
+use SimpleXMLElement;
+
+/**
  * Generic interface that a FOF form field class must implement
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
@@ -27,10 +31,10 @@ interface FieldInterface
 	/**
 	 * Method to attach a Form object to the field.
 	 *
-	 * @param   SimpleXMLElement  $element  The SimpleXMLElement object representing the <field /> tag for the form
+	 * @param   SimpleXMLElement  $element   The SimpleXMLElement object representing the <field /> tag for the form
 	 *                                       field object.
-	 * @param   mixed              $value    The form field value to validate.
-	 * @param   string             $group    The field name group control value. This acts as as an array container for
+	 * @param   mixed             $value     The form field value to validate.
+	 * @param   string            $group     The field name group control value. This acts as as an array container for
 	 *                                       the field. For example if the field has name="foo" and the group value is
 	 *                                       set to "bar" then the full field name would end up being "bar[foo]".
 	 *

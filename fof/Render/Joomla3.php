@@ -7,10 +7,14 @@
 
 namespace FOF30\Render;
 
+defined('_JEXEC') || die;
+
 use FOF30\Container\Container;
 use FOF30\Form\Form;
 use Joomla\CMS\HTML\HTMLHelper;
-use Joomla\CMS\Language\Text;class Joomla3 extends AkeebaStrapper
+use Joomla\CMS\Language\Text;
+
+class Joomla3 extends AkeebaStrapper
 {
 	public function __construct(Container $container)
 	{

@@ -7,12 +7,16 @@
 
 namespace FOF30\Utils;
 
+defined('_JEXEC') || die;
+
 use DateTime;
 use DateTimeZone;
 use Exception;
 use FOF30\Container\Container;
 use FOF30\Date\Date;
-use Joomla\CMS\User\User;/**
+use Joomla\CMS\User\User;
+
+/**
  * A helper class to wrangle timezones, as used by Joomla!.
  *
  * @package  FOF30\Utils
@@ -214,8 +218,8 @@ class TimezoneWrangler
 	 * $time can be a DateTime object (including Date and JDate), an integer (UNIX timestamp) or a date string. If no
 	 * timezone is specified in a date string we assume it's GMT.
 	 *
-	 * @param   User  $user  Applicable user for timezone calculation. Null = current user.
-	 * @param   mixed                  $time  Source time. Leave blank for current date/time.
+	 * @param   User   $user  Applicable user for timezone calculation. Null = current user.
+	 * @param   mixed  $time  Source time. Leave blank for current date/time.
 	 *
 	 * @return  Date
 	 */
@@ -237,8 +241,8 @@ class TimezoneWrangler
 	 * $time can be a DateTime object (including Date and JDate), an integer (UNIX timestamp) or a date string. If no
 	 * timezone is specified in a date string we assume it's the user's applicable timezone.
 	 *
-	 * @param   User  $user
-	 * @param   mixed                  $time
+	 * @param   User   $user
+	 * @param   mixed  $time
 	 *
 	 * @return  Date
 	 */
@@ -269,7 +273,7 @@ class TimezoneWrangler
 	 * manually.
 	 *
 	 * @param   string|null                    $format     Timestamp format. If empty $defaultFormat is used.
-	 * @param   User|null     $user       Applicable user for timezone calculation. Null = current
+	 * @param   User|null                      $user       Applicable user for timezone calculation. Null = current
 	 *                                                     user.
 	 * @param   DateTime|Date|string|int|null  $time       Source time. Leave blank for current date/time.
 	 * @param   bool                           $translate  Translate day of week and month names?
@@ -300,7 +304,7 @@ class TimezoneWrangler
 	 * manually.
 	 *
 	 * @param   string|null                    $format     Timestamp format. If empty $defaultFormat is used.
-	 * @param   User|null     $user       Applicable user for timezone calculation. Null = current
+	 * @param   User|null                      $user       Applicable user for timezone calculation. Null = current
 	 *                                                     user.
 	 * @param   DateTime|Date|string|int|null  $time       Source time. Leave blank for current date/time.
 	 * @param   bool                           $translate  Translate day of week and month names?
@@ -320,8 +324,8 @@ class TimezoneWrangler
 	 *
 	 * This is an alias to getGMTDateTime
 	 *
-	 * @param   string|Date                 $time
-	 * @param   User|null  $user
+	 * @param   string|Date  $time
+	 * @param   User|null    $user
 	 *
 	 * @return  Date
 	 */
@@ -335,8 +339,8 @@ class TimezoneWrangler
 	 *
 	 * This is an alias to getLocalDateTime
 	 *
-	 * @param   string|Date                 $time
-	 * @param   User|null  $user
+	 * @param   string|Date  $time
+	 * @param   User|null    $user
 	 *
 	 * @return  Date
 	 */

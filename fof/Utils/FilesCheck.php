@@ -7,8 +7,12 @@
 
 namespace FOF30\Utils;
 
+defined('_JEXEC') || die;
+
 use FOF30\Timer\Timer;
-use Joomla\CMS\Factory;/**
+use Joomla\CMS\Factory;
+
+/**
  * A utility class to check that your extension's files are not missing and have not been tampered with.
  *
  * You need a file called fileslist.php in your component's administrator root directory with the following contents:

@@ -7,6 +7,8 @@
 
 namespace FOF30\Utils\InstallScript;
 
+defined('_JEXEC') || die;
+
 use DirectoryIterator;
 use Exception;
 use FOFTemplateUtils;
@@ -14,10 +16,7 @@ use JLoader;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
-use Joomla\CMS\Log\Log;JLoader::import('joomla.filesystem.folder');
-JLoader::import('joomla.filesystem.file');
-JLoader::import('joomla.installer.installer');
-JLoader::import('joomla.utilities.date');
+use Joomla\CMS\Log\Log;
 
 class BaseInstaller
 {

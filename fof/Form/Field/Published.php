@@ -7,13 +7,17 @@
 
 namespace FOF30\Form\Field;
 
+defined('_JEXEC') || die;
+
 use FOF30\Form\Exception\DataModelRequired;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use JFormFieldList;
 use Joomla\CMS\Form\FormHelper;
-use Joomla\CMS\HTML\HTMLHelper;FormHelper::loadFieldClass('list');
+use Joomla\CMS\HTML\HTMLHelper;
+
+FormHelper::loadFieldClass('list');
 
 /**
  * Form Field class for FOF

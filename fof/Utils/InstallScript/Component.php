@@ -7,6 +7,8 @@
 
 namespace FOF30\Utils\InstallScript;
 
+defined('_JEXEC') || die;
+
 use Exception;
 use InvalidArgumentException;
 use JDatabaseDriver;
@@ -21,10 +23,7 @@ use Joomla\CMS\Log\Log;
 use Joomla\CMS\Table\Menu;
 use Joomla\CMS\Table\Table;
 use SimpleXMLElement;
-use stdClass;JLoader::import('joomla.filesystem.folder');
-JLoader::import('joomla.filesystem.file');
-JLoader::import('joomla.installer.installer');
-JLoader::import('joomla.utilities.date');
+use stdClass;
 
 // In case FOF's autoloader is not present yet, e.g. new installation
 if (!class_exists('FOF30\\Utils\\InstallScript\\BaseInstaller', true))
@@ -170,9 +169,9 @@ class Component extends BaseInstaller
 	 * Joomla! pre-flight event. This runs before Joomla! installs or updates the component. This is our last chance to
 	 * tell Joomla! if it should abort the installation.
 	 *
-	 * @param   string                                          $type    Installation type (install, update,
+	 * @param   string            $type                                  Installation type (install, update,
 	 *                                                                   discover_install)
-	 * @param   ComponentAdapter  $parent  Parent object
+	 * @param   ComponentAdapter  $parent                                Parent object
 	 *
 	 * @return  boolean  True to let the installation proceed, false to halt the installation
 	 */
@@ -213,7 +212,7 @@ class Component extends BaseInstaller
 	 * or updating your component. This is the last chance you've got to perform any additional installations, clean-up,
 	 * database updates and similar housekeeping functions.
 	 *
-	 * @param   string                                          $type    install, update or discover_update
+	 * @param   string            $type    install, update or discover_update
 	 * @param   ComponentAdapter  $parent  Parent object
 	 *
 	 * @return  void

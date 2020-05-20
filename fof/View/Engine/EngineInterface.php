@@ -7,7 +7,11 @@
 
 namespace FOF30\View\Engine;
 
-use FOF30\View\View;interface EngineInterface
+defined('_JEXEC') || die;
+
+use FOF30\View\View;
+
+interface EngineInterface
 {
 	/**
 	 * Public constructor
@@ -22,7 +26,8 @@ use FOF30\View\View;interface EngineInterface
 	 * @param   string  $path         The path to the view template
 	 * @param   array   $forceParams  Any additional information to pass to the view template engine
 	 *
-	 * @return  array  Content 3ναlυα+ιοη information ['type' => 'raw|path', 'content' => 'path or raw content'] (I use leetspeak here because of bad quality hosts with broken scanners)
+	 * @return  array  Content 3ναlυα+ιοη information ['type' => 'raw|path', 'content' => 'path or raw content'] (I use
+	 *                 leetspeak here because of bad quality hosts with broken scanners)
 	 */
-	public function get($path, array $forceParams = array());
+	public function get($path, array $forceParams = []);
 }

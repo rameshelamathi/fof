@@ -7,6 +7,8 @@
 
 namespace FOF30\Template;
 
+defined('_JEXEC') || die;
+
 use Exception;
 use FOF30\Container\Container;
 use FOF30\Less\Less;
@@ -16,7 +18,9 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
-use stdClass;/**
+use stdClass;
+
+/**
  * A utility class to load view templates, media files and modules.
  *
  * @since    1.0
@@ -371,8 +375,8 @@ class Template
 	 * enabled, the browser will follow the fake link instead of processing the onSubmit event; so we
 	 * need a fix.
 	 *
-	 * @param   string     $text   Header text
-	 * @param   string     $field  Field used for sorting
+	 * @param   string    $text   Header text
+	 * @param   string    $field  Field used for sorting
 	 * @param   stdClass  $list   Object holding the direction and the ordering field
 	 *
 	 * @return  string  HTML code for sorting

@@ -7,6 +7,8 @@
 
 namespace FOF30\Form\Field;
 
+defined('_JEXEC') || die;
+
 use FOF30\Form\Exception\DataModelRequired;
 use FOF30\Form\Exception\GetStaticNotAllowed;
 use FOF30\Form\FieldInterface;
@@ -15,7 +17,9 @@ use FOF30\Model\DataModel;
 use JDatabaseQuery;
 use Joomla\CMS\Form\FormField;
 use Joomla\CMS\HTML\HTMLHelper;
-use LogicException;/**
+use LogicException;
+
+/**
  * Form Field class for FOF
  * Renders the row ordering interface checkbox in browse views
  *

@@ -7,13 +7,17 @@
 
 namespace FOF30\Model\DataModel\Filter;
 
-use JDatabaseDriver;class Text extends AbstractFilter
+defined('_JEXEC') || die;
+
+use JDatabaseDriver;
+
+class Text extends AbstractFilter
 {
 	/**
 	 * Constructor
 	 *
 	 * @param   JDatabaseDriver  $db     The database object
-	 * @param   object            $field  The field informations as taken from the db
+	 * @param   object           $field  The field informations as taken from the db
 	 */
 	public function __construct($db, $field)
 	{

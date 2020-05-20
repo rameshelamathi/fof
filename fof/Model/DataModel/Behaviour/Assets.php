@@ -7,11 +7,15 @@
 
 namespace FOF30\Model\DataModel\Behaviour;
 
+defined('_JEXEC') || die;
+
 use Exception;
 use FOF30\Event\Observer;
 use FOF30\Model\DataModel;
 use Joomla\CMS\Access\Rules;
-use Joomla\CMS\Table\Table;/**
+use Joomla\CMS\Table\Table;
+
+/**
  * FOF model behavior class to add Joomla! ACL assets support
  *
  * @since    2.1

@@ -7,7 +7,11 @@
 
 namespace FOF30\Layout;
 
-use FOF30\Container\Container;class LayoutHelper
+defined('_JEXEC') || die;
+
+use FOF30\Container\Container;
+
+class LayoutHelper
 {
 	/**
 	 * A default base path that will be used if none is provided when calling the render method.
@@ -22,7 +26,8 @@ use FOF30\Container\Container;class LayoutHelper
 	 *
 	 * @param   Container  $container    The container of your component
 	 * @param   string     $layoutFile   Dot separated path to the layout file, relative to base path
-	 * @param   object     $displayData  Object which properties are used inside the layout file to build displayed output
+	 * @param   object     $displayData  Object which properties are used inside the layout file to build displayed
+	 *                                   output
 	 * @param   string     $basePath     Base path to use when loading layout files
 	 *
 	 * @return  string
@@ -32,10 +37,10 @@ use FOF30\Container\Container;class LayoutHelper
 		$basePath = empty($basePath) ? self::$defaultBasePath : $basePath;
 
 		// Make sure we send null to LayoutFile if no path set
-		$basePath = empty($basePath) ? null : $basePath;
-		$layout = new LayoutFile($layoutFile, $basePath);
+		$basePath          = empty($basePath) ? null : $basePath;
+		$layout            = new LayoutFile($layoutFile, $basePath);
 		$layout->container = $container;
-		$renderedLayout = $layout->render($displayData);
+		$renderedLayout    = $layout->render($displayData);
 
 		return $renderedLayout;
 	}

@@ -7,9 +7,13 @@
 
 namespace FOF30\Factory\Exception;
 
+defined('_JEXEC') || die;
+
 use Exception;
 use Joomla\CMS\Language\Text;
-use RuntimeException;class ModelNotFound extends RuntimeException
+use RuntimeException;
+
+class ModelNotFound extends RuntimeException
 {
 	public function __construct($modelClass, $code = 500, Exception $previous = null)
 	{

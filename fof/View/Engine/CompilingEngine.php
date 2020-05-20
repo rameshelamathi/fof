@@ -7,11 +7,15 @@
 
 namespace FOF30\View\Engine;
 
+defined('_JEXEC') || die;
+
 use FOF30\Utils\Buffer;
 use FOF30\View\Compiler\CompilerInterface;
 use FOF30\View\Exception\PossiblySuhosin;
 use JLoader;
-use Joomla\CMS\Filesystem\File;/**
+use Joomla\CMS\Filesystem\File;
+
+/**
  * View engine for compiling PHP template files.
  */
 abstract class CompilingEngine extends AbstractEngine implements EngineInterface

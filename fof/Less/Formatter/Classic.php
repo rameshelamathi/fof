@@ -5,7 +5,13 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Less\Formatter;/**
+namespace FOF30\Less\Formatter;
+
+use stdClass;
+
+defined('_JEXEC') || die;
+
+/**
  * This class is taken verbatim from:
  *
  * lessphp v0.3.9
@@ -20,27 +26,27 @@ namespace FOF30\Less\Formatter;/**
  */
 class Classic
 {
-	public $indentChar			 = "  ";
+	public $indentChar = "  ";
 
-	public $break				 = "\n";
+	public $break = "\n";
 
-	public $open				 = " {";
+	public $open = " {";
 
-	public $close				 = "}";
+	public $close = "}";
 
-	public $selectorSeparator	 = ", ";
+	public $selectorSeparator = ", ";
 
-	public $assignSeparator	 = ":";
+	public $assignSeparator = ":";
 
-	public $openSingle			 = " { ";
+	public $openSingle = " { ";
 
-	public $closeSingle		 = " }";
+	public $closeSingle = " }";
 
-	public $disableSingle		 = false;
+	public $disableSingle = false;
 
-	public $breakSelectors		 = false;
+	public $breakSelectors = false;
 
-	public $compressColors		 = false;
+	public $compressColors = false;
 
 	/**
 	 * Public constructor
@@ -76,34 +82,9 @@ class Classic
 	}
 
 	/**
-	 * Is a block empty?
-	 *
-	 * @param   \stdClass  $block  The block to check
-	 *
-	 * @return  boolean  True if the block has no lines or children
-	 */
-	protected function isEmpty($block)
-	{
-		if (empty($block->lines))
-		{
-			foreach ($block->children as $child)
-			{
-				if (!$this->isEmpty($child))
-				{
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
 	 * Output a CSS block
 	 *
-	 * @param   \stdClass  $block  The block definition to output
+	 * @param   stdClass  $block  The block definition to output
 	 *
 	 * @return  void
 	 */
@@ -114,7 +95,7 @@ class Classic
 			return;
 		}
 
-		$inner	 = $pre	 = $this->indentStr();
+		$inner = $pre = $this->indentStr();
 
 		$isSingle = !$this->disableSingle &&
 			is_null($block->type) && count($block->lines) == 1;
@@ -181,5 +162,30 @@ class Classic
 
 			$this->indentLevel--;
 		}
+	}
+
+	/**
+	 * Is a block empty?
+	 *
+	 * @param   stdClass  $block  The block to check
+	 *
+	 * @return  boolean  True if the block has no lines or children
+	 */
+	protected function isEmpty($block)
+	{
+		if (empty($block->lines))
+		{
+			foreach ($block->children as $child)
+			{
+				if (!$this->isEmpty($child))
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 }

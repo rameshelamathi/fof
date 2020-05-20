@@ -5,7 +5,11 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Utils;use FOF30\Utils\InstallScript\Component;
+namespace FOF30\Utils;
+
+defined('_JEXEC') || die;
+
+use FOF30\Utils\InstallScript\Component;
 
 // Make sure the new class can be loaded
 if (!class_exists('FOF30\\Utils\\InstallScript\\Component', true))

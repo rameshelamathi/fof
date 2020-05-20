@@ -5,10 +5,14 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Factory\Scaffolding\Layout;/**
+namespace FOF30\Factory\Scaffolding\Layout;
+
+defined('_JEXEC') || die;
+
+/**
  * Erects a scaffolding XML for read views
  *
- * @package FOF30\Factory\Scaffolding
+ * @package    FOF30\Factory\Scaffolding
  *
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */

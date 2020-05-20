@@ -7,6 +7,8 @@
 
 namespace FOF30\Platform\Joomla;
 
+defined('_JEXEC') || die;
+
 use Exception;
 use FOF30\Container\Container;
 use FOF30\Platform\Base\Filesystem as BaseFilesystem;
@@ -14,7 +16,9 @@ use JLoader;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Filesystem\Path;
-use UnexpectedValueException;/**
+use UnexpectedValueException;
+
+/**
  * Abstraction for Joomla! filesystem API
  */
 class Filesystem extends BaseFilesystem

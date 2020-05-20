@@ -7,6 +7,8 @@
 
 namespace FOF30\Model\DataModel\Behaviour;
 
+defined('_JEXEC') || die;
+
 use FOF30\Event\Observer;
 use FOF30\Model\DataModel;
 use JDatabaseQuery;
@@ -14,7 +16,9 @@ use Joomla\CMS\Application\SiteApplication;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Registry\Registry;
-use PlgSystemLanguageFilter;/**
+use PlgSystemLanguageFilter;
+
+/**
  * FOF model behavior class to filter front-end access to items
  * based on the language.
  *

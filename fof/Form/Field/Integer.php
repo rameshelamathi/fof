@@ -7,11 +7,15 @@
 
 namespace FOF30\Form\Field;
 
+defined('_JEXEC') || die;
+
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use JFormFieldInteger;
-use Joomla\CMS\Form\FormHelper;FormHelper::loadFieldClass('integer');
+use Joomla\CMS\Form\FormHelper;
+
+FormHelper::loadFieldClass('integer');
 
 /**
  * Form Field class for the FOF framework

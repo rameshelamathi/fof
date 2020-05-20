@@ -7,9 +7,13 @@
 
 namespace FOF30\Factory\Scaffolding\Controller;
 
-use FOF30\Controller\DataController;/**
+defined('_JEXEC') || die;
+
+use FOF30\Controller\DataController;
+
+/**
  * Interface ErectorInterface
- * @package FOF30\Factory\Scaffolding\Controller
+ * @package    FOF30\Factory\Scaffolding\Controller
  * @deprecated 3.1  Support for XML forms will be removed in FOF 4
  */
 interface ErectorInterface
@@ -17,9 +21,9 @@ interface ErectorInterface
 	/**
 	 * Construct the erector object
 	 *
-	 * @param   Builder  $parent                The parent builder
-	 * @param   \FOF30\Controller\DataController    $controller     The controller we're erecting a scaffold against
-	 * @param   string                              $viewName       The view name for this controller
+	 * @param   Builder         $parent      The parent builder
+	 * @param   DataController  $controller  The controller we're erecting a scaffold against
+	 * @param   string          $viewName    The view name for this controller
 	 */
 	public function __construct(Builder $parent, DataController $controller, $viewName);
 
@@ -30,13 +34,13 @@ interface ErectorInterface
 	 */
 	public function build();
 
-    /**
-     * @return string
-     */
-    public function getSection();
+	/**
+	 * @return string
+	 */
+	public function getSection();
 
-    /**
-     * @param string $section
-     */
-    public function setSection($section);
+	/**
+	 * @param   string  $section
+	 */
+	public function setSection($section);
 }

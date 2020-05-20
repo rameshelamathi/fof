@@ -7,6 +7,8 @@
 
 namespace FOF30\Factory;
 
+defined('_JEXEC') || die;
+
 use FOF30\Container\Container;
 use FOF30\Controller\Controller;
 use FOF30\Dispatcher\Dispatcher;
@@ -19,12 +21,15 @@ use FOF30\Factory\Exception\ViewNotFound;
 use FOF30\Model\Model;
 use FOF30\Toolbar\Toolbar;
 use FOF30\TransparentAuthentication\TransparentAuthentication;
-use FOF30\View\View;/**
+use FOF30\View\View;
+
+/**
  * MVC object factory. This implements the advanced functionality, i.e. creating MVC objects only if the classes exist
  * in any component section (front-end, back-end). For example, if you're in the front-end and a Model class doesn't
  * exist there but does exist in the back-end then the back-end class will be returned.
  *
- * The Dispatcher and Toolbar will be created from default objects if specialised classes are not found in your application.
+ * The Dispatcher and Toolbar will be created from default objects if specialised classes are not found in your
+ * application.
  */
 class SwitchFactory extends BasicFactory implements FactoryInterface
 {
@@ -45,7 +50,7 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 	 *
 	 * @return  Controller
 	 */
-	public function controller($viewName, array $config = array())
+	public function controller($viewName, array $config = [])
 	{
 		try
 		{
@@ -78,7 +83,7 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 	 *
 	 * @return  Model
 	 */
-	public function model($viewName, array $config = array())
+	public function model($viewName, array $config = [])
 	{
 		try
 		{
@@ -111,7 +116,7 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 	 *
 	 * @return  View
 	 */
-	public function view($viewName, $viewType = 'html', array $config = array())
+	public function view($viewName, $viewType = 'html', array $config = [])
 	{
 		try
 		{
@@ -142,7 +147,7 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 	 *
 	 * @return  Dispatcher
 	 */
-	public function dispatcher(array $config = array())
+	public function dispatcher(array $config = [])
 	{
 		$dispatcherClass = $this->container->getNamespacePrefix($this->getSection()) . 'Dispatcher\\Dispatcher';
 
@@ -175,7 +180,7 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 	 *
 	 * @return  Toolbar
 	 */
-    public function toolbar(array $config = array())
+	public function toolbar(array $config = [])
 	{
 		$toolbarClass = $this->container->getNamespacePrefix($this->getSection()) . 'Toolbar\\Toolbar';
 
@@ -209,7 +214,7 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 	 *
 	 * @return  TransparentAuthentication
 	 */
-    public function transparentAuthentication(array $config = array())
+	public function transparentAuthentication(array $config = [])
 	{
 		$toolbarClass = $this->container->getNamespacePrefix($this->getSection()) . 'TransparentAuthentication\\TransparentAuthentication';
 
@@ -243,23 +248,23 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 	 * look for both pluralised and singular views; fall back to the default layout without subtemplate;
 	 * look for templates in both site and admin
 	 *
-	 * @param   View  $view   The view this view template finder will be attached to
-	 * @param   array $config Configuration variables for the object
+	 * @param   View   $view    The view this view template finder will be attached to
+	 * @param   array  $config  Configuration variables for the object
 	 *
 	 * @return  mixed
 	 */
-    public function viewFinder(View $view, array $config = array())
+	public function viewFinder(View $view, array $config = [])
 	{
 		// Initialise the configuration with the default values
-		$defaultConfig = array(
-			'extensions'    => array('.php', '.blade.php'),
+		$defaultConfig = [
+			'extensions'    => ['.php', '.blade.php'],
 			'defaultLayout' => 'default',
 			'defaultTpl'    => '',
 			'strictView'    => false,
 			'strictTpl'     => false,
 			'strictLayout'  => false,
-			'sidePrefix'    => 'any'
-		);
+			'sidePrefix'    => 'any',
+		];
 
 		$config = array_merge($defaultConfig, $config);
 

@@ -7,12 +7,16 @@
 
 namespace FOF30\Form\Field;
 
+defined('_JEXEC') || die;
+
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use JFormFieldList;
 use Joomla\CMS\Form\FormHelper;
-use stdClass;FormHelper::loadFieldClass('list');
+use stdClass;
+
+FormHelper::loadFieldClass('list');
 
 /**
  * Form Field class for FOF
@@ -146,7 +150,7 @@ class Components extends JFormFieldList implements FieldInterface
 	 * Translate a list of objects with JText::_().
 	 *
 	 * @param   stdClass  $item  The component object
-	 * @param   string     $type  The extension type (e.g. component)
+	 * @param   string    $type  The extension type (e.g. component)
 	 *
 	 * @return  string  $text  The translated name of the extension
 	 *

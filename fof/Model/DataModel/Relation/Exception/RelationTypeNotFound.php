@@ -5,4 +5,12 @@
  * @license   GNU General Public License version 2, or later
  */
 
-namespace FOF30\Model\DataModel\Relation\Exception;class RelationTypeNotFound extends \Exception {}
+namespace FOF30\Model\DataModel\Relation\Exception;
+
+defined('_JEXEC') || die;
+
+use Exception;
+
+class RelationTypeNotFound extends Exception
+{
+}

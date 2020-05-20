@@ -7,8 +7,12 @@
 
 namespace FOF30\Factory\Exception;
 
+defined('_JEXEC') || die;
+
 use Exception;
-use Joomla\CMS\Language\Text;class FormLoadFile extends FormLoadGeneric
+use Joomla\CMS\Language\Text;
+
+class FormLoadFile extends FormLoadGeneric
 {
 	public function __construct($file = "", $code = 500, Exception $previous = null)
 	{

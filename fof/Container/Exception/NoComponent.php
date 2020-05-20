@@ -7,7 +7,11 @@
 
 namespace FOF30\Container\Exception;
 
-use Exception;class NoComponent extends \Exception
+defined('_JEXEC') || die;
+
+use Exception;
+
+class NoComponent extends \Exception
 {
 	public function __construct($message = "", $code = 0, Exception $previous = null)
 	{
