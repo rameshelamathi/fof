@@ -85,7 +85,6 @@ class ControllerTest extends ApplicationTestCase
         $this->assertEquals($check['name'], $name, sprintf($msg, 'Failed to set the name'));
         $this->assertEquals($check['autoroute'], $autoRoute, sprintf($msg, 'Failed to set the autoRouting'));
         $this->assertEquals($check['csrf'], $csrf, sprintf($msg, 'Failed to set the CSRF protection'));
-
     }
 
     /**

@@ -18,10 +18,10 @@ class DispatcherDataprovider
             ),
             array(
                 'case' => 'Nothing passed in the input, no default view',
-                'defaultView' => 'main',
-                'view' => 'main',
-                'layout' => '',
-                'containerView' => 'main'
+                'defaultView' => null,
+                'view' => null,
+                'layout' => null,
+                'containerView' => null
             )
         );
 
@@ -53,7 +53,7 @@ class DispatcherDataprovider
             ),
             array(
                 'case' => 'Data passed in the input, no default view',
-                'defaultView' => 'main',
+                'defaultView' => null,
                 'view' => 'foobars',
                 'layout' => 'default',
                 'containerView' => 'foobars'

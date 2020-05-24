@@ -981,7 +981,7 @@ class DataModelCrudDataprovider
             ),
             array(
                 'exception' => '\InvalidArgumentException',
-                'message'   => ''
+                'message'   => 'Join array missing some keys, please check the documentation'
             )
         );
 
@@ -994,7 +994,7 @@ class DataModelCrudDataprovider
             ),
             array(
                 'exception' => '\InvalidArgumentException',
-                'message'   => ''
+                'message'   => 'Master table should be loaded or an ID should be passed'
             )
         );
 

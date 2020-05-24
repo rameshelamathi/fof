@@ -5,13 +5,10 @@ git:
 
 language: php
 php:
+  - 7.4
   - 7.3
   - 7.2
   - 7.1
-  - 7.0
-  - 5.6
-  - 5.5
-  - 5.4
 
 env:
   - JVERSION_TEST=staging
@@ -19,9 +16,7 @@ env:
 matrix:
   fast_finish: true
   allow_failures:
-    - php: 7.3
-    - php: 7.2
-    - php: 7.1
+    - php: 7.4
 
 services:
   - mysql

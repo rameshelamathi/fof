@@ -1,36 +1,23 @@
+.idea/
 .buildpath
 .settings/
 .project
 .DS_STORE
-.idea/
-
-/build/bin
-/build/buildlang
-/build/phingext
-/build/tools
-
-# We can't include composer.lock since the testing framework dependencies vary by PHP version we are testing against
-composer.lock
-
-/documentation/*.xml~
 
 /fof/include.php
 /fof/file_fof30.xml
 /fof/version.txt
-/fof.phar
-
-/release/*.zip
 
 /Tests/environments/
 /Tests/coverage
 /Tests/config.php
 /Tests/debug.txt
 
+/release/*.zip
 /vendor/*
 
 Tests/coverage
 
 # Internal language symlinks
 /fof/language/en-GB
-
 /plugins/user/foftoken/language/**

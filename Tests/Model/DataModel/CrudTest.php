@@ -739,7 +739,7 @@ class DataModelCrudTest extends DatabaseTest
     /**
      * @group           DataModel
      * @group           DataModelCanDelete
-     * @covers          FOF30\Model\DataModel::canDelete
+     * @covers          \FOF30\Model\DataModel::canDelete
      * @dataProvider    DataModelCrudDataprovider::getTestCanDelete
      */
     public function testCanDelete($test, $check)

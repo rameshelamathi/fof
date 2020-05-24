@@ -11,6 +11,8 @@ use FOF30\Model\DataModel\Behaviour\ContentHistory;
 use FOF30\Tests\Helpers\ClosureHelper;
 use FOF30\Tests\Helpers\DatabaseTest;
 use FOF30\Tests\Helpers\ReflectionHelper;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Component\ComponentRecord;
 
 require_once 'ContentHistoryDataprovider.php';
 
@@ -21,149 +23,153 @@ require_once 'ContentHistoryDataprovider.php';
  */
 class ContentHistoryTest extends DatabaseTest
 {
-    protected function tearDown()
-    {
-        parent::tearDown();
+	/**
+	 * @group           Behaviour
+	 * @group           ContentHistoryOnAfterSave
+	 * @covers          FOF30\Model\DataModel\Behaviour\ContentHistory::onAfterSave
+	 * @dataProvider    ContentHistoryDataprovider::getTestOnAfterSave
+	 */
+	public function testOnAfterSave($test, $check)
+	{
+		$msg     = 'ContentHistory::onAfterSave %s - Case: ' . $check['case'];
+		$counter = 0;
 
-        ReflectionHelper::setValue('JComponentHelper', 'components', array());
-    }
+		$config = [
+			'idFieldName' => 'foftest_foobar_id',
+			'tableName'   => '#__foftest_foobars',
+		];
 
-    /**
-     * @group           Behaviour
-     * @group           ContentHistoryOnAfterSave
-     * @covers          FOF30\Model\DataModel\Behaviour\ContentHistory::onAfterSave
-     * @dataProvider    ContentHistoryDataprovider::getTestOnAfterSave
-     */
-    public function testOnAfterSave($test, $check)
-    {
-        $msg = 'ContentHistory::onAfterSave %s - Case: '.$check['case'];
-        $counter = 0;
+		$model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+			->setMethods(['getContentType', 'checkContentType'])
+			->setConstructorArgs([static::$container, $config])
+			->getMock();
+		$model->method('getContentType')->willReturn('com_foftest.test');
 
-        $config = array(
-            'idFieldName' => 'foftest_foobar_id',
-            'tableName'   => '#__foftest_foobars'
-        );
+		$dispatcher = $model->getBehavioursDispatcher();
+		$behavior   = new ContentHistory($dispatcher);
 
-        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
-            ->setMethods(array('getContentType', 'checkContentType'))
-            ->setConstructorArgs(array(static::$container, $config))
-            ->getMock();
-        $model->method('getContentType')->willReturn('com_foftest');
+		$fakeHelper = new ClosureHelper([
+			'store' => function () use (&$counter) {
+				$counter++;
+			},
+		]);
 
-        $dispatcher = $model->getBehavioursDispatcher();
-        $behavior   = new ContentHistory($dispatcher);
+		$fakeComponent = [
+			'com_foftest' => new ComponentRecord([
+				'params' => new \JRegistry([
+					'save_history' => $test['save_history'],
+				]),
+			]),
+		];
 
-        $fakeHelper = new ClosureHelper(array(
-            'store' => function() use(&$counter){
-                $counter++;
-            }
-        ));
+		ReflectionHelper::setValue($behavior, 'historyHelper', $fakeHelper);
+		ReflectionHelper::setValue('\\Joomla\\CMS\\Component\\ComponentHelper', 'components', $fakeComponent);
 
-        $fakeComponent = array('com_foftest' => (object) array(
-            'params' => new \JRegistry(array(
-                'save_history' => $test['save_history']
-            ))
-        ));
+		$behavior->onAfterSave($model);
 
-        ReflectionHelper::setValue($behavior, 'historyHelper', $fakeHelper);
-        ReflectionHelper::setValue('JComponentHelper', 'components', $fakeComponent);
+		$this->assertEquals($check['store'], $counter, sprintf($msg, 'Failed to correctly invoke the Content History helper'));
+	}
 
-        $behavior->onAfterSave($model);
+	/**
+	 * @group           Behaviour
+	 * @group           ContentHistoryOnBeforeDelete
+	 * @covers          FOF30\Model\DataModel\Behaviour\ContentHistory::onBeforeDelete
+	 * @dataProvider    ContentHistoryDataprovider::getTestOnBeforeDelete
+	 */
+	public function testOnBeforeDelete($test, $check)
+	{
+		$msg     = 'ContentHistory::onBeforeDelete %s - Case: ' . $check['case'];
+		$counter = 0;
 
-        $this->assertEquals($check['store'], $counter, sprintf($msg, 'Failed to correctly invoke the Content History helper'));
-    }
+		$config = [
+			'idFieldName' => 'foftest_foobar_id',
+			'tableName'   => '#__foftest_foobars',
+		];
 
-    /**
-     * @group           Behaviour
-     * @group           ContentHistoryOnBeforeDelete
-     * @covers          FOF30\Model\DataModel\Behaviour\ContentHistory::onBeforeDelete
-     * @dataProvider    ContentHistoryDataprovider::getTestOnBeforeDelete
-     */
-    public function testOnBeforeDelete($test, $check)
-    {
-        $msg = 'ContentHistory::onBeforeDelete %s - Case: '.$check['case'];
-        $counter = 0;
+		$model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+			->setMethods(['getContentType', 'checkContentType'])
+			->setConstructorArgs([static::$container, $config])
+			->getMock();
+		$model->method('getContentType')->willReturn('com_foftest.test');
 
-        $config = array(
-            'idFieldName' => 'foftest_foobar_id',
-            'tableName'   => '#__foftest_foobars'
-        );
+		$dispatcher = $model->getBehavioursDispatcher();
+		$behavior   = new ContentHistory($dispatcher);
 
-        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
-            ->setMethods(array('getContentType', 'checkContentType'))
-            ->setConstructorArgs(array(static::$container, $config))
-            ->getMock();
-        $model->method('getContentType')->willReturn('com_foftest');
+		$fakeHelper = new ClosureHelper([
+			'deleteHistory' => function () use (&$counter) {
+				$counter++;
+			},
+		]);
 
-        $dispatcher = $model->getBehavioursDispatcher();
-        $behavior   = new ContentHistory($dispatcher);
+		$fakeComponent = [
+			'com_foftest' => new ComponentRecord([
+				'params' => new \JRegistry([
+					'save_history' => $test['save_history'],
+				]),
+			]),
+		];
 
-        $fakeHelper = new ClosureHelper(array(
-            'deleteHistory' => function() use(&$counter){
-                $counter++;
-            }
-        ));
+		ReflectionHelper::setValue($behavior, 'historyHelper', $fakeHelper);
+		ReflectionHelper::setValue('\\Joomla\\CMS\\Component\\ComponentHelper', 'components', $fakeComponent);
 
-        $fakeComponent = array('com_foftest' => (object) array(
-            'params' => new \JRegistry(array(
-                'save_history' => $test['save_history']
-            ))
-        ));
+		$behavior->onBeforeDelete($model, 1);
 
-        ReflectionHelper::setValue($behavior, 'historyHelper', $fakeHelper);
-        ReflectionHelper::setValue('JComponentHelper', 'components', $fakeComponent);
+		$this->assertEquals($check['delete'], $counter, sprintf($msg, 'Failed to correctly invoke the Content History helper'));
+	}
 
-        $behavior->onBeforeDelete($model, 1);
+	/**
+	 * @group           Behaviour
+	 * @group           ContentHistoryOnAfterPublish
+	 * @covers          FOF30\Model\DataModel\Behaviour\ContentHistory::onAfterPublish
+	 */
+	public function testOnAfterPublish()
+	{
+		$config = [
+			'idFieldName' => 'foftest_foobar_id',
+			'tableName'   => '#__foftest_foobars',
+		];
 
-        $this->assertEquals($check['delete'], $counter, sprintf($msg, 'Failed to correctly invoke the Content History helper'));
-    }
+		$model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+			->setMethods(['updateUcmContent'])
+			->setConstructorArgs([static::$container, $config])
+			->getMock();
 
-    /**
-     * @group           Behaviour
-     * @group           ContentHistoryOnAfterPublish
-     * @covers          FOF30\Model\DataModel\Behaviour\ContentHistory::onAfterPublish
-     */
-    public function testOnAfterPublish()
-    {
-        $config = array(
-            'idFieldName' => 'foftest_foobar_id',
-            'tableName'   => '#__foftest_foobars'
-        );
+		$model->expects($this->once())->method('updateUcmContent');
 
-        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
-            ->setMethods(array('updateUcmContent'))
-            ->setConstructorArgs(array(static::$container, $config))
-            ->getMock();
+		$dispatcher = $model->getBehavioursDispatcher();
+		$behavior   = new ContentHistory($dispatcher);
 
-        $model->expects($this->once())->method('updateUcmContent');
+		$behavior->onAfterPublish($model);
+	}
 
-        $dispatcher = $model->getBehavioursDispatcher();
-        $behavior   = new ContentHistory($dispatcher);
+	/**
+	 * @group           Behaviour
+	 * @group           ContentHistoryOnAfterUnpublish
+	 * @covers          FOF30\Model\DataModel\Behaviour\ContentHistory::onAfterUnpublish
+	 */
+	public function testOnAfterUnpublish()
+	{
+		$config = [
+			'idFieldName' => 'foftest_foobar_id',
+			'tableName'   => '#__foftest_foobars',
+		];
 
-        $behavior->onAfterPublish($model);
-    }
+		$model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+			->setMethods(['updateUcmContent'])
+			->setConstructorArgs([static::$container, $config])
+			->getMock();
+		$model->expects($this->once())->method('updateUcmContent');
 
-    /**
-     * @group           Behaviour
-     * @group           ContentHistoryOnAfterUnpublish
-     * @covers          FOF30\Model\DataModel\Behaviour\ContentHistory::onAfterUnpublish
-     */
-    public function testOnAfterUnpublish()
-    {
-        $config = array(
-            'idFieldName' => 'foftest_foobar_id',
-            'tableName'   => '#__foftest_foobars'
-        );
+		$dispatcher = $model->getBehavioursDispatcher();
+		$behavior   = new ContentHistory($dispatcher);
 
-        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
-            ->setMethods(array('updateUcmContent'))
-            ->setConstructorArgs(array(static::$container, $config))
-            ->getMock();
-        $model->expects($this->once())->method('updateUcmContent');
+		$behavior->onAfterUnpublish($model);
+	}
 
-        $dispatcher = $model->getBehavioursDispatcher();
-        $behavior   = new ContentHistory($dispatcher);
+	protected function tearDown()
+	{
+		parent::tearDown();
 
-        $behavior->onAfterUnpublish($model);
-    }
+		ReflectionHelper::setValue('\\Joomla\\CMS\\Component\\ComponentHelper', 'components', []);
+	}
 }
