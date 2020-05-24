@@ -493,7 +493,6 @@ class Platform extends BasePlatform
 
 		if ($runPlugins)
 		{
-			JLoader::import('joomla.plugin.helper');
 			PluginHelper::importPlugin($type);
 		}
 	}
@@ -707,8 +706,6 @@ class Platform extends BasePlatform
 	 */
 	public function loginUser($authInfo)
 	{
-		JLoader::import('joomla.user.authentication');
-
 		$options = ['remember' => false];
 
 		$response         = new JAuthenticationResponse();
@@ -803,7 +800,6 @@ class Platform extends BasePlatform
 
 			unset($results); // Just to make phpStorm happy
 
-			JLoader::import('joomla.user.helper');
 			$userid = UserHelper::getUserId($response->username);
 			$user   = $this->getUser($userid);
 
@@ -823,7 +819,6 @@ class Platform extends BasePlatform
 	 */
 	public function logoutUser()
 	{
-		JLoader::import('joomla.user.authentication');
 		$app        = JFactory::getApplication();
 		$user       = $this->getUser();
 		$options    = ['remember' => false];
@@ -1004,8 +999,6 @@ class Platform extends BasePlatform
 	 */
 	public function URIroot($pathonly = false, $path = null)
 	{
-		JLoader::import('joomla.environment.uri');
-
 		return JUri::root($pathonly, $path);
 	}
 
@@ -1020,8 +1013,6 @@ class Platform extends BasePlatform
 	 */
 	public function URIbase($pathonly = false)
 	{
-		JLoader::import('joomla.environment.uri');
-
 		return JUri::base($pathonly);
 	}
 
@@ -1334,8 +1325,6 @@ class Platform extends BasePlatform
 			// Try to get data from Joomla!'s cache
 			$cache        = JFactory::getCache('fof', '');
 			$this->_cache = $cache->get('cache', 'fof');
-
-			JLoader::import('joomla.registry.registry');
 
 			$isRegistry = is_object($this->_cache);
 

@@ -660,8 +660,6 @@ class Component extends BaseInstaller
 	 */
 	protected function uninstallObsoleteSubextensions($parent)
 	{
-		JLoader::import('joomla.installer.installer');
-
 		$db = Factory::getDBO();
 
 		$status          = new stdClass();

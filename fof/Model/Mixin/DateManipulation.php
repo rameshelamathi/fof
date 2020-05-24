@@ -32,8 +32,6 @@ trait DateManipulation
 	{
 		/** @var DataModel $this */
 
-		JLoader::import('joomla.utilities.date');
-
 		$db = $this->container->platform->getDbo();
 
 		if (empty($value) || ($value == $db->getNullDate()))
@@ -77,8 +75,6 @@ trait DateManipulation
 	 */
 	protected function sortPublishDates($publish_up, $publish_down, $foreverDate = '2038-01-18 00:00:00')
 	{
-		JLoader::import('joomla.utilities.date');
-
 		$jUp   = new Date($publish_up);
 		$jDown = new Date($publish_down);
 
@@ -107,8 +103,6 @@ trait DateManipulation
 	protected function publishByDate(DataModel $row)
 	{
 		static $uNow = null;
-
-		JLoader::import('joomla.utilities.date');
 
 		if (is_null($uNow))
 		{

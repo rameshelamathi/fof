@@ -24,23 +24,6 @@ use UnexpectedValueException;
 class Filesystem extends BaseFilesystem
 {
 	/**
-	 * Public constructor
-	 *
-	 * @param   Container  $c
-	 */
-	public function __construct(Container $c)
-	{
-		if (class_exists('\\JLoader'))
-		{
-			JLoader::import('joomla.filesystem.path');
-			JLoader::import('joomla.filesystem.folder');
-			JLoader::import('joomla.filesystem.file');
-		}
-
-		parent::__construct($c);
-	}
-
-	/**
 	 * Does the file exists?
 	 *
 	 * @param   $path  string   Path to the file to test

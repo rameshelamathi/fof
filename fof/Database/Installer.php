@@ -368,8 +368,6 @@ class Installer
 			}
 		}
 
-		class_exists('\\JFolder') || JLoader::import('joomla.filesystem.folder');
-
 		// Get all XML files in the schema directory
 		$xmlFiles = Folder::files($this->xmlDirectory, '\.xml$');
 

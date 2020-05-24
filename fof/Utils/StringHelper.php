@@ -35,11 +35,6 @@ abstract class StringHelper
 			Log::add('FOF30\\Utils\\StringHelper::toSlug is deprecated. Use \\JApplicationHelper::stringURLSafe instead', Log::WARNING, 'deprecated');
 		}
 
-		if (!class_exists('\JApplicationHelper'))
-		{
-			JLoader::import('cms.application.helper');
-		}
-
 		return ApplicationHelper::stringURLSafe($value);
 	}
 

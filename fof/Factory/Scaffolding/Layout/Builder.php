@@ -210,7 +210,6 @@ class Builder
 
 			if (!@$createdDirectory)
 			{
-				JLoader::import('joomla.filesystem.folder');
 				Folder::create($directory, 0755);
 			}
 		}
@@ -227,7 +226,6 @@ class Builder
 
 		if ($saveResult === false)
 		{
-			JLoader::import('joomla.filesystem.file');
 			File::write($targetFilename, $xml);
 		}
 	}
@@ -278,7 +276,6 @@ class Builder
 
 		if ($saveResult === false)
 		{
-			JLoader::import('joomla.filesystem.file');
 			File::write($targetFilename, $iniFile);
 		}
 	}
