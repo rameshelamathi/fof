@@ -12,6 +12,7 @@ use FOF30\TransparentAuthentication\TransparentAuthentication;
 use FOF30\Encrypt\Aes;
 use FOF30\Encrypt\Totp;
 use FOF30\Tests\Helpers\ReflectionHelper;
+use Joomla\CMS\Factory;
 
 /**
  * Class TransparentAuthenticationTest
@@ -33,6 +34,9 @@ class TransparentAuthenticationTest extends FOFTestCase
 		$auth = new TransparentAuthentication(static::$container);
 
 		$this->assertEquals(static::$container, ReflectionHelper::getValue($auth, 'container'));
+
+		Factory::$session = $this->getMockSession();
+		$application = Factory::getApplication('site');
 	}
 
 	public function testAddAuthenticationMethod()
