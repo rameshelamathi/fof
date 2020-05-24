@@ -1,9 +1,0 @@
-{
-  "chmod": "0755",
-  "directories": [
-    "fof"
-  ],
-  "main": "fof.php",
-  "output": "fof.phar",
-  "stub": true
-}
