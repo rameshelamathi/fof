@@ -53,24 +53,16 @@ If you want to use FOF to build your extensions and include it with them please 
 
 While our original goal was to follow semantic versioning, a combination of reasons led to us deciding to remove features in a backwards incompatible manner without bumping the major version of FOF.
 
+Backwards incompatible changes and major new features are detailed in the [`UPGRADE NOTES.md`](UPGRADE NOTES.md) in FOF's repository.
+
 The following features present in earlier versions of FOF 3 are scheduled for removal around FOF 3.6 or 3.7:
 
-* `FOF30\Utils\StringHelper`. Use the replacements advised in the docblocks.
-* `FOF30\Utils\FEFHelper\Html`. Use `FEFHelper.browse` through Joomla's `HtmlHelper` class instead.
-* `FOF30\Utils\InstallScript`. Use `FOF30\Utils\InstallScript\Component` instead.
-* XML Forms. We are removing this feature without a replacement. It's impossible to maintain it for Joomla 4. See below.
+* XML Forms. We are removing this feature without a replacement.
 * Scaffolding. Removed as a result of removing the XML Forms feature.
-* LESS. The third party LESS compiler we're using is buggy and unmaintained. Use an external LESS compiler or use something else, like SCSS/Sass.
+* `FOF30\Utils\FEFHelper\Html`. Use `FEFHelper.browse` through Joomla's `HtmlHelper` class instead.
 * `FOF30\Render\AkeebaStrapper`. We discontinued Akeeba Strapper in 2018. Please use the Joomla3 renderer or write your own.
 * mcrypt support. The mcrypt PHP extension has been declared deprecated since PHP 7.1, the minimum PHP version we now support. Moreover, it's not been maintained since 2003, making it unsuitable for use in production.
+* `FOF30\Utils\StringHelper`. Use the replacements advised in the docblocks.
+* `FOF30\Utils\InstallScript`. Use `FOF30\Utils\InstallScript\Component` instead.
+* LESS. The third party LESS compiler we're using is buggy and unmaintained. Use an external LESS compiler or use something else, like SCSS/Sass.
 * HAL support in JSON output. It's a dead format since circa 2013. You can manually implement JSON-LD with a suitable schema in your JSON output.
-
-We are going to be maintaining an `UPGRADE NOTES.md` file as we're dropping the axe on features.
-
-### A short note about the removal of XML Forms
-
-The introduction of FOF XML forms as an extension to the Joomla core Form package (JForm) came at the insistence of the OSM and Joomla leadership back in 2012. The goal was to include FOF 2 in Joomla itself as the official Joomla RAD Framework, eventually dropping its branding and changing its name to JRAD. The FOF 2 XML Forms and JForm packages were going to be merged into a single package.
-
-Shortly after the inclusion of FOF 2 in Joomla 3.2 a leadership change in Joomla caused this effort to fall through. The new leadership opposed the very existence of a Joomla RAD Framework, disbanded the Working Group and even declined bug fixes of FOF 2 to be included in the Joomla core throughout their tenure. Incidentally, that's how we ended up with the whole F-zero-F / F-oh-F mess.
-
-Work in the FOF XML Forms package continued in vain with FOF 3. However, it became apparent that the core Joomla Form package was evolving without considering extensibility outside its narrow scope a plausible goal. Seeing this, we stopped developing the FOF XML Forms package in late 2017. The changes in Joomla 4 in early 2020 made it impossible to maintain the FOF XML Forms package at all. Hence its removal without a replacement.
