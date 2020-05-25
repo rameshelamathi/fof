@@ -11,13 +11,16 @@ use FOF30\Container\Container;
 use FOF30\Encrypt\Randval;
 use FOF30\Utils\ArrayHelper;
 use FOF30\Utils\Phpfunc;
+use Joomla\CMS\Application\BaseApplication;
+use Joomla\CMS\Application\CliApplication;
+use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Authentication\Authentication;
 use Joomla\CMS\Authentication\AuthenticationResponse;
 use Joomla\CMS\Factory as JFactory;
 use Joomla\CMS\Filter\InputFilter;
 use Joomla\CMS\Form\Form as JForm;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Plugin\CMSPlugin as JPlugin;
+use Joomla\CMS\Plugin\CMSPlugin;
 
 if (!defined('FOF30_INCLUDED') && !@include_once(JPATH_LIBRARIES . '/fof30/include.php'))
 {
@@ -30,8 +33,20 @@ if (!defined('FOF30_INCLUDED') && !@include_once(JPATH_LIBRARIES . '/fof30/inclu
  * Allows users to manage their API access tokens for FOF-powered extensions. The token can be used with FOF's
  * Transparent Authentication.
  */
-class PlgUserFoftoken extends JPlugin
+class PlgUserFoftoken extends CMSPlugin
 {
+	/**
+	 * Joomla database object
+	 *
+	 * @var  JDatabaseDriver
+	 */
+	protected $db;
+	/**
+	 * Joomla application object
+	 *
+	 * @var  BaseApplication|CMSApplication|CliApplication
+	 */
+	protected $app;
 	/**
 	 * Joomla XML form contexts where we need to inject our token management interface.
 	 *
@@ -40,21 +55,18 @@ class PlgUserFoftoken extends JPlugin
 	private $allowedContexts = [
 		'com_users.profile', 'com_users.user', 'com_users.registration', 'com_admin.profile',
 	];
-
 	/**
 	 * The prefix of the user profile keys, without the dot.
 	 *
 	 * @var  string
 	 */
 	private $profileKeyPrefix = 'foftoken';
-
 	/**
 	 * Token length, in bytes.
 	 *
 	 * @var  int
 	 */
 	private $tokenLength = 32;
-
 	/**
 	 * Allowed HMAC algorithms for the token
 	 *
@@ -118,7 +130,7 @@ class PlgUserFoftoken extends JPlugin
 
 		try
 		{
-			$db    = JFactory::getDbo();
+			$db    = $this->db;
 			$query = $db->getQuery(true)
 				->select([
 					$db->qn('profile_key'), $db->qn('profile_value'),
@@ -215,6 +227,18 @@ class PlgUserFoftoken extends JPlugin
 		// No FOF token data. Set the $noToken flag which results in a new token being generated.
 		if (!isset($data[$this->profileKeyPrefix]))
 		{
+			/**
+			 * Is the user being saved programmatically, without passing the user profile information? In this case I
+			 * do not want to accidentally try to generate a new token!
+			 *
+			 * We determine that by examining whether the FOF token field exists. If it does but it wasn't passed when
+			 * saving the user I know it's a programmatic user save and I have to ignore it.
+			 */
+			if ($this->hasTokenProfileFields($userId))
+			{
+				return true;
+			}
+
 			$noToken                       = true;
 			$data[$this->profileKeyPrefix] = [];
 		}
@@ -256,7 +280,7 @@ class PlgUserFoftoken extends JPlugin
 		}
 
 		// Remove existing FOF Token user profile values
-		$db    = JFactory::getDbo();
+		$db    = $this->db;
 		$query = $db->getQuery(true)
 			->delete($db->qn('#__user_profiles'))
 			->where($db->qn('user_id') . ' = ' . $db->q($userId))
@@ -315,7 +339,7 @@ class PlgUserFoftoken extends JPlugin
 
 		try
 		{
-			$db    = JFactory::getDbo();
+			$db    = $this->db;
 			$query = $db->getQuery(true)
 				->delete($db->qn('#__user_profiles'))
 				->where($db->qn('user_id') . ' = ' . $db->q($userId))
@@ -442,7 +466,7 @@ class PlgUserFoftoken extends JPlugin
 		 */
 		try
 		{
-			$siteSecret = JFactory::getApplication()->get('secret');
+			$siteSecret = $this->app->get('secret');
 		}
 		catch (Exception $e)
 		{
@@ -516,6 +540,39 @@ class PlgUserFoftoken extends JPlugin
 	}
 
 	/**
+	 * Does the user have the FOF Token profile fields?
+	 *
+	 * @param   int|null  $userId  The user we're interested in
+	 *
+	 * @return  bool  True if the user has FOF Token profile fileds
+	 */
+	private function hasTokenProfileFields(?int $userId): bool
+	{
+		if (is_null($userId) || ($userId <= 0))
+		{
+			return false;
+		}
+
+		$db = $this->db;
+		$q  = $db->getQuery(true)
+			->select('COUNT(*)')
+			->from($db->qn('#__user_profiles'))
+			->where($db->qn('user_id') . ' = ' . $userId)
+			->where($db->qn('profile_key') . ' = ' . $db->q($this->profileKeyPrefix . '.token'));
+
+		try
+		{
+			$numRows = $db->setQuery($q)->loadResult() ?? 0;
+		}
+		catch (Exception $e)
+		{
+			return false;
+		}
+
+		return $numRows > 0;
+	}
+
+	/**
 	 * Returns an array with the default profile field values.
 	 *
 	 * This is used when saving the form data of a user (new or existing) without a token already set.
@@ -544,7 +601,7 @@ class PlgUserFoftoken extends JPlugin
 	{
 		try
 		{
-			$db    = JFactory::getDbo();
+			$db    = $this->db;
 			$query = $db->getQuery(true)
 				->select($db->qn('profile_value'))
 				->from($db->qn('#__user_profiles'))
@@ -570,7 +627,7 @@ class PlgUserFoftoken extends JPlugin
 	{
 		try
 		{
-			$db    = JFactory::getDbo();
+			$db    = $this->db;
 			$query = $db->getQuery(true)
 				->select($db->qn('profile_value'))
 				->from($db->qn('#__user_profiles'))
