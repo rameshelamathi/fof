@@ -10,7 +10,6 @@ namespace FOF30\Encrypt;
 defined('_JEXEC') || die;
 
 use FOF30\Encrypt\AesAdapter\AdapterInterface;
-use FOF30\Encrypt\AesAdapter\Mcrypt;
 use FOF30\Encrypt\AesAdapter\OpenSSL;
 use FOF30\Utils\Phpfunc;
 
@@ -61,7 +60,7 @@ class Aes
 
 		if (!$this->adapter->isSupported($phpfunc))
 		{
-			$this->adapter = new Mcrypt();
+			throw new \RuntimeException('Your server does not have the PHP OpenSSL extension enabled. This is required for encryption handling.');
 		}
 
 		$this->adapter->setEncryptionMode($mode, $strength);
@@ -81,11 +80,6 @@ class Aes
 		}
 
 		$adapter = new OpenSSL();
-
-		if (!$adapter->isSupported($phpfunc))
-		{
-			$adapter = new Mcrypt();
-		}
 
 		if (!$adapter->isSupported($phpfunc))
 		{

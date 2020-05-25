@@ -6,6 +6,7 @@ FOF 3.6.0
 - Removed deprecated Form package and Scaffolding feature
 - Removed the LESS package
 - Removed the HAL package and the ability of the JSON view to render HAL documents natively
+- Removed mcrypt support
 # [LOW] Joomla 4 broke b/c with the Controller's setRedirect
 
 FOF 3.5.4

@@ -65,6 +65,7 @@ class file_fof30InstallerScript
 	protected $removeFilesAllVersions = [
 		'files'   => [
 			'Download/Adapter/cacert.pem',
+			'Encrypt/AesAdapter/Mcrypt.php',
 			'Factory/Exception/FormLoadData.php',
 			'Factory/Exception/FormLoadFile.php',
 			'Factory/Exception/FormLoadGeneric.php',
@@ -74,6 +75,7 @@ class file_fof30InstallerScript
 		'folders' => [
 			'Form',
 			'Factory/Scaffolding',
+			'Hal',
 			'Less',
 		],
 	];

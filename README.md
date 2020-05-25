@@ -57,7 +57,6 @@ Backwards incompatible changes and major new features are detailed in the [`UPGR
 
 The following features present in earlier versions of FOF 3 are scheduled for removal:
 
-* mcrypt support. The mcrypt PHP extension has been declared deprecated since PHP 7.1, the minimum PHP version we now support. Moreover, it's not been maintained since 2003, making it unsuitable for use in production.
 * `FOF30\Utils\FEFHelper\Html`. Use `FEFHelper.browse` through Joomla's `HtmlHelper` class instead.
 * `FOF30\Render\AkeebaStrapper`. We discontinued Akeeba Strapper in 2018. Please use the Joomla3 renderer or write your own.
 * `FOF30\Utils\StringHelper`. Use the replacements advised in the docblocks.

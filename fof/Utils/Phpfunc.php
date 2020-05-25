@@ -15,7 +15,6 @@ defined('_JEXEC') || die;
  * Based on the Session package of Aura for PHP – https://github.com/auraphp/Aura.Session
  *
  * @method  function_exists(string $function)
- * @method  mcrypt_list_algorithms()
  * @method  hash_algos()
  */
 class Phpfunc

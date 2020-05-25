@@ -19,17 +19,10 @@ interface AdapterInterface
 	/**
 	 * Sets the AES encryption mode.
 	 *
-	 * WARNING: The strength is deprecated as it has a different effect in MCrypt and OpenSSL. MCrypt was abandoned in
-	 * 2003 before the Rijndael-128 algorithm was officially the Advanced Encryption Standard (AES). MCrypt also offered
-	 * Rijndael-192 and Rijndael-256 algorithms with different block sizes. These are NOT used in AES. OpenSSL, however,
-	 * implements AES correctly. It always uses a 128-bit (16 byte) block. The 192 and 256 bit strengths refer to the
-	 * key size, not the block size. Therefore using different strengths in MCrypt and OpenSSL will result in different
-	 * and incompatible ciphertexts.
-	 *
-	 * TL;DR: Always use $strength = 128!
+	 * WARNING: The strength parameter is deprecated since FOF 3.1 and has no effect.
 	 *
 	 * @param   string  $mode      Choose between CBC (recommended) or ECB
-	 * @param   int     $strength  Bit strength of the key (128, 192 or 256 bits). DEPRECATED. READ NOTES ABOVE.
+	 * @param   int     $strength  DEPRECATED AND UNUSED.
 	 *
 	 * @return  mixed
 	 */

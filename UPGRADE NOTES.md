@@ -66,6 +66,10 @@ You used to be able to set the `useHypermedia` property to `true` to automatical
 
 As a result we removed the HAL support from FOF and ask you to implement whichever JSON metadata scheme you want yourself.
 
+### Discontinued mcrypt support
+
+The mcrypt PHP extension has been declared deprecated since PHP 7.1, the minimum PHP version supported by FOF 3.6. Moreover, it's not been maintained since 2003, making it unsuitable for production. PHP recommends replacing it with OpenSSL. To this end we had modified our Encrypt package to work with both mcrypt and OpenSSL since FOF 3.0.13 released in August 2016. In FOF 3.6 we are completely removing mcrypt support. This change is transparent as long as you use the `Encrypt\Aes` class. If you were instantiating `Encrypt\AesAdapter\Mcrypt` directly your code will break.
+
 # FOF 3.5.4
 
 ## Common Blade view templates
