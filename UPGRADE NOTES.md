@@ -4,6 +4,12 @@ This document contains backwards incompatible changes in reverse chronological o
 
 # FOF 3.6.0
 
+## Minimum PHP and Joomla version requirements
+
+FOF 3.6.0 requires Joomla 3.9 or later, including 4.0. Moreover, it requires PHP 7.1 or later.
+
+These changes were necessary for creating a framework that will be able to work with Joomla 3.10 and 4.0 when both stable versions are released in mid- to late-2020.
+
 ## Removal of XML forms
 
 One of the major changes in FOF 3.6 is the removal of the Form package, a.k.a. XML forms. When we first introduced this
@@ -64,13 +70,26 @@ purpose. You are meant to `@include` them in your own Blade templates and overri
 
 # FOF 3.1.0
 
-Backwards compatibility and migration notes:
-
-* **PHP 5.3 no longer supported**. The minimum supported version of PHP is now 5.4.0. Some features may require PHP 5.5+.
-* If you use a custom Platform class which doesn't extend FOF30\Platform\Joomla\Platform you will need to **implement the new methods from the PlatformInterface**. This is a potential b/c break. We're willing to take the bet and not call this FOF 4.0 since we've not yet heard of anyone using their custom platform. This is not exactly SemVer but hey, it's not like Joomla! itself offers SemVer...
-* **Template::route will now only merge parameters if you either pass a second boolean argument OR if your URL does not have either option or one of view, task query string parameters in it**. Check your code in case you do something like `$container->template->route('index.php?option=com_foobar&task=baz')` as this bad practice is no longer going to work.
-* **Using the $container->session is deprecated**. You can get/set session variables through the getSessionVar/setSessionVar methods of the Platform object ($container->platform).
-* **Using plain session tokens is deprecated**. Use form tokens. You can get one with $container->platform->getToken(true).
-* **Tokens must be used in forms with the token as the variable name and a value of 1**. Using the variable name _token with the token as the value is deprecated.
-
 Tip: All deprecated practices are logged in Joomla's deprecated log file.
+
+## Minimum PHP version
+
+**PHP 5.3 no longer supported**. The minimum supported version of PHP is now 5.4.0. Some features may require PHP 5.5+.
+
+## Introduction of `PlatformInterface`
+
+If you use a custom Platform class which doesn't extend FOF30\Platform\Joomla\Platform you will need to **implement the new methods from the PlatformInterface**. This is a potential b/c break. We're willing to take the bet and not call this FOF 4.0 since we've not yet heard of anyone using their custom platform. This is not exactly SemVer but hey, it's not like Joomla! itself offers SemVer...
+
+## Template routing
+
+**Template::route will now only merge parameters if you either pass a second boolean argument OR if your URL does not have either option or one of view, task query string parameters in it**. Check your code in case you do something like `$container->template->route('index.php?option=com_foobar&task=baz')` as this bad practice is no longer going to work.
+
+## Session access in the Container is deprecated
+
+**Using the $container->session is deprecated**. You can get/set session variables through the getSessionVar/setSessionVar methods of the Platform object ($container->platform).
+
+## Plain session tokens are deprecated
+
+**Using plain session tokens is deprecated**. Use form tokens. You can get one with $container->platform->getToken(true).
+
+**Tokens must be used in forms with the token as the variable name and a value of 1**. Using the variable name _token with the token as the value is deprecated.
