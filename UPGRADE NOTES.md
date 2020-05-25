@@ -60,6 +60,12 @@ to the browser.
 With that in mind we completely removed LESS support from FOF 3.6. You are advised to compile and minify your CSS before
 releasing your extension.
 
+## Removed HAL support from JSON output
+
+You used to be able to set the `useHypermedia` property to `true` to automatically inject HAL metadata to the JSON output. However, the HAL specification has not been updated since 2013 and we don't really see it being much used in the wild or supported by frameworks consuming JSON data. A better suited replacement would be JSON-LD (JSON for Linking Data, a W3C standard) but it's not possible to automatically derive the context the format calls for. In fact, writing a FOF wrapper around it would make it far more complicated to use than if we just let you override the JSON output through a Json View class and / or a suitable JSON view template!
+
+As a result we removed the HAL support from FOF and ask you to implement whichever JSON metadata scheme you want yourself.
+
 # FOF 3.5.4
 
 ## Common Blade view templates

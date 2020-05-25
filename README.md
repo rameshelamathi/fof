@@ -55,14 +55,10 @@ While our original goal was to follow semantic versioning, a combination of reas
 
 Backwards incompatible changes and major new features are detailed in the [`UPGRADE NOTES.md`](UPGRADE NOTES.md) in FOF's repository.
 
-The following features present in earlier versions of FOF 3 are scheduled for removal around FOF 3.6 or 3.7:
+The following features present in earlier versions of FOF 3 are scheduled for removal:
 
-* XML Forms. We are removing this feature without a replacement.
-* Scaffolding. Removed as a result of removing the XML Forms feature.
+* mcrypt support. The mcrypt PHP extension has been declared deprecated since PHP 7.1, the minimum PHP version we now support. Moreover, it's not been maintained since 2003, making it unsuitable for use in production.
 * `FOF30\Utils\FEFHelper\Html`. Use `FEFHelper.browse` through Joomla's `HtmlHelper` class instead.
 * `FOF30\Render\AkeebaStrapper`. We discontinued Akeeba Strapper in 2018. Please use the Joomla3 renderer or write your own.
-* mcrypt support. The mcrypt PHP extension has been declared deprecated since PHP 7.1, the minimum PHP version we now support. Moreover, it's not been maintained since 2003, making it unsuitable for use in production.
 * `FOF30\Utils\StringHelper`. Use the replacements advised in the docblocks.
 * `FOF30\Utils\InstallScript`. Use `FOF30\Utils\InstallScript\Component` instead.
-* LESS. The third party LESS compiler we're using is buggy and unmaintained. Use an external LESS compiler or use something else, like SCSS/Sass.
-* HAL support in JSON output. It's a dead format since circa 2013. You can manually implement JSON-LD with a suitable schema in your JSON output.

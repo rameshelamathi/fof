@@ -10,23 +10,12 @@ namespace FOF30\View\DataView;
 defined('_JEXEC') || die;
 
 use Exception;
-use FOF30\Hal\Document;
-use FOF30\Hal\Link;
 use FOF30\Model\DataModel;
+use Joomla\CMS\Document\Document;
 use Joomla\CMS\Document\JsonDocument as JDocumentJSON;
-use Joomla\CMS\Pagination\Pagination;
-use Joomla\CMS\Router\Route;
-use Joomla\CMS\Uri\Uri;
 
 class Json extends Raw implements DataViewInterface
 {
-	/**
-	 * When set to true we'll add hypermedia to the output, implementing the
-	 * HAL specification (http://stateless.co/hal_specification.html)
-	 *
-	 * @var   boolean
-	 */
-	public $useHypermedia = false;
 	/**
 	 * Set to true if your onBefore* methods have already populated the item, items, limitstart etc properties used to
 	 * render a JSON document.
@@ -34,24 +23,28 @@ class Json extends Raw implements DataViewInterface
 	 * @var bool
 	 */
 	public $alreadyLoaded = false;
+
 	/**
 	 * Record listing offset (how many records to skip before starting showing some)
 	 *
 	 * @var   int
 	 */
 	protected $limitStart = 0;
+
 	/**
 	 * Record listing limit (how many records to show)
 	 *
 	 * @var   int
 	 */
 	protected $limit = 10;
+
 	/**
 	 * Total number of records in the result set
 	 *
 	 * @var   int
 	 */
 	protected $total = 0;
+
 	/**
 	 * The record being displayed
 	 *
@@ -104,16 +97,9 @@ class Json extends Raw implements DataViewInterface
 		$document = $this->container->platform->getDocument();
 
 		/** @var JDocumentJSON $document */
-		if ($document instanceof \Joomla\CMS\Document\Document)
+		if ($document instanceof Document)
 		{
-			if ($this->useHypermedia)
-			{
-				$document->setMimeEncoding('application/hal+json');
-			}
-			else
-			{
-				$document->setMimeEncoding('application/json');
-			}
+			$document->setMimeEncoding('application/json');
 		}
 
 		if (is_null($tpl))
@@ -140,50 +126,21 @@ class Json extends Raw implements DataViewInterface
 		if ($hasFailed)
 		{
 			// Default JSON behaviour in case the template isn't there!
-			if ($this->useHypermedia)
+			$result = [];
+
+			foreach ($this->items as $item)
 			{
-				$data = [];
-
-				foreach ($this->items as $item)
+				if (is_object($item) && method_exists($item, 'toArray'))
 				{
-					if (is_object($item) && method_exists($item, 'toArray'))
-					{
-						$data[] = $item->toArray();
-					}
-					else
-					{
-						$data[] = $item;
-					}
-				}
-
-				$HalDocument = $this->_createDocumentWithHypermedia($data, $model);
-				$json        = $HalDocument->render('json');
-			}
-			else
-			{
-				$result = [];
-
-				foreach ($this->items as $item)
-				{
-					if (is_object($item) && method_exists($item, 'toArray'))
-					{
-						$result[] = $item->toArray();
-					}
-					else
-					{
-						$result[] = $item;
-					}
-				}
-
-				if (version_compare(PHP_VERSION, '5.4', 'ge'))
-				{
-					$json = json_encode($result, JSON_PRETTY_PRINT);
+					$result[] = $item->toArray();
 				}
 				else
 				{
-					$json = json_encode($result);
+					$result[] = $item;
 				}
 			}
+
+			$json = json_encode($result, JSON_PRETTY_PRINT);
 
 			// JSONP support
 			$callback = $this->input->get('callback', null, 'raw');
@@ -249,16 +206,9 @@ class Json extends Raw implements DataViewInterface
 		$document = $this->container->platform->getDocument();
 
 		/** @var JDocumentJSON $document */
-		if ($document instanceof \Joomla\CMS\Document\Document)
+		if ($document instanceof Document)
 		{
-			if ($this->useHypermedia)
-			{
-				$document->setMimeEncoding('application/hal+json');
-			}
-			else
-			{
-				$document->setMimeEncoding('application/json');
-			}
+			$document->setMimeEncoding('application/json');
 		}
 
 		if (is_null($tpl))
@@ -286,32 +236,16 @@ class Json extends Raw implements DataViewInterface
 		{
 			// Default JSON behaviour in case the template isn't there!
 
-			if ($this->useHypermedia)
+			if (is_object($this->item) && method_exists($this->item, 'toArray'))
 			{
-				$haldocument = $this->_createDocumentWithHypermedia($this->item, $model);
-				$json        = $haldocument->render('json');
+				$data = $this->item->toArray();
 			}
 			else
 			{
-				if (is_object($this->item) && method_exists($this->item, 'toArray'))
-				{
-					$data = $this->item->toArray();
-				}
-				else
-				{
-					$data = $this->item;
-				}
-
-				if (version_compare(PHP_VERSION, '5.4', 'ge'))
-				{
-					$json = json_encode($data, JSON_PRETTY_PRINT);
-				}
-				else
-				{
-					$json = json_encode($data);
-				}
-
+				$data = $this->item;
 			}
+
+			$json = json_encode($data, JSON_PRETTY_PRINT);
 
 			// JSONP support
 			$callback = $this->input->get('callback', null);
@@ -333,154 +267,5 @@ class Json extends Raw implements DataViewInterface
 		{
 			echo $result;
 		}
-	}
-
-	/**
-	 * Creates a \FOF30\Hal\Document using the provided data
-	 *
-	 * @param   mixed|array  $data   The data to put in the document
-	 * @param   DataModel    $model  The model of this view
-	 *
-	 * @return  Document  A HAL-enabled document
-	 */
-	protected function _createDocumentWithHypermedia($data, $model = null)
-	{
-		// Create a new HAL document
-
-		if (is_array($data))
-		{
-			$count = count($data);
-		}
-		else
-		{
-			$count = null;
-		}
-
-		if ($count == 1)
-		{
-			reset($data);
-			$document = new Document(end($data));
-		}
-		else
-		{
-			$document = new Document($data);
-		}
-
-		// Create a self link
-		$uri = (string) (Uri::getInstance());
-		$uri = $this->_removeURIBase($uri);
-		$uri = Route::_($uri);
-		$document->addLink('self', new Link($uri));
-
-		// Create relative links in a record list context
-		if (is_array($data) && ($model instanceof DataModel))
-		{
-			if (!isset($this->total))
-			{
-				$this->total = $model->count();
-			}
-
-			if (!isset($this->limitStart))
-			{
-				$this->limitStart = $model->getState('limitstart', 0);
-			}
-
-			if (!isset($this->limit))
-			{
-				$this->limit = $model->getState('limit', 0);
-			}
-
-			$pagination = new Pagination($this->total, $this->limitStart, $this->limit);
-
-			if ($pagination->pagesTotal > 1)
-			{
-				// Try to guess URL parameters and create a prototype URL
-				// NOTE: You are better off specialising this method
-				$protoUri = $this->_getPrototypeURIForPagination();
-
-				// The "first" link
-				$uri = clone $protoUri;
-				$uri->setVar('limitstart', 0);
-				$uri = Route::_($uri);
-
-				$document->addLink('first', new Link($uri));
-
-				// Do we need a "prev" link?
-				if ($pagination->pagesCurrent > 1)
-				{
-					$prevPage   = $pagination->pagesCurrent - 1;
-					$limitstart = ($prevPage - 1) * $pagination->limit;
-					$uri        = clone $protoUri;
-					$uri->setVar('limitstart', $limitstart);
-					$uri = Route::_($uri);
-
-					$document->addLink('prev', new Link($uri));
-				}
-
-				// Do we need a "next" link?
-				if ($pagination->pagesCurrent < $pagination->pagesTotal)
-				{
-					$nextPage   = $pagination->pagesCurrent + 1;
-					$limitstart = ($nextPage - 1) * $pagination->limit;
-					$uri        = clone $protoUri;
-					$uri->setVar('limitstart', $limitstart);
-					$uri = Route::_($uri);
-
-					$document->addLink('next', new Link($uri));
-				}
-
-				// The "last" link?
-				$lastPage   = $pagination->pagesTotal;
-				$limitstart = ($lastPage - 1) * $pagination->limit;
-				$uri        = clone $protoUri;
-				$uri->setVar('limitstart', $limitstart);
-				$uri = Route::_($uri);
-
-				$document->addLink('last', new Link($uri));
-			}
-		}
-
-		return $document;
-	}
-
-	/**
-	 * Convert an absolute URI to a relative one
-	 *
-	 * @param   string  $uri  The URI to convert
-	 *
-	 * @return  string  The relative URL
-	 */
-	protected function _removeURIBase($uri)
-	{
-		static $root = null, $rootlen = 0;
-
-		if (is_null($root))
-		{
-			$root    = rtrim(Uri::base(false), '/');
-			$rootlen = strlen($root);
-		}
-
-		if (substr($uri, 0, $rootlen) == $root)
-		{
-			$uri = substr($uri, $rootlen);
-		}
-
-		return ltrim($uri, '/');
-	}
-
-	/**
-	 * Returns a JUri instance with a prototype URI used as the base for the
-	 * other URIs created by the JSON renderer
-	 *
-	 * @return  Uri  The prototype JUri instance
-	 */
-	protected function _getPrototypeURIForPagination()
-	{
-		$protoUri = new Uri('index.php');
-		$protoUri->setQuery($this->input->getData());
-		$protoUri->delVar('savestate');
-		$protoUri->delVar('base_path');
-
-		return $protoUri;
 	}
 }
