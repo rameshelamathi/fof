@@ -33,15 +33,6 @@ use FOF30\View\View;
  */
 class SwitchFactory extends BasicFactory implements FactoryInterface
 {
-	public function __construct(Container $container)
-	{
-		parent::__construct($container);
-
-		// Look for form files on the other side of the component
-		$this->formLookupInOtherSide = true;
-	}
-
-
 	/**
 	 * Create a new Controller object
 	 *

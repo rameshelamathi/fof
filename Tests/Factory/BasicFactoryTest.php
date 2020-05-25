@@ -264,43 +264,6 @@ class BasicFactoryTest extends FOFTestCase
 
     /**
      * @group           BasicFactory
-     * @covers          FOF30\Factory\BasicFactory::form
-     * @dataProvider    BasicFactoryDataprovider::getTestForm
-     */
-    public function testForm($test, $check)
-    {
-        $msg  = 'BasicFactory::form %s - Case: '.$check['case'];
-
-        $factory = $this->getMockBuilder('FOF30\Factory\BasicFactory')
-            ->setMethods(array('getFormFilename'))
-            ->setConstructorArgs(array(static::$container))
-            ->getMock();
-
-        $factory->method('getFormFilename')->willReturn($test['mock']['formFilename']);
-
-        ReflectionHelper::setValue($factory, 'scaffolding', $test['mock']['scaffolding']);
-
-        if($check['exception'])
-        {
-            $this->setExpectedException($check['exception']);
-        }
-
-        $result = $factory->form($test['name'], $test['source'], $test['view'], $test['options'], $test['replace'], $test['xpath']);
-
-        if(is_null($check['result']))
-        {
-            $this->assertNull($result, sprintf($msg, 'Returned the wrong result'));
-        }
-        else
-        {
-            $this->assertEquals('FOF30\Form\Form', get_class($result), sprintf($msg, 'Returned the wrong result'));
-        }
-    }
-
-
-
-    /**
-     * @group           BasicFactory
      * @covers          FOF30\Factory\BasicFactory::viewFinder
      */
     public function testViewFinder()
@@ -336,55 +299,5 @@ class BasicFactoryTest extends FOFTestCase
         // I can only test if the correct object is passed, since we are simply collecting all the data
         // and passing it to the ViewTemplateFinder constructor
         $this->assertEquals('FOF30\View\ViewTemplateFinder', get_class($result), sprintf($msg, 'Returned the wrong result'));
-    }
-
-    /**
-     * @group           BasicFactory
-     * @covers          FOF30\Factory\BasicFactory::isScaffolding
-     */
-    public function testIsScaffolding()
-    {
-        $factory = new BasicFactory(static::$container);
-
-        ReflectionHelper::setValue($factory, 'scaffolding', true);
-
-        $this->assertTrue($factory->isScaffolding(), 'BasicFactory::isScaffolding Failed to set the scaffolding flag');
-    }
-
-    /**
-     * @group           BasicFactory
-     * @covers          FOF30\Factory\BasicFactory::setScaffolding
-     */
-    public function testSetScaffolding()
-    {
-        $factory = new BasicFactory(static::$container);
-        $factory->setScaffolding(true);
-
-        $this->assertTrue(ReflectionHelper::getValue($factory, 'scaffolding'), 'BasicFactory::isScaffolding Failed to set the scaffolding flag');
-    }
-
-    /**
-     * @group           BasicFactory
-     * @covers          FOF30\Factory\BasicFactory::isSaveScaffolding
-     */
-    public function testIsSaveScaffolding()
-    {
-        $factory = new BasicFactory(static::$container);
-
-        ReflectionHelper::setValue($factory, 'saveScaffolding', true);
-
-        $this->assertTrue($factory->isSaveScaffolding(), 'BasicFactory::isSaveScaffolding Failed to set the save scaffolding flag');
-    }
-
-    /**
-     * @group           BasicFactory
-     * @covers          FOF30\Factory\BasicFactory::setSaveScaffolding
-     */
-    public function testSetSaveScaffolding()
-    {
-        $factory = new BasicFactory(static::$container);
-        $factory->setSaveScaffolding(true);
-
-        $this->assertTrue(ReflectionHelper::getValue($factory, 'saveScaffolding'), 'BasicFactory::setSaveScaffolding Failed to set the save scaffolding flag');
     }
 }

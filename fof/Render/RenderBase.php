@@ -10,7 +10,6 @@ namespace FOF30\Render;
 defined('_JEXEC') || die;
 
 use FOF30\Container\Container;
-use FOF30\Form\Form;
 use FOF30\Model\DataModel;
 use Joomla\Registry\Registry;
 use LogicException;
@@ -22,7 +21,6 @@ use stdClass;
  */
 abstract class RenderBase implements RenderInterface
 {
-
 	/** @var   Container|null  The container we are attached to */
 	protected $container = null;
 
@@ -125,86 +123,6 @@ abstract class RenderBase implements RenderInterface
 	}
 
 	/**
-	 * Renders a Form and returns the corresponding HTML
-	 *
-	 * @param   Form      &$form         The form to render
-	 * @param   DataModel  $model        The model providing our data
-	 * @param   string     $formType     The form type: edit, browse or read
-	 * @param   boolean    $raw          If true, the raw form fields rendering (without the surrounding form tag) is
-	 *                                   returned.
-	 *
-	 * @return  string    The HTML rendering of the form
-	 *
-	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
-	 */
-	function renderForm(Form &$form, DataModel $model, $formType = null, $raw = false)
-	{
-		throw new LogicException(sprintf('Renderer class %s must implement the %s method', get_class($this), __METHOD__));
-	}
-
-	/**
-	 * Renders a F0FForm for a Browse view and returns the corresponding HTML
-	 *
-	 * @param   Form      &$form   The form to render
-	 * @param   DataModel  $model  The model providing our data
-	 *
-	 * @return  string    The HTML rendering of the form
-	 *
-	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
-	 */
-	function renderFormBrowse(Form &$form, DataModel $model)
-	{
-		throw new LogicException(sprintf('Renderer class %s must implement the %s method', get_class($this), __METHOD__));
-	}
-
-	/**
-	 * Renders a F0FForm for a Read view and returns the corresponding HTML
-	 *
-	 * @param   Form      &$form   The form to render
-	 * @param   DataModel  $model  The model providing our data
-	 *
-	 * @return  string    The HTML rendering of the form
-	 *
-	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
-	 */
-	function renderFormRead(Form &$form, DataModel $model)
-	{
-		throw new LogicException(sprintf('Renderer class %s must implement the %s method', get_class($this), __METHOD__));
-	}
-
-	/**
-	 * Renders a F0FForm for an Edit view and returns the corresponding HTML
-	 *
-	 * @param   Form      &$form   The form to render
-	 * @param   DataModel  $model  The model providing our data
-	 *
-	 * @return  string    The HTML rendering of the form
-	 *
-	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
-	 */
-	function renderFormEdit(Form &$form, DataModel $model)
-	{
-		throw new LogicException(sprintf('Renderer class %s must implement the %s method', get_class($this), __METHOD__));
-	}
-
-	/**
-	 * Renders a F0FForm for an Edit view and returns the corresponding HTML
-	 *
-	 * @param   Form      &$form      The form to render
-	 * @param   DataModel  $model     The model providing our data
-	 * @param   string     $formType  The form type: edit, browse or read
-	 *
-	 * @return  string    The HTML rendering of the form
-	 *
-	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
-	 */
-	function renderFormRaw(Form &$form, DataModel $model, $formType = null)
-	{
-		throw new LogicException(sprintf('Renderer class %s must implement the %s method', get_class($this), __METHOD__));
-	}
-
-
-	/**
 	 * Renders the submenu (link bar) for a category view when it is used in a
 	 * extension
 	 *
@@ -215,40 +133,6 @@ abstract class RenderBase implements RenderInterface
 	 * @return  void
 	 */
 	function renderCategoryLinkbar()
-	{
-		throw new LogicException(sprintf('Renderer class %s must implement the %s method', get_class($this), __METHOD__));
-	}
-
-	/**
-	 * Renders a raw fieldset of a F0FForm and returns the corresponding HTML
-	 *
-	 * @param   stdClass & $fieldset    The fieldset to render
-	 * @param   Form      &$form        The form to render
-	 * @param   DataModel  $model       The model providing our data
-	 * @param   string     $formType    The form type e.g. 'edit' or 'read'
-	 * @param   boolean    $showHeader  Should I render the fieldset's header?
-	 *
-	 * @return  string    The HTML rendering of the fieldset
-	 *
-	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
-	 */
-	function renderFieldset(stdClass &$fieldset, Form &$form, DataModel $model, $formType, $showHeader = true)
-	{
-		throw new LogicException(sprintf('Renderer class %s must implement the %s method', get_class($this), __METHOD__));
-	}
-
-	/**
-	 * Renders a label for a fieldset.
-	 *
-	 * @param   object   $field  The field of the label to render
-	 * @param   Form    &$form   The form to render
-	 * @param   string   $title  The title of the label
-	 *
-	 * @return    string        The rendered label
-	 *
-	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
-	 */
-	function renderFieldsetLabel($field, Form &$form, $title)
 	{
 		throw new LogicException(sprintf('Renderer class %s must implement the %s method', get_class($this), __METHOD__));
 	}

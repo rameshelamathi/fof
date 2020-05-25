@@ -19,9 +19,7 @@ abstract class BaseFactory
 	protected $container = null;
 
 	/**
-	 * Section used to build the namespace prefix. We have to pass it since in CLI scaffolding we need
-	 * to force the section we're in (ie Site or Admin). {@see \FOF30\Container\Container::getNamespacePrefix() } for
-	 * valid values
+	 * Section used to build the namespace prefix.
 	 *
 	 * @var   string
 	 */

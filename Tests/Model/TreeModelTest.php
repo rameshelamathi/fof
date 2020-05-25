@@ -1781,9 +1781,7 @@ class TreeModelTest extends DatabaseTest
      */
     public function testFindByPath($test, $check)
     {
-        $this->markTestIncomplete('TreeModel::findByPath needs a review before testing it');
-
-        /*$msg = 'TreeModel::findByPath %s - Case: '.$check['case'];
+        $msg = 'TreeModel::findByPath %s - Case: '.$check['case'];
 
         $config = array(
             'autoChecks'  => false,
@@ -1803,6 +1801,6 @@ class TreeModelTest extends DatabaseTest
         {
             $this->assertInstanceOf('FOF30\Model\TreeModel', $result, sprintf($msg, 'Should return an instance of TreeModel'));
             $this->assertEquals($check['id'], $result->getId(), sprintf($msg, 'Returned the wrong node'));
-        }*/
+        }
     }
 }

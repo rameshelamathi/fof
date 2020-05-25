@@ -15,7 +15,6 @@ use FOF30\Controller\Exception\LockedRecord;
 use FOF30\Date\Date;
 use FOF30\Event\Dispatcher;
 use FOF30\Event\Observer;
-use FOF30\Form\Form;
 use FOF30\Model\DataModel\Collection as DataCollection;
 use FOF30\Model\DataModel\Exception\BaseException;
 use FOF30\Model\DataModel\Exception\CannotLockNotLoadedRecord;
@@ -149,33 +148,6 @@ class DataModel extends Model implements TableInterface
 
 	/** @var  string  The UCM content type (typically: com_something.viewname, e.g. com_foobar.items) */
 	protected $contentType = null;
-
-	/**
-	 * The name of the XML form to load
-	 *
-	 * @var  string|null
-	 *
-	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
-	 */
-	protected $formName = null;
-
-	/**
-	 * Array of form objects
-	 *
-	 * @var  Form[]
-	 *
-	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
-	 */
-	protected $_forms = [];
-
-	/**
-	 * The data to load into a form
-	 *
-	 * @var  array
-	 *
-	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
-	 */
-	protected $_formData = [];
 
 	/** @var  array  Shared parameters for behaviors */
 	protected $_behaviorParams = [];
@@ -1477,49 +1449,6 @@ class DataModel extends Model implements TableInterface
 					. $fieldName . '_EMPTY';
 
 				throw new RuntimeException(Text::_(strtoupper($text)), 500);
-			}
-		}
-
-		// Server-side form validation
-		$allData = $this->getData();
-		$form    = $this->getForm($allData, false);
-
-		if (is_object($form) && $form instanceof Form)
-		{
-			$serverside_validate = strtolower($form->getAttribute('serverside_validate'));
-
-			if (in_array($serverside_validate, ['true', 'yes', '1', 'on']))
-			{
-				$fieldset = $form->getFieldset();
-
-				foreach ($fieldset as $nfield => $fldset)
-				{
-					if (!array_key_exists($nfield, $allData))
-					{
-						$field = $form->getField($fldset->fieldname, $fldset->group);
-						$type  = strtolower($field->type);
-
-						switch ($type)
-						{
-							case 'checkbox':
-								$allData[$nfield] = 0;
-								break;
-
-							default:
-								$allData[$nfield] = '';
-								break;
-						}
-					}
-				}
-
-				try
-				{
-					$this->validateForm($form, $allData);
-				}
-				catch (Exception $e)
-				{
-					throw new RuntimeException($e->getMessage(), $e->getCode());
-				}
 			}
 		}
 
@@ -3889,7 +3818,7 @@ class DataModel extends Model implements TableInterface
 	 *
 	 * @param   string  $alias  The content type alias (optional)
 	 *
-	 * @return  null
+	 * @return  void
 	 */
 	public function checkContentType($alias = null)
 	{
@@ -3995,133 +3924,6 @@ class DataModel extends Model implements TableInterface
 
 			$contentType->store();
 		}
-	}
-
-	/**
-	 * Gets the abstract XML form file name
-	 *
-	 * @return  string  The abstract form file name, e.g. "form.default"
-	 *
-	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
-	 */
-	public function getFormName()
-	{
-		return $this->formName;
-	}
-
-	/**
-	 * Sets the abstract XML form file name
-	 *
-	 * @param   string  $formName  The abstract form file name to set, e.g. "form.default"
-	 *
-	 * @return  void
-	 *
-	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
-	 */
-	public function setFormName($formName)
-	{
-		$this->formName = $formName;
-	}
-
-	/**
-	 * A method for getting the form from the model.
-	 *
-	 * @param   array    $data      Data for the form.
-	 * @param   boolean  $loadData  True if the form is to load its own data (default case), false if not.
-	 * @param   boolean  $source    The name of the form. If not set we'll try the form_name state variable or fall
-	 *                              back to default.
-	 *
-	 * @return  Form|bool  A Form object on success, false on failure
-	 *
-	 * @since      2.0
-	 *
-	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
-	 */
-	public function getForm($data = [], $loadData = true, $source = null)
-	{
-		$this->_formData = $data;
-
-		if (empty($source))
-		{
-			$source = $this->formName;
-		}
-
-		if (empty($source))
-		{
-			$source = 'form.' . $this->name;
-		}
-
-		$name = $this->container->componentName . '.' . $this->name . '.' . $source;
-
-		$options = [
-			'control'   => false,
-			'load_data' => &$loadData,
-		];
-
-		$this->triggerEvent('onBeforeLoadForm', [&$name, &$source, &$options]);
-
-		$form = $this->loadForm($name, $source, $options);
-
-		if (is_object($form) && ($form instanceof Form))
-		{
-			$this->triggerEvent('onAfterLoadForm', [&$form, &$name, &$source, &$options]);
-
-			return $form;
-		}
-
-		return false;
-	}
-
-	/**
-	 * Method to validate the form data.
-	 *
-	 * @param   Form    $form   The form to validate against.
-	 * @param   array   $data   The data to validate.
-	 * @param   string  $group  The name of the field group to validate.
-	 *
-	 * @return  mixed   Array of filtered data if valid, false otherwise.
-	 *
-	 * @throws  BaseException|Exception  On validation error
-	 *
-	 * @see        \JFormRule
-	 * @see        \JFilterInput
-	 *
-	 * @since      2.0
-	 *
-	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
-	 */
-	public function validateForm($form, $data, $group = null)
-	{
-		// Filter and validate the form data.
-		$data   = $form->filter($data);
-		$return = $form->validate($data, $group);
-
-		// Check for an error.
-		if ($return instanceof Exception)
-		{
-			throw $return;
-		}
-
-		// Check the validation results.
-		if ($return === false)
-		{
-			// Get the validation messages from the form.
-			foreach ($form->getErrors() as $message)
-			{
-				if ($message instanceof Exception)
-				{
-					throw $message;
-				}
-				else
-				{
-					throw new BaseException($message);
-				}
-			}
-
-			return false;
-		}
-
-		return $data;
 	}
 
 	/**
@@ -4341,117 +4143,6 @@ class DataModel extends Model implements TableInterface
 		}
 
 		return $this->getFieldAlias($alias);
-	}
-
-	/**
-	 * Method to get a form object.
-	 *
-	 * @param   string       $name     The name of the form.
-	 * @param   string       $source   The form filename (e.g. form.browse)
-	 * @param   array        $options  Optional array of options for the form creation.
-	 * @param   boolean      $clear    Optional argument to force load a new form.
-	 * @param   bool|string  $xpath    An optional xpath to search for the fields.
-	 *
-	 * @return  Form|bool  Form object on success, False on error.
-	 *
-	 * @throws  Exception
-	 *
-	 * @see        Form
-	 * @since      2.0
-	 *
-	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
-	 */
-	protected function loadForm($name, $source, $options = [], $clear = false, $xpath = false)
-	{
-		// Handle the optional arguments.
-		$options['control'] = $options['control'] ?? false;
-
-		// Create a signature hash.
-		$hash = md5($source . serialize($options));
-
-		if (!isset($this->_forms[$hash]) || $clear)
-		{
-			// Get the form.
-			$form = $this->container->factory->form($name, $source, $this->name, $options, false, $xpath);
-
-			if (!is_object($form))
-			{
-				$this->_forms[$hash] = false;
-
-				return false;
-			}
-
-			$data = [];
-
-			if (isset($options['load_data']) && $options['load_data'])
-			{
-				// Get the data for the form.
-				$data = $this->loadFormData();
-			}
-
-			// Allows data and form manipulation before preprocessing the form
-			$this->triggerEvent('onBeforePreprocessForm', [&$form, &$data]);
-
-			// Allow for additional modification of the form, and events to be triggered.
-			// We pass the data because plugins may require it.
-			$this->preprocessForm($form, $data);
-
-			// Allows data and form manipulation After preprocessing the form
-			$this->triggerEvent('onAfterPreprocessForm', [&$form, &$data]);
-
-			// Load the data into the form after the plugins have operated.
-			$form->bind($data);
-
-			// Store the form for later.
-			$this->_forms[$hash] = $form;
-		}
-
-		return $this->_forms[$hash];
-	}
-
-	/**
-	 * Method to get the data that should be injected in the form.
-	 *
-	 * @return  array    The default data is an empty array.
-	 *
-	 * @since      2.0
-	 *
-	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
-	 */
-	protected function loadFormData()
-	{
-		if (empty($this->_formData))
-		{
-			return [];
-		}
-		else
-		{
-			return $this->_formData;
-		}
-	}
-
-	/**
-	 * Method to allow derived classes to preprocess the form.
-	 *
-	 * @param   Form    &$form   A Form object.
-	 * @param   mixed   &$data   The data expected for the form.
-	 * @param   string   $group  The name of the plugin group to import (defaults to "content").
-	 *
-	 * @return  void
-	 *
-	 * @throws  Exception if there is an error in the form event.
-	 *
-	 * @since      2.0
-	 *
-	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
-	 */
-	protected function preprocessForm(Form &$form, &$data, $group = 'content')
-	{
-		// Import the appropriate plugin group.
-		$this->container->platform->importPlugin($group);
-
-		// Trigger the form preparation event.
-		$this->container->platform->runPlugins('onContentPrepareForm', [&$form, &$data]);
 	}
 
 	/**

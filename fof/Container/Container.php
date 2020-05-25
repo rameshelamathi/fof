@@ -261,31 +261,6 @@ class Container extends ContainerBase
 				/** @var FactoryInterface $factory */
 				$factory = new $factoryClass($c);
 
-				if (isset($c['scaffolding']))
-				{
-					$factory->setScaffolding($c['scaffolding']);
-				}
-
-				if (isset($c['saveScaffolding']))
-				{
-					$factory->setSaveScaffolding($c['saveScaffolding']);
-				}
-
-				if (isset($c['saveControllerScaffolding']))
-				{
-					$factory->setSaveControllerScaffolding($c['saveControllerScaffolding']);
-				}
-
-				if (isset($c['saveModelScaffolding']))
-				{
-					$factory->setSaveModelScaffolding($c['saveModelScaffolding']);
-				}
-
-				if (isset($c['saveViewScaffolding']))
-				{
-					$factory->setSaveViewScaffolding($c['saveViewScaffolding']);
-				}
-
 				if (isset($c['section']))
 				{
 					$factory->setSection($c['section']);
@@ -637,11 +612,6 @@ class Container extends ContainerBase
 		$values = array_merge([
 			'factoryClass'              => '\\FOF30\\Factory\\BasicFactory',
 			'platformClass'             => '\\FOF30\\Platform\\Joomla\\Platform',
-			'scaffolding'               => false,
-			'saveScaffolding'           => false,
-			'saveControllerScaffolding' => false,
-			'saveModelScaffolding'      => false,
-			'saveViewScaffolding'       => false,
 			'section'                   => $section,
 		], $values);
 
@@ -654,11 +624,6 @@ class Container extends ContainerBase
 			'rendererClass'             => $appConfig->get('container.rendererClass', null),
 			'factoryClass'              => $appConfig->get('container.factoryClass', $values['factoryClass']),
 			'platformClass'             => $appConfig->get('container.platformClass', $values['platformClass']),
-			'scaffolding'               => $appConfig->get('container.scaffolding', $values['scaffolding']),
-			'saveScaffolding'           => $appConfig->get('container.saveScaffolding', $values['saveScaffolding']),
-			'saveControllerScaffolding' => $appConfig->get('container.saveControllerScaffolding', $values['saveControllerScaffolding']),
-			'saveModelScaffolding'      => $appConfig->get('container.saveModelScaffolding', $values['saveModelScaffolding']),
-			'saveViewScaffolding'       => $appConfig->get('container.saveViewScaffolding', $values['saveViewScaffolding']),
 		]);
 
 		if (empty($values['rendererClass']))

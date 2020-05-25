@@ -10,7 +10,6 @@ namespace FOF30\Render;
 defined('_JEXEC') || die;
 
 use FOF30\Container\Container;
-use FOF30\Form\Form;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 
@@ -136,51 +135,6 @@ class Joomla3 extends AkeebaStrapper
 
 		// Closes akeeba-renderjoomla div
 		$this->closePageWrapper();
-	}
-
-	/**
-	 * Renders a label for a fieldset.
-	 *
-	 * @param   object   $field  The field of the label to render
-	 * @param   Form    &$form   The form to render
-	 * @param   string   $title  The title of the label
-	 *
-	 * @return    string  The rendered label
-	 *
-	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
-	 */
-	public function renderFieldsetLabel($field, Form &$form, $title)
-	{
-		$html = '';
-
-		$labelClass = $field->labelClass ?: $field->labelclass; // Joomla! 2.5/3.x use different case for the same name
-		$required   = $field->required;
-
-		$tooltip = $form->getFieldAttribute($field->fieldname, 'tooltip', '', $field->group);
-
-		if (!empty($tooltip))
-		{
-			HTMLHelper::_('bootstrap.tooltip');
-
-			$tooltipText = '<strong>' . Text::_($title) . '</strong><br />' . Text::_($tooltip);
-
-			$html .= "\t\t\t\t" . '<label class="control-label hasTooltip ' . $labelClass . '" for="' . $field->id . '" title="' . $tooltipText . '" rel="tooltip">';
-		}
-		else
-		{
-			$html .= "\t\t\t\t" . '<label class="control-label ' . $labelClass . '" for="' . $field->id . '">';
-		}
-
-		$html .= Text::_($title);
-
-		if ($required)
-		{
-			$html .= ' *';
-		}
-
-		$html .= "</label>\n";
-
-		return $html;
 	}
 
 	/**

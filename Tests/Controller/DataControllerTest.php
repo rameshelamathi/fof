@@ -125,7 +125,6 @@ class DataControllertest extends DatabaseTest
 		ReflectionHelper::setValue($controller, 'viewName', $test['mock']['viewName']);
 		ReflectionHelper::setValue($controller, 'view', $test['mock']['view']);
 		ReflectionHelper::setValue($controller, 'viewInstances', $test['mock']['instances']);
-		ReflectionHelper::setValue($controller, 'hasForm', $test['mock']['hasForm']);
 
 		$result = $controller->getView($test['name'], $test['config']);
 
@@ -163,13 +162,7 @@ class DataControllertest extends DatabaseTest
 		$controller->method('getModel')->willReturn(new ClosureHelper([
 			'savestate'   => function ($self, $state) use (&$checker) {
 				$checker['savestate'] = $state;
-			},
-			'setFormName' => function ($self, $formName) use (&$checker) {
-				$checker['setFormName'] = $formName;
-			},
-			'getForm'     => function () use ($test) {
-				return $test['mock']['getForm'];
-			},
+			}
 		]));
 
 		ReflectionHelper::setValue($controller, 'cacheableTasks', $test['mock']['cache']);
@@ -177,11 +170,7 @@ class DataControllertest extends DatabaseTest
 
 		$controller->browse();
 
-		$hasForm = ReflectionHelper::getValue($controller, 'hasForm');
-
 		$this->assertEquals($check['savestate'], $checker['savestate'], sprintf($msg, 'Failed to correctly set the savestate'));
-		$this->assertEquals($check['formName'], $checker['setFormName'], sprintf($msg, 'Failed to correctly set the form name'));
-		$this->assertEquals($check['hasForm'], $hasForm, sprintf($msg, 'Failed to set hasForm'));
 	}
 
 	/**
@@ -193,7 +182,7 @@ class DataControllertest extends DatabaseTest
 		$msg = 'DataController::read %s - Case: ' . $check['case'];
 
 		$model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
-			->setMethods(['getId', 'getForm', 'setFormName'])
+			->setMethods(['getId'])
 			->setConstructorArgs([])
 			->setMockClassName('')
 			->disableOriginalConstructor()
@@ -202,10 +191,6 @@ class DataControllertest extends DatabaseTest
 		$model->method('getId')->willReturnCallback(function () use (&$test) {
 			return array_shift($test['mock']['getId']);
 		});
-
-		$model->method('getForm')->willReturn($test['mock']['getForm']);
-		$model->method('setFormName')->with($check['setForm']);
-
 
 		$controller = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub')
 			->setMethods(['getModel', 'getIDsFromRequest', 'display'])
@@ -229,10 +214,8 @@ class DataControllertest extends DatabaseTest
 		$controller->read();
 
 		$layout  = ReflectionHelper::getValue($controller, 'layout');
-		$hasForm = ReflectionHelper::getValue($controller, 'hasForm');
 
 		$this->assertEquals($check['layout'], $layout, sprintf($msg, 'Failed to set the layout'));
-		$this->assertEquals($check['hasForm'], $hasForm, sprintf($msg, 'Failed to set the hasForm flag'));
 	}
 
 	/**
@@ -266,15 +249,13 @@ class DataControllertest extends DatabaseTest
 		$container->session->set('dummycontrollers.savedata', $test['mock']['session'], 'com_fakeapp');
 
 		$model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
-			->setMethods(['reset', 'bind', 'getForm', 'setFormName'])
+			->setMethods(['reset', 'bind'])
 			->setConstructorArgs([])
 			->setMockClassName('')
 			->disableOriginalConstructor()
 			->getMock();
 
 		$model->expects($check['bind'] ? $this->once() : $this->never())->method('bind')->with($check['bind']);
-		$model->method('setFormName')->with($this->equalTo($check['formName']));
-		$model->method('getForm')->willReturn($test['mock']['getForm']);
 
 		$controller = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub')
 			->setMethods(['getModel', 'display'])
@@ -290,11 +271,9 @@ class DataControllertest extends DatabaseTest
 		$controller->add();
 
 		$layout      = ReflectionHelper::getValue($controller, 'layout');
-		$hasForm     = ReflectionHelper::getValue($controller, 'hasForm');
 		$sessionData = $container->session->get('dummycontrollers.savedata', null, 'com_fakeapp');
 
 		$this->assertEquals($check['layout'], $layout, sprintf($msg, 'Failed to set the layout'));
-		$this->assertEquals($check['hasForm'], $hasForm, sprintf($msg, 'Failed to set the hasForm flag'));
 		$this->assertNull($sessionData, sprintf($msg, 'Failed to wipe session data'));
 	}
 
@@ -333,7 +312,7 @@ class DataControllertest extends DatabaseTest
 		$container->session->set('dummycontrollers.savedata', $test['mock']['session'], 'com_fakeapp');
 
 		$model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
-			->setMethods(['getId', 'lock', 'bind', 'setFormName', 'getForm', 'isLocked'])
+			->setMethods(['getId', 'lock', 'bind', 'isLocked'])
 			->setConstructorArgs([])
 			->setMockClassName('')
 			->disableOriginalConstructor()
@@ -353,8 +332,6 @@ class DataControllertest extends DatabaseTest
 		}
 
 		$model->expects($check['bind'] ? $this->once() : $this->never())->method('bind')->with($this->equalTo($check['bind']));
-		$model->method('setFormName')->with($this->equalTo($check['formName']));
-		$model->method('getForm')->willReturn($test['mock']['getForm']);
 
 		$controller = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub')
 			->setMethods(['getModel', 'getIDsFromRequest', 'setRedirect', 'display'])
@@ -373,11 +350,9 @@ class DataControllertest extends DatabaseTest
 		$controller->edit();
 
 		$layout      = ReflectionHelper::getValue($controller, 'layout');
-		$hasForm     = ReflectionHelper::getValue($controller, 'hasForm');
 		$sessionData = $container->session->get('dummycontrollers.savedata', null, 'com_fakeapp');
 
 		$this->assertEquals($check['layout'], $layout, sprintf($msg, 'Failed to set the layout'));
-		$this->assertEquals($check['hasForm'], $hasForm, sprintf($msg, 'Failed to set the hasForm flag'));
 		$this->assertNull($sessionData, sprintf($msg, 'Failed to wipe session data'));
 	}
 

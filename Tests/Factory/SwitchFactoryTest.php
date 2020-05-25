@@ -23,17 +23,6 @@ class SwitchFactoryTest extends FOFTestCase
 {
     /**
      * @group           SwitchFactory
-     * @covers          FOF30\Factory\SwitchFactory::__construct
-     */
-    public function test__construct()
-    {
-        $factory = new SwitchFactory(static::$container);
-
-        $this->assertTrue(ReflectionHelper::getValue($factory, 'formLookupInOtherSide'));
-    }
-
-    /**
-     * @group           SwitchFactory
      * @covers          FOF30\Factory\SwitchFactory::controller
      * @dataProvider    SwitchFactoryDataprovider::getTestController
      */

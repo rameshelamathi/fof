@@ -12,12 +12,10 @@ defined('_JEXEC') || die;
 use FOF30\Container\Container;
 use FOF30\Controller\Controller;
 use FOF30\Dispatcher\Dispatcher;
-use FOF30\Form\Form;
 use FOF30\Model\Model;
 use FOF30\Toolbar\Toolbar;
 use FOF30\TransparentAuthentication\TransparentAuthentication;
 use FOF30\View\View;
-use RuntimeException;
 
 /**
  * Interface for the MVC object factory
@@ -90,25 +88,6 @@ interface FactoryInterface
 	function transparentAuthentication(array $config = []);
 
 	/**
-	 * Creates a new Form object
-	 *
-	 * @param   string  $name      The name of the form.
-	 * @param   string  $source    The form source filename without path and .xml extension e.g. "form.default" OR raw
-	 *                             XML data
-	 * @param   string  $viewName  The name of the view you're getting the form for.
-	 * @param   array   $options   Options to the Form object
-	 * @param   bool    $replace   Should form fields be replaced if a field already exists with the same group/name?
-	 * @param   bool    $xpath     An optional xpath to search for the fields.
-	 *
-	 * @return  Form|null  The loaded form or null if the form filename doesn't exist
-	 *
-	 * @throws  RuntimeException If the form exists but cannot be loaded
-	 *
-	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
-	 */
-	function form($name, $source, $viewName, array $options = [], $replace = true, $xpath = false);
-
-	/**
 	 * Creates a view template finder object for a specific View
 	 *
 	 * @param   View   $view    The view this view template finder will be attached to
@@ -117,76 +96,6 @@ interface FactoryInterface
 	 * @return  mixed
 	 */
 	function viewFinder(View $view, array $config = []);
-
-	/**
-	 * Is scaffolding enabled?
-	 *
-	 * @return boolean
-	 */
-	public function isScaffolding();
-
-	/**
-	 * Set the scaffolding status
-	 *
-	 * @param   boolean  $scaffolding
-	 */
-	public function setScaffolding($scaffolding);
-
-	/**
-	 * Is saving the scaffolding result to disk enabled?
-	 *
-	 * @return boolean
-	 */
-	public function isSaveScaffolding();
-
-	/**
-	 * Should we save controller to disk?
-	 *
-	 * @param   boolean  $state
-	 */
-	public function setSaveControllerScaffolding($state);
-
-	/**
-	 * Should we save controller scaffolding to disk?
-	 *
-	 * @return  boolean $state
-	 */
-	public function isSaveControllerScaffolding();
-
-	/**
-	 * Should we save model to disk?
-	 *
-	 * @param   boolean  $state
-	 */
-	public function setSaveModelScaffolding($state);
-
-	/**
-	 * Should we save model scaffolding to disk?
-	 *
-	 * @return  boolean $state
-	 */
-	public function isSaveModelScaffolding();
-
-	/**
-	 * Should we save view to disk?
-	 *
-	 * @param   boolean  $state
-	 */
-	public function setSaveViewScaffolding($state);
-
-	/**
-	 * Should we save view scaffolding to disk?
-	 *
-	 * @return  boolean $state
-	 */
-	public function isSaveViewScaffolding();
-
-	/**
-	 * Set the status of saving the scaffolding result to disk.
-	 *
-	 * @param   boolean  $saveScaffolding
-	 */
-	public function setSaveScaffolding($saveScaffolding);
 
 	/**
 	 * @return string
