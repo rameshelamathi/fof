@@ -1082,18 +1082,6 @@ class Blade implements CompilerInterface
 	}
 
 	/**
-	 * Compile the less statements into valid PHP.
-	 *
-	 * @param   string  $expression
-	 *
-	 * @return string
-	 */
-	protected function compileLess($expression)
-	{
-		return "<?php \$this->addLessFile{$expression}; ?>";
-	}
-
-	/**
 	 * Compile the jhtml statements into valid PHP.
 	 *
 	 * @param   string  $expression

@@ -48,6 +48,18 @@ Creating a Controller, Model or View class file is not actually necessary. If yo
 
 This leaves us with view templates. Scaffolding was only really useful in creating XML forms which could approximately represent your data but suffered from all the problems plaguing XML forms, outlined above. We consider using Blade and the built-in common Blade view templates the best way to create a quick interface for your component. Moreover, you get to choose the CSS framework you'd like to implement instead of being forced to use Bootstrap 2 as was the case with XML forms. You win something, you lose something. In our experience the end result is far more flexible without too much additional time spent designing the interface.
 
+## Removal of the LESS package
+
+The third party LESS compiler we were using in FOF had not been updated in ages. This made us rather nervous as to
+whether it still works correctly. Moreover, LESS seems to have been gradually abandoned for Sass/SCSS or completely
+ditched for modern CSS which allows variable replacements. Moreover, we have seen that an increasing number of
+developers introduce a step of precompilation and / or minification of their CSS in their build and release workflow.
+Finally, compiling LESS on the fly was _slow_ and had several challenges regarding making the compiled file available
+to the browser.
+
+With that in mind we completely removed LESS support from FOF 3.6. You are advised to compile and minify your CSS before
+releasing your extension.
+
 # FOF 3.5.4
 
 ## Common Blade view templates

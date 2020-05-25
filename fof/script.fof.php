@@ -74,6 +74,7 @@ class file_fof30InstallerScript
 		'folders' => [
 			'Form',
 			'Factory/Scaffolding',
+			'Less',
 		],
 	];
 
