@@ -70,6 +70,64 @@ As a result we removed the HAL support from FOF and ask you to implement whichev
 
 The mcrypt PHP extension has been declared deprecated since PHP 7.1, the minimum PHP version supported by FOF 3.6. Moreover, it's not been maintained since 2003, making it unsuitable for production. PHP recommends replacing it with OpenSSL. To this end we had modified our Encrypt package to work with both mcrypt and OpenSSL since FOF 3.0.13 released in August 2016. In FOF 3.6 we are completely removing mcrypt support. This change is transparent as long as you use the `Encrypt\Aes` class. If you were instantiating `Encrypt\AesAdapter\Mcrypt` directly your code will break.
 
+## Renderer changes
+
+The following changes have taken places in FOF's renderers:
+
+* **AkeebaStrapper** has been removed. This was a transitional renderer which backported Bootstrap 2 styling in Joomla!
+  2.5. Joomla! 2.5 is no longer supported and Akeeba Strapper (the library with the custom, namespaced Boostrap 2
+  distribution) has been discontinued since 2018. Therefore this renderer has no reason of existence.
+* **Joomla** has been added. This is the new default renderer (if the FEF renderer is unavailable) and works in all Joomla! versions supported by FOF (3.9+ and 4.0).
+* **Joomla3** outputs the wrapper DIV class `akeeba-renderer-joomla` and `akeeba-renderer-joomla3`. Moreover, it will only enable itself on Joomla! 3.x; it will be disabled on Joomla! 4.x.
+* **Joomla4** has been added. This is currently a tentative renderer since Joomla! 4 has not reached a beta stage and
+  its backend template is still under development. It outputs the wrapper DIV class `akeeba-renderer-joomla` and 
+  `akeeba-renderer-joomla4`. Moreover, it will only enable itself on Joomla! 4.x; it will be disabled on Joomla! 3.x.
+* **FEF** outputs the wrapper DIV class `akeeba-renderer-fef`. It extends the `Joomla` renderer but it will NOT output the `akeeba-renderer-joomla` wrapper DIV class; this class is forcibly added to the `remove_wrapper_classes` renderer option.
+
+All renderers support the `remove_wrapper_classes` and `add_wrapper_classes` renderer options. These options now allow
+you to also _remove_ the wrapper classes (e.g. `akeeba-renderer-joomla` and `akeeba-renderer-fef`) if you so wish. Just
+remember that removing the wrapper class from the FEF renderer will result in unstyled content unless you wrap the
+output yourself in a DIV with the class `akeeba-renderer-fef`.
+
+Likewise, all renderers support the `wrapper_id` renderer option which allows you to change the ID of the wrapper DIV. Set it to `null` or an empty string to remove the ID completely. This is recommended and will be the only available behavior come FOF 4. The reason is that the legacy method currently used, outputting an ID by default, means you end up with multiple DIVs with the same ID when using HMVC, making your HTML invalid. 
+
+If you wrote a custom renderer extending the now defunct `AkeebaStrapper` renderer please extend the `Joomla` renderer
+OR the `RenderBase` class instead.
+
+Finally, keep in mind that the default renderer is automatically detected using the information provided by FOF's Render
+classes. If FEF is installed on your site, FOF will automatically prefer the FEF renderer instead of the Joomla! 
+renderer. This many NOT be what you want. Always set up the desired renderer in your `fof.xml` file to prevent nasty
+surprises.
+
+## Automatic template suffixes based on Joomla! version _and_ renderer used
+
+A goal of FOF is the easier implementation of a component which works across substantially different Joomla! versions
+(e.g. Joomla! 3 and Joomla! 4). The biggest challenge with that is that the HTML you need to output in each case could plausible be radically different. For this reason we add automatic suffixes to view templates based on the Joomla! version
+_and_ FOF renderer used.
+
+For example, consider that you are trying to load the view template `default.php` on a Joomla! 3.9 site using the `FEF`
+renderer. FOF will try to file a view template file from most to least specific:
+
+* default.j39.fef.php
+* default.j39.php
+* default.j3.fef.php
+* default.j3.php
+* default.fef.php
+* default.php
+
+First one to be found is used.
+
+When trying to understand which view template will be loaded also keep in mind that the suffixes do not override the
+path priority. What we mean is that FOF will first look for _template overrides_ in the site's template, then view
+templates in the component (in the order `ViewTemplates/view_name/default.php`, `View/view_name/tmpl/default.php`,
+`views/view_name/tmpl/default.php`). If you are using a Magic factory the same will be repeated on the other side of the
+application (e.g. the backend if you are accessing the component from the site's frontend).
+
+In simple terms, if your client has created a template override for `default.php` it will be loaded instead of the
+`default.j39.fef.php` inside your component. This is on purpose. The idea is that a template override is by definition
+most specific as it's done for a specific site which runs a specific Joomla! version and for a specific component whose
+renderer you already know.
+
 # FOF 3.5.4
 
 ## Common Blade view templates

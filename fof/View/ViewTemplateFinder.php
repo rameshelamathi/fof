@@ -315,19 +315,29 @@ class ViewTemplateFinder
 
 		// Get the Joomla! version template suffixes
 		$jVersionSuffixes = array_merge($this->container->platform->getTemplateSuffixes(), ['']);
-		$filesystem       = $this->container->filesystem;
+
+		// Get the renderer name suffixes
+		$rendererNameSuffixes = [
+			'.' . $this->container->renderer->getInformation()->name,
+			'',
+		];
+
+		$filesystem = $this->container->filesystem;
 
 		foreach ($this->extensions as $extension)
 		{
 			foreach ($jVersionSuffixes as $JVersionSuffix)
 			{
-				$filenameToFind = $parts['template'] . $JVersionSuffix . $extension;
-
-				$fileName = $filesystem->pathFind($paths, $filenameToFind);
-
-				if (!empty($fileName))
+				foreach ($rendererNameSuffixes as $rendererNameSuffix)
 				{
-					return $fileName;
+					$filenameToFind = $parts['template'] . $JVersionSuffix . $rendererNameSuffix . $extension;
+
+					$fileName = $filesystem->pathFind($paths, $filenameToFind);
+
+					if ($fileName)
+					{
+						return $fileName;
+					}
 				}
 			}
 		}
@@ -342,13 +352,16 @@ class ViewTemplateFinder
 
 		foreach ($jVersionSuffixes as $JVersionSuffix)
 		{
-			$filenameToFind = $parts['template'] . $JVersionSuffix . '.blade.php';
-
-			$fileName = $filesystem->pathFind($paths, $filenameToFind);
-
-			if (!empty($fileName))
+			foreach ($rendererNameSuffixes as $rendererNameSuffix)
 			{
-				return $fileName;
+				$filenameToFind = $parts['template'] . $JVersionSuffix . $rendererNameSuffix . '.blade.php';
+
+				$fileName = $filesystem->pathFind($paths, $filenameToFind);
+
+				if (!empty($fileName))
+				{
+					return $fileName;
+				}
 			}
 		}
 
