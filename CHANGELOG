@@ -1,12 +1,13 @@
 FOF 3.6.0
 ================================================================================
-~ Drop support for PHP 5.6, 7.0
-~ Drop support for PHP Joomla! 3.8
 - Removed obsolete CLI tool
 - Removed deprecated Form package and Scaffolding feature
 - Removed the LESS package
 - Removed the HAL package and the ability of the JSON view to render HAL documents natively
 - Removed mcrypt support
+~ Drop support for PHP 5.6, 7.0
+~ Drop support for PHP Joomla! 3.8
+~ Renderer changes
 # [LOW] Joomla 4 broke b/c with the Controller's setRedirect
 
 FOF 3.5.4

@@ -9,37 +9,33 @@ namespace FOF30\Render;
 
 defined('_JEXEC') || die;
 
-use Exception;
 use FOF30\Container\Container;
-use FOF30\Model\DataModel;
 use FOF30\Toolbar\Toolbar;
-use FOF30\View\View;
 use JHtmlSidebar;
-use Joomla\CMS\Document\Document;
-use Joomla\CMS\Factory;
+use Joomla\CMS\Factory as JoomlaFactory;
 use Joomla\CMS\HTML\HTMLHelper;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\Router\Route;
-use Joomla\CMS\Uri\Uri;
-use stdClass;
+use Joomla\CMS\Toolbar\Toolbar as JoomlaToolbar;
 
 /**
- * Renderer class for use with Akeeba Strapper
+ * Renderer class for use with Joomla! 3.x and 4.x
  *
  * Renderer options
- * linkbar_style        Style for linkbars: joomla3|classic. Default: joomla3
+ *
+ * wrapper_id              The ID of the wrapper DIV. Default: akeeba-renderjoomla
+ * linkbar_style           Style for linkbars: joomla3|classic. Default: joomla3
+ * remove_wrapper_classes  Comma-separated list of classes to REMOVE from the container
+ * add_wrapper_classes     Comma-separated list of classes to ADD to the container
  *
  * @package FOF30\Render
+ * @since   3.6.0
  */
-class AkeebaStrapper extends RenderBase implements RenderInterface
+class Joomla extends RenderBase implements RenderInterface
 {
-	/**
-	 * Public constructor. Determines the priority of this class and if it should be enabled
-	 */
+	/** @inheritDoc */
 	public function __construct(Container $container)
 	{
-		$this->priority = 60;
-		$this->enabled  = class_exists('\\AkeebaStrapper30');
+		$this->priority = 30;
+		$this->enabled  = true;
 
 		parent::__construct($container);
 	}
@@ -52,7 +48,7 @@ class AkeebaStrapper extends RenderBase implements RenderInterface
 	 *
 	 * @return  void
 	 */
-	public function preRender($view, $task)
+	function preRender(string $view, string $task): void
 	{
 		$input    = $this->container->input;
 		$platform = $this->container->platform;
@@ -76,7 +72,6 @@ class AkeebaStrapper extends RenderBase implements RenderInterface
 
 		HTMLHelper::_('behavior.core');
 		HTMLHelper::_('jquery.framework', true);
-
 
 		// Wrap output in various classes
 		$versionParts = explode('.', JVERSION);
@@ -112,12 +107,9 @@ class AkeebaStrapper extends RenderBase implements RenderInterface
 			$classes = array_unique($classes);
 		}
 
-		// Wrap output in divs
-		echo '<div id="akeeba-bootstrap" class="' . implode(' ', $classes) . "\">\n";
-		echo "<div class=\"akeeba-bootstrap\">\n";
-		echo "<div class=\"row-fluid\">\n";
+		$this->openPageWrapper($classes);
 
-		// Render submenu and toolbar (only if asked to)
+		// Render the submenu and toolbar
 		if ($input->getBool('render_toolbar', true))
 		{
 			$this->renderButtons($view, $task);
@@ -135,28 +127,31 @@ class AkeebaStrapper extends RenderBase implements RenderInterface
 	 *
 	 * @return  void
 	 */
-	public function postRender($view, $task)
+	function postRender(string $view, string $task): void
 	{
 		$input    = $this->container->input;
 		$platform = $this->container->platform;
 
 		$format = $input->getCmd('format', 'html');
 
-		if ($format != 'html' || $platform->isCli())
+		if (empty($format))
+		{
+			$format = 'html';
+		}
+
+		if ($format != 'html')
 		{
 			return;
 		}
 
-		$sidebarEntries = JHtmlSidebar::getEntries();
-
-		if (!empty($sidebarEntries))
+		// Closing tag only if we're not in CLI
+		if ($platform->isCli())
 		{
-			echo '</div>';
+			return;
 		}
 
-		echo "</div>\n";    // Closes row-fluid div
-		echo "</div>\n";    // Closes akeeba-bootstrap div
-		echo "</div>\n";    // Closes joomla-version div
+		// Closes akeeba-renderjoomla div
+		$this->closePageWrapper();
 	}
 
 	/**
@@ -167,7 +162,7 @@ class AkeebaStrapper extends RenderBase implements RenderInterface
 	 *
 	 * @return  void
 	 */
-	protected function renderLinkbar($view, $task)
+	protected function renderLinkbar(string $view, string $task): void
 	{
 		$style = $this->getOption('linkbar_style', 'joomla');
 
@@ -193,7 +188,7 @@ class AkeebaStrapper extends RenderBase implements RenderInterface
 	 *
 	 * @return  void
 	 */
-	protected function renderLinkbar_classic($view, $task)
+	protected function renderLinkbar_classic(string $view, string $task): void
 	{
 		$platform = $this->container->platform;
 
@@ -315,7 +310,7 @@ class AkeebaStrapper extends RenderBase implements RenderInterface
 					{
 						$class = $link['active'] ? 'active' : '';
 
-						$href = $link['link'] ?: '#';
+						$href = $link['link'] ? $link['link'] : '#';
 
 						echo "<a href=\"$href\" class=\"nav-link $class\">{$link['name']}</a>";
 					}
@@ -338,7 +333,7 @@ class AkeebaStrapper extends RenderBase implements RenderInterface
 	 *
 	 * @return  void
 	 */
-	protected function renderLinkbar_joomla($view, $task)
+	protected function renderLinkbar_joomla(string $view, string $task): void
 	{
 		$platform = $this->container->platform;
 
@@ -363,11 +358,11 @@ class AkeebaStrapper extends RenderBase implements RenderInterface
 	/**
 	 * Render the linkbar
 	 *
-	 * @param   Toolbar  $toolbar  A toolbar object
+	 * @param   Toolbar  $toolbar  An FOF toolbar object
 	 *
 	 * @return  void
 	 */
-	protected function renderLinkbarItems($toolbar)
+	protected function renderLinkbarItems(Toolbar $toolbar): void
 	{
 		$links = $toolbar->getLinks();
 
@@ -403,16 +398,8 @@ class AkeebaStrapper extends RenderBase implements RenderInterface
 	 *
 	 * @return  void
 	 */
-	protected function renderButtons($view, $task)
+	protected function renderButtons(string $view, string $task): void
 	{
-		// Prevent phpStorm from complaining
-		if ($view)
-		{
-		}
-		if ($task)
-		{
-		}
-
 		$platform = $this->container->platform;
 
 		if ($platform->isCli())
@@ -433,7 +420,7 @@ class AkeebaStrapper extends RenderBase implements RenderInterface
 			return;
 		}
 
-		$bar   = \Joomla\CMS\Toolbar\Toolbar::getInstance('toolbar');
+		$bar   = JoomlaToolbar::getInstance('toolbar');
 		$items = $bar->getItems();
 
 		$substitutions = [
@@ -450,9 +437,9 @@ class AkeebaStrapper extends RenderBase implements RenderInterface
 			'icon-32-save-new'  => 'icon-repeat',
 		];
 
-		if (isset(Factory::getApplication()->JComponentTitle))
+		if (isset(JoomlaFactory::getApplication()->JComponentTitle))
 		{
-			$title = Factory::getApplication()->JComponentTitle;
+			$title = JoomlaFactory::getApplication()->JComponentTitle;
 		}
 		else
 		{
@@ -474,17 +461,6 @@ class AkeebaStrapper extends RenderBase implements RenderInterface
 
 			if ($button !== false)
 			{
-				/**
-				 * if (method_exists($button, 'fetchId'))
-				 * {
-				 * $id = call_user_func_array(array(&$button, 'fetchId'), $node);
-				 * }
-				 * else
-				 * {
-				 * $id = null;
-				 * }
-				 * /**/
-
 				$action    = call_user_func_array([&$button, 'fetchButton'], $node);
 				$action    = str_replace('class="toolbar"', 'class="toolbar btn"', $action);
 				$action    = str_replace('<span ', '<i ', $action);
@@ -500,4 +476,21 @@ class AkeebaStrapper extends RenderBase implements RenderInterface
 
 		echo implode("\n", $html);
 	}
+
+	/**
+	 * Opens the wrapper DIV element. Our component's output will be inside this wrapper.
+	 *
+	 * @param   array  $classes  An array of additional CSS classes to add to the outer page wrapper element.
+	 *
+	 * @return  void
+	 */
+	protected function openPageWrapper(array $classes): void
+	{
+		$this->setOption('wrapper_id', $this->getOption('wrapper_id', 'akeeba-renderjoomla'));
+
+		$classes[] = 'akeeba-renderer-joomla';
+
+		parent::openPageWrapper($classes);
+	}
+
 }

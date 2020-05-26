@@ -58,6 +58,5 @@ Backwards incompatible changes and major new features are detailed in the [`UPGR
 The following features present in earlier versions of FOF 3 are scheduled for removal:
 
 * `FOF30\Utils\FEFHelper\Html`. Use `FEFHelper.browse` through Joomla's `HtmlHelper` class instead.
-* `FOF30\Render\AkeebaStrapper`. We discontinued Akeeba Strapper in 2018. Please use the Joomla3 renderer or write your own.
 * `FOF30\Utils\StringHelper`. Use the replacements advised in the docblocks.
 * `FOF30\Utils\InstallScript`. Use `FOF30\Utils\InstallScript\Component` instead.

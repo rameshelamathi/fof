@@ -10,8 +10,14 @@ namespace FOF30\Render;
 defined('_JEXEC') || die;
 
 use FOF30\Container\Container;
-use SimpleXMLElement;
+use stdClass;
 
+/**
+ * Interface for FOF view renderers
+ *
+ * @package FOF30\Render
+ * @since   3.0.0
+ */
 interface RenderInterface
 {
 	/**
@@ -26,7 +32,7 @@ interface RenderInterface
 	 *
 	 * @return object
 	 */
-	function getInformation();
+	function getInformation(): stdClass;
 
 	/**
 	 * Echoes any HTML to show before the view template
@@ -36,7 +42,7 @@ interface RenderInterface
 	 *
 	 * @return  void
 	 */
-	function preRender($view, $task);
+	function preRender(string $view, string $task): void;
 
 	/**
 	 * Echoes any HTML to show after the view template
@@ -46,7 +52,7 @@ interface RenderInterface
 	 *
 	 * @return  void
 	 */
-	function postRender($view, $task);
+	function postRender(string $view, string $task): void;
 
 	/**
 	 * Renders the submenu (link bar) for a category view when it is used in a
@@ -58,28 +64,17 @@ interface RenderInterface
 	 *
 	 * @return  void
 	 */
-	function renderCategoryLinkbar();
-
-	/**
-	 * Checks if the fieldset defines a tab pane
-	 *
-	 * @param   SimpleXMLElement  $fieldset
-	 *
-	 * @return  boolean
-	 *
-	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
-	 */
-	function isTabFieldset($fieldset);
+	function renderCategoryLinkbar(): void;
 
 	/**
 	 * Set a renderer option (depends on the renderer)
 	 *
 	 * @param   string  $key    The name of the option to set
-	 * @param   string  $value  The value of the option
+	 * @param   mixed   $value  The value of the option
 	 *
 	 * @return  void
 	 */
-	function setOption($key, $value);
+	function setOption(string $key, $value = null): void;
 
 	/**
 	 * Set multiple renderer options at once (depends on the renderer)
@@ -88,7 +83,7 @@ interface RenderInterface
 	 *
 	 * @return  void
 	 */
-	function setOptions(array $options);
+	function setOptions(array $options): void;
 
 	/**
 	 * Get the value of a renderer option
@@ -98,5 +93,5 @@ interface RenderInterface
 	 *
 	 * @return  mixed  The parameter value
 	 */
-	function getOption($key, $default = null);
+	function getOption(string $key, $default = null);
 }

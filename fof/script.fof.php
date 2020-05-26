@@ -70,6 +70,7 @@ class file_fof30InstallerScript
 			'Factory/Exception/FormLoadFile.php',
 			'Factory/Exception/FormLoadGeneric.php',
 			'Factory/Exception/FormNotFound.php',
+			'Render/AkeebaStrapper.php',
 			'View/DataView/Form.php',
 		],
 		'folders' => [

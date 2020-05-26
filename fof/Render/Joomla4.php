@@ -12,7 +12,7 @@ defined('_JEXEC') || die;
 use FOF30\Container\Container;
 
 /**
- * Renderer class for use with Joomla! 3.x
+ * Renderer class for use with Joomla! 4.x
  *
  * Renderer options
  *
@@ -22,15 +22,13 @@ use FOF30\Container\Container;
  * add_wrapper_classes     Comma-separated list of classes to ADD to the container
  *
  * @package FOF30\Render
- * @since   3.0.0
  */
-class Joomla3 extends Joomla
+class Joomla4 extends Joomla
 {
 	public function __construct(Container $container)
 	{
-		$this->priority = 55;
-		$this->enabled  = version_compare(JVERSION, '3.0', 'ge') &&
-			version_compare(JVERSION, '3.9.999', 'le');
+		$this->priority = 40;
+		$this->enabled  = version_compare(JVERSION, '3.9.999', 'gt');
 
 		parent::__construct($container);
 	}
@@ -38,15 +36,14 @@ class Joomla3 extends Joomla
 	/**
 	 * Opens the FEF styling wrapper element. Our component's output will be inside this wrapper.
 	 *
-	 * @param   array        $classes  An array of additional CSS classes to add to the outer page wrapper element.
+	 * @param   array  $classes  An array of additional CSS classes to add to the outer page wrapper element.
 	 *
 	 * @return  void
 	 */
 	protected function openPageWrapper(array $classes): void
 	{
-		$classes[] = 'akeeba-renderer-joomla3';
+		$classes[] = 'akeeba-renderer-joomla4';
 
 		parent::openPageWrapper($classes);
 	}
-
 }

@@ -16,6 +16,8 @@ use FOF30\Container\Container;
  * Renderer class for use with Akeeba FEF
  *
  * Renderer options
+ *
+ * wrapper_id           The ID of the wrapper DIV. Default: akeeba-rendered-fef
  * linkbar_style        Style for linkbars: joomla3|classic. Default: joomla3
  * load_fef             Load FEF CSS and JS? Set to false if you are loading it outside the renderer. Default: true
  * fef_reset            Should I reset the CSS styling for basic HTML elements inside the FEF container? Default: true
@@ -32,7 +34,7 @@ use FOF30\Container\Container;
  *
  * @package FOF30\Render
  */
-class FEF extends Joomla3
+class FEF extends Joomla
 {
 	public function __construct(Container $container)
 	{
@@ -45,7 +47,7 @@ class FEF extends Joomla3
 			include_once $helperFile;
 		}
 
-		$this->priority = 50;
+		$this->priority = 20;
 		$this->enabled  = class_exists('AkeebaFEFHelper');
 	}
 
@@ -57,7 +59,7 @@ class FEF extends Joomla3
 	 *
 	 * @return  void
 	 */
-	public function preRender($view, $task)
+	function preRender(string $view, string $task): void
 	{
 		$useReset    = $this->getOption('fef_reset', true);
 		$useFEF      = $this->getOption('load_fef', true);
@@ -85,7 +87,7 @@ class FEF extends Joomla3
 	 *
 	 * @return  void
 	 */
-	protected function openPageWrapper($classes)
+	protected function openPageWrapper(array $classes): void
 	{
 		$useDarkMode = $this->getOption('fef_dark', false);
 
@@ -129,12 +131,14 @@ class FEF extends Joomla3
 			$addClasses = explode(',', $addClasses);
 		}
 
-		$addClasses = array_map('trim', $addClasses);
-
+		$addClasses    = array_map('trim', $addClasses);
 		$customClasses = implode(' ', array_unique(array_merge($classes, $addClasses)));
 
+		$id = $this->getOption('wrapper_id', 'akeeba-renderer-fef');
+		$id = empty($id) ? "" : sprintf(' id="%s"', $id);
+
 		echo <<< HTML
-<div id="akeeba-renderer-fef" class="akeeba-renderer-fef $customClasses">
+<div class="akeeba-renderer-fef $customClasses"$id>
 
 HTML;
 	}
@@ -144,7 +148,7 @@ HTML;
 	 *
 	 * @return  void
 	 */
-	protected function closePageWrapper()
+	protected function closePageWrapper(): void
 	{
 		echo <<< HTML
 </div>

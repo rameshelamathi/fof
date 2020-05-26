@@ -10,14 +10,15 @@ namespace FOF30\Render;
 defined('_JEXEC') || die;
 
 use FOF30\Container\Container;
-use FOF30\Model\DataModel;
 use Joomla\Registry\Registry;
 use LogicException;
-use SimpleXMLElement;
 use stdClass;
 
 /**
  * Base class for other render classes
+ *
+ * @package FOF30\Render
+ * @since   3.0.0
  */
 abstract class RenderBase implements RenderInterface
 {
@@ -30,7 +31,7 @@ abstract class RenderBase implements RenderInterface
 	/** @var   int  The priority of this renderer in case we have multiple available ones */
 	protected $priority = 0;
 
-	/** @var   Registry|Registry  A registry object holding renderer options */
+	/** @var   Registry  A registry object holding renderer options */
 	protected $optionsRegistry = null;
 
 	/**
@@ -40,18 +41,18 @@ abstract class RenderBase implements RenderInterface
 	{
 		$this->container = $container;
 
-		$this->optionsRegistry = class_exists('JRegistry') ? new Registry() : new Registry();
+		$this->optionsRegistry = new Registry();
 	}
 
 	/**
 	 * Set a renderer option (depends on the renderer)
 	 *
 	 * @param   string  $key    The name of the option to set
-	 * @param   string  $value  The value of the option
+	 * @param   mixed   $value  The value of the option
 	 *
 	 * @return  void
 	 */
-	public function setOption($key, $value)
+	function setOption(string $key, $value = null): void
 	{
 		$this->optionsRegistry->set($key, $value);
 	}
@@ -63,7 +64,7 @@ abstract class RenderBase implements RenderInterface
 	 *
 	 * @return  void
 	 */
-	public function setOptions(array $options)
+	function setOptions(array $options): void
 	{
 		foreach ($options as $key => $value)
 		{
@@ -79,7 +80,7 @@ abstract class RenderBase implements RenderInterface
 	 *
 	 * @return  mixed  The parameter value
 	 */
-	public function getOption($key, $default = null)
+	function getOption(string $key, $default = null)
 	{
 		return $this->optionsRegistry->get($key, $default);
 	}
@@ -87,13 +88,16 @@ abstract class RenderBase implements RenderInterface
 	/**
 	 * Returns the information about this renderer
 	 *
-	 * @return object
+	 * @return  stdClass
 	 */
-	public function getInformation()
+	function getInformation(): stdClass
 	{
+		$classParts = explode('\\', get_class($this));
+
 		return (object) [
 			'enabled'  => $this->enabled,
 			'priority' => $this->priority,
+			'name'     => strtolower(array_pop($classParts)),
 		];
 	}
 
@@ -105,7 +109,7 @@ abstract class RenderBase implements RenderInterface
 	 *
 	 * @return  void
 	 */
-	function preRender($view, $task)
+	function preRender(string $view, string $task): void
 	{
 		$this->loadCustomCss();
 	}
@@ -118,7 +122,7 @@ abstract class RenderBase implements RenderInterface
 	 *
 	 * @return  void
 	 */
-	function postRender($view, $task)
+	function postRender(string $view, string $task): void
 	{
 	}
 
@@ -132,38 +136,67 @@ abstract class RenderBase implements RenderInterface
 	 *
 	 * @return  void
 	 */
-	function renderCategoryLinkbar()
+	function renderCategoryLinkbar(): void
 	{
 		throw new LogicException(sprintf('Renderer class %s must implement the %s method', get_class($this), __METHOD__));
 	}
 
 	/**
-	 * Checks if the fieldset defines a tab pane
+	 * Opens a wrapper DIV. Our component's output will be inside this wrapper.
 	 *
-	 * @param   SimpleXMLElement  $fieldset
+	 * @param   array  $classes  An array of additional CSS classes to add to the outer page wrapper element.
 	 *
-	 * @return  boolean
-	 *
-	 * @deprecated 3.1  Support for XML forms will be removed in FOF 4
+	 * @return  void
 	 */
-	function isTabFieldset($fieldset)
+	protected function openPageWrapper(array $classes): void
 	{
-		if (!isset($fieldset->class) || !$fieldset->class)
+		$removeClasses = $this->getOption('remove_wrapper_classes', []);
+
+		if (!is_array($removeClasses))
 		{
-			return false;
+			$removeClasses = explode(',', $removeClasses);
 		}
 
-		$class   = $fieldset->class;
-		$classes = explode(' ', $class);
+		$removeClasses = array_map('trim', $removeClasses);
 
-		if (!in_array('tab-pane', $classes))
+		foreach ($removeClasses as $class)
 		{
-			return false;
+			$x = array_search($class, $classes);
+
+			if ($x !== false)
+			{
+				unset($classes[$x]);
+			}
 		}
-		else
+
+		// Add the following classes to the wrapper div
+		$addClasses = $this->getOption('add_wrapper_classes', '');
+
+		if (!is_array($addClasses))
 		{
-			return in_array('active', $classes) ? 2 : 1;
+			$addClasses = explode(',', $addClasses);
 		}
+
+		$addClasses    = array_map('trim', $addClasses);
+		$customClasses = implode(' ', array_unique(array_merge($classes, $addClasses)));
+
+		$id = $this->getOption('wrapper_id', null);
+		$id = empty($id) ? "" : sprintf(' id="%s"', $id);
+
+		echo <<< HTML
+<div class="$customClasses"$id>
+
+HTML;
+	}
+
+	/**
+	 * Outputs HTML which closes the page wrappers opened with openPageWrapper.
+	 *
+	 * @return  void
+	 */
+	protected function closePageWrapper(): void
+	{
+		echo "</div>\n";
 	}
 
 	/**
