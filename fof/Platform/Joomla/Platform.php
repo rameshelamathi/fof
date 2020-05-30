@@ -18,7 +18,6 @@ use FOF30\Input\Input;
 use FOF30\Platform\Base\Platform as BasePlatform;
 use JDatabaseDriver;
 use JEventDispatcher;
-use JLoader;
 use Joomla\CMS\Application\ApplicationHelper;
 use Joomla\CMS\Application\CliApplication as JApplicationCli;
 use Joomla\CMS\Application\CMSApplication as JApplicationCms;
@@ -66,6 +65,13 @@ class Platform extends BasePlatform
 	protected static $isAdmin = null;
 
 	/**
+	 * Is this an API application?
+	 *
+	 * @var   bool
+	 */
+	protected static $isApi = null;
+
+	/**
 	 * A fake session storage for CLI apps. This is only used for legacy CLI applications which are not using the FOF
 	 * Base CLI script.
 	 *
@@ -93,7 +99,7 @@ class Platform extends BasePlatform
 
 		if ($this->isCli())
 		{
-			self::$fakeSession = new Registry();
+			static::$fakeSession = new Registry();
 		}
 	}
 
@@ -606,6 +612,41 @@ class Platform extends BasePlatform
 		[$isCli, $isAdmin] = $this->isCliAdmin();
 
 		return !$isAdmin && $isCli;
+	}
+
+	public function isApi()
+	{
+		if (!is_null(static::$isApi))
+		{
+			return static::$isApi;
+		}
+
+		[$isCli, $isAdmin] = $this->isCliAdmin();
+
+		if (version_compare(JVERSION, '3.999.999', 'le') || $isCli || $isAdmin)
+		{
+			static::$isApi = false;
+
+			return static::$isApi;
+		}
+
+		try
+		{
+			$app         = JFactory::getApplication();
+			static::$isApi = $app->isClient('api');
+		}
+		catch (Exception $e)
+		{
+			static::$isApi = false;
+		}
+
+		if (static::$isApi)
+		{
+			static::$isCLI   = false;
+			static::$isAdmin = false;
+		}
+
+		return static::$isApi;
 	}
 
 	/**
@@ -1134,7 +1175,7 @@ class Platform extends BasePlatform
 	{
 		if ($this->isCli() && !class_exists('FOFApplicationCLI'))
 		{
-			self::$fakeSession->set("$namespace.$name", $value);
+			static::$fakeSession->set("$namespace.$name", $value);
 
 			return;
 		}
@@ -1155,7 +1196,7 @@ class Platform extends BasePlatform
 	{
 		if ($this->isCli() && !class_exists('FOFApplicationCLI'))
 		{
-			return self::$fakeSession->get("$namespace.$name", $default);
+			return static::$fakeSession->get("$namespace.$name", $default);
 		}
 
 		return $this->container->session->get($name, $default, $namespace);

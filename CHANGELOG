@@ -1,6 +1,7 @@
 FOF 3.6.0
 ================================================================================
 + Automatic template suffixes based on Joomla! version _and_ renderer used
++ Platform now has an isApi() method to detect the Joomla! 4 API application
 - Removed obsolete CLI tool
 - Removed deprecated Form package and Scaffolding feature
 - Removed the LESS package

@@ -269,6 +269,13 @@ interface PlatformInterface
 	public function isFrontend();
 
 	/**
+	 * Is this the Joomla 4 API application?
+	 *
+	 * @return  boolean
+	 */
+	public function isApi();
+
+	/**
 	 * Is this a component running in a CLI application?
 	 *
 	 * @return  boolean
