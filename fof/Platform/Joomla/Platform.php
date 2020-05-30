@@ -597,7 +597,7 @@ class Platform extends BasePlatform
 	{
 		[$isCli, $isAdmin] = $this->isCliAdmin();
 
-		return !$isAdmin && !$isCli;
+		return !$isAdmin && !$isCli && !$this->isApi();
 	}
 
 	/**
