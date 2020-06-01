@@ -10,6 +10,7 @@ namespace FOF30\Utils\InstallScript;
 defined('_JEXEC') || die;
 
 use Exception;
+use FOF30\Database\Installer as DatabaseInstaller;
 use InvalidArgumentException;
 use JDatabaseDriver;
 use JError;
@@ -225,7 +226,7 @@ class Component extends BaseInstaller
 		$this->addDependency('fof30', $this->componentName);
 
 		// Install or update database
-		$dbInstaller = new Installer(Factory::getDbo(),
+		$dbInstaller = new DatabaseInstaller(Factory::getDbo(),
 			($this->schemaXmlPathRelative ? JPATH_ADMINISTRATOR . '/components/' . $this->componentName : '') . '/' .
 			$this->schemaXmlPath
 		);
@@ -323,7 +324,7 @@ class Component extends BaseInstaller
 	public function uninstall($parent)
 	{
 		// Uninstall database
-		$dbInstaller = new Installer(Factory::getDbo(),
+		$dbInstaller = new DatabaseInstaller(Factory::getDbo(),
 			($this->schemaXmlPathRelative ? JPATH_ADMINISTRATOR . '/components/' . $this->componentName : '') . '/' .
 			$this->schemaXmlPath
 		);

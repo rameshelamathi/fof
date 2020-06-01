@@ -23,6 +23,11 @@ if (class_exists('file_fof30InstallerScript', false))
 	return;
 }
 
+/**
+ * FOF 3 post-installation script
+ *
+ * @noinspection PhpIllegalPsrClassPathInspection
+ */
 class file_fof30InstallerScript
 {
 	/**
@@ -62,7 +67,7 @@ class file_fof30InstallerScript
 	 *
 	 * @var   array
 	 */
-	protected $removeFilesAllVersions = [
+	protected $removeFiles = [
 		'files'   => [
 			'Download/Adapter/cacert.pem',
 			'Encrypt/AesAdapter/Mcrypt.php',
@@ -201,7 +206,7 @@ class file_fof30InstallerScript
 
 		try
 		{
-			$dbInstaller = new FOF30\Database\Installer($db, $sqlSource);
+			$dbInstaller = new \FOF30\Database\Installer($db, $sqlSource);
 			$dbInstaller->updateSchema();
 		}
 		catch (Exception $e)
