@@ -66,7 +66,7 @@ abstract class ComponentVersion
 	/**
 	 * Get a component's version from the manifest cache in the database
 	 *
-	 * @param   string  $component  The component's bname
+	 * @param   string  $component  The component's name
 	 *
 	 * @return  string  The component version or null if none is defined
 	 *
@@ -114,7 +114,7 @@ abstract class ComponentVersion
 	 * Get a component's version from the manifest file on disk. IMPORTANT! The manifest for com_something must be named
 	 * something.xml.
 	 *
-	 * @param   string  $component  The component's bname
+	 * @param   string  $component  The component's name
 	 *
 	 * @return  string  The component version or null if none is defined
 	 *

@@ -339,7 +339,7 @@ interface PlatformInterface
 	/**
 	 * logs in a user
 	 *
-	 * @param   array  $authInfo  authentification information
+	 * @param   array  $authInfo  Authentication information
 	 *
 	 * @return  boolean  True on success
 	 */

@@ -163,7 +163,7 @@ class BelongsToMany extends Relation
 	}
 
 	/**
-	 * Returns the count subquery for DataModel's has() and whereHas() methods.
+	 * Returns the count sub-query for DataModel's has() and whereHas() methods.
 	 *
 	 * @param   string  $tableAlias  The alias of the local table in the query. Leave blank to use the table's name.
 	 *

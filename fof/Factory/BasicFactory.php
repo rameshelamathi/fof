@@ -208,8 +208,8 @@ class BasicFactory implements FactoryInterface
 	 * Creates a view template finder object for a specific View
 	 *
 	 * The default configuration is:
-	 * Look for .php, .blade.php files; default layout "default"; no default subtemplate;
-	 * look only for the specified view; do NOT fall back to the default layout or subtemplate;
+	 * Look for .php, .blade.php files; default layout "default"; no default sub-template;
+	 * look only for the specified view; do NOT fall back to the default layout or sub-template;
 	 * look for templates ONLY in site or admin, depending on where we're running from
 	 *
 	 * @param   View   $view    The view this view template finder will be attached to

@@ -86,7 +86,7 @@ class DataModelStub extends DataModel
 		{
 			$func = $this->methods[$method];
 
-			// Let's pass an instance of ourself, so we can manipulate other closures
+			// Let's pass an instance of ourselves, so we can manipulate other closures
 			array_unshift($args, $this);
 
 			return call_user_func_array($func, $args);

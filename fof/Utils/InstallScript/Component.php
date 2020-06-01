@@ -195,12 +195,12 @@ class Component extends BaseInstaller
 		// Workarounds for JInstaller issues.
 		if (in_array($type, ['install', 'discover_install']))
 		{
-			// Bugfix for "Database function returned no error"
+			// Bug fix for "Database function returned no error"
 			$this->bugfixDBFunctionReturnedNoError();
 		}
 		else
 		{
-			// Bugfix for "Can not build admin menus"
+			// Bug fix for "Can not build admin menus"
 			$this->bugfixCantBuildAdminMenus();
 		}
 
@@ -297,7 +297,7 @@ class Component extends BaseInstaller
 		// Show the post-installation page
 		$this->renderPostInstallation($parent);
 
-		// Uninstall obsolete subextensions
+		// Uninstall obsolete sub-extensions
 		$this->uninstallObsoleteSubextensions($parent);
 
 		// Clear the FOF cache
@@ -428,7 +428,7 @@ class Component extends BaseInstaller
 	}
 
 	/**
-	 * Bugfix for "DB function returned no error"
+	 * Bug fix for "DB function returned no error"
 	 */
 	protected function bugfixDBFunctionReturnedNoError()
 	{
@@ -462,7 +462,7 @@ class Component extends BaseInstaller
 	}
 
 	/**
-	 * Joomla! 1.6+ bugfix for "Can not build admin menus"
+	 * Joomla! 1.6+ bug fix for "Can not build admin menus"
 	 */
 	protected function bugfixCantBuildAdminMenus()
 	{
@@ -652,11 +652,11 @@ class Component extends BaseInstaller
 	}
 
 	/**
-	 * Uninstalls obsolete subextensions (modules, plugins) bundled with the main extension
+	 * Uninstalls obsolete sub-extensions (modules, plugins) bundled with the main extension
 	 *
 	 * @param   ComponentAdapter  $parent  The parent object
 	 *
-	 * @return  stdClass The subextension uninstallation status
+	 * @return  stdClass The sub-extension uninstallation status
 	 */
 	protected function uninstallObsoleteSubextensions($parent)
 	{
@@ -1144,7 +1144,7 @@ class Component extends BaseInstaller
 
 		if (is_null($rootItemId))
 		{
-			// Dude. Dude! Duuuuuuude! The alias is borked, too?! Find it by component ID.
+			// Woah! The alias is borked, too?! Find it by component ID.
 			$rootItemId = null;
 			$query      = $db->getQuery(true)
 				->select($db->qn('id'))

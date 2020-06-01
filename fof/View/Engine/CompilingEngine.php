@@ -96,7 +96,7 @@ abstract class CompilingEngine extends AbstractEngine implements EngineInterface
 	}
 
 	/**
-	 * Returns the path where I can find a precompiled version of the uncompiled view template which lives in $path
+	 * Returns the path where I can find a precompiled version of the unprocessed view template which lives in $path
 	 *
 	 * @param   string  $path  The path to the uncompiled view template
 	 *

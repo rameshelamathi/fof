@@ -34,7 +34,7 @@ class Assets extends Observer
 
 		unset($model->$assetFieldAlias);
 
-		// Create the object used for inserting/udpating data to the database
+		// Create the object used for inserting/updating data to the database
 		$fields = $model->getTableFields();
 
 		// Let's remove the asset_id field, since we unset the property above and we would get a PHP notice

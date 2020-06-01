@@ -24,7 +24,7 @@ use FOF30\Utils\Phpfunc;
  * $aes->setPassword('yourRealPassword');
  * // Encrypt something.
  * $cipherText = $aes->encryptString($sourcePlainText);
- * // Decypt something
+ * // Decrypt something
  * $plainText = $aes->decryptString($sourceCipherText);
  */
 class Aes

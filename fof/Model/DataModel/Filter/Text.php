@@ -17,7 +17,7 @@ class Text extends AbstractFilter
 	 * Constructor
 	 *
 	 * @param   JDatabaseDriver  $db     The database object
-	 * @param   object           $field  The field informations as taken from the db
+	 * @param   object           $field  The field information as taken from the db
 	 */
 	public function __construct($db, $field)
 	{

@@ -85,7 +85,7 @@ abstract class AbstractFilter
 	/**
 	 * Creates a field Object based on the field column type
 	 *
-	 * @param   object  $field   The field informations
+	 * @param   object  $field   The field information
 	 * @param   array   $config  The field configuration (like the db object to use)
 	 *
 	 * @return  AbstractFilter  The Filter object
@@ -320,7 +320,7 @@ abstract class AbstractFilter
 	 * $from < VALUE < $to
 	 *
 	 * @param   mixed    $from     The lowest value to compare to
-	 * @param   mixed    $to       The higherst value to compare to
+	 * @param   mixed    $to       The highest value to compare to
 	 * @param   boolean  $include  Should we include the boundaries in the search?
 	 *
 	 * @return  string  The SQL where clause for this search
@@ -362,7 +362,7 @@ abstract class AbstractFilter
 	 * $from < VALUE < $to
 	 *
 	 * @param   mixed    $from     The lowest value to compare to
-	 * @param   mixed    $to       The higherst value to compare to
+	 * @param   mixed    $to       The highest value to compare to
 	 * @param   boolean  $include  Should we include the boundaries in the search?
 	 *
 	 * @return  string  The SQL where clause for this search

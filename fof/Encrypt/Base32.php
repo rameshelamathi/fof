@@ -160,7 +160,7 @@ class Base32
 		// Remove the extra 0's we added
 		$str = preg_replace('/000(.{5})/', '$1', $str);
 
-		// Unpad if nessicary
+		// Remove padding if necessary
 		$length = strlen($str);
 		$rbits  = $length & 7;
 
@@ -194,7 +194,7 @@ class Base32
 	 * Used with array_map to map the characters from a base32
 	 * character set directly into a binary string
 	 *
-	 * @param   string  $chr  The caracter to map
+	 * @param   string  $chr  The character to map
 	 *
 	 * @return  string  String of 0's and 1's
 	 *

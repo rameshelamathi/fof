@@ -41,7 +41,7 @@ class RelationStub extends Relation
     }
 
     /**
-     * Returns the count subquery for DataModel's has() and whereHas() methods.
+     * Returns the count sub-query for DataModel's has() and whereHas() methods.
      */
     public function getCountSubquery()
     {

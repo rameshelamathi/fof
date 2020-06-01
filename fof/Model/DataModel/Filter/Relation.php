@@ -13,7 +13,7 @@ defined('_JEXEC') || die;
 
 class Relation extends Number
 {
-	/** @var JDatabaseQuery The COUNT subquery to filter by */
+	/** @var JDatabaseQuery The COUNT sub-query to filter by */
 	protected $subQuery = null;
 
 	public function __construct($db, $relationName, $subQuery)

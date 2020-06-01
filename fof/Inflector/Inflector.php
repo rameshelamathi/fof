@@ -371,7 +371,7 @@ class Inflector
 	}
 
 	/**
-	 * Check to see if an Enlish word is plural.
+	 * Check to see if an English word is plural.
 	 *
 	 * @param   string  $string  String to be checked.
 	 *

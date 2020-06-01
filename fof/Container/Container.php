@@ -79,7 +79,7 @@ use Joomla\CMS\Input\Input as CMSInput;
  * @property-read  FactoryInterface                   $factory            The MVC object factory
  * @property-read  FilesystemInterface                $filesystem         The filesystem abstraction layer object
  * @property-read  Inflector                          $inflector          The English word inflector (pluralise /
- *                 singularise words etc)
+ *                 singularize words etc)
  * @property-read  Params                             $params             The component's params
  * @property-read  FOFInput                           $input              The input object
  * @property-read  PlatformInterface                  $platform           The platform abstraction layer object

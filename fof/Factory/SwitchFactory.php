@@ -235,8 +235,8 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 	 * Creates a view template finder object for a specific View.
 	 *
 	 * The default configuration is:
-	 * Look for .php, .blade.php files; default layout "default"; no default subtemplate;
-	 * look for both pluralised and singular views; fall back to the default layout without subtemplate;
+	 * Look for .php, .blade.php files; default layout "default"; no default sub-template;
+	 * look for both pluralised and singular views; fall back to the default layout without sub-template;
 	 * look for templates in both site and admin
 	 *
 	 * @param   View   $view    The view this view template finder will be attached to

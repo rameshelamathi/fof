@@ -311,12 +311,12 @@ class PlgUserFoftoken extends CMSPlugin
 	}
 
 	/**
-	 * Remove the FOF token when the user account is deleted from the datase.
+	 * Remove the FOF token when the user account is deleted from the database.
 	 *
 	 * This event is called after the user data is deleted from the database.
 	 *
 	 * @param   array    $user     Holds the user data
-	 * @param   boolean  $success  True if user was succesfully stored in the database
+	 * @param   boolean  $success  True if user was successfully stored in the database
 	 * @param   string   $msg      Message
 	 *
 	 * @return  bool
@@ -544,7 +544,7 @@ class PlgUserFoftoken extends CMSPlugin
 	 *
 	 * @param   int|null  $userId  The user we're interested in
 	 *
-	 * @return  bool  True if the user has FOF Token profile fileds
+	 * @return  bool  True if the user has FOF Token profile fields
 	 */
 	private function hasTokenProfileFields(?int $userId): bool
 	{

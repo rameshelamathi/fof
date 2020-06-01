@@ -88,7 +88,7 @@ class AesTest extends FOFTestCase
 		$this->assertFalse(Aes::isSupported($phpfunc), 'No required functions available = not supported');
 		$phpfunc->setFunctions($functions_enabled);
 
-		// Test with diminishing amounts of supported OpenSSL algos (=not supported) – for code coverage
+		// Test with diminishing amounts of supported OpenSSL algorithms (=not supported) – for code coverage
 		$temp = $algorithms;
 
 		while (!empty($temp))
@@ -151,7 +151,7 @@ class AesTest extends FOFTestCase
 			$this->assertNotEquals($str, $es);
 			$this->assertEquals($str, $ds);
 
-			// Using an odd sized keystring (using sha256 to convert it to a key)
+			// Using an odd sized key string (using sha256 to convert it to a key)
 			$aes = new Aes('The quick brown fox jumped over the lazy dog');
 			$str = 'This is some very secret stuff that you are not supposed to transmit in clear text';
 			$es  = $aes->encryptString($str, true);
@@ -193,7 +193,7 @@ class AesTest extends FOFTestCase
 			$this->assertNotEquals($str, $es);
 			$this->assertEquals($str, $ds);
 
-			// Using an odd sized keystring (using sha256 to convert it to a key)
+			// Using an odd sized key string (using sha256 to convert it to a key)
 			$this->aes = new Aes('The quick brown fox jumped over the lazy dog');
 			$str       = 'This is some very secret stuff that you are not supposed to transmit in clear text';
 			$es        = $this->aes->encryptString($str, true);
@@ -237,7 +237,7 @@ class AesTest extends FOFTestCase
 			$this->assertNotEquals($str, $es);
 			$this->assertEquals($str, $ds);
 
-			// Using an odd sized keystring (using sha256 to convert it to a key)
+			// Using an odd sized key string (using sha256 to convert it to a key)
 			$this->aes = new Aes('The quick brown fox jumped over the lazy dog');
 			$str       = 'This is some very secret stuff that you are not supposed to transmit in clear text';
 			$es        = $this->aes->encryptString($str, true);
@@ -281,7 +281,7 @@ class AesTest extends FOFTestCase
 			$this->assertNotEquals($str, $es);
 			$this->assertEquals($str, $ds);
 
-			// Using an odd sized keystring (using sha256 to convert it to a key)
+			// Using an odd sized key string (using sha256 to convert it to a key)
 			$this->aes = new Aes('The quick brown fox jumped over the lazy dog');
 			$str       = 'This is some very secret stuff that you are not supposed to transmit in clear text';
 			$es        = $this->aes->encryptString($str, true);

@@ -192,7 +192,7 @@ abstract class Relation
 	}
 
 	/**
-	 * Returns the count subquery for DataModel's has() and whereHas() methods.
+	 * Returns the count sub-query for DataModel's has() and whereHas() methods.
 	 *
 	 * @return JDatabaseQuery
 	 */

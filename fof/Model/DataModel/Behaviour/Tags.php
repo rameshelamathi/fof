@@ -110,7 +110,7 @@ class Tags extends Observer
 	 *
 	 * @return  void
 	 *
-	 * @throws  Exception  Error message if failed to detele tags
+	 * @throws  Exception  Error message if failed to delete tags
 	 */
 	public function onAfterDelete(&$model, $oid)
 	{

@@ -13,7 +13,7 @@ use FOF30\Controller\DataController;
 use FOF30\Factory\Exception\ControllerNotFound;
 
 /**
- * Creates a DataControler object instance based on the information provided by the fof.xml configuration file
+ * Creates a DataController object instance based on the information provided by the fof.xml configuration file
  */
 class ControllerFactory extends BaseFactory
 {

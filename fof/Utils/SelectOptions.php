@@ -268,7 +268,7 @@ class SelectOptions
 	 * - client  'site' (default) or 'administrator'
 	 * - none    Text to show for "all languages" option, use empty string to remove it
 	 *
-	 * @return  stdClass  Languages for the specifed client
+	 * @return  array  Languages for the specified client
 	 * @since   3.3.0
 	 *
 	 */

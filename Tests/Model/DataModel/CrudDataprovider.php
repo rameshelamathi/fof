@@ -202,7 +202,7 @@ class DataModelCrudDataprovider
                 'row'         => (object) array(
                     'foftest_foobar_id' => 1,
                     'title' => 'foobar',
-                    // Slug is not updated since we are moking the dispatcher events
+                    // Slug is not updated since we are mocking the dispatcher events
                     'slug' => 'guinea-pig-row',
                     'enabled' => 1,
                     'ordering' => 1,
@@ -245,7 +245,7 @@ class DataModelCrudDataprovider
                 'row'         => (object) array(
                     'foftest_foobar_id' => 1,
                     'title' => 'foobar',
-                    // Slug is not updated since we are moking the dispatcher events
+                    // Slug is not updated since we are mocking the dispatcher events
                     'slug' => 'guinea-pig-row',
                     'enabled' => 1,
                     'ordering' => 1,
@@ -287,7 +287,7 @@ class DataModelCrudDataprovider
                 'id'          => 'max',
                 'row'         => (object) array(
                     'title' => 'foobar',
-                    // Slug is not updated since we are moking the dispatcher events
+                    // Slug is not updated since we are mocking the dispatcher events
                     'slug' => '',
                     'enabled' => 0,
                     'ordering' => 0,

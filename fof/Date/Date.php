@@ -28,7 +28,7 @@ use Joomla\CMS\Language\Text;
  *          to a JDate object.
  * @method  Date|bool  sub(DateInterval $interval)  Subtracts an amount of days, months, years, hours, minutes and
  *          seconds from a JDate object.
- * @method  Date|bool  modify($modify)              Alter the timestamp of this object by incre/decre-menting in a
+ * @method  Date|bool  modify($modify)              Alter the timestamp of this object by incre-/decrementing in a
  *          format accepted by strtotime().
  *
  * @property-read  string  $daysinmonth   t - Number of days in the given month.
@@ -438,7 +438,7 @@ class Date extends DateTime
 	}
 
 	/**
-	 * Gets the date as an RFC 822 string.  IETF RFC 2822 supercedes RFC 822 and its definition
+	 * Gets the date as an RFC 822 string.  IETF RFC 2822 supersedes RFC 822 and its definition
 	 * can be found at the IETF Web site.
 	 *
 	 * @param   boolean  $local  True to return the date string in the local time zone, false to return it in GMT.

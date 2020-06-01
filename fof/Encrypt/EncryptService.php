@@ -36,7 +36,7 @@ use FOF30\Utils\Phpfunc;
  *
  * - encrypt_key_file  The path to the key file, relative to the component's backend root and WITHOUT the .php extension
  * - encrypt_key_const The constant for the key. By default it is COMPONENTNAME_FOF_ENCRYPT_SERVICE_SECRETKEY where
- *                     COMPONENTNAME corresponds to the uppercased com_componentname without the com_ prefix.
+ *                     COMPONENTNAME corresponds to the uppercase com_componentname without the com_ prefix.
  *
  * @package     FOF30\Encrypt
  *
@@ -181,7 +181,7 @@ class EncryptService
 	}
 
 	/**
-	 * Returns the password used to encrypt information in Akeeba Susbcriptions
+	 * Returns the password used to encrypt information
 	 *
 	 * @return  string
 	 *

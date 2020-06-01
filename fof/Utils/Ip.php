@@ -33,7 +33,7 @@ class Ip
 	/**
 	 * See self::detectAndCleanIP and setUseFirstIpInChain
 	 *
-	 * If this is enabled (default) self::detectAndCleanIP will return the FIRST IP in case there is an IP chaing coming
+	 * If this is enabled (default) self::detectAndCleanIP will return the FIRST IP in case there is an IP chain coming
 	 * for example from an X-Forwarded-For HTTP header. When set to false it will simulate the old behavior in FOF up to
 	 * and including 3.1.1 which returned the LAST IP in the list.
 	 *

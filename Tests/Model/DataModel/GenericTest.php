@@ -89,7 +89,7 @@ class DataModelGenericTest extends DatabaseTest
 	public function testGetDbo($test, $check)
 	{
 		// Please note that if you try to debug this test, you'll get a "Couldn't fetch mysqli_result" error
-		// That's harmless and appears in debug only, you might want to suppress exception thowing
+		// That's harmless and appears in debug only, you might want to suppress exception throwing
 		//\PHPUnit_Framework_Error_Warning::$enabled = false;
 
 		$msg       = 'DataModel::setFieldValue %s - Case: ' . $check['case'];
@@ -391,7 +391,7 @@ class DataModelGenericTest extends DatabaseTest
 	public function testBuildQuery($test, $check)
 	{
 		// Please note that if you try to debug this test, you'll get a "Couldn't fetch mysqli_result" error
-		// That's harmless and appears in debug only, you might want to suppress exception thowing
+		// That's harmless and appears in debug only, you might want to suppress exception throwing
 		//\PHPUnit_Framework_Error_Warning::$enabled = false;
 
 		$before = 0;

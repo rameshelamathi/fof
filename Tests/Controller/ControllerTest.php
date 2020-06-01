@@ -504,7 +504,7 @@ class ControllerTest extends ApplicationTestCase
 
         ReflectionHelper::setValue($controller, 'redirect', $test['mock']['redirect']);
 
-        // Let's save current app istances, I'll have to restore them later
+        // Let's save current app instances, I'll have to restore them later
         if(is_object(\JFactory::$application))
         {
             $oldapp = clone \JFactory::$application;
@@ -520,7 +520,7 @@ class ControllerTest extends ApplicationTestCase
 
         \JFactory::$application = $oldapp;
 
-        // If the redirection has been invoked, I have to nullify the result. In the real world I would be immediatly
+        // If the redirection has been invoked, I have to nullify the result. In the real world I would be immediately
         // redirected to another page.
         if($counter)
         {
