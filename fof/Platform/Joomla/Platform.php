@@ -21,6 +21,7 @@ use JEventDispatcher;
 use Joomla\CMS\Application\ApplicationHelper;
 use Joomla\CMS\Application\CliApplication as JApplicationCli;
 use Joomla\CMS\Application\CMSApplication as JApplicationCms;
+use Joomla\CMS\Application\ConsoleApplication;
 use Joomla\CMS\Application\WebApplication as JApplicationWeb;
 use Joomla\CMS\Authentication\Authentication as JAuthentication;
 use Joomla\CMS\Authentication\AuthenticationResponse as JAuthenticationResponse;
@@ -1312,10 +1313,18 @@ class Platform extends BasePlatform
 
 					return [static::$isCLI, static::$isAdmin];
 				}
-				else
+
+				$app           = JFactory::getApplication();
+				static::$isCLI = $app instanceof Exception;
+
+				if (class_exists('Joomla\CMS\Application\CliApplication'))
 				{
-					$app           = JFactory::getApplication();
-					static::$isCLI = $app instanceof Exception || $app instanceof JApplicationCli;
+					static::$isCLI = static::$isCLI || $app instanceof JApplicationCli;
+				}
+
+				if (class_exists('Joomla\CMS\Application\ConsoleApplication'))
+				{
+					static::$isCLI = static::$isCLI || ($app instanceof ConsoleApplication);
 				}
 			}
 			catch (Exception $e)
