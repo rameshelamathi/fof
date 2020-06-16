@@ -269,6 +269,126 @@ class BasicFactory implements FactoryInterface
 	}
 
 	/**
+	 * Is scaffolding enabled?
+	 *
+	 * @return  bool
+	 *
+	 * @deprecated  3.6.0  Always returns false
+	 */
+	public function isScaffolding()
+	{
+		return false;
+	}
+
+	/**
+	 * Set the scaffolding status
+	 *
+	 * @param   bool  $scaffolding
+	 *
+	 * @deprecated  Removed since 3.6.0, does nothing
+	 */
+	public function setScaffolding($scaffolding): void
+	{
+		// Ignored
+	}
+
+	/**
+	 * Is saving the scaffolding result to disk enabled?
+	 *
+	 * @return   bool
+	 *
+	 * @deprecated  3.6.0  Always returns false
+	 */
+	public function isSaveScaffolding()
+	{
+		return false;
+	}
+
+	/**
+	 * Set the status of saving the scaffolding result to disk.
+	 *
+	 * @param   bool  $saveScaffolding
+	 *
+	 * @deprecated  3.6.0  Does nothing
+	 */
+	public function setSaveScaffolding($saveScaffolding)
+	{
+		// Ignored
+	}
+
+	/**
+	 * Should we save controller to disk?
+	 *
+	 * @param   bool  $state
+	 *
+	 * @deprecated  3.6.0  Does nothing
+	 */
+	public function setSaveControllerScaffolding($state)
+	{
+		// Ignored
+	}
+
+	/**
+	 * Should we save controller scaffolding to disk?
+	 *
+	 * @return  bool  $state
+	 *
+	 * @deprecated  3.6.0  Always returns false
+	 */
+	public function isSaveControllerScaffolding()
+	{
+		return false;
+	}
+
+	/**
+	 * Should we save model to disk?
+	 *
+	 * @param   bool  $state
+	 *
+	 * @deprecated  3.6.0  Does nothing
+	 */
+	public function setSaveModelScaffolding($state)
+	{
+		// Ignored
+	}
+
+	/**
+	 * Should we save model scaffolding to disk?
+	 *
+	 * @return  bool  $state
+	 *
+	 * @deprecated  3.6.0  Always returns false
+	 */
+	public function isSaveModelScaffolding()
+	{
+		return false;
+	}
+
+	/**
+	 * Should we save view to disk?
+	 *
+	 * @param   bool  $state
+	 *
+	 * @deprecated  3.6.0  Does nothing
+	 */
+	public function setSaveViewScaffolding($state)
+	{
+		// Ignored
+	}
+
+	/**
+	 * Should we save view scaffolding to disk?
+	 *
+	 * @return  bool  $state
+	 *
+	 * @deprecated  3.6.0  Always returns false
+	 */
+	public function isSaveViewScaffolding()
+	{
+		return false;
+	}
+
+	/**
 	 * Creates a Controller object
 	 *
 	 * @param   string  $controllerClass  The fully qualified class name for the Controller
