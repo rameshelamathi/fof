@@ -7,12 +7,12 @@
 
 <extension version="3.8" type="plugin" group="user" method="upgrade">
 	<name>plg_user_foftoken</name>
-	<author>Nicholas K. Dionysopoulos / AkeebaBackup.com</author>
+	<author>Nicholas K. Dionysopoulos / Akeeba Ltd</author>
 	<creationDate>2019-11-04</creationDate>
 	<copyright>Copyright (c)2010-2019 Nicholas K. Dionysopoulos / Akeeba Ltd</copyright>
 	<license>GNU GPL version 2 or later; see LICENSE.txt</license>
-	<authorEmail>nicholas@akeebabackup.com</authorEmail>
-	<authorUrl>www.akeebabackup.com</authorUrl>
+	<authorEmail>nicholas@akeeba.com</authorEmail>
+	<authorUrl>www.akeeba.com</authorUrl>
 	<version>0.0.0</version>
 	<description>PLG_USER_FOFTOKEN_XML_DESCRIPTION</description>
 

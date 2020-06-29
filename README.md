@@ -22,7 +22,7 @@ This warrants an explanation of the extensions you see in the Extensions, Manage
   `libraries/fof`. It cannot and MUST NOT be removed. If you delete it your site will break – this is still used by some
   core Joomla components, including Two Factor Authentication. 
 * **F0F** (type: Library). Note that this is F-zero-F. That's an old version of FOF 2.x, renamed so it can run next to
-  Joomla's even more outdated version. [It was a rather complicated affair](https://www.akeebabackup.com/news/1558-info-about-fof-and-f0f.html).
+  Joomla's even more outdated version. [It was a rather complicated affair](https://www.akeeba.com/news/1558-info-about-fof-and-f0f.html).
   It's installed in `libraries/f0f` (f-zero-f). It should no longer be necessary but please do check first if you have
   any very old extension still using it.
 * **file_fof30** (type: File). This is the current version of FOF 3. It's installed in  `libraries/fof30`. Do NOT remove
