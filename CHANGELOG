@@ -1,3 +1,8 @@
+FOF 3.6.2
+================================================================================
+
+# [HIGH] Joomla 4 changed the names of class constants without prior notice, causing a massive backwards compatibility break
+
 FOF 3.6.1
 ================================================================================
 
