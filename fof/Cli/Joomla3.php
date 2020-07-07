@@ -130,4 +130,19 @@ abstract class FOFCliApplicationJoomla3 extends CliApplication
 	{
 		return null;
 	}
+
+	/**
+	 * Sometimes Joomla will try to enqueue messages even if we're under CLI, resulting in fatal errors since only the
+	 * web application has such method. This method will prevent failures, you may want to override it in your application
+	 * for further logging
+	 *
+	 * @param $message
+	 * @param $type
+	 *
+	 * @return null
+	 */
+	public function enqueueMessage($message, $type)
+	{
+		return null;
+	}
 }
