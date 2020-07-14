@@ -2,7 +2,7 @@ FOF 3.6.2
 ================================================================================
 
 # [HIGH] Joomla 4 changed the names of class constants without prior notice, causing a massive backwards compatibility break
-~ FEF Renderer: defer dark mode JavaScript loading
+~ FEF Renderer: do not load dark mode JavaScript (it's not used)
 
 FOF 3.6.1
 ================================================================================
