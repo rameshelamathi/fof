@@ -151,6 +151,7 @@ $config->set('host', $fofTestConfig['host']);
 $config->set('user', $fofTestConfig['user']);
 $config->set('password', $fofTestConfig['password']);
 $config->set('db', $fofTestConfig['db']);
+$config->set('prefix', 'jos_');
 $config->set('tmp_path', JPATH_ROOT . '/tmp');
 $config->set('log_path', JPATH_ROOT . '/logs');
 // Despite its name, this is the session STORAGE, NOT the session HANDLER. Because that somehow makes sense. NOT.
@@ -172,6 +173,10 @@ try
 {
 	TravisLogger::log(4, 'Checking if core tables are there');
 	$db->setQuery('SHOW COLUMNS FROM `jos_assets`')->execute();
+}
+catch (JDatabaseExceptionConnecting $e)
+{
+	throw $e;
 }
 catch (Exception $e)
 {

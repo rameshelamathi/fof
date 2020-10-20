@@ -1,5 +1,6 @@
 FOF 3.6.3
 ================================================================================
++ Support akview and aktask as alternatives to view and task [gh-692]
 # [LOW] DataController: successful copy message when no items were selected
 
 FOF 3.6.2

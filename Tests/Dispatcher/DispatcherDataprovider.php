@@ -52,7 +52,26 @@ class DispatcherDataprovider
                 )
             ),
             array(
-                'case' => 'Data passed in the input, no default view',
+                'case' => 'Data passed in the input (using view), no default view',
+                'defaultView' => null,
+                'view' => 'foobars',
+                'layout' => 'default',
+                'containerView' => 'foobars'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'defaultView' => null,
+                    'input' => array(
+                        'akview' => 'foobars',
+                        'layout' => 'default'
+                    )
+                )
+            ),
+            array(
+                'case' => 'Data passed in the input (using akview), no default view',
                 'defaultView' => null,
                 'view' => 'foobars',
                 'layout' => 'default',
