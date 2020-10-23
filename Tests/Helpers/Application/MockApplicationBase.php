@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Tests\Helpers\Application;
@@ -73,16 +73,11 @@ class MockApplicationBase
 		$methods = self::getMethods();
 
 		// Create the mock.
-		$mockObject = $test->getMock(
-			'\JApplicationBase',
-			$methods,
-			// Constructor arguments.
-			array(),
-			// Mock class name.
-			'',
-			// Call original constructor.
-			true
-		);
+		$mockObject = $test->getMockBuilder('\JApplicationBase')
+			->setMethods($methods)
+			->setConstructorArgs(array())
+			->setMockClassName('')
+			->getMock();
 
 		$mockObject = self::addBehaviours($test, $mockObject, $options);
 

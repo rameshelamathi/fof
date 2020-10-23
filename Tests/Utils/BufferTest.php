@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Tests\Utils;
@@ -21,7 +21,7 @@ class BufferTest extends FOFTestCase
 {
 	/**
 	 * @group   Buffer
-	 * @covers  FOF30\Utils\Buffer::stream_open
+	 * @covers  \FOF30\Utils\Buffer::stream_open
 	 */
 	public function testStreamOpen()
 	{
@@ -33,17 +33,17 @@ class BufferTest extends FOFTestCase
 		$this->assertTrue($return);
 
 		$this->assertEquals(
-			'path',
+			'path/to/some/file',
 			$buffer->name
 		);
 
 		$this->assertArrayHasKey(
-			'path',
+			'path/to/some/file',
 			$buffer::$buffers
 		);
 
 		$this->assertNull(
-            $buffer::$buffers['path']
+            $buffer::$buffers['path/to/some/file']
 		);
 
 		$this->assertEquals(
@@ -73,7 +73,7 @@ class BufferTest extends FOFTestCase
 
 		$this->assertEquals(
 			'0123456789',
-            $buffer::$buffers['path']
+            $buffer::$buffers['path/to/some/file']
 		);
 
 		$buffer->position = 0;
@@ -92,7 +92,7 @@ class BufferTest extends FOFTestCase
 
 		$this->assertEquals(
 			'ABCDE56789',
-            $buffer::$buffers['path']
+            $buffer::$buffers['path/to/some/file']
 		);
 	}
 

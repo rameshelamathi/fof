@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Tests\DataModel\Relation\Relation\BelongsToMany;
@@ -25,7 +25,7 @@ class BelongsToManyTest extends DatabaseTest
 {
     /**
      * @group           BelongsToMany
-     * @group           BelongsToManyContruct
+     * @group           BelongsToManyConstruct
      * @covers          FOF30\Model\DataModel\Relation\BelongsToMany::__construct
      * @dataProvider    BelongsToManyDataprovider::getTestConstruct
      */
@@ -47,7 +47,7 @@ class BelongsToManyTest extends DatabaseTest
 
     /**
      * @group           BelongsToMany
-     * @group           BelongsToManyContruct
+     * @group           BelongsToManyConstruct
      * @covers          FOF30\Model\DataModel\Relation\BelongsToMany::__construct
      */
     public function testConstructException()
@@ -127,7 +127,7 @@ WHERE `pivotTable`.`fakeapp_group_id` =`#__fakeapp_groups`.`fakeapp_group_id`';
 
         $items = array();
 
-        // Let's mix datamodels with integers
+        // Let's mix data models with integers
         $items[0] = new Parts(static::$container);
         $items[0]->find(1);
         $items[0]->description = 'Modified';

@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Tests\Stubs\Controller;
@@ -43,7 +43,7 @@ class ControllerStub extends Controller
         {
             $func = $this->mockedMethods[$method];
 
-            // Let's pass an instance of ourself, so we can manipulate other closures
+            // Let's pass an instance of ourselves, so we can manipulate other closures
             array_unshift($args, $this);
 
             return call_user_func_array($func, $args);

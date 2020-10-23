@@ -1,17 +1,15 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Factory\Magic;
 
-use FOF30\Container\Container;
-use FOF30\Controller\DataController;
-use FOF30\Factory\Exception\ControllerNotFound;
+defined('_JEXEC') || die;
 
-defined('_JEXEC') or die;
+use FOF30\Container\Container;
 
 abstract class BaseFactory
 {
@@ -20,13 +18,12 @@ abstract class BaseFactory
 	 */
 	protected $container = null;
 
-    /**
-     * Section used to build the namespace prefix. We have to pass it since in CLI scaffolding we need
-     * to force the section we're in (ie Site or Admin). {@see \FOF30\Container\Container::getNamespacePrefix() } for valid values
-     *
-     * @var   string
-     */
-    protected $section = 'auto';
+	/**
+	 * Section used to build the namespace prefix.
+	 *
+	 * @var   string
+	 */
+	protected $section = 'auto';
 
 	/**
 	 * Public constructor
@@ -38,19 +35,19 @@ abstract class BaseFactory
 		$this->container = $container;
 	}
 
-    /**
-     * @return string
-     */
-    public function getSection()
-    {
-        return $this->section;
-    }
+	/**
+	 * @return string
+	 */
+	public function getSection()
+	{
+		return $this->section;
+	}
 
-    /**
-     * @param string $section
-     */
-    public function setSection($section)
-    {
-        $this->section = $section;
-    }
+	/**
+	 * @param   string  $section
+	 */
+	public function setSection($section)
+	{
+		$this->section = $section;
+	}
 }

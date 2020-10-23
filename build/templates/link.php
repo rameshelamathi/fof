@@ -1,14 +1,14 @@
 <?php
-$hardlink_files = array(
-);
+/**
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
+ */
 
-$symlink_files = array(
-);
+$hardlink_files = array();
+
+$symlink_files = array();
 
 $symlink_folders = array(
-	# Build files
-	'../buildfiles/bin'							=> 'build/bin',
-	'../buildfiles/buildlang'					=> 'build/buildlang',
-	'../buildfiles/phingext'					=> 'build/phingext',
-	'../buildfiles/tools'						=> 'build/tools',
+	'translations/library/fof/en-GB' => 'fof/language/en-GB',
 );

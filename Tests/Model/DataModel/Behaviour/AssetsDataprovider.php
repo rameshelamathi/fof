@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 class AssetsDataprovider
@@ -50,7 +50,7 @@ class AssetsDataprovider
             array(
                 'case'  => 'Asset support but no rules passed',
                 'count' => 1,
-                'rules' => ''
+                'rules' => '{}'
             )
         );
 

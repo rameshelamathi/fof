@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Tests\Platform;
@@ -448,5 +448,29 @@ class PlatformJoomlaProvider
 			array('cli', array('baz.bat#com_foobar'), 'com_foobar', 'foo.bar', true, 'CLI app, authorise wrong component action (explicitly allowed in CLI)'),
 			array('cli', array('foo.bar#com_foobar'), 'com_foobar', 'foo.bar', true, 'CLI app, authorise existing component action (explicitly allowed in CLI)'),
 		);
+	}
+
+	public static function getTestDate()
+	{
+		return [
+			[
+				[
+					'case'           => 'GMT object, localised',
+					'time'           => 'now',
+					'offset'         => 'GMT',
+					'locale'         => true,
+					'intended_class' => 'FOF30\Date\DateDecorator',
+				],
+			],
+			[
+				[
+					'case'           => 'GMT object, non-localised',
+					'time'           => 'now',
+					'offset'         => 'GMT',
+					'locale'         => false,
+					'intended_class' => 'FOF30\Date\Date',
+				],
+			],
+		];
 	}
 }

@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Tests\DataModel;
@@ -35,7 +35,10 @@ class ModifiedTest extends DatabaseTest
         $platform = static::$container->platform;
         $platform::$user = (object)array('id' => 99);
 
-        $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('addSkipCheckField'), array(static::$container, $config));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('addSkipCheckField'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
         $model->expects($this->exactly(2))->method('addSkipCheckField')
             ->withConsecutive(
                 array($this->equalTo('modified_on')),
@@ -67,7 +70,11 @@ class ModifiedTest extends DatabaseTest
         $platform = static::$container->platform;
         $platform::$user = (object)array('id' => 99);
 
-        $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('isLocked'), array(static::$container, $config));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('isLocked'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->method('isLocked')->willReturn($test['locked']);
         $dataObject = new \stdClass();
 

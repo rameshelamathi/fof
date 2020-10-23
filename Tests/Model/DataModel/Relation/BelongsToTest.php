@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Tests\DataModel\Relation\Relation\BelongsTo;
@@ -61,7 +61,7 @@ class BelongsToTest extends DatabaseTest
     {
         if(!$class)
         {
-            $class = '\FOF30\Tests\Stubs\Model\DataModelStub';
+            $class = '\\FOF30\\Tests\\Stubs\\Model\\DataModelStub';
         }
 
         $config = array(

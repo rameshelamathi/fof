@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 class ControllerDataprovider
@@ -387,7 +387,8 @@ class ControllerDataprovider
                 'result' => true,
                 'modelName' => 'Foobar',
                 'config' => array(
-                    'modelTemporaryInstance' => true
+                    'modelTemporaryInstance' => true,
+                    'hash_view' => 'dummycontroller',
                 )
             )
         );
@@ -409,7 +410,8 @@ class ControllerDataprovider
                 'result' => 'mocked',
                 'modelName' => 'Foobar',
                 'config' => array(
-                    'modelTemporaryInstance' => true
+                    'modelTemporaryInstance' => true,
+                    'hash_view' => 'dummycontroller',
                 )
             )
         );

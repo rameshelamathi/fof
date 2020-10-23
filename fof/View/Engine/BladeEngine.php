@@ -1,16 +1,15 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\View\Engine;
 
-use FOF30\View\Compiler\Blade;
-use FOF30\View\View;
+defined('_JEXEC') || die;
 
-defined('_JEXEC') or die;
+use FOF30\View\View;
 
 /**
  * View engine for compiling PHP template files.

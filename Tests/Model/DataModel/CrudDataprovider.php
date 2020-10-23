@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 class DataModelCrudDataprovider
@@ -202,7 +202,7 @@ class DataModelCrudDataprovider
                 'row'         => (object) array(
                     'foftest_foobar_id' => 1,
                     'title' => 'foobar',
-                    // Slug is not updated since we are moking the dispatcher events
+                    // Slug is not updated since we are mocking the dispatcher events
                     'slug' => 'guinea-pig-row',
                     'enabled' => 1,
                     'ordering' => 1,
@@ -245,7 +245,7 @@ class DataModelCrudDataprovider
                 'row'         => (object) array(
                     'foftest_foobar_id' => 1,
                     'title' => 'foobar',
-                    // Slug is not updated since we are moking the dispatcher events
+                    // Slug is not updated since we are mocking the dispatcher events
                     'slug' => 'guinea-pig-row',
                     'enabled' => 1,
                     'ordering' => 1,
@@ -287,7 +287,7 @@ class DataModelCrudDataprovider
                 'id'          => 'max',
                 'row'         => (object) array(
                     'title' => 'foobar',
-                    // Slug is not updated since we are moking the dispatcher events
+                    // Slug is not updated since we are mocking the dispatcher events
                     'slug' => '',
                     'enabled' => 0,
                     'ordering' => 0,
@@ -981,7 +981,7 @@ class DataModelCrudDataprovider
             ),
             array(
                 'exception' => '\InvalidArgumentException',
-                'message'   => ''
+                'message'   => 'Join array missing some keys, please check the documentation'
             )
         );
 
@@ -994,7 +994,7 @@ class DataModelCrudDataprovider
             ),
             array(
                 'exception' => '\InvalidArgumentException',
-                'message'   => ''
+                'message'   => 'Master table should be loaded or an ID should be passed'
             )
         );
 

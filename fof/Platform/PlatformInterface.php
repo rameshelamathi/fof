@@ -1,16 +1,24 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Platform;
 
-use FOF30\Container\Container;
-use FOF30\Input\Input;
+defined('_JEXEC') || die;
 
-defined('_JEXEC') or die;
+use Exception;
+use FOF30\Container\Container;
+use FOF30\Date\Date;
+use FOF30\Input\Input;
+use JDatabaseDriver;
+use Joomla\CMS\Document\Document;
+use Joomla\CMS\Language\Language;
+use Joomla\CMS\User\User;
+use Joomla\Registry\Registry;
+use JsonSerializable;
 
 /**
  * Part of the F0F Platform Abstraction Layer. It implements everything that
@@ -23,7 +31,7 @@ interface PlatformInterface
 	/**
 	 * Public constructor.
 	 *
-	 * @param   \FOF30\Container\Container  $c  The component container
+	 * @param   Container  $c  The component container
 	 */
 	public function __construct(Container $c);
 
@@ -72,15 +80,15 @@ interface PlatformInterface
 	 * which is running inside our main application (CMS, web app).
 	 *
 	 * The return is a table with the following keys:
-	 * * main	The normal location of component files. For a back-end Joomla!
+	 * * main    The normal location of component files. For a back-end Joomla!
 	 *          component this is the administrator/components/com_example
 	 *          directory.
-	 * * alt	The alternate location of component files. For a back-end
+	 * * alt    The alternate location of component files. For a back-end
 	 *          Joomla! component this is the front-end directory, e.g.
 	 *          components/com_example
-	 * * site	The location of the component files serving the public part of
+	 * * site    The location of the component files serving the public part of
 	 *          the application.
-	 * * admin	The location of the component files serving the administrative
+	 * * admin    The location of the component files serving the administrative
 	 *          part of the application.
 	 *
 	 * All paths MUST be absolute. All four paths MAY be the same if the
@@ -155,12 +163,12 @@ interface PlatformInterface
 	 * value will be used. If $setUserState is set to true, the retrieved
 	 * variable will be stored in the user session.
 	 *
-	 * @param   string    $key           The user state key for the variable
-	 * @param   string    $request       The request variable name for the variable
-	 * @param   Input     $input         The Input object with the request (input) data
-	 * @param   mixed     $default       The default value. Default: null
-	 * @param   string    $type          The filter type for the variable data. Default: none (no filtering)
-	 * @param   boolean   $setUserState  Should I set the user state with the fetched value?
+	 * @param   string   $key           The user state key for the variable
+	 * @param   string   $request       The request variable name for the variable
+	 * @param   Input    $input         The Input object with the request (input) data
+	 * @param   mixed    $default       The default value. Default: null
+	 * @param   string   $type          The filter type for the variable data. Default: none (no filtering)
+	 * @param   boolean  $setUserState  Should I set the user state with the fetched value?
 	 *
 	 * @return  mixed  The value of the variable
 	 */
@@ -206,7 +214,7 @@ interface PlatformInterface
 	 * @param   integer  $id  The user ID to load. Skip or use null to retrieve
 	 *                        the object for the currently logged in user.
 	 *
-	 * @return  \JUser  The \JUser object for the specified user
+	 * @return  User  The \JUser object for the specified user
 	 */
 	public function getUser($id = null);
 
@@ -217,32 +225,32 @@ interface PlatformInterface
 	 * FOF will not attempt to load CSS and Javascript files (as it doesn't make
 	 * sense if there's no \JDocument to handle them).
 	 *
-	 * @return  \JDocument
+	 * @return  Document
 	 */
 	public function getDocument();
 
 	/**
 	 * Returns an object to handle dates
 	 *
-	 * @param   mixed   $time       The initial time
-	 * @param   null    $tzOffest   The timezone offset
-	 * @param   bool    $locale     Should I try to load a specific class for current language?
+	 * @param   mixed  $time      The initial time
+	 * @param   null   $tzOffest  The timezone offset
+	 * @param   bool   $locale    Should I try to load a specific class for current language?
 	 *
-	 * @return  \JDate object
+	 * @return  Date object
 	 */
 	public function getDate($time = 'now', $tzOffest = null, $locale = true);
 
 	/**
 	 * Return the \JLanguage instance of the CMS/application
 	 *
-	 * @return \JLanguage
+	 * @return Language
 	 */
 	public function getLanguage();
 
 	/**
 	 * Returns the database driver object of the CMS/application
 	 *
-	 * @return \JDatabaseDriver
+	 * @return JDatabaseDriver
 	 */
 	public function getDbo();
 
@@ -259,6 +267,13 @@ interface PlatformInterface
 	 * @return  boolean
 	 */
 	public function isFrontend();
+
+	/**
+	 * Is this the Joomla 4 API application?
+	 *
+	 * @return  boolean
+	 */
+	public function isApi();
 
 	/**
 	 * Is this a component running in a CLI application?
@@ -310,7 +325,7 @@ interface PlatformInterface
 	/**
 	 * Returns an object that holds the configuration of the current site.
 	 *
-	 * @return  \JRegistry
+	 * @return  Registry
 	 */
 	public function getConfig();
 
@@ -324,7 +339,7 @@ interface PlatformInterface
 	/**
 	 * logs in a user
 	 *
-	 * @param   array  $authInfo  authentification information
+	 * @param   array  $authInfo  Authentication information
 	 *
 	 * @return  boolean  True on success
 	 */
@@ -366,6 +381,18 @@ interface PlatformInterface
 	public function logDebug($message);
 
 	/**
+	 * Adds a message
+	 *
+	 * @param   string|array  $title      A title, or an array of additional fields to add to the log entry
+	 * @param   string        $logText    The translation key to the log text
+	 * @param   string        $extension  The name of the extension logging this entry
+	 * @param   User|null     $user       The user the action is being logged for
+	 *
+	 * @return  void
+	 */
+	public function logUserAction($title, $logText, $extension, $user = null);
+
+	/**
 	 * Returns the root URI for the request.
 	 *
 	 * @param   boolean  $pathonly  If false, prepend the scheme, host and port information. Default is false.
@@ -379,7 +406,8 @@ interface PlatformInterface
 	 * Returns the base URI for the request.
 	 *
 	 * @param   boolean  $pathonly  If false, prepend the scheme, host and port information. Default is false.
-	 * |
+	 *                              |
+	 *
 	 * @return  string  The base URI string
 	 */
 	public function URIbase($pathonly = false);
@@ -411,4 +439,115 @@ interface PlatformInterface
 	 * @return  void
 	 */
 	public function closeApplication($code = 0);
+
+	/**
+	 * Perform a redirection to a different page, optionally enqueuing a message for the user.
+	 *
+	 * @param   string  $url     The URL to redirect to
+	 * @param   int     $status  (optional) The HTTP redirection status code, default 301
+	 * @param   string  $msg     (optional) A message to enqueue
+	 * @param   string  $type    (optional) The message type, e.g. 'message' (default), 'warning' or 'error'.
+	 *
+	 * @return  void
+	 *
+	 * @throws  Exception
+	 */
+	public function redirect($url, $status = 301, $msg = null, $type = 'message');
+
+	/**
+	 * Handle an exception in a way that results to an error page.
+	 *
+	 * @param   Exception  $exception  The exception to handle
+	 *
+	 * @throws  Exception  Possibly rethrown exception
+	 */
+	public function showErrorPage(Exception $exception);
+
+	/**
+	 * Set a variable in the user session
+	 *
+	 * @param   string  $name       The name of the variable to set
+	 * @param   string  $value      (optional) The value to set it to, default is null
+	 * @param   string  $namespace  (optional) The variable's namespace e.g. the component name. Default: 'default'
+	 *
+	 * @return  void
+	 */
+	public function setSessionVar($name, $value = null, $namespace = 'default');
+
+	/**
+	 * Get a variable from the user session
+	 *
+	 * @param   string  $name       The name of the variable to set
+	 * @param   string  $default    (optional) The default value to return if the variable does not exit, default: null
+	 * @param   string  $namespace  (optional) The variable's namespace e.g. the component name. Default: 'default'
+	 *
+	 * @return  mixed
+	 */
+	public function getSessionVar($name, $default = null, $namespace = 'default');
+
+	/**
+	 * Unset a variable from the user session
+	 *
+	 * @param   string  $name       The name of the variable to unset
+	 * @param   string  $namespace  (optional) The variable's namespace e.g. the component name. Default: 'default'
+	 *
+	 * @return  void
+	 */
+	public function unsetSessionVar($name, $namespace = 'default');
+
+	/**
+	 * Return the session token. Two types of tokens can be returned:
+	 *
+	 * Session token ($formToken == false): Used for anti-spam protection of forms. This is specific to a session
+	 *   object.
+	 *
+	 * Form token ($formToken == true): A secure hash of the user ID with the session token. Both the session and the
+	 *   user are fetched from the application container.
+	 *
+	 * @param   bool  $formToken  Should I return a form token?
+	 * @param   bool  $forceNew   Should I force the creation of a new token?
+	 *
+	 * @return  mixed
+	 */
+	public function getToken($formToken = false, $forceNew = false);
+
+	/**
+	 * Are plugins allowed to run in CLI mode?
+	 *
+	 * @return  bool
+	 */
+	public function isAllowPluginsInCli();
+
+	/**
+	 * Set whether plugins are allowed to run in CLI mode
+	 *
+	 * @param   bool  $allowPluginsInCli
+	 */
+	public function setAllowPluginsInCli($allowPluginsInCli);
+
+	/**
+	 * Set a script option.
+	 *
+	 * This allows the backend code to set up configuration options for frontend (JavaScript) code in a way that's safe
+	 * for async / deferred scripts. The options are stored in the document's head as an inline JSON document. This
+	 * JSON document is then parsed by a JavaScript helper function which makes the options available to the scripts
+	 * that consume them.
+	 *
+	 * @param   string                  $key     The option key
+	 * @param   mixed|JsonSerializable  $value   The option value. Must be a scalar or a JSON serializable object
+	 * @param   bool                    $merge   Should I merge an array value with existing stored values? Default:
+	 *                                           true
+	 *
+	 * @return  void
+	 */
+	public function addScriptOptions($key, $value, $merge = true);
+
+	/**
+	 * Get a script option, or all of the script options
+	 *
+	 * @param   string|null  $key  The script option to retrieve. Null for all options.
+	 *
+	 * @return  array|mixed  Options for given $key, or all script options
+	 */
+	public function getScriptOptions($key = null);
 }

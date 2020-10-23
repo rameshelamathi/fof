@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Tests\DataModel\Collection;
@@ -188,7 +188,10 @@ class CollectionTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getState'), array(static::$container, $config));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('getState'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
 
         $collection1 = new Collection($model->getItemsArray(0, 2));
         $collection2 = new Collection($model->getItemsArray(2, 1));
@@ -211,7 +214,10 @@ class CollectionTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getState'), array(static::$container, $config));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('getState'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
 
         $collection1 = new Collection($model->getItemsArray());
         $collection2 = new Collection($model->getItemsArray(2, 1));
@@ -234,7 +240,10 @@ class CollectionTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getState'), array(static::$container, $config));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('getState'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
 
         $collection1 = new Collection($model->getItemsArray(0,2));
         $collection2 = new Collection($model->getItemsArray(0, 1));
@@ -299,7 +308,10 @@ class CollectionTest extends DatabaseTest
 
         if($test['load'])
         {
-            $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getState'), array(static::$container, $config));
+            $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('getState'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
             $items = $model->getItemsArray(0, 1);
         }
 
@@ -360,7 +372,10 @@ class CollectionTest extends DatabaseTest
             'tableName'   => '#__foftest_bares'
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getState'), array(static::$container, $config));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('getState'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
 
         return $model->getItemsArray();
     }

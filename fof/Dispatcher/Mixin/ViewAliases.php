@@ -1,17 +1,15 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Dispatcher\Mixin;
 
-// Protect from unauthorized access
-use JFactory;
-use JUri;
+defined('_JEXEC') || die;
 
-defined('_JEXEC') or die();
+use Joomla\CMS\Uri\Uri;
 
 /**
  * Lets you create view aliases. When you access a view alias the real view is loaded instead. You can optionally have
@@ -66,7 +64,7 @@ trait ViewAliases
 			return;
 		}
 
-		$this->view = $this->viewNameAliases[ $this->view ];
+		$this->view = $this->viewNameAliases[$this->view];
 		$this->container->input->set('view', $this->view);
 
 		// Perform HTTP 301 Moved permanently redirection on GET requests if requested to do so
@@ -74,9 +72,10 @@ trait ViewAliases
 			&& (strtoupper($_SERVER['REQUEST_METHOD']) == 'GET')
 		)
 		{
-			$url = JUri::getInstance();
+			$url = Uri::getInstance();
 			$url->setVar('view', $this->view);
-			JFactory::getApplication()->redirect($url, 301);
+
+			$this->container->platform->redirect($url, 301);
 		}
 	}
 }

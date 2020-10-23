@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Tests\Factory;
@@ -44,7 +44,11 @@ class BasicFactoryTest extends FOFTestCase
         $msg   = 'BasicFactory::controller %s - Case: '.$check['case'];
         $names = array();
 
-        $factory = $this->getMock('FOF30\Factory\BasicFactory', array('createController'), array(static::$container));
+        $factory = $this->getMockBuilder('FOF30\Factory\BasicFactory')
+            ->setMethods(array('createController'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $factory->method('createController')->willReturnCallback(function($class) use(&$test, &$names){
             $names[] = $class;
             $result = array_shift($test['mock']['create']);
@@ -76,7 +80,11 @@ class BasicFactoryTest extends FOFTestCase
         $msg   = 'BasicFactory::model %s - Case: '.$check['case'];
         $names = array();
 
-        $factory = $this->getMock('FOF30\Factory\BasicFactory', array('createModel'), array(static::$container));
+        $factory = $this->getMockBuilder('FOF30\Factory\BasicFactory')
+            ->setMethods(array('createModel'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $factory->method('createModel')->willReturnCallback(function($class) use(&$test, &$names){
             $names[] = $class;
             $result = array_shift($test['mock']['create']);
@@ -108,7 +116,11 @@ class BasicFactoryTest extends FOFTestCase
         $msg   = 'BasicFactory::view %s - Case: '.$check['case'];
         $names = array();
 
-        $factory = $this->getMock('FOF30\Factory\BasicFactory', array('createView'), array(static::$container));
+        $factory = $this->getMockBuilder('FOF30\Factory\BasicFactory')
+            ->setMethods(array('createView'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $factory->method('createView')->willReturnCallback(function($class) use(&$test, &$names){
             $names[] = $class;
             $result = array_shift($test['mock']['create']);
@@ -140,7 +152,11 @@ class BasicFactoryTest extends FOFTestCase
         $msg  = 'BasicFactory::dispatcher %s - Case: '.$check['case'];
         $name = '';
 
-        $factory = $this->getMock('FOF30\Factory\BasicFactory', array('createDispatcher'), array(static::$container));
+        $factory = $this->getMockBuilder('FOF30\Factory\BasicFactory')
+            ->setMethods(array('createDispatcher'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $factory->method('createDispatcher')->willReturnCallback(function($class) use($test, &$name){
                 $name   = $class;
                 $result = $test['mock']['create'];
@@ -176,7 +192,11 @@ class BasicFactoryTest extends FOFTestCase
         $msg  = 'BasicFactory::toolbar %s - Case: '.$check['case'];
         $name = '';
 
-        $factory = $this->getMock('FOF30\Factory\BasicFactory', array('createToolbar'), array(static::$container));
+        $factory = $this->getMockBuilder('FOF30\Factory\BasicFactory')
+            ->setMethods(array('createToolbar'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $factory->method('createToolbar')->willReturnCallback(function($class) use($test, &$name){
             $name   = $class;
             $result = $test['mock']['create'];
@@ -212,7 +232,11 @@ class BasicFactoryTest extends FOFTestCase
         $msg  = 'BasicFactory::transparentAuthentication %s - Case: '.$check['case'];
         $name = '';
 
-        $factory = $this->getMock('FOF30\Factory\BasicFactory', array('createTransparentAuthentication'), array(static::$container));
+        $factory = $this->getMockBuilder('FOF30\Factory\BasicFactory')
+            ->setMethods(array('createTransparentAuthentication'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $factory->method('createTransparentAuthentication')->willReturnCallback(function($class) use($test, &$name){
             $name   = $class;
             $result = $test['mock']['create'];
@@ -240,44 +264,19 @@ class BasicFactoryTest extends FOFTestCase
 
     /**
      * @group           BasicFactory
-     * @covers          FOF30\Factory\BasicFactory::form
-     * @dataProvider    BasicFactoryDataprovider::getTestForm
-     */
-    public function testForm($test, $check)
-    {
-        $msg  = 'BasicFactory::form %s - Case: '.$check['case'];
-
-        $factory = $this->getMock('FOF30\Factory\BasicFactory', array('getFormFilename'), array(static::$container));
-        $factory->method('getFormFilename')->willReturn($test['mock']['formFilename']);
-
-        ReflectionHelper::setValue($factory, 'scaffolding', $test['mock']['scaffolding']);
-
-        if($check['exception'])
-        {
-            $this->setExpectedException($check['exception']);
-        }
-
-        $result = $factory->form($test['name'], $test['source'], $test['view'], $test['options'], $test['replace'], $test['xpath']);
-
-        if(is_null($check['result']))
-        {
-            $this->assertNull($result, sprintf($msg, 'Returned the wrong result'));
-        }
-        else
-        {
-            $this->assertEquals('FOF30\Form\Form', get_class($result), sprintf($msg, 'Returned the wrong result'));
-        }
-    }
-
-    /**
-     * @group           BasicFactory
      * @covers          FOF30\Factory\BasicFactory::viewFinder
      */
     public function testViewFinder()
     {
         $msg  = 'BasicFactory::viewFinder %s';
 
-        $configuration = $this->getMock('FOF30\Configuration\Configuration', array('get'), array(), '', false);
+        $configuration = $this->getMockBuilder('FOF30\Configuration\Configuration')
+            ->setMethods(array('get'))
+            ->setConstructorArgs(array())
+            ->setMockClassName('')
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $configuration->method('get')->willReturnCallback(
             function($key, $default){
                 return $default;
@@ -300,55 +299,5 @@ class BasicFactoryTest extends FOFTestCase
         // I can only test if the correct object is passed, since we are simply collecting all the data
         // and passing it to the ViewTemplateFinder constructor
         $this->assertEquals('FOF30\View\ViewTemplateFinder', get_class($result), sprintf($msg, 'Returned the wrong result'));
-    }
-
-    /**
-     * @group           BasicFactory
-     * @covers          FOF30\Factory\BasicFactory::isScaffolding
-     */
-    public function testIsScaffolding()
-    {
-        $factory = new BasicFactory(static::$container);
-
-        ReflectionHelper::setValue($factory, 'scaffolding', true);
-
-        $this->assertTrue($factory->isScaffolding(), 'BasicFactory::isScaffolding Failed to set the scaffolding flag');
-    }
-
-    /**
-     * @group           BasicFactory
-     * @covers          FOF30\Factory\BasicFactory::setScaffolding
-     */
-    public function testSetScaffolding()
-    {
-        $factory = new BasicFactory(static::$container);
-        $factory->setScaffolding(true);
-
-        $this->assertTrue(ReflectionHelper::getValue($factory, 'scaffolding'), 'BasicFactory::isScaffolding Failed to set the scaffolding flag');
-    }
-
-    /**
-     * @group           BasicFactory
-     * @covers          FOF30\Factory\BasicFactory::isSaveScaffolding
-     */
-    public function testIsSaveScaffolding()
-    {
-        $factory = new BasicFactory(static::$container);
-
-        ReflectionHelper::setValue($factory, 'saveScaffolding', true);
-
-        $this->assertTrue($factory->isSaveScaffolding(), 'BasicFactory::isSaveScaffolding Failed to set the save scaffolding flag');
-    }
-
-    /**
-     * @group           BasicFactory
-     * @covers          FOF30\Factory\BasicFactory::setSaveScaffolding
-     */
-    public function testSetSaveScaffolding()
-    {
-        $factory = new BasicFactory(static::$container);
-        $factory->setSaveScaffolding(true);
-
-        $this->assertTrue(ReflectionHelper::getValue($factory, 'saveScaffolding'), 'BasicFactory::setSaveScaffolding Failed to set the save scaffolding flag');
     }
 }

@@ -1,16 +1,16 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Layout;
 
-use FOF30\Container\Container;
-use JLayoutFile;
+defined('_JEXEC') || die;
 
-defined('_JEXEC') or die;
+use FOF30\Container\Container;
+use Joomla\CMS\Layout\FileLayout;
 
 /**
  * Base class for rendering a display layout
@@ -24,7 +24,7 @@ defined('_JEXEC') or die;
  *
  * @package  FrameworkOnFramework
  */
-class LayoutFile extends JLayoutFile
+class LayoutFile extends FileLayout
 {
 	/** @var  Container  The component container */
 	public $container = null;
@@ -36,6 +36,12 @@ class LayoutFile extends JLayoutFile
 	 */
 	protected function getPath()
 	{
+		if (is_null($this->container))
+		{
+			$component       = $this->options->get('component');
+			$this->container = Container::getInstance($component);
+		}
+
 		$filesystem = $this->container->filesystem;
 
 		if (is_null($this->fullPath) && !empty($this->layoutId))
@@ -56,17 +62,22 @@ class LayoutFile extends JLayoutFile
 			$platformDirs = $this->container->platform->getPlatformBaseDirs();
 			$prefix       = $this->container->platform->isBackend() ? $platformDirs['admin'] : $platformDirs['root'];
 
-			$possiblePaths = array(
+			$possiblePaths = [
 				$prefix . '/templates/' . $this->container->platform->getTemplate() . '/html/layouts/' . $filePath,
 				$this->basePath . '/' . $filePath,
-				$platformDirs['root'] . '/layouts/' . $filePath
-			);
+				$platformDirs['root'] . '/layouts/' . $filePath,
+			];
 
 			reset($files);
 
-			while ((list(, $fileName) = each($files)) && is_null($this->fullPath))
+			foreach ($files as $fileName)
 			{
-				$r = $filesystem->pathFind($possiblePaths, $fileName);
+				if (!is_null($this->fullPath))
+				{
+					break;
+				}
+
+				$r              = $filesystem->pathFind($possiblePaths, $fileName);
 				$this->fullPath = $r === false ? null : $r;
 			}
 		}

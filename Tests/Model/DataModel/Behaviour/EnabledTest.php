@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Tests\DataModel;
@@ -65,7 +65,11 @@ class EnabledTest extends DatabaseTest
         $platform = static::$container->platform;
         $platform::$user = (object)array('id' => 99);
 
-        $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('reset', 'getFieldValue'), array(static::$container, $config));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('reset', 'getFieldValue'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->expects($check['reset'] ? $this->once() : $this->never())->method('reset');
         $model->method('getFieldValue')->willReturn($test['mock']['enabled']);
 

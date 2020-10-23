@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit
-    bootstrap="Tests/bootstrap.php"
-    beStrictAboutTestsThatDoNotTestAnything="true"
-    checkForUnintentionallyCoveredCode="false"
-    beStrictAboutOutputDuringTests="true"
-    beStrictAboutTestSize="true"
-    colors="true"
+        bootstrap="Tests/bootstrap.php"
+        beStrictAboutTestsThatDoNotTestAnything="true"
+        checkForUnintentionallyCoveredCode="false"
+        beStrictAboutOutputDuringTests="true"
+        beStrictAboutTestSize="true"
+        colors="true"
 >
-	<testsuites>
-		<testsuite name="FOF Unit Tests">
-			<directory>Tests</directory>
-      <exclude>Tests/environments</exclude>
-		</testsuite>
-	</testsuites>
+    <testsuites>
+        <testsuite name="FOF Unit Tests">
+            <directory>Tests</directory>
+            <exclude>Tests/environments</exclude>
+        </testsuite>
+    </testsuites>
 
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
@@ -22,6 +22,7 @@
                 <directory suffix=".php">fof/Autoloader</directory>
                 <file>fof/Download/Adapter/AbstractAdapter.php</file>
                 <file>fof/Event/Observable.php</file>
+                <directory suffix=".php">fof/Form</directory>
                 <directory suffix=".php">fof/Less</directory>
                 <directory suffix=".php">fof/Platform/Base</directory>
                 <directory suffix=".php">fof/Pimple</directory>
@@ -31,9 +32,9 @@
                 <file>fof/Utils/Phpfunc.php</file>
 
                 <directory suffix=".php">Tests</directory>
+                <directory suffix=".php">TrashedTests</directory>
                 <directory suffix=".php">vendor</directory>
 
-                <directory suffix=".php">fof2</directory>
                 <directory suffix=".php">tests-old</directory>
 
                 <!-- Exclude packages that are impossible to test -->

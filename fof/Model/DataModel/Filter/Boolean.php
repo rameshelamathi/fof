@@ -1,13 +1,13 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Model\DataModel\Filter;
 
-defined('_JEXEC') or die;
+defined('_JEXEC') || die;
 
 class Boolean extends Number
 {
@@ -22,4 +22,4 @@ class Boolean extends Number
 	{
 		return is_null($value) || ($value === '');
 	}
-} 
+}

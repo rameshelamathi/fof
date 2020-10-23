@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 class ControllerFactoryDataprovider
@@ -91,7 +91,8 @@ class ControllerFactoryDataprovider
                     'display' => 'display',
                     'main' => 'main',
                     '__default' => 'main',
-                    'forceRemove' => 'forceRemove'
+                    'forceRemove' => 'forceRemove',
+                    'save2copy' => 'save2copy'
                 ),
             )
         );
@@ -161,7 +162,8 @@ class ControllerFactoryDataprovider
                     'display' => 'display',
                     'main' => 'main',
                     '__default' => 'main',
-                    'forceRemove' => 'forceRemove'
+                    'forceRemove' => 'forceRemove',
+                    'save2copy' => 'save2copy'
                 ),
             )
         );
@@ -227,7 +229,8 @@ class ControllerFactoryDataprovider
                     'display' => 'display',
                     'main' => 'main',
                     '__default' => 'main',
-                    'forceRemove' => 'forceRemove'
+                    'forceRemove' => 'forceRemove',
+                    'save2copy' => 'save2copy'
                 ),
             )
         );

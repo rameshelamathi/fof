@@ -1,26 +1,28 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Model\DataModel\Exception;
 
+defined('_JEXEC') || die;
+
 use Exception;
+use Joomla\CMS\Language\Text;
+use UnexpectedValueException;
 
-defined('_JEXEC') or die;
-
-class TreeUnexpectedPrimaryKey extends \UnexpectedValueException
+class TreeUnexpectedPrimaryKey extends UnexpectedValueException
 {
-	public function __construct( $message = '', $code = 500, Exception $previous = null )
+	public function __construct($message = '', $code = 500, Exception $previous = null)
 	{
 		if (empty($message))
 		{
-			$message = \JText::_('LIB_FOF_MODEL_ERR_TREE_UNEXPECTEDPK');
+			$message = Text::_('LIB_FOF_MODEL_ERR_TREE_UNEXPECTEDPK');
 		}
 
-		parent::__construct( $message, $code, $previous );
+		parent::__construct($message, $code, $previous);
 	}
 
 }

@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Tests\Helpers;
@@ -71,7 +71,7 @@ class TestHelper
 	}
 
 	/**
-	 * Helper method that gets a protected or private property in a class by relfection.
+	 * Helper method that gets a protected or private property in a class by reflection.
 	 *
 	 * @param   object  $object        The object from which to return the property value.
 	 * @param   string  $propertyName  The name of the property to return.
@@ -139,7 +139,7 @@ class TestHelper
 	}
 
 	/**
-	 * Helper method that sets a protected or private property in a class by relfection.
+	 * Helper method that sets a protected or private property in a class by reflection.
 	 *
 	 * @param   object  $object        The object for which to set the property.
 	 * @param   string  $propertyName  The name of the property to set.

@@ -1,17 +1,17 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Model\DataModel\Behaviour;
 
+defined('_JEXEC') || die;
+
 use FOF30\Event\Observer;
 use FOF30\Model\DataModel;
 use JDatabaseQuery;
-
-defined('_JEXEC') or die;
 
 /**
  * FOF model behavior class to filter access to items based on the viewing access levels.
@@ -24,8 +24,8 @@ class Access extends Observer
 	 * This event runs after we have built the query used to fetch a record
 	 * list in a model. It is used to apply automatic query filters.
 	 *
-	 * @param   DataModel      &$model The model which calls this event
-	 * @param   JDatabaseQuery &$query The query we are manipulating
+	 * @param   DataModel      &$model  The model which calls this event
+	 * @param   JDatabaseQuery &$query  The query we are manipulating
 	 *
 	 * @return  void
 	 */
@@ -64,7 +64,7 @@ class Access extends Observer
 		}
 
 		// Get the user
-		$user = $model->getContainer()->platform->getUser();
+		$user              = $model->getContainer()->platform->getUser();
 		$recordAccessLevel = $model->getFieldValue('access', null);
 
 		// Filter by authorised access levels

@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Tests\DataModel;
@@ -125,8 +125,16 @@ class AssetsTest extends DatabaseTest
         $rules  = $model->getRules();
 
         $this->assertTrue($return, sprintf($msg, 'Returned a wrong value'));
-        $this->assertJsonStringEqualsJsonString($check['rules'], (string) $rules, sprintf($msg, 'Set rules wrong'));
-    }
+
+        if (empty($check['rules']))
+		{
+			$this->assertEquals($check['rules'], (string) $rules, sprintf($msg, 'Set rules wrong'));
+		}
+		else
+		{
+			$this->assertJsonStringEqualsJsonString($check['rules'], (string) $rules, sprintf($msg, 'Set rules wrong'));
+		}
+	}
 
     /**
      * @group           Behaviour

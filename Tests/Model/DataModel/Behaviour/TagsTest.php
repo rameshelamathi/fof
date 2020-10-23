@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Tests\DataModel;
@@ -91,7 +91,11 @@ class TagsTest extends DatabaseTest
             'input'         => new Input($test['input'])
         ));
 
-        $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('getContentType', 'checkContentType'), array($container, $config));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('getContentType', 'checkContentType'))
+            ->setConstructorArgs(array($container, $config))
+            ->getMock();
+
         $model->expects($this->exactly($check['contentType']))->method('getContentType')->willReturn('com_foftest.foobars');
         $model->expects($check['checkContent'] ? $this->once() : $this->never())->method('checkContentType');
 
@@ -133,7 +137,11 @@ class TagsTest extends DatabaseTest
             'tableName'   => '#__foftest_foobars'
         );
 
-        $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('getContentType'), array(static::$container, $config));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('getContentType'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->method('getContentType')->willReturn('com_foftest.foobars');
 
         $fakeHelper = new ClosureHelper(array(
@@ -170,7 +178,11 @@ class TagsTest extends DatabaseTest
         $platform = static::$container->platform;
         $platform::$getUserStateFromRequest = function(){ return null; };
 
-        $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('getContentType', 'addKnownField'), array(static::$container, $config));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('getContentType', 'addKnownField'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->expects($check['contentType'] ? $this->once() : $this->never())->method('getContentType')->willReturn('com_foftest.foobars');
         $model->expects($check['addKnown'] ? $this->once() : $this->never())->method('addKnownField');
 
@@ -211,7 +223,11 @@ class TagsTest extends DatabaseTest
             'tableName'   => '#__foftest_foobars'
         );
 
-        $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('updateUcmContent'), array(static::$container, $config));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('updateUcmContent'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->expects($this->once())->method('updateUcmContent');
 
         $dispatcher = $model->getBehavioursDispatcher();
@@ -232,7 +248,11 @@ class TagsTest extends DatabaseTest
             'tableName'   => '#__foftest_foobars'
         );
 
-        $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('updateUcmContent'), array(static::$container, $config));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('updateUcmContent'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->expects($this->once())->method('updateUcmContent');
 
         $dispatcher = $model->getBehavioursDispatcher();

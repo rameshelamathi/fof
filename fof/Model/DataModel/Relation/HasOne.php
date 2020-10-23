@@ -1,16 +1,16 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Model\DataModel\Relation;
 
+defined('_JEXEC') || die;
+
 use FOF30\Model\DataModel;
 use FOF30\Model\DataModel\Collection;
-
-defined('_JEXEC') or die;
 
 /**
  * HasOne (straight 1-to-1) relation: this model is a parent which has exactly one child in the foreign table
@@ -27,8 +27,8 @@ class HasOne extends HasMany
 	 * supposed to return anything, just modify $foreignModel's state directly. For example, you may want to do:
 	 * $foreignModel->setState('foo', 'bar')
 	 *
-	 * @param callable   $callback The callback to run on the remote model.
-	 * @param Collection $dataCollection
+	 * @param   callable    $callback  The callback to run on the remote model.
+	 * @param   Collection  $dataCollection
 	 *
 	 * @return Collection|DataModel
 	 */

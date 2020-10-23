@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Tests\DataModel\Number;
@@ -26,7 +26,11 @@ class NumberTest extends DatabaseTest
     public function testPartial()
     {
         $field  = (object)array('name' => 'test', 'type' => 'int (10)');
-        $filter = $this->getMock('FOF30\Model\DataModel\Filter\Number', array('exact'), array(\JFactory::getDbo(), $field));
+
+        $filter = $this->getMockBuilder('FOF30\Model\DataModel\Filter\Number')
+            ->setMethods(array('exact'))
+            ->setConstructorArgs(array(\JFactory::getDbo(), $field))
+            ->getMock();
 
         // Should just invoke "exact"
         $filter->expects($this->once())->method('exact')->willReturn(null);

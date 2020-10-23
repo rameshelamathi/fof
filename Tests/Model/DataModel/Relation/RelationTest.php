@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Tests\DataModel\Relation;
@@ -72,7 +72,12 @@ class RelationTest extends DatabaseTest
     public function testRebase()
     {
         $model    = $this->buildModel();
-        $relation = $this->getMock('FOF30\Tests\Stubs\Model\RelationStub', array('reset'), array($model, 'Fakeapp\Model\Children'));
+
+        $relation = $this->getMockBuilder('FOF30\Tests\Stubs\Model\RelationStub')
+            ->setMethods(array('reset'))
+            ->setConstructorArgs(array($model, 'Fakeapp\Model\Children'))
+            ->getMock();
+
         $relation->method('reset')->willReturnSelf();
 
         $newModel = $this->buildModel('\Fakeapp\Site\Model\Datafoobars');
@@ -168,7 +173,11 @@ class RelationTest extends DatabaseTest
             'tableName'   => '#__fakeapp_parents'
         );
 
-        $item = $this->getMock('\FOF30\Tests\Stubs\Model\DataModelStub', array('save'), array(static::$container, $config));
+        $item = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('save'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $item->expects($this->once())->method('save')->willReturn(null);
 
         $collection = new Collection(array($item));
@@ -206,7 +215,7 @@ class RelationTest extends DatabaseTest
     {
         if(!$class)
         {
-            $class = '\FOF30\Tests\Stubs\Model\DataModelStub';
+            $class = '\\FOF30\\Tests\\Stubs\\Model\\DataModelStub';
         }
 
         $config = array(

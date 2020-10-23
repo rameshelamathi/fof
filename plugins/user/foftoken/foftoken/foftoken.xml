@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ @package   FOF
+  ~ @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+  ~ @license   GNU General Public License version 2, or later
+  -->
+
+<form>
+    <fields name="foftoken" addfieldpath="/plugins/user/foftoken/fields">
+        <fieldset name="foftoken"
+                  label="PLG_USER_FOFTOKEN_GROUP_LABEL"
+                  description="PLG_USER_FOFTOKEN_GROUP_DESC"
+        >
+            <field name="token" type="fofencryptedtoken"
+                   default="" size="30"
+                   algo="sha256"
+                   label="PLG_USER_FOFTOKEN_TOKEN_LABEL"
+                   description="PLG_USER_FOFTOKEN_TOKEN_DESC"
+                   readonly="true"
+                   class="input-xxlarge"/>
+
+            <field name="enabled" type="radio" default="1"
+                   label="PLG_USER_FOFTOKEN_ENABLED_LABEL"
+                   description="PLG_USER_FOFTOKEN_ENABLED_DESC"
+                   class="switcher btn-group">
+                <option value="0">JNo</option>
+                <option value="1">JYes</option>
+            </field>
+
+            <field name="reset" type="radio" default="0"
+                   label="PLG_USER_FOFTOKEN_RESET_LABEL"
+                   description="PLG_USER_FOFTOKEN_RESET_DESC"
+                   class="switcher btn-group">
+                <option value="0">JNo</option>
+                <option value="1">JYes</option>
+            </field>
+
+        </fieldset>
+    </fields>
+</form>

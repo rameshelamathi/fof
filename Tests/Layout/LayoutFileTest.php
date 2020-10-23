@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Tests\Layout;
@@ -107,6 +107,9 @@ class LayoutFileTest extends FOFTestCase
 		// Call the protected method. Dirty, but that's what we have to test without loading and displaying an actual
 		// PHP file.
 		$actual = ReflectionHelper::invoke($layoutFile, 'getPath');
+
+		$expectedPath = realpath($expectedPath);
+		$actual = realpath($actual);
 
 		$this->assertEquals($expectedPath, $actual, $message);
 	}

@@ -1,36 +1,23 @@
+.idea/
 .buildpath
 .settings/
 .project
 .DS_STORE
-.idea/
-
-/build/bin
-/build/build.properties
-/build/buildlang
-/build/phingext
-/build/templates/release*
-/build/tools
-
-/cli/fof.phar
-
-/documentation/*.xml~
 
 /fof/include.php
-/fof/lib_fof30.xml
-/fof/lib_f0f.xml
+/fof/file_fof30.xml
 /fof/version.txt
-/fof.phar
-
-/release/*.zip
 
 /Tests/environments/
 /Tests/coverage
 /Tests/config.php
 /Tests/debug.txt
 
+/release/*.zip
 /vendor/*
 
-
-DESCRIPTION.html
-RELEASENOTES.html
 Tests/coverage
+
+# Internal language symlinks
+/fof/language/en-GB
+/plugins/user/foftoken/language/**

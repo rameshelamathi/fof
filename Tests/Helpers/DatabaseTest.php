@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Tests\Helpers;
@@ -95,6 +95,7 @@ abstract class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
             );
 
             $pdo = new \PDO('mysql:host='.$options['host'].';dbname='.$options['database'], $options['user'], $options['password']);
+            $pdo->exec("SET @@SESSION.sql_mode = '';");
             $connection = $this->createDefaultDBConnection($pdo, $options['database']);
         }
 
@@ -204,4 +205,45 @@ abstract class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
         \JFactory::$database	= $this->savedFactoryState['database'];
         \JFactory::$mailer		= $this->savedFactoryState['mailer'];
     }
+
+	/**
+	 * Normalizes two arrays containing lists of fields:
+	 * * Converts utf8mb4 references to their utf8 equivalents
+	 * * Converts null to empty strings (since the null/empty string result is db version dependent)
+	 *
+	 * @param                  $fields
+	 * @param \JDatabaseDriver $db
+	 *
+	 * @return array
+	 */
+	protected function _normalizeTableFields($fields, \JDatabaseDriver $db)
+	{
+		if (!is_array($fields))
+		{
+			return $fields;
+		}
+
+		$ret = array();
+
+		foreach ($fields as $fieldName => $def)
+		{
+			$def = (array)$def;
+
+			$def = array_map(function ($value) {
+				if (is_null($value)) return '';
+
+				if (!is_numeric($value) && is_string($value))
+				{
+					$value = str_replace('utf8mb4_', 'utf8_', $value);
+					$value = str_replace('_unicode_ci', '_general_ci', $value);
+				}
+
+				return $value;
+			}, $def);
+
+			$ret[$fieldName] = (object) $def;
+		}
+
+		return $ret;
+	}
 }

@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 class DispatcherDataprovider
@@ -18,10 +18,10 @@ class DispatcherDataprovider
             ),
             array(
                 'case' => 'Nothing passed in the input, no default view',
-                'defaultView' => 'main',
-                'view' => 'main',
-                'layout' => '',
-                'containerView' => 'main'
+                'defaultView' => null,
+                'view' => null,
+                'layout' => null,
+                'containerView' => null
             )
         );
 
@@ -52,8 +52,27 @@ class DispatcherDataprovider
                 )
             ),
             array(
-                'case' => 'Data passed in the input, no default view',
-                'defaultView' => 'main',
+                'case' => 'Data passed in the input (using view), no default view',
+                'defaultView' => null,
+                'view' => 'foobars',
+                'layout' => 'default',
+                'containerView' => 'foobars'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'defaultView' => null,
+                    'input' => array(
+                        'akview' => 'foobars',
+                        'layout' => 'default'
+                    )
+                )
+            ),
+            array(
+                'case' => 'Data passed in the input (using akview), no default view',
+                'defaultView' => null,
                 'view' => 'foobars',
                 'layout' => 'default',
                 'containerView' => 'foobars'

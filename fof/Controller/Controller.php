@@ -1,44 +1,57 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Controller;
 
+defined('_JEXEC') || die;
+
 use FOF30\Container\Container;
 use FOF30\Controller\Exception\CannotGetName;
 use FOF30\Controller\Exception\TaskNotFound;
-use FOF30\Model\DataModel;
 use FOF30\Model\Model;
 use FOF30\View\View;
-
-defined('_JEXEC') or die;
+use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Cache\Cache;
+use Joomla\CMS\Cache\Controller\ViewController;
+use Joomla\CMS\Cache\Exception\CacheExceptionInterface;
+use Joomla\CMS\Document\Document;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Log\Log;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Uri\Uri;
 
 /**
  * Class Controller
  *
  * A generic MVC controller implementation
  *
- * @property-read  \FOF30\Input\Input  $input  The input object (magic __get returns the Input from the Container)
+ * @property-read  \FOF30\Input\Input $input  The input object (magic __get returns the Input from the Container)
  */
 class Controller
 {
+	/**
+	 * Instance container.
+	 *
+	 * @var    Controller
+	 */
+	protected static $instance;
 	/**
 	 * The name of the controller
 	 *
 	 * @var    array
 	 */
 	protected $name = null;
-
 	/**
 	 * The mapped task that was performed.
 	 *
 	 * @var    string
 	 */
 	protected $doTask;
-
 	/**
 	 * Bit mask to enable routing through JRoute on redirects. The value can be:
 	 *
@@ -50,63 +63,69 @@ class Controller
 	 * @var    int
 	 */
 	protected $autoRouting = 0;
-
+	/**
+	 * Should I protect against state bleedover? When this is enabled the default model's state hash will be
+	 * automatically set to include the controller name i.e. `com_example.controllerName.modelName.` instead of
+	 * `com_example.modelName.`. This will happen ONLY if the preventStateBleedover flag is set, the controller and
+	 * model names are different and the model doesn't set its own hash (or override getHash altogether).
+	 *
+	 * You should only need to enable this feature when you have multiple controllers using the _same_ Model as their
+	 * default. For example, if you have a blog component with Latest and Posts Controllers, both using the Posts Model
+	 * as their default Model the state variables set in the latest posts page would bleed over to the posts page. This
+	 * can include filtering and pagination preferences, resulting in a confusing experience for the user.
+	 *
+	 * Caveat: if you are using a different Controller class for singular / plural view names you will need to override
+	 *         getModel() yourself. Otherwise the state of the singular view would be disjointed from the state of the
+	 *         plural view (since the Controller names are different). That's the reason why this feature is turned off
+	 *         by default.
+	 *
+	 * False = same behavior as FOF 3.0.0 to 3.1.1 inclusive.
+	 *
+	 * @var   bool
+	 */
+	protected $preventStateBleedover = false;
 	/**
 	 * Redirect message.
 	 *
 	 * @var    string
 	 */
 	protected $message;
-
 	/**
 	 * Redirect message type.
 	 *
 	 * @var    string
 	 */
 	protected $messageType;
-
 	/**
 	 * Array of class methods
 	 *
 	 * @var    array
 	 */
 	protected $methods;
-
 	/**
 	 * The set of search directories for resources (views).
 	 *
 	 * @var    array
 	 */
 	protected $paths;
-
 	/**
 	 * URL for redirection.
 	 *
 	 * @var    string
 	 */
 	protected $redirect;
-
 	/**
 	 * Current or most recently performed task.
 	 *
 	 * @var    string
 	 */
 	protected $task;
-
 	/**
 	 * Array of class methods to call for a given task.
 	 *
 	 * @var    array
 	 */
 	protected $taskMap;
-
-	/**
-	 * Instance container.
-	 *
-	 * @var    Controller
-	 */
-	protected static $instance;
-
 	/**
 	 * The current view name; you can override it in the configuration
 	 *
@@ -126,7 +145,7 @@ class Controller
 	 *
 	 * @var array
 	 */
-	protected $config = array();
+	protected $config = [];
 
 	/**
 	 * Overrides the name of the view's default model
@@ -147,14 +166,14 @@ class Controller
 	 *
 	 * @var   array[Model]
 	 */
-	protected $modelInstances = array();
+	protected $modelInstances = [];
 
 	/**
 	 * An array of View instances known to this Controller
 	 *
 	 * @var   array[View]
 	 */
-	protected $viewInstances = array();
+	protected $viewInstances = [];
 
 	/**
 	 * The container attached to this Controller
@@ -168,7 +187,18 @@ class Controller
 	 *
 	 * @var array
 	 */
-	protected $cacheableTasks = array();
+	protected $cacheableTasks = [];
+
+	/**
+	 * How user group membership affects caching. The values are:
+	 * - 0 : Not taken into account, everyone sees the same page, always
+	 * - 1 : Only user groups are taken into account (default behaviour of FOF 3.0 to 3.4.2)
+	 * - 2 : The user ID itself is taken into account
+	 *
+	 * @var   bool
+	 * @since 3.4.3
+	 */
+	protected $userCaching = 1;
 
 	/**
 	 * An associative array for required ACL privileges per task. For example:
@@ -184,15 +214,16 @@ class Controller
 	 *
 	 * @var array
 	 */
-	protected $taskPrivileges = array();
+	protected $taskPrivileges = [];
 
 	/**
 	 * Enable CSRF protection on selected tasks. The possible values are:
 	 *
-	 * 0	Disabled; no token checks are performed
-	 * 1	Enabled; token checks are always performed
-	 * 2	Only on HTML requests and backend; token checks are always performed in the back-end and in the front-end only when format is 'html'
-	 * 3	Only on back-end; token checks are performed only in the back-end
+	 * 0    Disabled; no token checks are performed
+	 * 1    Enabled; token checks are always performed
+	 * 2    Only on HTML requests and backend; token checks are always performed in the back-end and in the front-end
+	 * only when format is 'html'
+	 * 3    Only on back-end; token checks are performed only in the back-end
 	 *
 	 * @var    integer
 	 */
@@ -214,15 +245,15 @@ class Controller
 	 *
 	 * @return  Controller
 	 */
-	public function __construct(Container $container, array $config = array())
+	public function __construct(Container $container, array $config = [])
 	{
 		// Initialise
-		$this->methods = array();
-		$this->message = null;
+		$this->methods     = [];
+		$this->message     = null;
 		$this->messageType = 'message';
-		$this->paths = array();
-		$this->redirect = null;
-		$this->taskMap = array();
+		$this->paths       = [];
+		$this->redirect    = null;
+		$this->taskMap     = [];
 
 		// Get a local copy of the container
 		$this->container = $container;
@@ -231,7 +262,7 @@ class Controller
 		$xMethods = get_class_methods('\\FOF30\\Controller\\Controller');
 
 		// Get the public methods in this class using reflection.
-		$r = new \ReflectionClass($this);
+		$r        = new \ReflectionClass($this);
 		$rMethods = $r->getMethods(\ReflectionMethod::IS_PUBLIC);
 
 		foreach ($rMethods as $rMethod)
@@ -261,7 +292,7 @@ class Controller
 		}
 
 		// Get the default values for the component and view names
-		$this->view = $this->getName();
+		$this->view   = $this->getName();
 		$this->layout = $this->input->getCmd('layout', null);
 
 		// If the default task is set, register it as such
@@ -291,13 +322,19 @@ class Controller
 		// Apply the autoRouting preference
 		if (array_key_exists('autoRouting', $config))
 		{
-			$this->autoRouting = (int)$config['autoRouting'];
+			$this->autoRouting = (int) $config['autoRouting'];
 		}
 
 		// Apply the csrfProtection preference
 		if (array_key_exists('csrfProtection', $config))
 		{
-			$this->csrfProtection = (int)$config['csrfProtection'];
+			$this->csrfProtection = (int) $config['csrfProtection'];
+		}
+
+		// Apply the preventStateBleedover preference
+		if (array_key_exists('preventStateBleedover', $config))
+		{
+			$this->preventStateBleedover = (bool) ((int) $config['preventStateBleedover']);
 		}
 	}
 
@@ -332,7 +369,7 @@ class Controller
 	 * Executes a given controller task. The onBefore<task> and onAfter<task>
 	 * methods are called automatically if they exist.
 	 *
-	 * @param   string $task The task to execute, e.g. "browse"
+	 * @param   string  $task  The task to execute, e.g. "browse"
 	 *
 	 * @return  null|bool  False on execution failure
 	 *
@@ -344,10 +381,10 @@ class Controller
 
 		if (!isset($this->taskMap[$task]) && !isset($this->taskMap['__default']))
 		{
-			throw new TaskNotFound(\JText::sprintf('JLIB_APPLICATION_ERROR_TASK_NOT_FOUND', $task), 404);
+			throw new TaskNotFound(Text::sprintf('JLIB_APPLICATION_ERROR_TASK_NOT_FOUND', $task), 404);
 		}
 
-		$result = $this->triggerEvent('onBeforeExecute', array(&$task));
+		$result = $this->triggerEvent('onBeforeExecute', [&$task]);
 
 		if ($result === false)
 		{
@@ -355,7 +392,7 @@ class Controller
 		}
 
 		$eventName = 'onBefore' . ucfirst($task);
-		$result = $this->triggerEvent($eventName);
+		$result    = $this->triggerEvent($eventName);
 
 		if ($result === false)
 		{
@@ -382,14 +419,14 @@ class Controller
 		$ret = $this->$doTask();
 
 		$eventName = 'onAfter' . ucfirst($task);
-		$result = $this->triggerEvent($eventName);
+		$result    = $this->triggerEvent($eventName);
 
 		if ($result === false)
 		{
 			return false;
 		}
 
-		$result = $this->triggerEvent('onAfterExecute', array($task));
+		$result = $this->triggerEvent('onAfterExecute', [$task]);
 
 		if ($result === false)
 		{
@@ -416,7 +453,7 @@ class Controller
 	{
 		$document = $this->container->platform->getDocument();
 
-		if ($document instanceof \JDocument)
+		if ($document instanceof Document)
 		{
 			$viewType = $document->getType();
 		}
@@ -444,43 +481,58 @@ class Controller
 
 		$conf = $this->container->platform->getConfig();
 
-		if ($this->container->platform->isFrontend() && $cachable && ($viewType != 'feed') && ($conf->get('caching') >= 1))
+		if ($cachable && ($viewType != 'feed') && ($conf->get('caching') >= 1))
 		{
 			// Get a JCache object
 			$option = $this->input->get('option', 'com_foobar', 'cmd');
-			$cache = \JFactory::getCache($option, 'view');
 
 			// Set up a cache ID based on component, view, task and user group assignment
 			$user = $this->container->platform->getUser();
 
 			if ($user->guest)
 			{
-				$groups = array();
+				$groups = [];
 			}
 			else
 			{
 				$groups = $user->groups;
 			}
 
-			$importantParameters = array();
+			$userId = $user->guest ? 0 : $user->id;
+
+			switch ($this->userCaching)
+			{
+				case 0:
+					// Developer chose to apply the same caching to everyone
+					$groups = [];
+					$userId = 0;
+					break;
+
+				case 1:
+					// Developer chose to apply caching per user group membership only
+					$userId = 0;
+					break;
+			}
+
+			$importantParameters = [];
 
 			// Set up safe URL parameters
 			if (!is_array($urlparams))
 			{
-				$urlparams = array(
-					'option'		=> 'CMD',
-					'view'			=> 'CMD',
-					'task'			=> 'CMD',
-					'format'		=> 'CMD',
-					'layout'		=> 'CMD',
-					'id'			=> 'INT',
-				);
+				$urlparams = [
+					'option' => 'CMD',
+					'view'   => 'CMD',
+					'task'   => 'CMD',
+					'format' => 'CMD',
+					'layout' => 'CMD',
+					'id'     => 'INT',
+				];
 			}
 
 			if (is_array($urlparams))
 			{
-				/** @var \JApplicationCms $app */
-				$app = \JFactory::getApplication();
+				/** @var CMSApplication $app */
+				$app = Factory::getApplication();
 
 				$registeredurlparams = null;
 
@@ -506,10 +558,22 @@ class Controller
 			}
 
 			// Create the cache ID after setting the registered URL params, as they are used to generate the ID
-			$cacheId = md5(serialize(array(\JCache::makeId(), $view->getName(), $this->doTask, $groups, $importantParameters)));
+			$cacheId = md5(serialize([
+				Cache::makeId(), $view->getName(), $this->doTask, $groups, $userId, $importantParameters,
+			]));
 
 			// Get the cached view or cache the current view
-			$cache->get($view, 'display', $cacheId);
+			try
+			{
+				/** @var ViewController $cache */
+				$cache = Factory::getCache($option, 'view');
+				$cache->get($view, 'display', $cacheId);
+			}
+			catch (CacheExceptionInterface $e)
+			{
+				// Display without caching
+				$view->display($tpl);
+			}
 		}
 		else
 		{
@@ -531,15 +595,15 @@ class Controller
 	/**
 	 * Returns a named Model object
 	 *
-	 * @param   string $name     The Model name. If null we'll use the modelName
+	 * @param   string  $name    The Model name. If null we'll use the modelName
 	 *                           variable or, if it's empty, the same name as
 	 *                           the Controller
-	 * @param   array  $config   Configuration parameters to the Model. If skipped
+	 * @param   array   $config  Configuration parameters to the Model. If skipped
 	 *                           we will use $this->config
 	 *
 	 * @return  Model  The instance of the Model known to this Controller
 	 */
-	public function getModel($name = null, $config = array())
+	public function getModel($name = null, $config = [])
 	{
 		if (!empty($name))
 		{
@@ -564,13 +628,20 @@ class Controller
 			if (empty($name))
 			{
 				$config['modelTemporaryInstance'] = true;
+				$controllerName                   = $this->getName();
+
+				if ($controllerName != $modelName)
+				{
+					$config['hash_view'] = $controllerName;
+				}
+
 			}
 			else
 			{
 				// Other classes are loaded with persistent state disabled and their state/input blanked out
 				$config['modelTemporaryInstance'] = false;
-				$config['modelClearState'] = true;
-				$config['modelClearInput'] = true;
+				$config['modelClearState']        = true;
+				$config['modelClearInput']        = true;
 			}
 
 			$this->modelInstances[$modelName] = $this->container->factory->model(ucfirst($modelName), $config);
@@ -582,15 +653,15 @@ class Controller
 	/**
 	 * Returns a named View object
 	 *
-	 * @param   string $name     The Model name. If null we'll use the modelName
+	 * @param   string  $name    The Model name. If null we'll use the modelName
 	 *                           variable or, if it's empty, the same name as
 	 *                           the Controller
-	 * @param   array  $config   Configuration parameters to the Model. If skipped
+	 * @param   array   $config  Configuration parameters to the Model. If skipped
 	 *                           we will use $this->config
 	 *
 	 * @return  View  The instance of the Model known to this Controller
 	 */
-	public function getView($name = null, $config = array())
+	public function getView($name = null, $config = [])
 	{
 		if (!empty($name))
 		{
@@ -622,9 +693,22 @@ class Controller
 	}
 
 	/**
+	 * Pushes a named view to the Controller
+	 *
+	 * @param   string  $viewName  The name of the View
+	 * @param   View    $view      The actual View object to push
+	 *
+	 * @return  void
+	 */
+	public function setView($viewName, View &$view)
+	{
+		$this->viewInstances[$viewName] = $view;
+	}
+
+	/**
 	 * Set the name of the view to be used by this Controller
 	 *
-	 * @param   string $viewName The name of the view
+	 * @param   string  $viewName  The name of the view
 	 *
 	 * @return  void
 	 */
@@ -636,7 +720,7 @@ class Controller
 	/**
 	 * Set the name of the model to be used by this Controller
 	 *
-	 * @param   string $modelName The name of the model
+	 * @param   string  $modelName  The name of the model
 	 *
 	 * @return  void
 	 */
@@ -648,27 +732,14 @@ class Controller
 	/**
 	 * Pushes a named model to the Controller
 	 *
-	 * @param   string $modelName The name of the Model
-	 * @param   Model  $model     The actual Model object to push
+	 * @param   string  $modelName  The name of the Model
+	 * @param   Model   $model      The actual Model object to push
 	 *
 	 * @return  void
 	 */
 	public function setModel($modelName, Model &$model)
 	{
 		$this->modelInstances[$modelName] = $model;
-	}
-
-	/**
-	 * Pushes a named view to the Controller
-	 *
-	 * @param   string $viewName The name of the View
-	 * @param   View   $view     The actual View object to push
-	 *
-	 * @return  void
-	 */
-	public function setView($viewName, View &$view)
-	{
-		$this->viewInstances[$viewName] = $view;
 	}
 
 	/**
@@ -689,7 +760,7 @@ class Controller
 
 			if (!preg_match('/(.*)\\\\Controller\\\\(.*)/i', get_class($this), $r))
 			{
-				throw new CannotGetName(\JText::_('LIB_FOF_CONTROLLER_ERR_GET_NAME'), 500);
+				throw new CannotGetName(Text::_('LIB_FOF_CONTROLLER_ERR_GET_NAME'), 500);
 			}
 
 			$this->name = $r[2];
@@ -727,9 +798,7 @@ class Controller
 	{
 		if ($this->redirect)
 		{
-			$app = \JFactory::getApplication();
-			$app->enqueueMessage($this->message, $this->messageType);
-			$app->redirect($this->redirect);
+			$this->container->platform->redirect($this->redirect, 301, $this->message, $this->messageType);
 
 			return true;
 		}
@@ -740,7 +809,7 @@ class Controller
 	/**
 	 * Register the default task to perform if a mapping is not found.
 	 *
-	 * @param   string $method The name of the method in the derived class to perform if a named task is not found.
+	 * @param   string  $method  The name of the method in the derived class to perform if a named task is not found.
 	 *
 	 * @return  Controller  This object to support chaining.
 	 */
@@ -754,8 +823,8 @@ class Controller
 	/**
 	 * Register (map) a task to a method in the class.
 	 *
-	 * @param   string $task   The task.
-	 * @param   string $method The name of the method in the derived class to perform for this task.
+	 * @param   string  $task    The task.
+	 * @param   string  $method  The name of the method in the derived class to perform for this task.
 	 *
 	 * @return  Controller  This object to support chaining.
 	 */
@@ -772,7 +841,7 @@ class Controller
 	/**
 	 * Unregister (unmap) a task in the class.
 	 *
-	 * @param   string $task The task.
+	 * @param   string  $task  The task.
 	 *
 	 * @return  Controller  This object to support chaining.
 	 */
@@ -786,15 +855,15 @@ class Controller
 	/**
 	 * Sets the internal message that is passed with a redirect
 	 *
-	 * @param   string $text Message to display on redirect.
-	 * @param   string $type Message type. Optional, defaults to 'message'.
+	 * @param   string  $text  Message to display on redirect.
+	 * @param   string  $type  Message type. Optional, defaults to 'message'.
 	 *
 	 * @return  string  Previous message
 	 */
 	public function setMessage($text, $type = 'message')
 	{
-		$previous = $this->message;
-		$this->message = $text;
+		$previous          = $this->message;
+		$this->message     = $text;
 		$this->messageType = $type;
 
 		return $previous;
@@ -803,9 +872,11 @@ class Controller
 	/**
 	 * Set a URL for browser redirection.
 	 *
-	 * @param   string $url  URL to redirect to.
-	 * @param   string $msg  Message to display on redirect. Optional, defaults to value set internally by controller, if any.
-	 * @param   string $type Message type. Optional, defaults to 'message' or the type set by a previous call to setMessage.
+	 * @param   string  $url   URL to redirect to.
+	 * @param   string  $msg   Message to display on redirect. Optional, defaults to value set internally by
+	 *                         controller, if any.
+	 * @param   string  $type  Message type. Optional, defaults to 'message' or the type set by a previous call to
+	 *                         setMessage.
 	 *
 	 * @return  Controller   This object to support chaining.
 	 */
@@ -815,7 +886,7 @@ class Controller
 		if (strpos($url, 'index.php') === 0)
 		{
 			$isAdmin = $this->container->platform->isBackend();
-			$auto = false;
+			$auto    = false;
 
 			if (($this->autoRouting == 2 || $this->autoRouting == 3) && $isAdmin)
 			{
@@ -829,7 +900,30 @@ class Controller
 
 			if ($auto)
 			{
-				$url = \JRoute::_($url, false);
+				$url = Route::_($url, false);
+			}
+
+			/**
+			 * Joomla 4 does not add the base URI to redirections.
+			 *
+			 * This means that all bare redirects, e.g. to 'index.php?option=com_example', no longer work correctly.
+			 *
+			 * In the frontend, if your site is located in a subdirectory e.g. /foobar you get redirected to
+			 * /index.php?option=com_example instead of /foobar/index.php?option=com_example
+			 *
+			 * In the backend, you're redirected to /index.php?option=com_example instead of the expected
+			 * /administrator/index.php?option=com_example which breaks your application since the backend redirects to
+			 * the frontend.
+			 *
+			 * This is an undocumented b/c break in Joomla 4. It even breaks some of the core components...
+			 *
+			 * The following code detects bare redirect URLs and adds the base URI path if auto-routing has been
+			 * disabled, automatically fixing the observed issue. It only does that on Joomla 4 since adding the base
+			 * URI on Joomla 3 can cause redirection problems.
+			 */
+			if (!$auto && version_compare(JVERSION, '3.999.999', 'gt'))
+			{
+				$url = Uri::base() . $url;
 			}
 		}
 
@@ -855,6 +949,16 @@ class Controller
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Returns true if there is a redirect set in the controller
+	 *
+	 * @return  boolean
+	 */
+	public function hasRedirect()
+	{
+		return !empty($this->redirect);
 	}
 
 	/**
@@ -909,39 +1013,50 @@ class Controller
 				break;
 		}
 
-		$hasToken = false;
-		$session  = $this->container->session;
+		// Check for a session token
+		$token    = $this->container->platform->getToken(false);
+		$hasToken = $this->input->get($token, false, 'none') == 1;
 
-		// Joomla! 2.5+ (Platform 12.1+) method
-		if (method_exists($session, 'getToken'))
+		if (!$hasToken)
 		{
-			$token    = $session->getToken();
+			$hasToken = $this->input->get('_token', null, 'none') == $token;
+		}
+
+		if ($hasToken)
+		{
+			$view = $this->input->getCmd('view');
+			$task = $this->input->getCmd('task');
+			Log::add(
+				"FOF: You are using a legacy session token in (view, task)=($view, $task). Support for legacy tokens will go away. Use form tokens instead.",
+				Log::WARNING,
+				'deprecated'
+			);
+		}
+
+		// Check for a form token
+		if (!$hasToken)
+		{
+			$token    = $this->container->platform->getToken(true);
 			$hasToken = $this->input->get($token, false, 'none') == 1;
 
 			if (!$hasToken)
 			{
+				$view = $this->input->getCmd('view');
+				$task = $this->input->getCmd('task');
+				Log::add(
+					"FOF: You are using the insecure _token form variable in (view, task)=($view, $task). Support for it will go away. Submit a variable with the token as the name and a value of 1 instead.",
+					Log::WARNING,
+					'deprecated'
+				);
+
+
 				$hasToken = $this->input->get('_token', null, 'none') == $token;
 			}
 		}
 
-		// Joomla! 2.5+ formToken method
 		if (!$hasToken)
 		{
-			if (method_exists($session, 'getFormToken'))
-			{
-				$token    = $session->getFormToken();
-				$hasToken = $this->input->get($token, false, 'none') == 1;
-
-				if (!$hasToken)
-				{
-					$hasToken = $this->input->get('_token', null, 'none') == $token;
-				}
-			}
-		}
-
-		if (!$hasToken)
-		{
-			$platform->raiseError(403, \JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
+			$platform->raiseError(403, Text::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
 
 			return false;
 		}
@@ -965,7 +1080,7 @@ class Controller
 	 *
 	 * @return  bool
 	 */
-	protected function triggerEvent($event, array $arguments = array())
+	protected function triggerEvent($event, array $arguments = [])
 	{
 		$result = true;
 
@@ -993,14 +1108,14 @@ class Controller
 					$result = $this->{$event}($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4]);
 					break;
 				default:
-					$result = call_user_func_array(array($this, $event), $arguments);
+					$result = call_user_func_array([$this, $event], $arguments);
 					break;
 			}
 		}
 		// If there is no handler method perform a simple ACL check
 		elseif (substr($event, 0, 8) == 'onBefore')
 		{
-			$task = substr($event, 8);
+			$task   = substr($event, 8);
 			$result = $this->checkACL('@' . $task);
 		}
 
@@ -1019,7 +1134,7 @@ class Controller
 		if (substr($event, 0, 2) == 'on')
 		{
 			$prefix = 'on';
-			$event = substr($event, 2);
+			$event  = substr($event, 2);
 		}
 
 		// Get the component/model prefix for the event
@@ -1062,22 +1177,22 @@ class Controller
 			return $area;
 		}
 
-		if (in_array(strtolower($area), array('false','0','no','403')))
+		if (in_array(strtolower($area), ['false', '0', 'no', '403']))
 		{
 			return false;
 		}
 
-		if (in_array(strtolower($area), array('true','1','yes')))
+		if (in_array(strtolower($area), ['true', '1', 'yes']))
 		{
 			return true;
 		}
 
-		if (in_array(strtolower($area), array('guest')))
+		if (in_array(strtolower($area), ['guest']))
 		{
 			return $this->container->platform->getUser()->guest;
 		}
 
-		if (in_array(strtolower($area), array('user')))
+		if (in_array(strtolower($area), ['user']))
 		{
 			return !$this->container->platform->getUser()->guest;
 		}
@@ -1098,12 +1213,13 @@ class Controller
 	 *
 	 * @return  mixed  The resolved ACL privilege
 	 */
-	protected function getACLRuleFor($area, $oldAreas = array())
+	protected function getACLRuleFor($area, $oldAreas = [])
 	{
 		// If it's a &notation return the callback result
 		if (substr($area, 0, 1) == '&')
 		{
-			$method = substr($area, 1);
+			$oldAreas[] = $area;
+			$method     = substr($area, 1);
 
 			// Method not found? Assume true.
 			if (!method_exists($this, $method))
@@ -1111,7 +1227,9 @@ class Controller
 				return true;
 			}
 
-			return $this->$method();
+			$area = $this->$method();
+
+			return $this->getACLRuleFor($area, $oldAreas);
 		}
 
 		// If it's not an @notation return the raw string
@@ -1126,7 +1244,12 @@ class Controller
 		// If the referenced task has no ACL map, return true
 		if (!isset($this->taskPrivileges[$index]))
 		{
-			return true;
+			$index = strtolower($index);
+
+			if (!isset($this->taskPrivileges[$index]))
+			{
+				return true;
+			}
 		}
 
 		// Get the new ACL area
@@ -1148,16 +1271,6 @@ class Controller
 
 		// We have another reference. Resolve it.
 		return $this->getACLRuleFor($newArea, $oldAreas);
-	}
-
-	/**
-	 * Returns true if there is a redirect set in the controller
-	 *
-	 * @return  boolean
-	 */
-	public function hasRedirect()
-	{
-		return !empty($this->redirect);
 	}
 
 

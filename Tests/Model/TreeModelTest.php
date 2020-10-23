@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Tests\TreeModel;
@@ -34,7 +34,10 @@ class TreeModelTest extends DatabaseTest
             'tableName'   => $test['table']
         );
 
-        $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('resetTreeCache'), array(static::$container, $config));
+        $table = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub')
+            ->setMethods(array('resetTreeCache'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
 
         foreach($test['fields'] as $field => $value)
         {
@@ -176,7 +179,10 @@ class TreeModelTest extends DatabaseTest
             $matcher = $this->once();
         }
 
-        $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('insertAsChildOf', 'getParent'), array(static::$container, $config));
+        $table = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub')
+            ->setMethods(array('insertAsChildOf', 'getParent'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
 
         // This is just a little trick, so insertAsChildOf won't complain about the argument passed
         \PHPUnit_Framework_Error_Notice::$enabled = false;
@@ -603,7 +609,11 @@ class TreeModelTest extends DatabaseTest
             'tableName'   => '#__foftest_nestedsets'
         );
 
-        $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('moveToLeftOf'), array(static::$container, $config));
+        $table = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub')
+            ->setMethods(array('moveToLeftOf'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $table->method('moveToLeftOf')->willReturnCallback(
             function($leftSibling) use (&$counter, &$sibling){
                 $counter++;
@@ -658,7 +668,11 @@ class TreeModelTest extends DatabaseTest
             'tableName'   => '#__foftest_nestedsets'
         );
 
-        $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('moveToRightOf'), array(static::$container, $config));
+        $table = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub')
+            ->setMethods(array('moveToRightOf'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $table->method('moveToRightOf')->willReturnCallback(
             function($rightSibling) use (&$counter, &$sibling){
                 $counter++;
@@ -715,7 +729,11 @@ class TreeModelTest extends DatabaseTest
             'tableName'   => '#__foftest_nestedsets'
         );
 
-        $table   = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('getState'), array(static::$container, $config));
+        $table = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub')
+            ->setMethods(array('getState'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $sibling = $table->getClone();
 
         // Am I request to create a different root?
@@ -817,7 +835,10 @@ class TreeModelTest extends DatabaseTest
             'tableName'   => '#__foftest_nestedsets'
         );
 
-        $table   = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('getState'), array(static::$container, $config));
+        $table = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub')
+            ->setMethods(array('getState'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
         $sibling = $table->getClone();
 
         // Am I request to create a different root?
@@ -919,7 +940,10 @@ class TreeModelTest extends DatabaseTest
             'tableName'   => '#__foftest_nestedsets'
         );
 
-        $table   = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('getState'), array(static::$container, $config));
+        $table = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub')
+            ->setMethods(array('getState'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
         $parent = $table->getClone();
 
         $table->findOrFail($test['loadid']);
@@ -1004,7 +1028,10 @@ class TreeModelTest extends DatabaseTest
             'tableName'   => '#__foftest_nestedsets'
         );
 
-        $table   = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('getState'), array(static::$container, $config));
+        $table = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub')
+            ->setMethods(array('getState'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
         $parent = $table->getClone();
 
         $table->findOrFail($test['loadid']);
@@ -1086,7 +1113,11 @@ class TreeModelTest extends DatabaseTest
             'tableName'   => '#__foftest_nestedsets'
         );
 
-        $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('moveToRightOf', 'isRoot', 'getRoot', 'equals'), array(static::$container, $config));
+        $table = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub')
+            ->setMethods(array('moveToRightOf', 'isRoot', 'getRoot', 'equals'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $table->method('isRoot')->willReturn($test['mock']['isRoot']);
         $table->method('getRoot')->willReturnSelf();
         $table->method('equals')->willReturn($test['mock']['equals']);
@@ -1205,7 +1236,11 @@ class TreeModelTest extends DatabaseTest
             'tableName'   => '#__foftest_nestedsets'
         );
 
-        $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('getLevel'), array(static::$container, $config));
+        $table = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub')
+            ->setMethods(array('getLevel'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $table->method('getLevel')->willReturnCallback(
             function()use (&$counter, $test){
                 $counter++;
@@ -1461,12 +1496,20 @@ class TreeModelTest extends DatabaseTest
             'tableName'   => '#__foftest_nestedsets'
         );
 
-        $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('isLeaf', 'isRoot', 'isChild'), array(static::$container, $config));
+        $table = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub')
+            ->setMethods(array('isLeaf', 'isRoot', 'isChild'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $table->method('isLeaf')->willReturn($test['mock']['table']['isLeaf']);
         $table->method('isRoot')->willReturn($test['mock']['table']['isRoot']);
         $table->method('isChild')->willReturn($test['mock']['table']['isChild']);
 
-        $other = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('isLeaf', 'isRoot', 'isChild'), array(static::$container, $config));
+        $other = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub')
+            ->setMethods(array('isLeaf', 'isRoot', 'isChild'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $other->method('isLeaf')->willReturn($test['mock']['other']['isLeaf']);
         $other->method('isRoot')->willReturn($test['mock']['other']['isRoot']);
         $other->method('isChild')->willReturn($test['mock']['other']['isChild']);
@@ -1603,7 +1646,11 @@ class TreeModelTest extends DatabaseTest
             'tableName'   => '#__foftest_nestedsets'
         );
 
-        $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('firstOrFail', 'isRoot'), array(static::$container, $config));
+        $table = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub')
+            ->setMethods(array('firstOrFail', 'isRoot'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $table->method('isRoot')->willReturn(false);
 
         // I want to throw an exception at the first run
@@ -1734,9 +1781,7 @@ class TreeModelTest extends DatabaseTest
      */
     public function testFindByPath($test, $check)
     {
-        $this->markTestIncomplete('TreeModel::findByPath needs a review before testing it');
-
-        /*$msg = 'TreeModel::findByPath %s - Case: '.$check['case'];
+        $msg = 'TreeModel::findByPath %s - Case: '.$check['case'];
 
         $config = array(
             'autoChecks'  => false,
@@ -1756,6 +1801,6 @@ class TreeModelTest extends DatabaseTest
         {
             $this->assertInstanceOf('FOF30\Model\TreeModel', $result, sprintf($msg, 'Should return an instance of TreeModel'));
             $this->assertEquals($check['id'], $result->getId(), sprintf($msg, 'Returned the wrong node'));
-        }*/
+        }
     }
 }

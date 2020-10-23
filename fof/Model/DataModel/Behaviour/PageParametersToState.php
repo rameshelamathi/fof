@@ -1,17 +1,19 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Model\DataModel\Behaviour;
 
+defined('_JEXEC') || die;
+
 use FOF30\Event\Observer;
 use FOF30\Model\DataModel;
-use JDatabaseQuery;
-
-defined('_JEXEC') or die;
+use Joomla\CMS\Application\SiteApplication;
+use Joomla\CMS\Factory;
+use Joomla\Registry\Registry;
 
 /**
  * FOF model behavior class to populate the state with the front-end page parameters
@@ -29,8 +31,10 @@ class PageParametersToState extends Observer
 		}
 
 		// Get the page parameters
-		/** @var \JRegistry $params */
-		$params = \JFactory::getApplication()->getPageParameters();
+		/** @var SiteApplication $app */
+		$app = Factory::getApplication();
+		/** @var Registry|Registry $params */
+		$params = $app->getParams();
 
 		// Extract the page parameter keys
 		$asArray = $params->toArray();

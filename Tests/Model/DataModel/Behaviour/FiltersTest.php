@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Tests\DataModel;
@@ -36,7 +36,11 @@ class FiltersTest extends DatabaseTest
             'tableName'   => '#__foftest_foobars'
         );
 
-        $model = $this->getMock('\FOF30\Tests\Stubs\Model\DataModelStub', array('getState'), array(static::$container, $config));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('getState'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->method('getState')->willReturnCallback(function($key, $default = null) use ($test){
             if(isset($test['mock']['state'][$key])){
                 return $test['mock']['state'][$key];

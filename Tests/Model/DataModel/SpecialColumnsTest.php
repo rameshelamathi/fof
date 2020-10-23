@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Tests\DataModel;
@@ -69,7 +69,11 @@ class DataModelSpecialColumnsTest extends DatabaseTest
         $model = new DataModelStub(static::$container, $config, $methods);
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered
-        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array(static::$container));
+        $dispatcher = $this->getMockBuilder('\\FOF30\\Event\\Dispatcher')
+            ->setMethods(array('trigger'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $dispatcher->expects($this->exactly(2))->method('trigger')->withConsecutive(
             array($this->equalTo('onBeforeReorder')),
             array($this->equalTo('onAfterReorder'))
@@ -242,11 +246,19 @@ class DataModelSpecialColumnsTest extends DatabaseTest
             }
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('save', 'getId'), array($container, $config, $methods));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('save', 'getId'))
+            ->setConstructorArgs(array($container, $config, $methods))
+            ->getMock();
+
         $model->method('getId')->willReturn(1);
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered
-        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array($container));
+        $dispatcher = $this->getMockBuilder('\\FOF30\\Event\\Dispatcher')
+            ->setMethods(array('trigger'))
+            ->setConstructorArgs(array($container))
+            ->getMock();
+
         $dispatcher->expects($this->exactly($check['dispatcher']))->method('trigger')->withConsecutive(
             array($this->equalTo('onBeforeLock')),
             array($this->equalTo('onAfterLock'))
@@ -321,11 +333,18 @@ class DataModelSpecialColumnsTest extends DatabaseTest
             }
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('save', 'getId'), array(static::$container, $config, $methods));
+        $model = $this->getMockBuilder('FOF30\Tests\Stubs\Model\DataModelStub')
+            ->setMethods(array('save', 'getId'))
+            ->setConstructorArgs(array(static::$container, $config, $methods))
+            ->getMock();
         $model->method('getId')->willReturn(1);
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered
-        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array(static::$container));
+        $dispatcher = $this->getMockBuilder('\\FOF30\\Event\\Dispatcher')
+            ->setMethods(array('trigger'))
+            ->setConstructorArgs(array(static::$container))
+            ->getMock();
+
         $dispatcher->expects($this->exactly($check['dispatcher']))->method('trigger')->withConsecutive(
             array($this->equalTo('onBeforeUnlock')),
             array($this->equalTo('onAfterUnlock'))
@@ -397,7 +416,11 @@ class DataModelSpecialColumnsTest extends DatabaseTest
             'tableName'   => $test['table']
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('save', 'getId'), array(static::$container, $config));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('save', 'getId'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->method('save')->willReturn(null);
         $model->method('getId')->willReturn(1);
 
@@ -465,7 +488,11 @@ class DataModelSpecialColumnsTest extends DatabaseTest
             'tableName'   => $test['table']
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('unlock', 'isAssetsTracked', 'getAssetKey'), array($container, $config));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('unlock', 'isAssetsTracked', 'getAssetKey'))
+            ->setConstructorArgs(array($container, $config))
+            ->getMock();
+
         $model->expects($check['unlock'] ? $this->once() : $this->never())->method('unlock')->willReturnSelf();
         $model->method('isAssetsTracked')->willReturn($test['mock']['assetsTracked']);
         $model->method('getAssetKey')->willReturn('foobars.dummy');

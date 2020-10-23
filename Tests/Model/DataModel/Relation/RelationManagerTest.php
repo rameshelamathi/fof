@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Tests\DataModel\RelationManager;
@@ -338,7 +338,11 @@ class RelationManagerTest extends DatabaseTest
         $model      = $this->buildModel();
         $relation   = new RelationManager($model);
 
-        $hasMany = $this->getMock('FOF30\Model\DataModel\Relation\HasMany', array('getForeignKeyMap'), array($model, 'Fakeapp\Model\Children', ));
+        $hasMany = $this->getMockBuilder('FOF30\Model\DataModel\Relation\HasMany')
+            ->setMethods(array('getForeignKeyMap'))
+            ->setConstructorArgs(array($model, 'Fakeapp\Model\Children', ))
+            ->getMock();
+
         $hasMany->expects($this->once())->method('getForeignKeyMap')->willReturn(null);
 
         ReflectionHelper::setValue($relation, 'relations', array('test' => $hasMany));
@@ -410,7 +414,11 @@ class RelationManagerTest extends DatabaseTest
         $result = '';
 
         $model = $this->buildModel();
-        $relation = $this->getMock('FOF30\\Model\\DataModel\\RelationManager', array('addRelation', 'getData'), array($model));
+
+        $relation = $this->getMockBuilder('FOF30\\Model\\DataModel\\RelationManager')
+            ->setMethods(array('addRelation', 'getData'))
+            ->setConstructorArgs(array($model))
+            ->getMock();
 
         $getData     = $relation->expects($check['get'] ? $this->once() : $this->never())->method('getData')->willReturnSelf();
         $addRelation = $relation->expects($check['add'] ? $this->once() : $this->never())->method('addRelation')->willReturnSelf();
@@ -519,7 +527,7 @@ class RelationManagerTest extends DatabaseTest
     {
         if(!$class)
         {
-            $class = '\FOF30\Tests\Stubs\Model\DataModelStub';
+            $class = '\\FOF30\\Tests\\Stubs\\Model\\DataModelStub';
         }
 
         $config = array(

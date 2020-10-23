@@ -1,31 +1,32 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Dispatcher;
 
+defined('_JEXEC') || die;
+
+use Exception;
 use FOF30\Container\Container;
 use FOF30\Controller\Controller;
 use FOF30\Dispatcher\Exception\AccessForbidden;
 use FOF30\TransparentAuthentication\TransparentAuthentication;
 
-defined('_JEXEC') or die;
-
 /**
  * A generic MVC dispatcher
  *
- * @property-read  \FOF30\Input\Input  $input  The input object (magic __get returns the Input from the Container)
+ * @property-read  \FOF30\Input\Input $input  The input object (magic __get returns the Input from the Container)
  */
 class Dispatcher
 {
 	/** @var   string  The name of the default view, in case none is specified */
-	public $defaultView = 'main';
+	public $defaultView = null;
 
 	/** @var  array  Local cache of the dispatcher configuration */
-	protected $config = array();
+	protected $config = [];
 
 	/** @var  Container  The container we belong to */
 	protected $container = null;
@@ -36,7 +37,7 @@ class Dispatcher
 	/** @var  string  The layout for rendering the view */
 	protected $layout = null;
 
-	/** @var  Controller  The controller which will be used  */
+	/** @var  Controller  The controller which will be used */
 	protected $controller = null;
 
 	/** @var  bool  Is this user transparently logged in? */
@@ -51,22 +52,26 @@ class Dispatcher
 	 * Do note that $config is passed to the Controller and through it to the Model and View. Please see these classes
 	 * for more information on the configuration variables they accept.
 	 *
-	 * @param \FOF30\Container\Container $container
-	 * @param array                      $config
+	 * @param   \FOF30\Container\Container  $container
+	 * @param   array                       $config
 	 */
-	public function __construct(Container $container, array $config = array())
+	public function __construct(Container $container, array $config = [])
 	{
 		$this->container = $container;
 
 		$this->config = $config;
+
+		$this->defaultView = $container->appConfig->get('dispatcher.defaultView', $this->defaultView);
 
 		if (isset($config['defaultView']))
 		{
 			$this->defaultView = $config['defaultView'];
 		}
 
+		$this->supportCustomViewAndTaskParameters();
+
 		// Get the default values for the view and layout names
-		$this->view = $this->input->getCmd('view', null);
+		$this->view   = $this->input->getCmd('view', null);
 		$this->layout = $this->input->getCmd('layout', null);
 
 		// Not redundant; you may pass an empty but non-null view which is invalid, so we need the fallback
@@ -125,23 +130,23 @@ class Dispatcher
 
 		// Get the event names (different for CLI)
 		$onBeforeEventName = 'onBeforeDispatch';
-		$onAfterEventName = 'onAfterDispatch';
+		$onAfterEventName  = 'onAfterDispatch';
 
 		if ($this->container->platform->isCli())
 		{
 			$onBeforeEventName = 'onBeforeDispatchCLI';
-			$onAfterEventName = 'onAfterDispatchCLI';
+			$onAfterEventName  = 'onAfterDispatchCLI';
 		}
 
 		try
 		{
 			$result = $this->triggerEvent($onBeforeEventName);
-			$error = '';
+			$error  = '';
 		}
 		catch (\Exception $e)
 		{
 			$result = false;
-			$error = $e->getMessage();
+			$error  = $e->getMessage();
 		}
 
 		if ($result === false)
@@ -153,7 +158,7 @@ class Dispatcher
 
 			$this->transparentAuthenticationLogout();
 
-			throw new AccessForbidden;
+			$this->container->platform->showErrorPage(new AccessForbidden);
 		}
 
 		// Get and execute the controller
@@ -166,20 +171,30 @@ class Dispatcher
 			$this->input->set('task', $task);
 		}
 
-		$this->controller = $this->container->factory->controller($view, $this->config);
-		$status = $this->controller->execute($task);
+		try
+		{
+			$this->controller = $this->container->factory->controller($view, $this->config);
+			$status           = $this->controller->execute($task);
+		}
+		catch (Exception $e)
+		{
+			$this->container->platform->showErrorPage($e);
 
-        if($status !== false)
-        {
-            try
-            {
-                $this->triggerEvent($onAfterEventName);
-            }
-            catch(\Exception $e)
-            {
-                $status = false;
-            }
-        }
+			// Redundant; just to make code sniffers happy
+			return;
+		}
+
+		if ($status !== false)
+		{
+			try
+			{
+				$this->triggerEvent($onAfterEventName);
+			}
+			catch (\Exception $e)
+			{
+				$status = false;
+			}
+		}
 
 		if (($status === false))
 		{
@@ -190,7 +205,7 @@ class Dispatcher
 
 			$this->transparentAuthenticationLogout();
 
-			throw new AccessForbidden;
+			$this->container->platform->showErrorPage(new AccessForbidden);
 		}
 
 		$this->transparentAuthenticationLogout();
@@ -223,7 +238,7 @@ class Dispatcher
 	 *
 	 * @return  bool
 	 */
-	protected function triggerEvent($event, array $arguments = array())
+	protected function triggerEvent($event, array $arguments = [])
 	{
 		$result = true;
 
@@ -251,7 +266,7 @@ class Dispatcher
 					$result = $this->{$event}($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4]);
 					break;
 				default:
-					$result = call_user_func_array(array($this, $event), $arguments);
+					$result = call_user_func_array([$this, $event], $arguments);
 					break;
 			}
 		}
@@ -271,7 +286,7 @@ class Dispatcher
 		if (substr($event, 0, 2) == 'on')
 		{
 			$prefix = 'on';
-			$event = substr($event, 2);
+			$event  = substr($event, 2);
 		}
 
 		// Get the component/model prefix for the event
@@ -304,7 +319,7 @@ class Dispatcher
 	{
 		/** @var TransparentAuthentication $transparentAuth */
 		$transparentAuth = $this->container->transparentAuth;
-		$authInfo = $transparentAuth->getTransparentAuthenticationCredentials();
+		$authInfo        = $transparentAuth->getTransparentAuthenticationCredentials();
 
 		if (empty($authInfo))
 		{
@@ -333,5 +348,34 @@ class Dispatcher
 		}
 
 		$this->container->platform->logoutUser();
+	}
+
+	/**
+	 * Adds support for akview/aktask in lieu of view and task.
+	 *
+	 * This is for future-proofing FOF in case Joomla assigns special meaning to view and task, e.g. by trying to find a
+	 * specific controller / task class instead of letting the component's front-end router handle it. If that happens
+	 * FOF components can have a single Joomla-compatible view/task which launches the Dispatcher and perform internal
+	 * routing using akview/aktask.
+	 *
+	 * @return  void
+	 * @since   3.6.3
+	 */
+	private function supportCustomViewAndTaskParameters()
+	{
+		$view = $this->input->getCmd('akview', null);
+		$task = $this->input->getCmd('aktask', null);
+
+		if (!is_null($view))
+		{
+			$this->input->remove('akview');
+			$this->input->set('view', $view);
+		}
+
+		if (!is_null($task))
+		{
+			$this->input->remove('aktask');
+			$this->input->set('task', $task);
+		}
 	}
 }

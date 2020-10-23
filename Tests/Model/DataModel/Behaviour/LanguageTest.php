@@ -1,8 +1,8 @@
 <?php
 /**
- * @package     FOF
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL version 2 or later
+ * @package   FOF
+ * @copyright Copyright (c)2010-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 2, or later
  */
 
 namespace FOF30\Tests\DataModel;
@@ -60,7 +60,11 @@ class LanguageTest extends DatabaseTest
             ));
         };
 
-        $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('blacklistFilters'), array(static::$container, $config));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('blacklistFilters'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->expects($this->exactly($check['blacklist']))->method('blacklistFilters');
 
         $query      = \JFactory::getDbo()->getQuery(true)->select('*')->from('test');
@@ -123,7 +127,11 @@ class LanguageTest extends DatabaseTest
             ));
         };
 
-        $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('reset'), array(static::$container, $config));
+        $model = $this->getMockBuilder('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub')
+            ->setMethods(array('reset'))
+            ->setConstructorArgs(array(static::$container, $config))
+            ->getMock();
+
         $model->expects($this->exactly($check['reset']))->method('reset');
 
         $dispatcher = $model->getBehavioursDispatcher();
